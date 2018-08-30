@@ -7,9 +7,11 @@
              xmlns:VM="clr-namespace:Navegacion.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="350" d:DesignStyle="{StaticResource MyUserControlDesignStyle}">
+
     <UserControl.DataContext>
         <VM:CentroActividadesViewModel />
     </UserControl.DataContext>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -23,9 +25,18 @@
         </Grid.RowDefinitions>
         <Border Padding="10" Grid.Column="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button x:Name="button_sincronizar" Content="Sincronizar" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75"/>
-                <Button x:Name="button_informar" Content="Informar" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75"/>
-                <Button x:Name="button1" Content="Salir" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
+                <Button x:Name="button_sincronizar"
+                        Content="Sincronizar"
+                        HorizontalAlignment="Left" VerticalAlignment="Top"
+                        Width="75"/>
+                <Button x:Name="button_informar"
+                        Content="Informar"
+                        HorizontalAlignment="Left" VerticalAlignment="Top"
+                        Width="75"/>
+                <Button x:Name="button_salir"
+                        Content="Salir" HorizontalAlignment="Left" VerticalAlignment="Top"
+                        Width="75"
+                        Command="{Binding ExitButtonCommand}"/>
             </StackPanel>
         </Border>
 
