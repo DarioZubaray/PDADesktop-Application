@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="Navegacion.View.CentroActividades"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Navegacion.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="350" d:DesignStyle="{StaticResource MyUserControlDesignStyle}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="50*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="8*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Border Padding="10" Grid.Column="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button x:Name="button_sincronizar" Content="Sincronizar" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75"/>
+                <Button x:Name="button_informar" Content="Informar" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75"/>
+                <Button x:Name="button1" Content="Salir" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
+            </StackPanel>
+        </Border>
+
+        <DataGrid x:Name="dataGrid" BorderThickness="1" BorderBrush="Gainsboro" HorizontalAlignment="Center" VerticalAlignment="Top"
+                    Height="Auto" Width="Auto" AutoGenerateColumns="False" AlternatingRowBackground="Gainsboro" 
+                  AlternationCount="2" Grid.Column="1" Grid.Row="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding lote}" ClipboardContentBinding="{x:Null}" Header="Lote" CanUserResize="False" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding accion}" ClipboardContentBinding="{x:Null}" Header="Accion" CanUserResize="False" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding fecha}" ClipboardContentBinding="{x:Null}" Header="Fecha" CanUserResize="False" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding actividad}" ClipboardContentBinding="{x:Null}" Header="Actividad" CanUserResize="False" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding genesix}" ClipboardContentBinding="{x:Null}" Header="Genesix" CanUserResize="False" Width="Auto">
+                    <DataGridTextColumn.CellStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding pda}" ClipboardContentBinding="{x:Null}" Header="PDA" CanUserResize="False" Width="Auto">
+                    <DataGridTextColumn.CellStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding estado}" ClipboardContentBinding="{x:Null}" Header="Estado" CanUserResize="False" Width="Auto">
+                    <DataGridTextColumn.CellStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2">
+            <Label x:Name="label" Content="Version" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBox x:Name="button" Text="1.13.0" Height="25"/>
+        </StackPanel>
+
+
+    </Grid>
+</UserControl>
