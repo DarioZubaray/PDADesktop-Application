@@ -9,6 +9,15 @@ namespace Navegacion
     /// </summary>
     public partial class App : Application
     {
+        private MainWindow mainWindow;
+        public MainWindow MainWindowView
+        {
+            get
+            {
+                return mainWindow;
+            }
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -19,18 +28,18 @@ namespace Navegacion
             if(numRandom == 1)
             {
                 Console.WriteLine("Hemos recordado al usuario, logueando...");
-                var window = new MainWindow();
+                mainWindow = new MainWindow();
                 Uri uri = new Uri("View/CentroActividades.xaml", UriKind.Relative);
                 //NavigationService ns = NavigationService.GetNavigationService(window.frame.NavigationService);
-                window.frame.NavigationService.Navigate(uri);
+                mainWindow.frame.NavigationService.Navigate(uri);
                 //ns.Navigate(uri);
-                window.Show();
+                mainWindow.Show();
             }
             else
             {
                 Console.WriteLine("No hay datos guardados con un usuario válido, llendo al login");
-                var window = new MainWindow();
-                window.Show();
+                mainWindow = new MainWindow();
+                mainWindow.Show();
             }
         }
     }
