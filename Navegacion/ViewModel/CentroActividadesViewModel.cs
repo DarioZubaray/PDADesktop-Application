@@ -1,11 +1,9 @@
-﻿using Navegacion.Classes;
+﻿using log4net;
+using Navegacion.Classes;
 using Navegacion.Model;
 using Navegacion.View;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -13,6 +11,7 @@ namespace Navegacion.ViewModel
 {
     class CentroActividadesViewModel
     {
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private ICommand exitButtonCommand;
         public ICommand ExitButtonCommand
         {
@@ -60,7 +59,7 @@ namespace Navegacion.ViewModel
 
         public void ExitPortalApi(object obj)
         {
-            Console.WriteLine("exit portal api");
+            logger.Info("exit portal api");
             //aca deberia invocar el logout al portal?
             MainWindow window = (MainWindow) Application.Current.MainWindow;
             Uri uri = new Uri("View/LoginView.xaml", UriKind.Relative);

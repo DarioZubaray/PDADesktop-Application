@@ -1,4 +1,5 @@
-﻿using Navegacion.View;
+﻿using log4net;
+using Navegacion.View;
 using System;
 using System.Windows;
 
@@ -9,6 +10,7 @@ namespace Navegacion
     /// </summary>
     public partial class App : Application
     {
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private MainWindow mainWindowView;
         public MainWindow MainWindowView
         {
@@ -25,14 +27,14 @@ namespace Navegacion
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            Console.WriteLine("Verificando datos guardados...");
+            logger.Info("Verificando datos guardados...");
             Random rnd = new Random();
             // Genera un numero mayor a 0 y menor a 2 
             int numRandom = rnd.Next(0, 2);
-            Console.WriteLine("Numero aleatorio generado: " + numRandom);
+            logger.Debug("Numero aleatorio generado: " + numRandom);
             if(numRandom == 1)
             {
-                Console.WriteLine("Hemos recordado al usuario, logueando...");
+                logger.Info("Hemos recordado al usuario, logueando...");
                 MainWindowView = new MainWindow();
                 Uri uri = new Uri("View/CentroActividades.xaml", UriKind.Relative);
                 MainWindowView.frame.NavigationService.Navigate(uri);
@@ -40,7 +42,7 @@ namespace Navegacion
             }
             else
             {
-                Console.WriteLine("No hay datos guardados con un usuario válido, llendo al login");
+                logger.Info("No hay datos guardados con un usuario válido, llendo al login");
                 MainWindowView = new MainWindow();
                 MainWindowView.Show();
             }

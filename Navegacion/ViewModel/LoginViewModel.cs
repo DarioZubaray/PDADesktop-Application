@@ -1,8 +1,8 @@
-﻿using Navegacion.Classes;
+﻿using log4net;
+using Navegacion.Classes;
 using Navegacion.View;
 using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -10,6 +10,7 @@ namespace Navegacion.ViewModel
 {
     class LoginViewModel
     {
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public string usernameText { get; set; }
 
         private ICommand loginButtonCommand;
@@ -35,11 +36,12 @@ namespace Navegacion.ViewModel
 
         public void LoginPortalApi(object obj)
         {
-            Console.WriteLine("login portal api");
+            logger.Info("login portal api");
 
             MainWindow window = (MainWindow) Application.Current.MainWindow;
             if ("dariojz".Equals(usernameText))
             {
+                logger.Debug("Nombre no null: " + usernameText);
                 //aca deberia llamar al servicio de login
                 //Redirecciona a centroActividades
                 Uri uri = new Uri("View/CentroActividades.xaml", UriKind.Relative);
@@ -52,8 +54,8 @@ namespace Navegacion.ViewModel
                 loginview.usernameText.BorderBrush = Brushes.Red;
                 loginview.mjsError.Content = "usuario y/o contraseña incorrectos";
                 loginview.mjsError.Visibility = Visibility.Visible;
+                logger.Error("usuario y/o contraseña incorrectos");
             }
-            Console.WriteLine(usernameText + " este es el nombre de usuario");
         }
     }
 }
