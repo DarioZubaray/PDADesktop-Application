@@ -6,11 +6,13 @@
         xmlns:local="clr-namespace:Navegacion.View"
         xmlns:VM="clr-namespace:Navegacion.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="320" Width="370">
+        Title="MainWindow" Height="420" Width="655">
     <Window.DataContext>
         <VM:MainWindowViewModel/>
     </Window.DataContext>
     <Grid>
-        <Frame x:Name="frame" Source="LoginView.xaml" NavigationUIVisibility="Hidden" HorizontalAlignment="Left" Height="300" Width="350" Margin="10,10,0,0" VerticalAlignment="Top" />
+        <Frame x:Name="frame" Source="LoginView.xaml" NavigationUIVisibility="Hidden" 
+               HorizontalAlignment="Center" VerticalAlignment="Center"
+               Height="400" Width="635"/>
     </Grid>
 </Window>

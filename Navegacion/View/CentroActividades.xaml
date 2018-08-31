@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Navegacion.View"
              xmlns:VM="clr-namespace:Navegacion.ViewModel"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="350" d:DesignStyle="{StaticResource MyUserControlDesignStyle}">
+             d:DesignHeight="400" d:DesignWidth="635" d:DesignStyle="{StaticResource MyUserControlDesignStyle}">
 
     <UserControl.DataContext>
         <VM:CentroActividadesViewModel />
@@ -42,7 +42,7 @@
 
         <DataGrid x:Name="dataGrid"
                   Grid.Column="1" Grid.Row="1"
-                  BorderThickness="1" BorderBrush="Gainsboro"
+                  BorderThickness="0" BorderBrush="Gainsboro"
                   HorizontalAlignment="Center" VerticalAlignment="Top"
                   Height="Auto" Width="Auto"
                   AutoGenerateColumns="False"
