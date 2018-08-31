@@ -61,9 +61,9 @@ namespace Navegacion.ViewModel
             {
                 //marcar como usuario y/o contraseña incorrectos
                 LoginView loginview = (LoginView) window.frame.Content;
-                loginview.usernameText.BorderBrush = Brushes.Red;
-                loginview.mjsError.Content = "usuario y/o contraseña incorrectos";
-                loginview.mjsError.Visibility = Visibility.Visible;
+                //loginview.usernameText.BorderBrush = Brushes.Red;
+                //loginview.mjsError.Content = "usuario y/o contraseña incorrectos";
+                //loginview.mjsError.Visibility = Visibility.Visible;
                 logger.Error("usuario y/o contraseña incorrectos");
             }
         }

@@ -6,77 +6,80 @@
              xmlns:local="clr-namespace:Navegacion.View"
              xmlns:VM="clr-namespace:Navegacion.ViewModel"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="655" d:DesignStyle="{StaticResource MyUserControlDesignStyle}">
+             d:DesignHeight="400" d:DesignWidth="655"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}">
 
     <UserControl.DataContext>
         <VM:LoginViewModel />
     </UserControl.DataContext>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="4*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="2*"/>
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        <materialDesign:Flipper Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="350" Width="225">
 
-        <Label x:Name="mjsError"
-               Content="Label" 
-               Grid.Column="2" Grid.Row="0"
-               HorizontalAlignment="Left" VerticalAlignment="Bottom"
-               Width="Auto" Height="23" FontSize="11" Foreground="Crimson"
-               Visibility="Hidden"/>
+            <materialDesign:Flipper.FrontContent>
+                <Grid Height="300" Width="220">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="160" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <materialDesign:ColorZone Mode="PrimaryLight" VerticalAlignment="Stretch">
+                        <materialDesign:PackIcon Kind="AccountCircle" Height="128" Width="128"
+                                                 VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </materialDesign:ColorZone>
+                    <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBox x:Name="usernameText" Text="{Binding usernameText}" materialDesign:HintAssist.Hint="Ingresá tu usuario"
+                                 materialDesign:HintAssist.IsFloating="True" Margin="0 12 0 0" Width="165">
+                        </TextBox>
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                Command="{x:Static materialDesign:Flipper.FlipCommand}" Margin="0 4 0 0">
+                            Siguiente
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </materialDesign:Flipper.FrontContent>
 
-        <Label x:Name="label_usuario"
-               Content="Usuario"
-               Grid.Column="1" Grid.Row="1"
-               HorizontalAlignment="Right" VerticalAlignment="Center"/>
-
-        <Grid Grid.Column="2" Grid.Row="1">
-            <TextBox x:Name="usernameText"
-                     Text="{Binding usernameText}"
-                     VerticalAlignment="Center" HorizontalAlignment="Left"
-                     Width="175"/>
-            <TextBlock IsHitTestVisible="False" 
-                       Text="Ingrese su usuario" 
-                       VerticalAlignment="Center" HorizontalAlignment="Left" 
-                       Margin="10,0,0,0"
-                       Foreground="DarkGray">
-                <TextBlock.Style>
-                    <Style TargetType="{x:Type TextBlock}">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Text, ElementName=usernameText}" Value="">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-            </TextBlock>
-        </Grid>
-
-        <Label x:Name="label_password"
-               Content="Contraseña"
-               Grid.Column="1" Grid.Row="2"
-               HorizontalAlignment="Right" VerticalAlignment="Center"/>
-
-        <PasswordBox x:Name="passwordBox"
-                     Grid.Column="2"  Grid.Row="2"
-                     HorizontalAlignment="Left" VerticalAlignment="Center"
-                     Width="175"/>
-
-        <Button x:Name="button"
-                Content="Iniciar Sesion"
-                Grid.Column="2" Grid.Row="3"
-                HorizontalAlignment="Center" VerticalAlignment="Center"
-                Width="Auto"
-                Command="{Binding LoginButtonCommand}"/>
+            <materialDesign:Flipper.BackContent>
+                <Grid Height="300" Width="225">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <materialDesign:ColorZone Mode="PrimaryLight" Padding="6">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource MaterialDesignToolForegroundButton}"
+                                    Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                                    HorizontalAlignment="Left">
+                                <materialDesign:PackIcon Kind="ArrowLeft" HorizontalAlignment="Right" />
+                            </Button>
+                            <Label Content="Bienvenido" VerticalAlignment="Center"/>
+                            <TextBlock Margin="0 0 0 0" VerticalAlignment="Center" Text="{Binding ElementName=usernameText, Path=Text}"></TextBlock>
+                        </StackPanel>
+                    </materialDesign:ColorZone>
+                    <Grid Grid.Row="1" Margin="0 6 0 0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="180" Height="200">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <PasswordBox Grid.Row="0" x:Name="FloatingPasswordBox" materialDesign:HintAssist.Hint="Ingresá tu contraseña"
+                                     Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" />
+                        <Button x:Name="button_iniciar" Content="Iniciar Sesion" Grid.Row="1"
+                                Width="Auto" VerticalAlignment="Bottom"
+                                Command="{Binding LoginButtonCommand}"/>
+                    </Grid>
+                </Grid>
+            </materialDesign:Flipper.BackContent>
+        </materialDesign:Flipper>
     </Grid>
 </UserControl>
