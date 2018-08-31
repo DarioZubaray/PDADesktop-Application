@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Navegacion.View"
              xmlns:VM="clr-namespace:Navegacion.ViewModel"
              mc:Ignorable="d"
-             d:DesignHeight="400" d:DesignWidth="635" d:DesignStyle="{StaticResource MyUserControlDesignStyle}">
+             d:DesignHeight="640" d:DesignWidth="840" d:DesignStyle="{StaticResource MyUserControlDesignStyle}">
 
     <UserControl.DataContext>
         <VM:CentroActividadesViewModel />
@@ -27,15 +27,12 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Button x:Name="button_sincronizar"
                         Content="Sincronizar"
-                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                        Width="75"/>
+                        HorizontalAlignment="Left" VerticalAlignment="Top"/>
                 <Button x:Name="button_informar"
                         Content="Informar"
-                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                        Width="75"/>
+                        HorizontalAlignment="Left" VerticalAlignment="Top"/>
                 <Button x:Name="button_salir"
                         Content="Salir" HorizontalAlignment="Left" VerticalAlignment="Top"
-                        Width="75"
                         Command="{Binding ExitButtonCommand}"/>
             </StackPanel>
         </Border>
@@ -76,11 +73,17 @@
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2">
-            <Label x:Name="label" Content="Version" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <TextBox x:Name="button" Text="1.13.0" Height="25"/>
-        </StackPanel>
+        <Grid Grid.Column="1" Grid.Row="2" Width="Auto">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="Auto">
+            <Label x:Name="label_version" Content="Version" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Label x:Name="button_version" Content="1.13.0" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
+            <Label x:Name="label_usuario" Content="Usuario" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="100 0 0 0"/>
+            <Label x:Name="button_usuario" Content="dariojz" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
+            <Label x:Name="label_sucursal" Content="Sucursal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="100 0 0 0"/>
+            <Label x:Name="button_sucursal" Content="706" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
 
+        </StackPanel>
+        </Grid>
 
     </Grid>
 </UserControl>
