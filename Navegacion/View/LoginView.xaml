@@ -17,6 +17,7 @@
             <RowDefinition Height="2*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -32,23 +33,17 @@
                HorizontalAlignment="Center" VerticalAlignment="Bottom"
                Width="148" Height="23" FontSize="11" 
                Visibility="Hidden"/>
-        <Label x:Name="label"
+
+        <Label x:Name="label_usuario"
                Content="Usuario"
                Grid.Column="1" Grid.Row="1"
                HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
-        <Button x:Name="button"
-                Content="Iniciar"
-                Grid.Column="2" Grid.Row="2"
-                HorizontalAlignment="Left" VerticalAlignment="Center"
-                Width="75"
-                Command="{Binding LoginButtonCommand}"/>
-
         <Grid Grid.Column="2" Grid.Row="1">
             <TextBox x:Name="usernameText"
                      Text="{Binding usernameText}"
-                     VerticalAlignment="Center" HorizontalAlignment="Left"
-                     Width="175" Margin="5,14,0,14"/>
+                     VerticalAlignment="Center" HorizontalAlignment="Center"
+                     Width="175"/>
             <TextBlock IsHitTestVisible="False" 
                        Text="Ingrese su usuario" 
                        VerticalAlignment="Center" HorizontalAlignment="Left" 
@@ -66,5 +61,22 @@
                 </TextBlock.Style>
             </TextBlock>
         </Grid>
+
+        <Label x:Name="label_password"
+               Content="Contraseña"
+               Grid.Column="1" Grid.Row="2"
+               HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+        <PasswordBox x:Name="passwordBox"
+                     Grid.Column="2"  Grid.Row="2"
+                     HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Width="175"/>
+
+        <Button x:Name="button"
+                Content="Iniciar Sesion"
+                Grid.Column="2" Grid.Row="3"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                Width="Auto"
+                Command="{Binding LoginButtonCommand}"/>
     </Grid>
 </UserControl>

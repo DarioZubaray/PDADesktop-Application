@@ -2,7 +2,6 @@
 using Navegacion.Classes;
 using Navegacion.View;
 using System;
-using System.Configuration;
 using System.Windows;
 
 namespace Navegacion
