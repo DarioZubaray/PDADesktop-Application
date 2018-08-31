@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Navegacion.View"
         xmlns:VM="clr-namespace:Navegacion.ViewModel"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
         Title="MainWindow" Height="640" Width="840">
     <Window.DataContext>
         <VM:MainWindowViewModel/>
