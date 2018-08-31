@@ -2,6 +2,7 @@
 using Navegacion.Classes;
 using Navegacion.View;
 using System;
+using System.Configuration;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -42,6 +43,15 @@ namespace Navegacion.ViewModel
             if ("dariojz".Equals(usernameText))
             {
                 logger.Debug("Nombre no null: " + usernameText);
+                DateTime fechaExpiracion = new DateTime(2020, 12, 31);
+                string userCookie = "username=" + usernameText + ";expires=" + fechaExpiracion.ToString("r");
+                string urlFromProperties = ConfigurationManager.AppSettings.Get("URL_COOKIE");
+                string variablePublic = Environment.ExpandEnvironmentVariables(urlFromProperties);
+                Uri cookieUri1 = new Uri(variablePublic);
+                Application.SetCookie(cookieUri1, userCookie);
+
+                string cookie = Application.GetCookie(cookieUri1);
+                logger.Info("Cookie recibida: " + cookie);
                 //aca deberia llamar al servicio de login
                 //Redirecciona a centroActividades
                 Uri uri = new Uri("View/CentroActividades.xaml", UriKind.Relative);
