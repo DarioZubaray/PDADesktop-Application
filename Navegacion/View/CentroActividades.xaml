@@ -52,11 +52,11 @@
                 <Separator Style="{StaticResource MaterialDesignDarkSeparator}" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                        <Button x:Name="btn_sincro_atras">
+                    <Button x:Name="btn_sincro_atras" Margin="10">
                             <materialDesign:PackIcon Kind="ArrowLeftBoldCircleOutline" />
                         </Button>
 
-                        <TextBox x:Name="txt_sincronizacion" FontSize="15" TextWrapping="Wrap"
+                    <TextBox x:Name="txt_sincronizacion" FontSize="15" TextWrapping="Wrap" Margin="10" Text="(123456789) dd/MM/yyyy HH:mm hs"
                                  VerticalContentAlignment="Center" TextAlignment="Center" Width="255" IsEnabled="False">
                             <TextBox.Resources>
                                 <Style TargetType="{x:Type Border}">
@@ -65,15 +65,15 @@
                             </TextBox.Resources>
                         </TextBox>
 
-                        <Button x:Name="btn_sincro_adelante">
+                    <Button x:Name="btn_sincro_adelante" Margin="10">
                             <materialDesign:PackIcon Kind="ArrowRightBoldCircleOutline" />
                         </Button>
 
-                        <Label x:Name="label" Content="Buscar" FontSize="15"/>
-                        <Button x:Name="btn_buscar">
+                    <Label x:Name="label" Content="Buscar" FontSize="15" Margin="10"/>
+                    <Button x:Name="btn_buscar" Margin="10">
                             <materialDesign:PackIcon Kind="Magnify" />
                         </Button>
-                        <Button x:Name="btn_ultimaSincronizacion" Content="Ir a la última Sincronización" FontSize="11.5"/>
+                    <Button x:Name="btn_ultimaSincronizacion" Content="Ir a la última Sincronización" Margin="10" FontSize="11.5"/>
 
                     </StackPanel>
             </StackPanel>
