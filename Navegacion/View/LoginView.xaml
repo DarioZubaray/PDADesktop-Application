@@ -9,7 +9,7 @@
              xmlns:local="clr-namespace:Navegacion.View"
              xmlns:VM="clr-namespace:Navegacion.ViewModel"
              mc:Ignorable="d" 
-             d:DesignHeight="640" d:DesignWidth="840"
+             d:DesignHeight="720" d:DesignWidth="840"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"

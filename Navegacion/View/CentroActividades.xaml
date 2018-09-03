@@ -7,7 +7,7 @@
              xmlns:VM="clr-namespace:Navegacion.ViewModel"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
-             d:DesignHeight="640" d:DesignWidth="840" d:DesignStyle="{StaticResource MyUserControlDesignStyle}">
+             d:DesignHeight="720" d:DesignWidth="840" d:DesignStyle="{StaticResource MyUserControlDesignStyle}">
 
     <UserControl.DataContext>
         <VM:CentroActividadesViewModel />
@@ -20,33 +20,62 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
-            <RowDefinition Height="8*" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="9*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <Border Padding="10" Grid.Column="1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button x:Name="button_sincronizar"
-                        Content="Sincronizar diaria de la PDA" Margin="10"
-                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                        Style="{StaticResource MaterialDesignRaisedDarkButton}"
-                        ToolTip="Informar todos los datos y recibir todas los maestros."/>
+        <Border Padding="20" Grid.Column="1">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button x:Name="button_sincronizar" Content="Sincronizar diaria de la PDA" Margin="10"
+                            HorizontalAlignment="Left" VerticalAlignment="Top"
+                            Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                            ToolTip="Informar todos los datos y recibir todas los maestros."/>
 
-                <materialDesign:Badged x:Name="badged_informar" Content="{Binding badge_informar}" Margin="10">
-                </materialDesign:Badged>
+                    <materialDesign:Badged x:Name="badged_informar" Content="{Binding badge_informar}" Margin="10">
+                    </materialDesign:Badged>
 
-                <materialDesign:Badged x:Name="badged_verAjustes" Badge="0" Margin="10">
-                    <Button x:Name="button_verAjustes"
-                        Content="Ver Ajustes" 
-                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                        ToolTip="Ver los ajustes realizados."/>
-                </materialDesign:Badged>
+                    <materialDesign:Badged x:Name="badged_verAjustes" Badge="0" Margin="10">
+                        <Button x:Name="button_verAjustes"
+                                Content="Ver Ajustes" 
+                                HorizontalAlignment="Left" VerticalAlignment="Top"
+                                ToolTip="Ver los ajustes realizados."/>
+                    </materialDesign:Badged>
 
-                <Button x:Name="button_salir"
-                        Content="Cerrar sesión" Margin="10"
-                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                        Command="{Binding ExitButtonCommand}"
-                        Style="{StaticResource MaterialDesignFlatButton}"/>
+                    <Button x:Name="button_salir"
+                            Content="Cerrar sesión" Margin="10"
+                            HorizontalAlignment="Left" VerticalAlignment="Top"
+                            Command="{Binding ExitButtonCommand}"
+                            Style="{StaticResource MaterialDesignFlatButton}"/>
+                </StackPanel>
+
+                <Separator Style="{StaticResource MaterialDesignDarkSeparator}" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                        <Button x:Name="btn_sincro_atras">
+                            <materialDesign:PackIcon Kind="ArrowLeftBoldCircleOutline" />
+                        </Button>
+
+                        <TextBox x:Name="txt_sincronizacion" FontSize="15" TextWrapping="Wrap"
+                                 VerticalContentAlignment="Center" TextAlignment="Center" Width="255" IsEnabled="False">
+                            <TextBox.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="10"/>
+                                </Style>
+                            </TextBox.Resources>
+                        </TextBox>
+
+                        <Button x:Name="btn_sincro_adelante">
+                            <materialDesign:PackIcon Kind="ArrowRightBoldCircleOutline" />
+                        </Button>
+
+                        <Label x:Name="label" Content="Buscar" FontSize="15"/>
+                        <Button x:Name="btn_buscar">
+                            <materialDesign:PackIcon Kind="Magnify" />
+                        </Button>
+                        <Button x:Name="btn_ultimaSincronizacion" Content="Ir a la última Sincronización" FontSize="11.5"/>
+
+                    </StackPanel>
             </StackPanel>
         </Border>
 
