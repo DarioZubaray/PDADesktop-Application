@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Navegacion.View"
              xmlns:VM="clr-namespace:Navegacion.ViewModel"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
              d:DesignHeight="640" d:DesignWidth="840" d:DesignStyle="{StaticResource MyUserControlDesignStyle}">
 
@@ -26,14 +27,26 @@
         <Border Padding="10" Grid.Column="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Button x:Name="button_sincronizar"
-                        Content="Sincronizar"
-                        HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                <Button x:Name="button_informar"
-                        Content="Informar"
-                        HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        Content="Sincronizar diaria de la PDA" Margin="10"
+                        HorizontalAlignment="Left" VerticalAlignment="Top"
+                        Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                        ToolTip="Informar todos los datos y recibir todas los maestros."/>
+
+                <materialDesign:Badged x:Name="badged_informar" Content="{Binding badge_informar}" Margin="10">
+                </materialDesign:Badged>
+
+                <materialDesign:Badged x:Name="badged_verAjustes" Badge="0" Margin="10">
+                    <Button x:Name="button_verAjustes"
+                        Content="Ver Ajustes" 
+                        HorizontalAlignment="Left" VerticalAlignment="Top"
+                        ToolTip="Ver los ajustes realizados."/>
+                </materialDesign:Badged>
+
                 <Button x:Name="button_salir"
-                        Content="Salir" HorizontalAlignment="Left" VerticalAlignment="Top"
-                        Command="{Binding ExitButtonCommand}"/>
+                        Content="Cerrar sesión" Margin="10"
+                        HorizontalAlignment="Left" VerticalAlignment="Top"
+                        Command="{Binding ExitButtonCommand}"
+                        Style="{StaticResource MaterialDesignFlatButton}"/>
             </StackPanel>
         </Border>
 

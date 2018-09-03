@@ -5,6 +5,7 @@ using Navegacion.View;
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Navegacion.ViewModel
@@ -47,6 +48,23 @@ namespace Navegacion.ViewModel
                 sincros.Add(new Sincronizacion { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Tipos de Etiquetas", genesix = "OK", pda = "OK", estado = "OK" });
                 sincros.Add(new Sincronizacion { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Tipos de Ajustes", genesix = "OK", pda = "OK", estado = "OK" });
                 return sincros;
+            }
+        }
+
+        public MaterialDesignThemes.Wpf.Badged badge_informar
+        {
+            get
+            {
+                MaterialDesignThemes.Wpf.Badged badge = new MaterialDesignThemes.Wpf.Badged();
+                badge.Badge = new Random().Next(5, 15);
+                Button botonInformar = new Button();
+                botonInformar.Name = "button_informar";
+                botonInformar.Content = "Informar a Genesix todos los datos";
+                botonInformar.HorizontalAlignment = HorizontalAlignment.Left;
+                botonInformar.VerticalAlignment = VerticalAlignment.Top;
+                botonInformar.ToolTip = "Informar a genesix todos los datos realizados.";
+                badge.Content = botonInformar;
+                return badge;
             }
         }
 

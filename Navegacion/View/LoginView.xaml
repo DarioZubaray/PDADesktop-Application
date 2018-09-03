@@ -23,7 +23,7 @@
         <VM:LoginViewModel />
     </UserControl.DataContext>
 
-    <StackPanel>
+    <StackPanel KeyboardNavigation.TabNavigation="None">
         <materialDesign:Card Padding="32" DockPanel.Dock="top">
             <StackPanel>
                 <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}" TextAlignment="Center">Imagosur - Portal de Aplicaciones</TextBlock>
