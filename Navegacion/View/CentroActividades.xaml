@@ -30,7 +30,8 @@
                     <Button x:Name="button_sincronizar" Content="Sincronizar diaria de la PDA" Margin="10"
                             HorizontalAlignment="Left" VerticalAlignment="Top"
                             Style="{StaticResource MaterialDesignRaisedDarkButton}"
-                            ToolTip="Informar todos los datos y recibir todas los maestros."/>
+                            ToolTip="Informar todos los datos y recibir todas los maestros."
+                            Command="{Binding SincronizarCommand}"/>
 
                     <materialDesign:Badged x:Name="badged_informar" Content="{Binding badge_informar}" Margin="10">
                     </materialDesign:Badged>
@@ -39,7 +40,8 @@
                         <Button x:Name="button_verAjustes"
                                 Content="Ver Ajustes" 
                                 HorizontalAlignment="Left" VerticalAlignment="Top"
-                                ToolTip="Ver los ajustes realizados."/>
+                                ToolTip="Ver los ajustes realizados."
+                                Command="{Binding VerAjustesCommand}"/>
                     </materialDesign:Badged>
 
                     <Button x:Name="button_salir"
@@ -52,7 +54,7 @@
                 <Separator Style="{StaticResource MaterialDesignDarkSeparator}" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                    <Button x:Name="btn_sincro_atras" Margin="10">
+                    <Button x:Name="btn_sincro_atras" Margin="10" Command="{Binding AnteriorCommand}">
                             <materialDesign:PackIcon Kind="ArrowLeftBoldCircleOutline" />
                         </Button>
 
@@ -65,15 +67,16 @@
                             </TextBox.Resources>
                         </TextBox>
 
-                    <Button x:Name="btn_sincro_adelante" Margin="10">
+                    <Button x:Name="btn_sincro_adelante" Margin="10" Command="{Binding SiguienteCommand}">
                             <materialDesign:PackIcon Kind="ArrowRightBoldCircleOutline" />
                         </Button>
 
                     <Label x:Name="label" Content="Buscar" FontSize="15" Margin="10"/>
-                    <Button x:Name="btn_buscar" Margin="10">
+                    <Button x:Name="btn_buscar" Margin="10" Command="{Binding BuscarCommand}">
                             <materialDesign:PackIcon Kind="Magnify" />
                         </Button>
-                    <Button x:Name="btn_ultimaSincronizacion" Content="Ir a la última Sincronización" Margin="10" FontSize="11.5"/>
+                    <Button x:Name="btn_ultimaSincronizacion" Content="Ir a la última Sincronización" Margin="10" FontSize="11.5"
+                            Command="{Binding UltimaCommand}"/>
 
                     </StackPanel>
             </StackPanel>

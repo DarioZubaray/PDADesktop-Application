@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Navegacion.View"
         xmlns:VM="clr-namespace:Navegacion.ViewModel"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
         Icon="../favicon.ico"
         Title="PDA Desktop Application" Height="720" Width="840">
     <Window.DataContext>
