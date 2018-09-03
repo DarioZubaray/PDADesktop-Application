@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:ff="clr-namespace:Navegacion.Clases"
+             xmlns:mbar="clr-namespace:AlertBarWpf;assembly=AlertBarWpf"
              xmlns:local="clr-namespace:Navegacion.View"
              xmlns:VM="clr-namespace:Navegacion.ViewModel"
              mc:Ignorable="d" 
@@ -32,7 +33,7 @@
                 </TextBlock>
             </StackPanel>
         </materialDesign:Card>
-
+        <mbar:AlertBarWpf x:Name="msgbar" Height="30"/>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
