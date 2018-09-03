@@ -67,6 +67,9 @@ namespace Navegacion.ViewModel
                 logger.Error("usuario y/o contraseña incorrectos");
                 loginview.msgbar.Clear();
                 loginview.msgbar.SetDangerAlert("usuario y/o contraseña incorrectos", 3);
+                loginview.usernameText.Text = "";
+                loginview.FloatingPasswordBox.Clear();
+                loginview.usernameText.Focus();
             }
         }
     }
