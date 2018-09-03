@@ -240,7 +240,9 @@ msgbar.Clear();
 msgbar.SetDangerAlert("Select an Item.");
 ```
  - API:
-    - SetDangerAlert
-    - SetSuccessAlert
-    - SetWarningAlert
-    - SetInformationAlert
+    - ```SetDangerAlert```
+    - ```SetSuccessAlert```
+    - ```SetWarningAlert```
+    - ```SetInformationAlert```
+ - Sobrecargas:
+   - ```Set*Alert(string message, int timeoutInSeconds = 0) ``` 

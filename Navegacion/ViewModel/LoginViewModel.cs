@@ -66,7 +66,7 @@ namespace Navegacion.ViewModel
                 LoginView loginview = (LoginView) window.frame.Content;
                 logger.Error("usuario y/o contraseña incorrectos");
                 loginview.msgbar.Clear();
-                loginview.msgbar.SetDangerAlert("usuario y/o contraseña incorrectos");
+                loginview.msgbar.SetDangerAlert("usuario y/o contraseña incorrectos", 3);
             }
         }
     }
