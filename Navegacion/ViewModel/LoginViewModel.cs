@@ -39,6 +39,8 @@ namespace Navegacion.ViewModel
         public void LoginPortalApi(object obj)
         {
             logger.Info("login portal api");
+            logger.Debug("Usuario: " + usernameText);
+            logger.Debug("Constraseña: " + FloatingPasswordBox + ", para fines de desarrollo");
 
             MainWindow window = (MainWindow) Application.Current.MainWindow;
             if ("dariojz".Equals(usernameText))
