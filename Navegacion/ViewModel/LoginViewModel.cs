@@ -13,6 +13,7 @@ namespace Navegacion.ViewModel
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public string usernameText { get; set; }
+        public string FloatingPasswordBox { get; set; }
 
         private ICommand loginButtonCommand;
         public ICommand LoginButtonCommand
@@ -61,10 +62,8 @@ namespace Navegacion.ViewModel
             {
                 //marcar como usuario y/o contraseña incorrectos
                 LoginView loginview = (LoginView) window.frame.Content;
-                //loginview.usernameText.BorderBrush = Brushes.Red;
-                //loginview.mjsError.Content = "usuario y/o contraseña incorrectos";
-                //loginview.mjsError.Visibility = Visibility.Visible;
                 logger.Error("usuario y/o contraseña incorrectos");
+
             }
         }
     }
