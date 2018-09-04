@@ -121,7 +121,7 @@ namespace Navegacion.ViewModel
         private bool canExecute = true;
         #endregion
 
-        public List<Sincronizacion> sincronizaciones
+        public List<SincronizacionPOCO> sincronizaciones
         {
             get
             {
@@ -129,18 +129,18 @@ namespace Navegacion.ViewModel
                 string informar = "Informar a Genesix";
                 string descargar = "Descargar de Genesix";
                 string formato = "dd/MM/yyyy HH:mm \'hs\'";
-                List<Sincronizacion> sincros = new List<Sincronizacion>();
-                sincros.Add(new Sincronizacion { lote = idLote, accion = informar, fecha = DateTime.Now.ToString(formato), actividad = "Control de precio con ubicaciones", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new Sincronizacion { lote = idLote, accion = informar, fecha = DateTime.Now.ToString(formato), actividad = "Ajustes", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new Sincronizacion { lote = idLote, accion = informar, fecha = DateTime.Now.ToString(formato), actividad = "Recepciones", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new Sincronizacion { lote = idLote, accion = informar, fecha = DateTime.Now.ToString(formato), actividad = "Impresión de etiquetas", genesix = "OK", pda = "OK", estado = "OK" });
+                List<SincronizacionPOCO> sincros = new List<SincronizacionPOCO>();
+                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = informar, fecha = DateTime.Now.ToString(formato), actividad = "Control de precio con ubicaciones", genesix = "OK", pda = "OK", estado = "OK" });
+                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = informar, fecha = DateTime.Now.ToString(formato), actividad = "Ajustes", genesix = "OK", pda = "OK", estado = "OK" });
+                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = informar, fecha = DateTime.Now.ToString(formato), actividad = "Recepciones", genesix = "OK", pda = "OK", estado = "OK" });
+                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = informar, fecha = DateTime.Now.ToString(formato), actividad = "Impresión de etiquetas", genesix = "OK", pda = "OK", estado = "OK" });
 
-                sincros.Add(new Sincronizacion { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Artículos", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new Sincronizacion { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Ubicaciones", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new Sincronizacion { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Ubicaciones Artículos", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new Sincronizacion { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Pedidos", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new Sincronizacion { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Tipos de Etiquetas", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new Sincronizacion { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Tipos de Ajustes", genesix = "OK", pda = "OK", estado = "OK" });
+                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Artículos", genesix = "OK", pda = "OK", estado = "OK" });
+                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Ubicaciones", genesix = "OK", pda = "OK", estado = "OK" });
+                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Ubicaciones Artículos", genesix = "OK", pda = "OK", estado = "OK" });
+                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Pedidos", genesix = "OK", pda = "OK", estado = "OK" });
+                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Tipos de Etiquetas", genesix = "OK", pda = "OK", estado = "OK" });
+                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Tipos de Ajustes", genesix = "OK", pda = "OK", estado = "OK" });
                 return sincros;
             }
         }
