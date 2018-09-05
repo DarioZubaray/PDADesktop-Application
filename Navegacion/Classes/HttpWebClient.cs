@@ -31,5 +31,24 @@ namespace Navegacion.Classes
             }
             return sincronizaciones;
         }
+
+        public static Boolean getHttpWebServerConexionStatus(string url)
+        {
+            Boolean conexionStatus = false;
+            var client = new System.Net.WebClient();
+            client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
+            try
+            {
+                var response = client.DownloadString(url);
+                logger.Debug("response: " + response);
+                conexionStatus = response.Length > 0 ? true : false;
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.GetType() + " - " + e.Message);
+                conexionStatus = false;
+            }
+            return conexionStatus;
+        }
     }
 }

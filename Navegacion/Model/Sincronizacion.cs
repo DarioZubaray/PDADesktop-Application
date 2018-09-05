@@ -14,5 +14,10 @@ namespace Navegacion.Model
         public EstadoGenesix egx { get; set; }
         public EstadoPDA epda { get; set; }
         public EstadoGeneral egral { get; set; }
+
+        public override string ToString() {
+            return "Sincronizacion[" + idSincronizacion 
+                + "]";
+        }
     }
 }

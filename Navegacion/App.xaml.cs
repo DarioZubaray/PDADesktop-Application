@@ -35,6 +35,9 @@ namespace Navegacion
              1* check conexion PDAExpress server
              2* check conexion PDAMoto
              */
+            string urlServerStatus = "http://localhost:8080/pdaexpress/pdadesktopdemo/serverConexionStatus.action";
+            bool serverStatus = HttpWebClient.getHttpWebServerConexionStatus(urlServerStatus);
+            logger.Debug("Conexion pdaexpress server " + serverStatus);
 
             //TODO manejar timeout, reconexion
             string urlSincronizacion = "http://localhost:8080/pdaexpress/pdadesktopdemo/getSincronizacionActual.action";
