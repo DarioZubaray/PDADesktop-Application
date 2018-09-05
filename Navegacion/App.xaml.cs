@@ -42,6 +42,10 @@ namespace Navegacion
             List<Sincronizacion> sincro = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacion+queryParam);
             logger.Info(sincro);
 
+            int respuestaDll = MotoApi.isDeviceConnected();
+            bool boolValue = respuestaDll != 0;
+            logger.Info("PDA is connected: " + boolValue);
+
             logger.Info("Verificando datos guardados...");
             string usuario = VerificarDatosGuardados();
             if(usuario != null)

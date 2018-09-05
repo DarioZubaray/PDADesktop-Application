@@ -87,6 +87,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\HttpWebClient.cs" />
+    <Compile Include="Classes\MotoApi.cs" />
     <Compile Include="Classes\PasswordBoxAssistant.cs" />
     <Page Include="View\CentroActividades.xaml">
       <SubType>Designer</SubType>
