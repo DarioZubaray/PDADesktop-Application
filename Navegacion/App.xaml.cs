@@ -1,7 +1,9 @@
 ﻿using log4net;
 using Navegacion.Classes;
+using Navegacion.Model;
 using Navegacion.View;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace Navegacion
@@ -28,12 +30,25 @@ namespace Navegacion
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            /*
+             1* check conexion PDAExpress server
+             2* check conexion PDAMoto
+             */
+
+            //TODO manejar timeout, reconexion
+            string urlSincronizacion = "http://localhost:8080/pdaexpress/pdadesktopdemo/getSincronizacionActual.action?idSucursal=706";
+            List<Sincronizacion> sincro = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacion);
+            logger.Info(sincro);
+
             logger.Info("Verificando datos guardados...");
             string usuario = VerificarDatosGuardados();
             if(usuario != null)
             {
                 logger.Info("cookie de usuario encontrada: " + usuario);
             }
+
+            /* 3* verificar cookies guardadas y loguear ó redirigir al login*/
 
             Random rnd = new Random();
             // Genera un numero mayor a 0 y menor a 2 

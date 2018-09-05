@@ -5,6 +5,7 @@
 ### Herramientas
 ##### [Squirrel.window](https://github.com/Squirrel/Squirrel.Windows) - Instaler and updater manager
   - El proyecto cuenta con 2 tareas de compilación ([MSBuild Targets](https://msdn.microsoft.com/en-us/library/ms171462.aspx)) para _Debug_ y _Release_:
+
 ```xml
 <!-- Remove obj folder -->
 <RemoveDir Directories="$(BaseIntermediateOutputPath)" />
@@ -13,17 +14,23 @@
 ...
 <Copy SourceFiles="..\packages\squirrel.windows.1.8.0\tools\Squirrel.exe" DestinationFiles="$(OutputPath)\..\Update.exe" />
 ```
+
   - Sólo para el target **Release** existe el empaquetado con nuget y generación con squirrel
+
 ```xml
 <Exec Command="nuget pack PDADesktop.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory .\bin\Release" />
 
 <Exec Command="squirrel --releasify $(OutDir)PDADesktop.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg" />
 ```
+
   - Nota 1: ```nuget.exe``` podria ser una variable de entorno para facilitar las cosas o se puede instalar el paquete ```NuGet.CommandLine``` en la solucion.
+
 ```
 PM>  Install-Package NuGet.CommandLine
 ```
+
   - Nota 2: Para el error ```Exec Command call. 'squirrel' is not recognized as an internal or external command``` también se podria tener ```Squirrel.exe``` en la variable de entorno _path_ o agregar la ruta completa al mismo ejecutable en el MSBuild targer.
+
 
 ##### Recurso éstatico JBOSS
 Squirrel necesita verificar en un directorio (carpeta local o url) los propios archivos de instalción o actualización:
@@ -34,6 +41,7 @@ Squirrel necesita verificar en un directorio (carpeta local o url) los propios a
 >Setup.msi
 
 1. Habilitar el parametro de listar carpetar en web.xml de ```jboss-4.2.3.GA/server/<instancia>/deploy/jboss-web.deployer/conf/web.xml```
+
 
 ```xml
     <servlet>
@@ -51,7 +59,9 @@ Squirrel necesita verificar en un directorio (carpeta local o url) los propios a
         <load-on-startup>1</load-on-startup>
     </servlet>
 ```
+
 2. Modificar el server.xml de jboss-web ```jboss-4.2.3.GA/server/<instancia>/deploy/jboss-web.deployer/server.xml``` agregando la etiqueta content con la ruta de la carpeta y el path con el que accedemos:
+
 ```xml
 	<Host name="localhost"
            autoDeploy="false" deployOnStartup="false" deployXML="false"
@@ -60,20 +70,26 @@ Squirrel necesita verificar en un directorio (carpeta local o url) los propios a
 		<Context docBase="${jboss.home.dir}/static/PDADesktop/Release" path='/static/PDADesktop/Release' ></Context>
 	</Host>	
 ```
+
 3. De contar con las carpetas creada en ```jboss-4.2.3.GA/static/PDADesktop/Release``` y con los archivos necesarios accedemos 
+
 ```
 http://localhost:8080/static/PDADesktop/Release/
 ```
 
 _NOTA: a veces se cachean los archivos, no se actualiza la lista, estos quedan guardados en la carpeta *work* porque eliminar a menudo ayudará_
 
+
 ##### [Log4net](https://logging.apache.org/log4net/)
 
   - Basado en la guia de [stackify.com](https://stackify.com/log4net-guide-dotnet-logging/), el comando para instalar es:
+
 ```
 PM> Install-Package log4net
 ```
+
   - Necesita contar con el archivo ```log4net.config```
+
 ```xml
 <log4net>
     <root>
@@ -99,22 +115,29 @@ PM> Install-Package log4net
     </appender>
   </log4net>
 ```
+
   -Nota: muy **muy** importante, es copiar el archivo siempre a la carpeta de salida, en la ventana de propiedades > copiar en el directorio de salida: 'Copiar Siempre'
   - Luego hay que declararlo en el ```assembly.info```
+
 ```
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]
 ```
+
   - La forma de declararlo como un atributo de la clase
+
 ```CSHARP
 private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 ```
 
 ##### [Material Design in xaml](http://materialdesigninxaml.net/)
   - Nuget pack
+
 ```
 PM> Install-Package MaterialDesignThemes
 ```
+
   - Incluye lo siguiente en ```App.xaml```
+
 ```xml
 <Application . . . >
     <Application.Resources>
@@ -129,8 +152,10 @@ PM> Install-Package MaterialDesignThemes
     </Application.Resources>
 </Application>
 ```
+
   - En los archivos ```*.xaml``` se incluyen las directivas en el tag de ```Window```
- ```xml
+
+```xml
  <Window . . .
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -144,25 +169,34 @@ PM> Install-Package MaterialDesignThemes
  ```
  
 ##### [MahApps.Metro](https://mahapps.com/)
+
  - MahApps tiene su propio paquete nuget (_no va a ser usado en la aplicación final_)
- ```
+
+```
  PM> Install-Package MahApps.Metro
- ```
+```
+
    - Integracion con Material Design
-  ```
+
+```
  PM> Install-Package MaterialDesignThemes.MahApps
- ```
+```
+
    - Hay que mergear los diccionarioss en el App.xaml (Hay que elegir entre los temas **BaseLight** or **BaseDark**, la guia dice: 
    >el color de acento va a ser sobreescrito por Material Design's después, asi que no tiene mucha importacia)
+
    - Pero el color de la ventana y demas,  se da con el color ```component/Styles/Accents/Amber.xaml``` por defecto es azul.
- ```xml
+
+```xml
  <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Amber.xaml" />
 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
-  ```
+```
+
    - Hay que cambiar la etiqueta ```windows``` por ```MetroWindows```
+
 ```xml
 <metro:MetroWindow [...]
                    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
@@ -170,7 +204,9 @@ PM> Install-Package MaterialDesignThemes
                    BorderThickness="1"
                    [...]>
 ```
+
   - Adicionalmente será necesario extender la clase por detrás a la superclase ```MetroWindow```
+
 ```CSHARP
 using MahApps.Metro.Controls;
 
@@ -202,6 +238,19 @@ public partial class MainWindow : MetroWindow
     <Copy Condition="Exists('$(DeployedConfig)')" SourceFiles="$(IntermediateOutputPath)$(TargetFileName).config" DestinationFiles="$(DeployedConfig)" />
   </Target>
 ```
+
+#### [Microsoft Expression](https://www.nuget.org/packages/Expression.Blend.Sdk/)
+Contiene ```System.Windows.Interactivity``` para:
+
+ - WPF 4.0, 4.5
+ - Silverligt 4.0, 5.0
+ - Windows Phone 7.1, 8.0
+ - Windows Store 8, 8.1
+
+```
+PM> Install-Package Expression.Blend.Sdk -Version 1.0.2
+```
+
 
 ##### IoC/DI container
 #### [StructureMap](http://structuremap.github.io/)
@@ -246,3 +295,56 @@ msgbar.SetDangerAlert("Select an Item.");
     - ```SetInformationAlert```
  - Sobrecargas:
    - ```Set*Alert(string message, int timeoutInSeconds = 0) ``` 
+
+#### [Microsoft.Net.Http](https://docs.microsoft.com/en-us/aspnet/web-api/overview/advanced/calling-a-web-api-from-a-net-client)
+
+  - Intalación
+
+```
+PM> Install-Package Microsoft.Net.Http
+```
+
+#### [Newtonsoft.Json](https://www.newtonsoft.com/json)
+  
+  - Intalación
+
+```
+PM> Install-Package Newtonsoft.Json
+```
+
+ - Serializacion
+
+```CSHARP
+Product product = new Product();
+product.Name = "Apple";
+product.Expiry = new DateTime(2008, 12, 28);
+product.Sizes = new string[] { "Small" };
+
+string json = JsonConvert.SerializeObject(product);
+
+// {
+//   "Name": "Apple",
+//   "Expiry": "2008-12-28T00:00:00",
+//   "Sizes": [
+//     "Small"
+//   ]
+// }
+```
+
+  - Deserializacion
+
+```CSHARP
+string json = @"{
+  'Name': 'Bad Boys',
+  'ReleaseDate': '1995-4-7T00:00:00',
+  'Genres': [
+    'Action',
+    'Comedy'
+  ]
+}";
+
+Movie m = JsonConvert.DeserializeObject<Movie>(json);
+
+string name = m.Name;
+// Bad Boys
+```
