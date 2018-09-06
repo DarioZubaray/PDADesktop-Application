@@ -84,6 +84,8 @@ namespace PDADesktop
                 RedireccionarLogin();
             }
         }
+
+        #region Methods
         private int GenerandoAleatoriedadDeCasosLogueados()
         {
             Random rnd = new Random();
@@ -153,5 +155,6 @@ namespace PDADesktop
             MainWindowView = new MainWindow();
             MainWindowView.Show();
         }
+        #endregion 
     }
 }
