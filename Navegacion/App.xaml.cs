@@ -41,7 +41,7 @@ namespace Navegacion
 
             //TODO manejar timeout, reconexion
             string urlSincronizacion = "http://localhost:8080/pdaexpress/pdadesktopdemo/getSincronizacionActual.action";
-            string queryParam = "?idSucursal=706";
+            string queryParam = "?idSucursal=706&idLote=71006";
             List<Sincronizacion> sincro = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacion+queryParam);
             logger.Info(sincro);
 
