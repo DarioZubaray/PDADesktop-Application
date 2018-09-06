@@ -32,8 +32,11 @@ namespace Navegacion
             base.OnStartup(e);
 
             /*
-             1* check conexion PDAExpress server
-             2* check conexion PDAMoto
+             * 1- verificar actualizaciones con squirrel
+             * 2- checkear conexion PDAExpress server
+             * 3- checkear conexion PDAMoto
+             * 4- verificar datos guardados
+             * 5- iniciar ventana
              */
             string urlServerStatus = "http://localhost:8080/pdaexpress/pdadesktopdemo/serverConexionStatus.action";
             bool serverStatus = HttpWebClient.getHttpWebServerConexionStatus(urlServerStatus);
