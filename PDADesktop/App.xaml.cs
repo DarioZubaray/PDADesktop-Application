@@ -42,6 +42,7 @@ namespace PDADesktop
              * 4- verificar datos guardados
              * 5- iniciar ventana
              */
+
             logger.Debug("Verificando en segundo plano actualizaciones con squirrel.window");
             CheckUpdates();
 
@@ -52,16 +53,31 @@ namespace PDADesktop
             CheckDeviceConnected();
 
             logger.Debug("Verificando datos guardados...");
-            string usuario = VerificarDatosGuardados();
-            if(usuario != null)
+            string isUserReminded = VerificarDatosGuardados();
+            if(isUserReminded != null)
             {
-                logger.Info("cookie de usuario encontrada: " + usuario);
-            }
-
-            
-            if(GenerandoAleatoriedadDeCasosLogueados() == 1)
-            {
-                RedireccionarCentroActividades();
+                bool check = isUserReminded == "true";
+                if(check)
+                {
+                    // user reminded
+                    /* obtain username and pass */
+                    // getUserCredentials();
+                    /* Attempt to login through imagosur-portal */
+                    // AttemptLoginPortalImagoSur();
+                    if (GenerandoAleatoriedadDeCasosLogueados() == 1)
+                    {
+                        RedireccionarCentroActividades();
+                    }
+                    else
+                    {
+                        RedireccionarLogin();
+                    }
+                }
+                else
+                {
+                    // no user reminded
+                    RedireccionarLogin();
+                }
             }
             else
             {
@@ -119,14 +135,12 @@ namespace PDADesktop
 
         private string VerificarDatosGuardados()
         {
-            return CookieManager.getCookie(CookieManager.Cookie.usuario);
+            return CookieManager.getCookie(CookieManager.Cookie.recuerdame);
         }
 
         private void RedireccionarCentroActividades()
         {
-            logger.Info("Hemos encontrado al usuario, logueando...");
-            //loginPortalImagoSur();
-
+            logger.Info("Redireccionando al centro de actividades...");
             MainWindowView = new MainWindow();
             Uri uri = new Uri("View/CentroActividades.xaml", UriKind.Relative);
             MainWindowView.frame.NavigationService.Navigate(uri);

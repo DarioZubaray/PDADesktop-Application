@@ -22,7 +22,7 @@ namespace PDADesktop.Classes
             }
         }
 
-        public enum Cookie { usuario, contraseña, ultimoAcceso };
+        public enum Cookie { usuario, contraseña, recuerdame, ultimoAcceso };
         #endregion
 
         #region Methods
@@ -60,6 +60,9 @@ namespace PDADesktop.Classes
                     break;
                 case Cookie.contraseña:
                     completeUrl = baseUrlExpanded + "contraseña";
+                    break;
+                case Cookie.recuerdame:
+                    completeUrl = baseUrlExpanded + "recuerdame";
                     break;
                 case Cookie.ultimoAcceso:
                     completeUrl = baseUrlExpanded + "ultimoAcceso";

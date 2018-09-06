@@ -10,7 +10,7 @@
 PM> Install-Package Squirrel.Windows
 ```
 
-######[Visual Studio Build Packaging](https://github.com/Squirrel/Squirrel.Windows/blob/master/docs/using/visual-studio-packaging.md)
+###### [Visual Studio Build Packaging](https://github.com/Squirrel/Squirrel.Windows/blob/master/docs/using/visual-studio-packaging.md)
   - El proyecto cuenta con 2 tareas de compilación ([MSBuild Targets](https://msdn.microsoft.com/en-us/library/ms171462.aspx)) para _Debug_ y _Release_:
 
 ```xml
@@ -123,7 +123,14 @@ PM> Install-Package log4net
   </log4net>
 ```
 
-  -Nota: muy **muy** importante, es copiar el archivo siempre a la carpeta de salida, en la ventana de propiedades > copiar en el directorio de salida: 'Copiar Siempre'
+  -Nota: muy **muy** importante, es copiar el archivo siempre a la carpeta de salida, en la ventana de propiedades > copiar en el directorio de salida: 'Copiar Siempre' (Lo cual modifica el Proyecto.csproj):
+
+```xml
+<None Include="log4net.config">
+  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+</None>
+```
+
   - Luego hay que declararlo en el ```assembly.info```
 
 ```
