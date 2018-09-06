@@ -36,57 +36,44 @@ namespace PDADesktop
             base.OnStartup(e);
 
             /*
-             * 1- verificar actualizaciones con squirrel
+             * 1- verificar en segundo plano actualizaciones con squirrel
              * 2- checkear conexion PDAExpress server
              * 3- checkear conexion PDAMoto
              * 4- verificar datos guardados
              * 5- iniciar ventana
              */
-
+            logger.Debug("Verificando en segundo plano actualizaciones con squirrel.window");
             CheckUpdates();
-            string urlServerStatus = "http://localhost:8080/pdaexpress/pdadesktopdemo/serverConexionStatus.action";
-            bool serverStatus = HttpWebClient.getHttpWebServerConexionStatus(urlServerStatus);
-            logger.Debug("Conexion pdaexpress server " + serverStatus);
 
-            //TODO manejar timeout, reconexion
-            string urlSincronizacion = "http://localhost:8080/pdaexpress/pdadesktopdemo/getSincronizacionActual.action";
-            string queryParam = "?idSucursal=706&idLote=71006";
-            List<Sincronizacion> sincro = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacion+queryParam);
-            logger.Info(sincro);
+            logger.Debug("Checkeando conexión el servidor PDAExpress server");
+            CheckServerStatus();
 
-            int respuestaDll = MotoApi.isDeviceConnected();
-            bool boolValue = respuestaDll != 0;
-            logger.Info("PDA is connected: " + boolValue);
+            logger.Debug("Checkear conexión con PDAMoto");
+            CheckDeviceConnected();
 
-            logger.Info("Verificando datos guardados...");
+            logger.Debug("Verificando datos guardados...");
             string usuario = VerificarDatosGuardados();
             if(usuario != null)
             {
                 logger.Info("cookie de usuario encontrada: " + usuario);
             }
 
-            /* 3* verificar cookies guardadas y loguear ó redirigir al login*/
-
-            Random rnd = new Random();
-            // Genera un numero mayor a 0 y menor a 2 
-            int numRandom = rnd.Next(0, 2);
-
-            logger.Debug("Numero aleatorio generado: " + numRandom);
-            if(numRandom == 1)
+            
+            if(GenerandoAleatoriedadDeCasosLogueados() == 1)
             {
-                logger.Info("Hemos recordado al usuario, logueando...");
-
-                MainWindowView = new MainWindow();
-                Uri uri = new Uri("View/CentroActividades.xaml", UriKind.Relative);
-                MainWindowView.frame.NavigationService.Navigate(uri);
-                MainWindowView.Show();
+                RedireccionarCentroActividades();
             }
             else
             {
-                logger.Info("No hay datos guardados con un usuario válido, llendo al login");
-                MainWindowView = new MainWindow();
-                MainWindowView.Show();
+                RedireccionarLogin();
             }
+        }
+        private int GenerandoAleatoriedadDeCasosLogueados()
+        {
+            Random rnd = new Random();
+            int numRandom = rnd.Next(0, 2);
+            logger.Debug("Numero aleatorio generado: " + numRandom);
+            return numRandom;
         }
 
         async void CheckUpdates()
@@ -110,13 +97,24 @@ namespace PDADesktop
         }
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            DisposeUpdateManager(updateManager);
-        }
-
-        public static void DisposeUpdateManager(UpdateManager updateManager)
-        {
             logger.Info("dispose update manager\n\n");
             updateManager.Dispose();
+        }
+
+        private void CheckServerStatus()
+        {
+            string serverHostProtocolIpPort = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
+            string serverConexionStatus = ConfigurationManager.AppSettings.Get("API_SERVER_CONEXION_STATUS");
+            string urlServerStatus = serverHostProtocolIpPort + serverConexionStatus;
+            bool serverStatus = HttpWebClient.getHttpWebServerConexionStatus(urlServerStatus);
+            logger.Info("Conexión pdaexpress server " + serverStatus);
+        }
+
+        private void CheckDeviceConnected()
+        {
+            int respuestaDll = MotoApi.isDeviceConnected();
+            bool boolValue = respuestaDll != 0;
+            logger.Info("PDA is connected: " + boolValue);
         }
 
         private string VerificarDatosGuardados()
@@ -124,5 +122,22 @@ namespace PDADesktop
             return CookieManager.getCookie(CookieManager.Cookie.usuario);
         }
 
+        private void RedireccionarCentroActividades()
+        {
+            logger.Info("Hemos encontrado al usuario, logueando...");
+            //loginPortalImagoSur();
+
+            MainWindowView = new MainWindow();
+            Uri uri = new Uri("View/CentroActividades.xaml", UriKind.Relative);
+            MainWindowView.frame.NavigationService.Navigate(uri);
+            MainWindowView.Show();
+        }
+
+        private void RedireccionarLogin()
+        {
+            logger.Info("No hay datos guardados con un usuario válido, redireccionando al login");
+            MainWindowView = new MainWindow();
+            MainWindowView.Show();
+        }
     }
 }
