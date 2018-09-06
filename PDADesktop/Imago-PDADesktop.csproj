@@ -191,6 +191,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+	    <None Include="App.Debug.config">
+      <Generator>SettingsSingleFileGenerator</Generator>
+    </None>
+    <None Include="App.Release.config">
+      <Generator>SettingsSingleFileGenerator</Generator>
+    </None>
     <None Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -202,7 +208,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="favicon.ico" />
