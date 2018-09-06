@@ -2,8 +2,10 @@
 using PDADesktop.Classes;
 using PDADesktop.Model;
 using PDADesktop.View;
+using Squirrel;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Windows;
 
 namespace PDADesktop
@@ -15,6 +17,8 @@ namespace PDADesktop
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private MainWindow mainWindowView;
+        private UpdateManager updateManager;
+
         public MainWindow MainWindowView
         {
             get
@@ -38,6 +42,8 @@ namespace PDADesktop
              * 4- verificar datos guardados
              * 5- iniciar ventana
              */
+
+            CheckUpdates();
             string urlServerStatus = "http://localhost:8080/pdaexpress/pdadesktopdemo/serverConexionStatus.action";
             bool serverStatus = HttpWebClient.getHttpWebServerConexionStatus(urlServerStatus);
             logger.Debug("Conexion pdaexpress server " + serverStatus);
@@ -81,6 +87,36 @@ namespace PDADesktop
                 MainWindowView = new MainWindow();
                 MainWindowView.Show();
             }
+        }
+
+        async void CheckUpdates()
+        {
+            string hostIpPort = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
+            string urlOrPath = hostIpPort + ConfigurationManager.AppSettings.Get("URL_UPDATE");
+            try
+            {
+                using (updateManager = new UpdateManager(urlOrPath))
+                {
+                    logger.Info("buscando actualización");
+                    await updateManager.UpdateApp();
+                    logger.Info("actualización finalizada");
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error("Error al buscar actualizaciones a " + urlOrPath);
+                logger.Error(e.GetBaseException().ToString());
+            }
+        }
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            DisposeUpdateManager(updateManager);
+        }
+
+        public static void DisposeUpdateManager(UpdateManager updateManager)
+        {
+            logger.Info("dispose update manager\n\n");
+            updateManager.Dispose();
         }
 
         private string VerificarDatosGuardados()
