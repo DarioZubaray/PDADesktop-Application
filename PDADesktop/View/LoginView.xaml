@@ -1,0 +1,121 @@
+﻿<UserControl x:Class="PDADesktop.View.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:ff="clr-namespace:PDADesktop.Clases"
+             xmlns:mbar="clr-namespace:AlertBarWpf;assembly=AlertBarWpf"
+             xmlns:local="clr-namespace:PDADesktop.View"
+             xmlns:VM="clr-namespace:PDADesktop.ViewModel"
+             mc:Ignorable="d" 
+             d:DesignHeight="720" d:DesignWidth="840"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}">
+
+    <UserControl.DataContext>
+        <VM:LoginViewModel />
+    </UserControl.DataContext>
+
+    <StackPanel KeyboardNavigation.TabNavigation="None">
+        <materialDesign:Card Padding="32" DockPanel.Dock="top">
+            <StackPanel>
+                <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}" TextAlignment="Center">Imagosur - Portal de Aplicaciones</TextBlock>
+                <Separator Style="{StaticResource MaterialDesignDarkSeparator}" />
+                <TextBlock TextAlignment="Center" TextWrapping="Wrap">
+                    <Hyperlink IsEnabled="False" Style="{StaticResource MaterialDesignBody1Hyperlink}">Accede con tu usuario para continuar con PDA Desktop</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </materialDesign:Card>
+        <mbar:AlertBarWpf x:Name="msgbar" Height="30"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <materialDesign:Flipper Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="350" Width="225">
+
+                <materialDesign:Flipper.FrontContent>
+                    <Grid Height="300" Width="220">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="160" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <materialDesign:ColorZone Mode="PrimaryLight" VerticalAlignment="Stretch">
+                            <materialDesign:PackIcon Kind="AccountCircle" Height="128" Width="128"
+                                                     VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </materialDesign:ColorZone>
+
+                        <StackPanel Grid.Row="1" Margin="0 30 0 0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Grid.Column="0" Kind="Account" Foreground="{Binding ElementName=usernameText, Path=BorderBrush}" Margin="0 10 5 0"/>
+                                <TextBox Grid.Column="1" x:Name="usernameText" Text="{Binding usernameText}"
+                                     materialDesign:HintAssist.Hint="Ingresá tu usuario" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Width="180"></TextBox>
+                            </Grid>
+                            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                        Command="{x:Static materialDesign:Flipper.FlipCommand}" Margin="0 4 0 0">Siguiente
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </materialDesign:Flipper.FrontContent>
+
+                <materialDesign:Flipper.BackContent>
+                    <Grid Height="300" Width="225">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <materialDesign:ColorZone Mode="PrimaryLight" Padding="6">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Style="{StaticResource MaterialDesignToolForegroundButton}"
+                                        Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                                        HorizontalAlignment="Left">
+                                    <materialDesign:PackIcon Kind="ArrowLeft" HorizontalAlignment="Right" />
+                                </Button>
+                                <Label Content="Bienvenido" VerticalAlignment="Center"/>
+                                <TextBlock Margin="0 0 0 0" VerticalAlignment="Center" Text="{Binding ElementName=usernameText, Path=Text}"></TextBlock>
+                            </StackPanel>
+                        </materialDesign:ColorZone>
+                        <Grid Grid.Row="1" Margin="0 6 0 0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="180" Height="200">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Grid.Column="0" Kind="Key" Foreground="{Binding ElementName=FloatingPasswordBox, Path=BorderBrush}" Margin="0 10 5 0"/>
+                                <PasswordBox Grid.Column="1" x:Name="FloatingPasswordBox" materialDesign:HintAssist.Hint="Ingresá tu contraseña"
+                                         Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" VerticalAlignment="Top" Width="180"
+                                             ff:PasswordBoxAssistant.BindPassword="true" ff:PasswordBoxAssistant.BoundPassword="{Binding Path=FloatingPasswordBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Grid>
+                            <Button x:Name="button_iniciar" Content="Iniciar Sesion" Grid.Row="1"
+                                    Width="Auto" VerticalAlignment="Bottom" Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                    Command="{x:Static materialDesign:Flipper.FlipCommand}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <i:InvokeCommandAction Command="{Binding LoginButtonCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </materialDesign:Flipper.BackContent>
+            </materialDesign:Flipper>
+        </Grid>
+    </StackPanel>
+</UserControl>
