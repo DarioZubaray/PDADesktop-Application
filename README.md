@@ -3,7 +3,14 @@
 # PDADesktop
 
 ### Herramientas
-##### [Squirrel.window](https://github.com/Squirrel/Squirrel.Windows) - Instaler and updater manager
+##### [Squirrel.window](https://github.com/Squirrel/Squirrel.Windows) - Installer and updater manager
+  - Instalación
+
+```xml
+PM> Install-Package Squirrel.Windows
+```
+
+######[Visual Studio Build Packaging](https://github.com/Squirrel/Squirrel.Windows/blob/master/docs/using/visual-studio-packaging.md)
   - El proyecto cuenta con 2 tareas de compilación ([MSBuild Targets](https://msdn.microsoft.com/en-us/library/ms171462.aspx)) para _Debug_ y _Release_:
 
 ```xml
