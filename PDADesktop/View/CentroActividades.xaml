@@ -95,13 +95,18 @@
                 <DataGridTextColumn Binding="{Binding accion}" ClipboardContentBinding="{x:Null}" Header="Accion" CanUserResize="False" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding fecha}" ClipboardContentBinding="{x:Null}" Header="Fecha" CanUserResize="False" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding actividad}" ClipboardContentBinding="{x:Null}" Header="Actividad" CanUserResize="False" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding genesix}" ClipboardContentBinding="{x:Null}" Header="Genesix" CanUserResize="False" Width="Auto">
-                    <DataGridTextColumn.CellStyle>
-                        <Style>
-                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
-                        </Style>
-                    </DataGridTextColumn.CellStyle>
-                </DataGridTextColumn>
+                <DataGridTemplateColumn Header="Genesix" ClipboardContentBinding="{x:Null}" CanUserResize="False" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <Button Content="{Binding genesix}"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        materialDesign:RippleAssist.IsDisabled="True"
+                                        Command="{Binding EstadoGenesixCommand}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Binding="{Binding pda}" ClipboardContentBinding="{x:Null}" Header="PDA" CanUserResize="False" Width="Auto">
                     <DataGridTextColumn.CellStyle>
                         <Style>

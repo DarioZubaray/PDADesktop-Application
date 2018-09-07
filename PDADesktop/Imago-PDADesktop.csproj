@@ -156,9 +156,6 @@
     <Compile Include="Classes\HttpWebClient.cs" />
     <Compile Include="Classes\MotoApi.cs" />
     <Compile Include="Classes\PasswordBoxAssistant.cs" />
-    <Compile Include="View\UserControl1.xaml.cs">
-      <DependentUpon>UserControl1.xaml</DependentUpon>
-    </Compile>
     <Page Include="View\CentroActividades.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -198,10 +195,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\UserControl1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -284,9 +277,9 @@
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>
     <Message Importance="High" Text="Target Package: creando paquete NuGet" />
-    <Exec Command="nuget pack PDADesktop.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory PDADesktop\bin\SquirrelReleases" />
+    <Exec Command="nuget pack PDADesktop.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release" />
     <Message Importance="High" Text="Target Release: generando version con squirrel windows" />
-    <Exec Command="squirrel --releasify PDADesktop\Releases\PDADesktop.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg" />
+    <Exec Command="squirrel --releasify PDADesktop.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg" />
   </Target>
   <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Web\Microsoft.Web.Publishing.Tasks.dll" />
   <Target Name="App_config_AfterCompile" AfterTargets="AfterCompile" Condition="Exists('App.$(Configuration).config')">

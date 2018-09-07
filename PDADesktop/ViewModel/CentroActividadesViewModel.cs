@@ -125,23 +125,7 @@ namespace PDADesktop.ViewModel
         {
             get
             {
-                string idLote = "111153";
-                string informar = "Informar a Genesix";
-                string descargar = "Descargar de Genesix";
-                string formato = "dd/MM/yyyy HH:mm \'hs\'";
-                List<SincronizacionPOCO> sincros = new List<SincronizacionPOCO>();
-                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = informar, fecha = DateTime.Now.ToString(formato), actividad = "Control de precio con ubicaciones", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = informar, fecha = DateTime.Now.ToString(formato), actividad = "Ajustes", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = informar, fecha = DateTime.Now.ToString(formato), actividad = "Recepciones", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = informar, fecha = DateTime.Now.ToString(formato), actividad = "Impresión de etiquetas", genesix = "OK", pda = "OK", estado = "OK" });
-
-                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Artículos", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Ubicaciones", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Ubicaciones Artículos", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Pedidos", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Tipos de Etiquetas", genesix = "OK", pda = "OK", estado = "OK" });
-                sincros.Add(new SincronizacionPOCO { lote = idLote, accion = descargar, fecha = DateTime.Now.ToString(formato), actividad = "Tipos de Ajustes", genesix = "OK", pda = "OK", estado = "OK" });
-                return sincros;
+                return SincronizacionPOCO.getStaticMockList(new RelayCommand(BotonEstadoGenesix, param => this.canExecute));
             }
         }
 
@@ -220,6 +204,13 @@ namespace PDADesktop.ViewModel
         public void IrUltimaSincronizacion(object obj)
         {
             logger.Info("Llendo a la ultima sincronizacion");
+        }
+
+        public void BotonEstadoGenesix(object obj)
+        {
+            logger.Info("Boton estado genesix");
+            logger.Debug(this);
+            //Sincronizacion row = (Sincronizacion)((Button)e.Source).DataContext;
         }
         #endregion
     }

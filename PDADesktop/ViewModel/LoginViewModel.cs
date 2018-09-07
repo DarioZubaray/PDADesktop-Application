@@ -56,7 +56,7 @@ namespace PDADesktop.ViewModel
             logger.Debug("Constraseña: " + FloatingPasswordBox + ", para fines de desarrollo");
 
             MainWindow window = (MainWindow) Application.Current.MainWindow;
-            if ("dariojz".Equals(usernameText))
+            if ("juli".Equals(usernameText))
             {
                 logger.Debug("Nombre no null: " + usernameText);
                 DateTime fechaExpiracion = new DateTime(2020, 12, 31);
