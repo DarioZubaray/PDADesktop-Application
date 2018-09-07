@@ -237,10 +237,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="favicon.ico" />
+    <Resource Include="resources\favicon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <SplashScreen Include="logo-imago.png" />
+    <SplashScreen Include="resources\logo-imago.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="lib\PDAMotoCommunication.dll">
