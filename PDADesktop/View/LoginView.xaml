@@ -34,45 +34,50 @@
             </StackPanel>
         </materialDesign:Card>
         <mbar:AlertBarWpf x:Name="msgbar" Height="30"/>
-        <Grid>
+        <Grid Height="565">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <materialDesign:Flipper Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="350" Width="225">
+            <materialDesign:Flipper x:Name="flipper_login" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="439" Width="420">
 
                 <materialDesign:Flipper.FrontContent>
-                    <Grid Height="300" Width="220">
+                    <Grid Height="Auto" Width="Auto">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="160" />
+                            <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <materialDesign:ColorZone Mode="PrimaryLight" VerticalAlignment="Stretch">
-                            <materialDesign:PackIcon Kind="AccountCircle" Height="128" Width="128"
+                        <materialDesign:ColorZone Mode="PrimaryMid" VerticalAlignment="Stretch">
+                            <materialDesign:PackIcon Kind="AccountCircle" Height="180" Width="180"
                                                      VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </materialDesign:ColorZone>
 
                         <StackPanel Grid.Row="1" Margin="0 30 0 0">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="2*" />
                                 </Grid.ColumnDefinitions>
-                                <materialDesign:PackIcon Grid.Column="0" Kind="Account" Foreground="{Binding ElementName=usernameText, Path=BorderBrush}" Margin="0 10 5 0"/>
-                                <TextBox Grid.Column="1" x:Name="usernameText" Text="{Binding usernameText}"
-                                     materialDesign:HintAssist.Hint="Ingresá tu usuario" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Width="180"></TextBox>
+                                <materialDesign:PackIcon Grid.Column="0" Kind="Account" Foreground="{Binding ElementName=usernameText, Path=BorderBrush}" Margin="0 18 10 0" HorizontalAlignment="Right"/>
+                                <TextBox Grid.Column="1" x:Name="usernameText" Text="{Binding usernameText}" HorizontalAlignment="Left"
+                                     materialDesign:HintAssist.Hint="Ingresá tu usuario" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Width="180">
+                                    <TextBox.InputBindings>
+                                        <KeyBinding Command="{x:Static materialDesign:Flipper.FlipCommand}" Key="Tab" />
+                                        <KeyBinding Command="{x:Static materialDesign:Flipper.FlipCommand}" Key="Enter" />
+                                    </TextBox.InputBindings>
+                                </TextBox>
                             </Grid>
-                            <Button Style="{StaticResource MaterialDesignFlatButton}"
-                                        Command="{x:Static materialDesign:Flipper.FlipCommand}" Margin="0 4 0 0">Siguiente
+                            <Button x:Name="button_siguiente" Style="{StaticResource MaterialDesignFlatButton}"
+                                        Command="{x:Static materialDesign:Flipper.FlipCommand}" Margin="0 10 0 0">Siguiente
                             </Button>
                         </StackPanel>
                     </Grid>
                 </materialDesign:Flipper.FrontContent>
 
                 <materialDesign:Flipper.BackContent>
-                    <Grid Height="300" Width="225">
+                    <Grid Height="Auto" Width="Auto">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
@@ -85,7 +90,7 @@
                                     <materialDesign:PackIcon Kind="ArrowLeft" HorizontalAlignment="Right" />
                                 </Button>
                                 <Label Content="Bienvenido" VerticalAlignment="Center"/>
-                                <TextBlock Margin="0 0 0 0" VerticalAlignment="Center" Text="{Binding ElementName=usernameText, Path=Text}"></TextBlock>
+                                <TextBlock Margin="0 0 0 0" VerticalAlignment="Center" Text="{Binding ElementName=usernameText, Path=Text}" />
                             </StackPanel>
                         </materialDesign:ColorZone>
                         <Grid Grid.Row="1" Margin="0 6 0 0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="180" Height="200">
@@ -95,12 +100,12 @@
                             </Grid.RowDefinitions>
                             <Grid Grid.Row="0">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="2*" />
                                 </Grid.ColumnDefinitions>
-                                <materialDesign:PackIcon Grid.Column="0" Kind="Key" Foreground="{Binding ElementName=FloatingPasswordBox, Path=BorderBrush}" Margin="0 10 5 0"/>
+                                <materialDesign:PackIcon Grid.Column="0" Kind="Key" Foreground="{Binding ElementName=FloatingPasswordBox, Path=BorderBrush}" Margin="0 18 10 0" HorizontalAlignment="Right"/>
                                 <PasswordBox Grid.Column="1" x:Name="FloatingPasswordBox" materialDesign:HintAssist.Hint="Ingresá tu contraseña"
-                                         Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" VerticalAlignment="Top" Width="180"
+                                         Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="180"
                                              ff:PasswordBoxAssistant.BindPassword="true" ff:PasswordBoxAssistant.BoundPassword="{Binding Path=FloatingPasswordBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </Grid>
                             <Button x:Name="button_iniciar" Content="Iniciar Sesion" Grid.Row="1"

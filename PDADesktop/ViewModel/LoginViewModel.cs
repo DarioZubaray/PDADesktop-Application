@@ -5,7 +5,6 @@ using System;
 using System.Configuration;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace PDADesktop.ViewModel
 {
@@ -72,5 +71,6 @@ namespace PDADesktop.ViewModel
                 loginview.usernameText.Focus();
             }
         }
+
     }
 }
