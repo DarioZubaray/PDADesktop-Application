@@ -28,10 +28,24 @@ namespace PDADesktop.ViewModel
         }
         private bool canExecute = true;
 
+        private bool recuerdameCheck;
+        public bool RecuerdameCheck
+        {
+            get
+            {
+                return recuerdameCheck;
+            }
+            set
+            {
+                recuerdameCheck = value;
+            }
+        }
+
         #region Constructor
         public LoginViewModel()
         {
             LoginButtonCommand = new RelayCommand(LoginPortalApi, param => this.canExecute);
+            RecuerdameCheck = true;
         }
         #endregion
 
