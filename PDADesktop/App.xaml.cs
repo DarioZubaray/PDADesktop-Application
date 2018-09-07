@@ -44,7 +44,7 @@ namespace PDADesktop
              */
 
             logger.Debug("Verificando en segundo plano actualizaciones con squirrel.window");
-            CheckUpdates();
+            UpdateApp();
 
             logger.Debug("Checkeando conexión el servidor PDAExpress server");
             CheckServerStatus();
@@ -94,7 +94,7 @@ namespace PDADesktop
             return numRandom;
         }
 
-        async void CheckUpdates()
+        async void UpdateApp()
         {
             string hostIpPort = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
             string urlOrPath = hostIpPort + ConfigurationManager.AppSettings.Get("URL_UPDATE");
