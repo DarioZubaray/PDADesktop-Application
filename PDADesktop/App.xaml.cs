@@ -42,47 +42,52 @@ namespace PDADesktop
              * 4- verificar datos guardados
              * 5- iniciar ventana
              */
+            /*
+           logger.Debug("Verificando en segundo plano actualizaciones con squirrel.window");
+           UpdateApp();
 
-            logger.Debug("Verificando en segundo plano actualizaciones con squirrel.window");
-            UpdateApp();
+           logger.Debug("Checkeando conexión el servidor PDAExpress server");
+           CheckServerStatus();
 
-            logger.Debug("Checkeando conexión el servidor PDAExpress server");
-            CheckServerStatus();
+           logger.Debug("Checkear conexión con PDAMoto");
+           CheckDeviceConnected();
 
-            logger.Debug("Checkear conexión con PDAMoto");
-            CheckDeviceConnected();
-
-            logger.Debug("Verificando datos guardados...");
-            string isUserReminded = VerificarDatosGuardados();
-            if(isUserReminded != null)
-            {
-                bool check = isUserReminded == "true";
-                if(check)
-                {
-                    // user reminded
-                    /* obtain username and pass */
-                    // getUserCredentials();
-                    /* Attempt to login through imagosur-portal */
-                    // AttemptLoginPortalImagoSur();
-                    if (GenerandoAleatoriedadDeCasosLogueados() == 1)
-                    {
-                        RedireccionarCentroActividades();
-                    }
-                    else
-                    {
-                        RedireccionarLogin();
-                    }
-                }
-                else
-                {
-                    // no user reminded
-                    RedireccionarLogin();
-                }
-            }
-            else
-            {
-                RedireccionarLogin();
-            }
+           logger.Debug("Verificando datos guardados...");
+           string isUserReminded = VerificarDatosGuardados();
+           if(isUserReminded != null)
+           {
+               bool check = isUserReminded == "true";
+               if(check)
+               {
+                   // user reminded
+                   // obtain username and pass
+                   // getUserCredentials();
+                   // Attempt to login through imagosur-portal
+                   // AttemptLoginPortalImagoSur();
+                   if (GenerandoAleatoriedadDeCasosLogueados() == 1)
+                   {
+                       RedireccionarCentroActividades();
+                   }
+                   else
+                   {
+                       RedireccionarLogin();
+                   }
+               }
+               else
+               {
+                   // no user reminded
+                   RedireccionarLogin();
+               }
+           }
+           else
+           {
+               RedireccionarLogin();
+           }
+           */
+            MainWindowView = new MainWindow();
+            Uri uri = new Uri("View/UserControl1.xaml", UriKind.Relative);
+            MainWindowView.frame.NavigationService.Navigate(uri);
+            MainWindowView.Show();
         }
 
         #region Methods
