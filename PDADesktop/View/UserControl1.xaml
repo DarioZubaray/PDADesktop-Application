@@ -14,14 +14,36 @@
             TextOptions.TextRenderingMode="Auto"
             Background="{DynamicResource MaterialDesignPaper}"
             FontFamily="{StaticResource MaterialDesignFont}">
-    <Grid>
+
+    <materialDesign:DrawerHost HorizontalAlignment="Stretch"
+                               VerticalAlignment="Stretch"
+                               BorderThickness="2"
+                               BorderBrush="{DynamicResource MaterialDesignDivider}">
+        <materialDesign:DrawerHost.LeftDrawerContent>
+            <StackPanel Margin="16">
+                <TextBlock Margin="4" HorizontalAlignment="Center">LEFT FIELD</TextBlock>
+                <Button Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
+                        CommandParameter="{x:Static Dock.Left}"
+                        Margin="4"
+                        HorizontalAlignment="Center"
+                        Style="{DynamicResource MaterialDesignFlatButton}">CLOSE THIS</Button>
+                <Button Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
+                        Margin="4"
+                        HorizontalAlignment="Center"
+                        Style="{DynamicResource MaterialDesignFlatButton}">CLOSE ALL</Button>
+            </StackPanel>
+        </materialDesign:DrawerHost.LeftDrawerContent>
+
         <DockPanel>
-            <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2"
-                                            Mode="PrimaryMid" DockPanel.Dock="Top">
+            <materialDesign:ColorZone Padding="16"
+                                      materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                                      Mode="PrimaryMid"
+                                      DockPanel.Dock="Top">
                 <DockPanel>
                     <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}"
                                   IsChecked="False"
-                                  x:Name="MenuToggleButton"/>
+                                  x:Name="MenuToggleButton"
+                                  Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}"/>
                     <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
                         <StackPanel>
                             <Button Content="Hello World" Click="MenuPopupButton_OnClick"/>
@@ -35,5 +57,5 @@
                 </DockPanel>
             </materialDesign:ColorZone>
         </DockPanel>
-    </Grid>
+    </materialDesign:DrawerHost>
 </UserControl>
