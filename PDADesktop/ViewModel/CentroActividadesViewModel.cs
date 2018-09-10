@@ -4,13 +4,14 @@ using PDADesktop.Model;
 using PDADesktop.View;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace PDADesktop.ViewModel
 {
-    class CentroActividadesViewModel
+    class CentroActividadesViewModel : ViewModelBase
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #region Commands
@@ -63,6 +64,19 @@ namespace PDADesktop.ViewModel
             set
             {
                 verAjustesCommand = value;
+            }
+        }
+
+        private ICommand sincronizacionActualCommand;
+        public ICommand SincronizacionActualCommand
+        {
+            get
+            {
+                return sincronizacionActualCommand;
+            }
+            set
+            {
+                sincronizacionActualCommand = value;
             }
         }
 
@@ -121,11 +135,18 @@ namespace PDADesktop.ViewModel
         private bool canExecute = true;
         #endregion
 
+        #region Attributes
+        private List<SincronizacionPOCO> _sincronizaciones;
         public List<SincronizacionPOCO> sincronizaciones
         {
             get
             {
-                return SincronizacionPOCO.getStaticMockList(new RelayCommand(BotonEstadoGenesix, param => this.canExecute));
+                return _sincronizaciones;
+            }
+            set
+            {
+                _sincronizaciones = value;
+                OnPropertyChanged();
             }
         }
 
@@ -146,6 +167,7 @@ namespace PDADesktop.ViewModel
                 return badge;
             }
         }
+        #endregion
 
         #region Constructor
         public CentroActividadesViewModel()
@@ -154,10 +176,12 @@ namespace PDADesktop.ViewModel
             SincronizarCommand = new RelayCommand(SincronizarTodosLosDatos, param => this.canExecute);
             InformarCommand = new RelayCommand(InformarGenesix, param => this.canExecute);
             VerAjustesCommand = new RelayCommand(VerAjustes, param => this.canExecute);
+            SincronizacionActualCommand = new RelayCommand(SincronizacionActual, param => this.canExecute);
             AnteriorCommand = new RelayCommand(SincronizacionAnterior, param => this.canExecute);
             SiguienteCommand = new RelayCommand(SincronizacionSiguiente, param => this.canExecute);
             BuscarCommand = new RelayCommand(BuscarSincronizaciones, param => this.canExecute);
             UltimaCommand = new RelayCommand(IrUltimaSincronizacion, param => this.canExecute);
+            sincronizaciones = SincronizacionPOCO.getStaticMockList(new RelayCommand(BotonEstadoGenesix, param => this.canExecute));
         }
         #endregion
 
@@ -186,9 +210,32 @@ namespace PDADesktop.ViewModel
             logger.Info("Viendo ajustes realizados");
         }
 
+        public void SincronizacionActual(object obj)
+        {
+            string urlIdLoteActual = ConfigurationManager.AppSettings.Get("API_SYNC_ID_LOTE");
+            string _sucursal = MyAppProperties.idSucursal;
+            int idLoteActual = HttpWebClient.GetIdLoteActual(urlIdLoteActual, _sucursal);
+            if (idLoteActual != 0)
+            {
+                MyAppProperties.idLoteActual = idLoteActual.ToString();
+            }
+        }
+
         public void SincronizacionAnterior(object obj)
         {
+            List<Sincronizacion> sincronizaciones = null;
             logger.Info("<- Ejecutando la vista anterior a la actual de la grilla");
+            string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get("API_SYNC_ANTERIOR");
+            string _sucursal = MyAppProperties.idSucursal;
+            string _idLote = MyAppProperties.idLoteActual;
+            sincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
+            if(sincronizaciones.Count != 0)
+            {
+                logger.Debug(sincronizaciones);
+                this.sincronizaciones = SincronizacionPOCO.refreshDataGrid(sincronizaciones);
+                //dataGrid.ItemSource = sincronizaciones;
+            }
+
         }
 
         public void SincronizacionSiguiente(object obj)

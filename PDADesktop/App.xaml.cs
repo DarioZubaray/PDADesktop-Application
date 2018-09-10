@@ -34,7 +34,8 @@ namespace PDADesktop
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
+            string sucursalHarcodeada = "706";
+            MyAppProperties.idSucursal = sucursalHarcodeada;
             /*
              * 1- verificar en segundo plano actualizaciones con squirrel
              * 2- checkear conexion PDAExpress server
@@ -42,8 +43,8 @@ namespace PDADesktop
              * 4- verificar datos guardados
              * 5- iniciar ventana
              */
-            /*
-           logger.Debug("Verificando en segundo plano actualizaciones con squirrel.window");
+
+            logger.Debug("Verificando en segundo plano actualizaciones con squirrel.window");
            UpdateApp();
 
            logger.Debug("Checkeando conexión el servidor PDAExpress server");
@@ -59,12 +60,16 @@ namespace PDADesktop
                bool check = isUserReminded == "true";
                if(check)
                {
-                   // user reminded
-                   // obtain username and pass
-                   // getUserCredentials();
-                   // Attempt to login through imagosur-portal
-                   // AttemptLoginPortalImagoSur();
-                   if (GenerandoAleatoriedadDeCasosLogueados() == 1)
+                    // user reminded
+                    // =======================================
+                    // obtain username and pass
+                    // getUserCredentials();
+
+                    // Attempt to login through imagosur-portal
+                    // AttemptLoginPortalImagoSur();
+
+
+                    if (GenerandoAleatoriedadDeCasosLogueados() == 1)
                    {
                        RedireccionarCentroActividades();
                    }
@@ -83,11 +88,12 @@ namespace PDADesktop
            {
                RedireccionarLogin();
            }
-           */
+           /*
             MainWindowView = new MainWindow();
             Uri uri = new Uri("View/UserControl1.xaml", UriKind.Relative);
             MainWindowView.frame.NavigationService.Navigate(uri);
             MainWindowView.Show();
+            */
         }
 
         #region Methods
@@ -126,9 +132,7 @@ namespace PDADesktop
 
         private void CheckServerStatus()
         {
-            string serverHostProtocolIpPort = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
-            string serverConexionStatus = ConfigurationManager.AppSettings.Get("API_SERVER_CONEXION_STATUS");
-            string urlServerStatus = serverHostProtocolIpPort + serverConexionStatus;
+            string urlServerStatus = ConfigurationManager.AppSettings.Get("API_SERVER_CONEXION_STATUS");
             bool serverStatus = HttpWebClient.getHttpWebServerConexionStatus(urlServerStatus);
             logger.Info("Conexión pdaexpress server " + serverStatus);
         }

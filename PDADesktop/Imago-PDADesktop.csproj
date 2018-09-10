@@ -155,7 +155,9 @@
     </ApplicationDefinition>
     <Compile Include="Classes\HttpWebClient.cs" />
     <Compile Include="Classes\MotoApi.cs" />
+    <Compile Include="Classes\MyAppProperties.cs" />
     <Compile Include="Classes\PasswordBoxAssistant.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\UserControl1.xaml.cs">
       <DependentUpon>UserControl1.xaml</DependentUpon>
     </Compile>

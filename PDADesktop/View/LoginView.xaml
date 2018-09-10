@@ -139,7 +139,9 @@
                                              x:Name="FloatingPasswordBox"
                                              materialDesign:HintAssist.Hint="Ingresá tu contraseña"
                                              Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"
-                                             VerticalAlignment="Top" HorizontalAlignment="Left" Width="180"></PasswordBox>
+                                             VerticalAlignment="Top" HorizontalAlignment="Left" Width="180"
+                                             ff:PasswordBoxAssistant.BindPassword="true"
+                                             ff:PasswordBoxAssistant.BoundPassword="{Binding Path=FloatingPasswordBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></PasswordBox>
                             </Grid>
 
                             <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
@@ -164,9 +166,7 @@
                                     HorizontalAlignment="Stretch"
                                     Style="{StaticResource MaterialDesignRaisedAccentButton}"
                                     materialDesign:RippleAssist.Feedback="#DD000000"
-                                    Command="{x:Static materialDesign:Flipper.FlipCommand}"
-                                    ff:PasswordBoxAssistant.BindPassword="true"
-                                    ff:PasswordBoxAssistant.BoundPassword="{Binding Path=FloatingPasswordBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    Command="{x:Static materialDesign:Flipper.FlipCommand}" >
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
                                         <i:InvokeCommandAction Command="{Binding LoginButtonCommand}" />

@@ -36,6 +36,24 @@ namespace PDADesktop.Model
             }
         }
 
+        public static List<SincronizacionPOCO> refreshDataGrid(List<Sincronizacion> sincro)
+        {
+            List<SincronizacionPOCO> dataGridRefresh = new List<SincronizacionPOCO>();
+            foreach(Sincronizacion s in sincro)
+            {
+                SincronizacionPOCO sPoco = new SincronizacionPOCO();
+                sPoco.lote = s.lote.idLote.ToString();
+                sPoco.accion = s.actividad.accion.descripcion;
+                sPoco.fecha = s.lote.fecha.ToString();
+                sPoco.actividad = s.actividad.descripcion;
+                sPoco.genesix = s.egx.descripcion;
+                sPoco.pda = s.epda.descripcion;
+                sPoco.estado = s.egral.descripcion;
+                dataGridRefresh.Add(sPoco);
+            }
+            return dataGridRefresh;
+        }
+
         public static List<SincronizacionPOCO> getStaticMockList(RelayCommand command)
         {
             string idLote = "111153";
