@@ -115,20 +115,32 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding pda}" ClipboardContentBinding="{x:Null}" Header="PDA" CanUserResize="False" Width="Auto">
-                    <DataGridTextColumn.CellStyle>
-                        <Style>
-                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
-                        </Style>
-                    </DataGridTextColumn.CellStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Binding="{Binding estado}" ClipboardContentBinding="{x:Null}" Header="Estado" CanUserResize="False" Width="Auto">
-                    <DataGridTextColumn.CellStyle>
-                        <Style>
-                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
-                        </Style>
-                    </DataGridTextColumn.CellStyle>
-                </DataGridTextColumn>
+
+                <DataGridTemplateColumn Header="PDA" ClipboardContentBinding="{x:Null}" CanUserResize="False" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <Button Content="{Binding pda}"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        materialDesign:RippleAssist.IsDisabled="True"
+                                        Command="{Binding EstadoPDACommand}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Estado" ClipboardContentBinding="{x:Null}" CanUserResize="False" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <Button Content="{Binding estado}"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        materialDesign:RippleAssist.IsDisabled="True"
+                                        Command="{Binding EstadoGeneralCommand}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Column="1" Grid.Row="2" Width="Auto">

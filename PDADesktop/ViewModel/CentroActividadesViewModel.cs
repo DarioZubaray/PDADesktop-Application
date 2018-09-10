@@ -132,6 +132,44 @@ namespace PDADesktop.ViewModel
             }
         }
 
+        private ICommand estadoGenesixCommand;
+        public ICommand EstadoGenesixCommand
+        {
+            get
+            {
+                return estadoGenesixCommand;
+            }
+            set
+            {
+                estadoGenesixCommand = value;
+            }
+        }
+
+        private ICommand estadoPDACommand;
+        public ICommand EstadoPDACommand
+        {
+            get
+            {
+                return estadoPDACommand;
+            }
+            set
+            {
+                estadoPDACommand = value;
+            }
+        }
+        private ICommand estadoGeneralCommand;
+        public ICommand EstadoGeneralCommand
+        {
+            get
+            {
+                return estadoGeneralCommand;
+            }
+            set
+            {
+                estadoGeneralCommand = value;
+            }
+        }
+
         private bool canExecute = true;
         #endregion
 
@@ -150,6 +188,7 @@ namespace PDADesktop.ViewModel
             }
         }
 
+        //Con ObservableCollection no se actualiza la grilla :\
         private List<SincronizacionPOCO> _sincronizaciones;
         public List<SincronizacionPOCO> sincronizaciones
         {
@@ -195,6 +234,9 @@ namespace PDADesktop.ViewModel
             SiguienteCommand = new RelayCommand(SincronizacionSiguiente, param => this.canExecute);
             BuscarCommand = new RelayCommand(BuscarSincronizaciones, param => this.canExecute);
             UltimaCommand = new RelayCommand(IrUltimaSincronizacion, param => this.canExecute);
+            EstadoGenesixCommand = new RelayCommand(BotonEstadoGenesix, param => this.canExecute);
+            EstadoPDACommand = new RelayCommand(BotonEstadoPDA, param => this.canExecute);
+            EstadoGeneralCommand = new RelayCommand(BotonEstadoGeneral, param => this.canExecute);
             sincronizaciones = SincronizacionPOCO.getStaticMockList(new RelayCommand(BotonEstadoGenesix, param => this.canExecute));
             ActualizarLoteActual(sincronizaciones);
         }
@@ -312,6 +354,14 @@ namespace PDADesktop.ViewModel
             logger.Info("Boton estado genesix");
             logger.Debug(this);
             //Sincronizacion row = (Sincronizacion)((Button)e.Source).DataContext;
+        }
+        public void BotonEstadoPDA(object obj)
+        {
+            logger.Info("Boton estado pda");
+        }
+        public void BotonEstadoGeneral(object obj)
+        {
+            logger.Info("Boton estado general");
         }
         #endregion
     }
