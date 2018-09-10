@@ -78,6 +78,7 @@ namespace PDADesktop.Classes
             string ipServer = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
             try
             {
+                logger.Debug("Enviando petición a " + ipServer + url);
                 response = client.DownloadString(ipServer + url);
                 logger.Debug("response: " + response);
             }

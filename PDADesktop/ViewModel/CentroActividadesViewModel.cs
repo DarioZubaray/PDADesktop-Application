@@ -233,14 +233,24 @@ namespace PDADesktop.ViewModel
             {
                 logger.Debug(sincronizaciones);
                 this.sincronizaciones = SincronizacionPOCO.refreshDataGrid(sincronizaciones);
-                //dataGrid.ItemSource = sincronizaciones;
+                ActualizarLoteActual(sincronizaciones);
             }
-
         }
 
         public void SincronizacionSiguiente(object obj)
         {
+            List<Sincronizacion> sincronizaciones = null;
             logger.Info("-> Solicitando la vista siguiente de la grilla, si es que la hay...");
+            string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get("API_SYNC_SIGUIENTE");
+            string _sucursal = MyAppProperties.idSucursal;
+            string _idLote = MyAppProperties.idLoteActual;
+            sincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
+            if (sincronizaciones.Count != 0)
+            {
+                logger.Debug(sincronizaciones);
+                this.sincronizaciones = SincronizacionPOCO.refreshDataGrid(sincronizaciones);
+                ActualizarLoteActual(sincronizaciones);
+            }
         }
 
         public void BuscarSincronizaciones(object obj)
@@ -250,7 +260,28 @@ namespace PDADesktop.ViewModel
 
         public void IrUltimaSincronizacion(object obj)
         {
+            List<Sincronizacion> sincronizaciones = null;
             logger.Info("Llendo a la ultima sincronizacion");
+            string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get("API_SYNC_ULTIMA");
+            string _sucursal = MyAppProperties.idSucursal;
+            string _idLote = MyAppProperties.idLoteActual;
+            sincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
+            if (sincronizaciones.Count != 0)
+            {
+                logger.Debug(sincronizaciones);
+                this.sincronizaciones = SincronizacionPOCO.refreshDataGrid(sincronizaciones);
+                ActualizarLoteActual(sincronizaciones);
+            }
+        }
+
+        public void ActualizarLoteActual(List<Sincronizacion> sincronizaciones)
+        {
+            if(sincronizaciones.Count != 0)
+            {
+                var s = sincronizaciones[0] as Sincronizacion;
+                string idLoteActual = s.lote.idLote.ToString();
+                MyAppProperties.idLoteActual = idLoteActual;
+            }
         }
 
         public void BotonEstadoGenesix(object obj)
