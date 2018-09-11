@@ -16,12 +16,19 @@
              TextElement.FontSize="15"
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
-             Background="WhiteSmoke"
+             
              FontFamily="{DynamicResource MaterialDesignFont}">
 
     <UserControl.DataContext>
         <VM:LoginViewModel />
     </UserControl.DataContext>
+
+    <UserControl.Background>
+        <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
+            <GradientStop Color="#FFBF00" Offset="0"/>
+            <GradientStop Color="#FFFFFFFF" Offset="0.467"/>
+        </LinearGradientBrush>
+    </UserControl.Background>
 
     <StackPanel KeyboardNavigation.TabNavigation="None">
         <materialDesign:Card Padding="32">
@@ -55,12 +62,13 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <materialDesign:ColorZone Mode="PrimaryMid" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                             <materialDesign:PackIcon Kind="AccountCircle"
                                                      Width="250" Height="250"
                                                      VerticalAlignment="Center"
-                                                     HorizontalAlignment="Center" />
-                        </materialDesign:ColorZone>
+                                                     HorizontalAlignment="Center"
+                                                     Foreground="Gray"/>
+                        </StackPanel>
 
                         <StackPanel Grid.Row="1">
                             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -103,8 +111,8 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryMid" Padding="6">
-                            <StackPanel Orientation="Horizontal">
+                        
+                            <StackPanel Orientation="Horizontal" Grid.Row="0">
                                 <Button Style="{StaticResource MaterialDesignToolForegroundButton}"
                                                         Command="{x:Static materialDesign:Flipper.FlipCommand}"
                                                         HorizontalAlignment="Left">
@@ -113,7 +121,6 @@
                                 <Label Content="Bienvenido" VerticalAlignment="Center"/>
                                 <TextBlock Margin="0 0 0 0" VerticalAlignment="Center" Text="{Binding ElementName=usernameText, Path=Text}" />
                             </StackPanel>
-                        </materialDesign:ColorZone>
 
                         <Grid Grid.Row="1" Margin="0 6 0 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto">
                             <Grid.RowDefinitions>
