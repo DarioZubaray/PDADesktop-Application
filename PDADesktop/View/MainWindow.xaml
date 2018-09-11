@@ -9,13 +9,13 @@
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         Icon="../resources/favicon.ico"
-        Title="PDA Desktop Application" Height="720" Width="840">
+        Title="PDA Desktop Application" Height="720" Width="850">
     <Window.DataContext>
         <VM:MainWindowViewModel/>
     </Window.DataContext>
     <Grid>
         <Frame x:Name="frame" Source="LoginView.xaml" NavigationUIVisibility="Hidden" 
                HorizontalAlignment="Center" VerticalAlignment="Center"
-               Height="720" Width="840"/>
+               Height="720" Width="850"/>
     </Grid>
 </Controls:MetroWindow>
