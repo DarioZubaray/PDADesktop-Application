@@ -16,7 +16,7 @@
              TextElement.FontSize="15"
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
-             Background="{DynamicResource MaterialDesignPaper}"
+             Background="WhiteSmoke"
              FontFamily="{DynamicResource MaterialDesignFont}">
 
     <UserControl.DataContext>
