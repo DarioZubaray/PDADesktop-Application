@@ -9,7 +9,7 @@
              xmlns:local="clr-namespace:PDADesktop.View"
              xmlns:VM="clr-namespace:PDADesktop.ViewModel"
              mc:Ignorable="d" 
-             d:DesignHeight="720" d:DesignWidth="850"
+             d:DesignHeight="730" d:DesignWidth="850"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
