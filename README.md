@@ -36,7 +36,7 @@ PM> Install-Package Squirrel.Windows
 PM>  Install-Package NuGet.CommandLine
 ```
 
-  - Nota 2: Para el error ```Exec Command call. 'squirrel' is not recognized as an internal or external command``` también se podria tener ```Squirrel.exe``` en la variable de entorno _path_ o agregar la ruta completa al mismo ejecutable en el MSBuild targer.
+  - Nota 2: Para el error ```Exec Command call. 'squirrel' is not recognized as an internal or external command``` también se podria tener ```Squirrel.exe``` en la variable de entorno _path_ o agregar la ruta completa al mismo ejecutable en el MSBuild targer. Para la aplicacion cree un variable de entorno apuntando a ```C:\dev\squirrel\``` donde copie ```TODO``` el contendio de ```<Proyecto>\packages\squirrel.windows.1.8.0\tools``` porque al parecer ```Squirrel.exe``` hace uso de ```StubFile.exe```
 
 
 ##### Recurso éstatico JBOSS
