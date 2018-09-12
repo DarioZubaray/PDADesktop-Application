@@ -8,9 +8,9 @@ namespace PDADesktop.View
     /// <summary>
     /// Lógica de interacción para CentroActividades.xaml
     /// </summary>
-    public partial class CentroActividades : UserControl
+    public partial class CentroActividadesView : UserControl
     {
-        public CentroActividades()
+        public CentroActividadesView()
         {
             InitializeComponent();
         }

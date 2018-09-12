@@ -173,7 +173,11 @@
     <Compile Include="Controls\LoadingPanel.xaml.cs">
       <DependentUpon>LoadingPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\BuscarLotesViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="View\BuscarLotesView.xaml.cs">
+      <DependentUpon>BuscarLotesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\UserControl1.xaml.cs">
       <DependentUpon>UserControl1.xaml</DependentUpon>
     </Compile>
@@ -185,7 +189,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\CentroActividades.xaml">
+    <Page Include="View\BuscarLotesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CentroActividadesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -214,8 +222,8 @@
     <Compile Include="ViewModel\CentroActividadesViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="View\CentroActividades.xaml.cs">
-      <DependentUpon>CentroActividades.xaml</DependentUpon>
+    <Compile Include="View\CentroActividadesView.xaml.cs">
+      <DependentUpon>CentroActividadesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>

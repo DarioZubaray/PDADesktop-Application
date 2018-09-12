@@ -16,8 +16,8 @@
              TextElement.FontSize="15"
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
-             
-             FontFamily="{DynamicResource MaterialDesignFont}">
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             FocusManager.FocusedElement="{Binding ElementName=usernameText}">
 
     <UserControl.DataContext>
         <VM:LoginViewModel />

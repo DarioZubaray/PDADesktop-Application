@@ -153,7 +153,7 @@ namespace PDADesktop
         {
             logger.Info("Redireccionando al centro de actividades...");
             MainWindowView = new MainWindow();
-            Uri uri = new Uri("View/CentroActividades.xaml", UriKind.Relative);
+            Uri uri = new Uri("View/CentroActividadesView.xaml", UriKind.Relative);
             MainWindowView.frame.NavigationService.Navigate(uri);
             MainWindowView.Show();
         }

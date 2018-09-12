@@ -158,6 +158,7 @@ namespace PDADesktop.ViewModel
                 estadoPDACommand = value;
             }
         }
+
         private ICommand estadoGeneralCommand;
         public ICommand EstadoGeneralCommand
         {
@@ -480,6 +481,8 @@ namespace PDADesktop.ViewModel
         public void BuscarSincronizaciones(object obj)
         {
             logger.Info("Buscando sincronizaciones");
+            BuscarLotesView buscarLotesView = new BuscarLotesView();
+            buscarLotesView.ShowDialog();
         }
 
         public void IrUltimaSincronizacion(object obj)

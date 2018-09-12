@@ -70,7 +70,7 @@ namespace PDADesktop.ViewModel
                 logger.Info("Cookie recibida: " + cookie);
                 //aca deberia llamar al servicio de login
                 //Redirecciona a centroActividades
-                Uri uri = new Uri("View/CentroActividades.xaml", UriKind.Relative);
+                Uri uri = new Uri("View/CentroActividadesView.xaml", UriKind.Relative);
                 window.frame.NavigationService.Navigate(uri);
             }
             else
