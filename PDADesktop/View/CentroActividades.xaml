@@ -24,7 +24,7 @@
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding SincronizacionActualCommand}" />
+            <i:InvokeCommandAction Command="{Binding CentroActividadesLoadedCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
@@ -160,11 +160,11 @@
             <Grid Grid.Column="1" Grid.Row="2" Width="Auto">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="Auto">
                     <Label x:Name="label_version" Content="Version" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label x:Name="button_version" Content="1.13.0" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
+                    <Label x:Name="label_version_data" Content="{Binding label_version}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
                     <Label x:Name="label_usuario" Content="Usuario" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="100 0 0 0"/>
-                    <Label x:Name="button_usuario" Content="dariojz" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
+                    <Label x:Name="label_usuario_data" Content="{Binding label_usuario}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
                     <Label x:Name="label_sucursal" Content="Sucursal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="100 0 0 0"/>
-                    <Label x:Name="button_sucursal" Content="706" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
+                    <Label x:Name="label_sucursal_data" Content="{Binding label_sucursal}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
 
                 </StackPanel>
             </Grid>

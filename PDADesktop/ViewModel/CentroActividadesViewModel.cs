@@ -5,6 +5,7 @@ using PDADesktop.View;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -67,16 +68,16 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private ICommand sincronizacionActualCommand;
-        public ICommand SincronizacionActualCommand
+        private ICommand centroActividadesLoadedCommand;
+        public ICommand CentroActividadesLoadedCommand
         {
             get
             {
-                return sincronizacionActualCommand;
+                return centroActividadesLoadedCommand;
             }
             set
             {
-                sincronizacionActualCommand = value;
+                centroActividadesLoadedCommand = value;
             }
         }
 
@@ -253,6 +254,43 @@ namespace PDADesktop.ViewModel
             }
         }
 
+        private string _label_version;
+        public string label_version
+        {
+            get
+            {
+                return _label_version;
+            }
+            set
+            {
+                _label_version = value;
+            }
+        }
+        private string _label_usuario;
+        public string label_usuario
+        {
+            get
+            {
+                return _label_usuario;
+            }
+            set
+            {
+                _label_usuario = value;
+            }
+        }
+        private string _label_sucursal;
+        public string label_sucursal
+        {
+            get
+            {
+                return _label_sucursal;
+            }
+            set
+            {
+                _label_sucursal = value;
+            }
+        }
+
         // Atributos del Spiner
         private bool _panelLoading;
         public bool PanelLoading
@@ -333,11 +371,12 @@ namespace PDADesktop.ViewModel
         {
             PanelLoading = true;
             PanelMainMessage = "Cargando...";
+            setInfoLabels();
             ExitButtonCommand = new RelayCommand(ExitPortalApi, param => this.canExecute);
             SincronizarCommand = new RelayCommand(SincronizarTodosLosDatos, param => this.canExecute);
             InformarCommand = new RelayCommand(InformarGenesix, param => this.canExecute);
             VerAjustesCommand = new RelayCommand(VerAjustes, param => this.canExecute);
-            SincronizacionActualCommand = new RelayCommand(SincronizacionActual, param => this.canExecute);
+            CentroActividadesLoadedCommand = new RelayCommand(CentroActividadesLoaded, param => this.canExecute);
             AnteriorCommand = new RelayCommand(SincronizacionAnterior, param => this.canExecute);
             SiguienteCommand = new RelayCommand(SincronizacionSiguiente, param => this.canExecute);
             BuscarCommand = new RelayCommand(BuscarSincronizaciones, param => this.canExecute);
@@ -358,6 +397,15 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Methods
+        public void setInfoLabels()
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            label_version = assembly.GetName().Version.ToString(3);
+            // de donde obtenemos el usaurio y sucursal (?)
+            label_usuario = "Admin";
+            label_sucursal = "706";
+        }
+
         public void ExitPortalApi(object obj)
         {
             logger.Info("exit portal api");
@@ -385,7 +433,7 @@ namespace PDADesktop.ViewModel
             logger.Info("Viendo ajustes realizados");
         }
 
-        public void SincronizacionActual(object obj)
+        public void CentroActividadesLoaded(object obj)
         {
             string urlIdLoteActual = ConfigurationManager.AppSettings.Get("API_SYNC_ID_LOTE");
             string _sucursal = MyAppProperties.idSucursal;
