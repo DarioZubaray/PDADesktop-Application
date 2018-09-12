@@ -42,24 +42,24 @@ namespace PDADesktop
              * 3- checkear conexion PDAMoto
              * 4- verificar datos guardados
              * 5- iniciar ventana
-             */
+            */
 
             logger.Debug("Verificando en segundo plano actualizaciones con squirrel.window");
-           UpdateApp();
+            UpdateApp();
 
-           logger.Debug("Checkeando conexión el servidor PDAExpress server");
-           CheckServerStatus();
+            logger.Debug("Checkeando conexión el servidor PDAExpress server");
+            CheckServerStatus();
 
-           logger.Debug("Checkear conexión con PDAMoto");
-           CheckDeviceConnected();
+            logger.Debug("Checkear conexión con PDAMoto");
+            CheckDeviceConnected();
 
-           logger.Debug("Verificando datos guardados...");
-           string isUserReminded = VerificarDatosGuardados();
-           if(isUserReminded != null)
-           {
-               bool check = isUserReminded == "true";
-               if(check)
-               {
+            logger.Debug("Verificando datos guardados...");
+            string isUserReminded = VerificarDatosGuardados();
+            if(isUserReminded != null)
+            {
+                bool check = isUserReminded == "true";
+                if(check)
+                {
                     // user reminded
                     // =======================================
                     // obtain username and pass
@@ -70,19 +70,19 @@ namespace PDADesktop
 
 
                     if (GenerandoAleatoriedadDeCasosLogueados() == 1)
-                   {
-                       RedireccionarCentroActividades();
-                   }
-                   else
-                   {
-                       RedireccionarLogin();
-                   }
-               }
-               else
-               {
-                   // no user reminded
-                   RedireccionarLogin();
-               }
+                    {
+                        RedireccionarCentroActividades();
+                    }
+                    else
+                    {
+                        RedireccionarLogin();
+                    }
+                }
+                else
+                {
+                    // no user reminded
+                    RedireccionarLogin();
+                }
            }
            else
            {

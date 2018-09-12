@@ -33,7 +33,7 @@
     <StackPanel KeyboardNavigation.TabNavigation="None">
         <materialDesign:Card Padding="32">
             <StackPanel>
-                <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}" TextAlignment="Center">Imagosur - Portal de Aplicaciones</TextBlock>
+                <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}" TextAlignment="Center">Imagosur - Integración Portal de Aplicaciones</TextBlock>
                 <Separator Style="{StaticResource MaterialDesignDarkSeparator}" />
                 <TextBlock TextAlignment="Center" TextWrapping="Wrap">
                     <Hyperlink IsEnabled="False" Style="{StaticResource MaterialDesignBody1Hyperlink}">Accede con tu usuario para continuar con PDA Desktop</Hyperlink>

@@ -170,6 +170,71 @@ namespace PDADesktop.ViewModel
             }
         }
 
+        private ICommand showPanelCommand;
+        public ICommand ShowPanelCommand
+        {
+            get
+            {
+                return showPanelCommand;
+            }
+            set
+            {
+                showPanelCommand = value;
+            }
+        }
+
+        private ICommand hidePanelCommand;
+        public ICommand HidePanelCommand
+        {
+            get
+            {
+                return hidePanelCommand;
+            }
+            set
+            {
+                hidePanelCommand = value;
+            }
+        }
+
+        private ICommand changeMainMessageCommand;
+        public ICommand ChangeMainMessageCommand
+        {
+            get
+            {
+                return changeMainMessageCommand;
+            }
+            set
+            {
+                changeMainMessageCommand = value;
+            }
+        }
+
+        private ICommand changeSubMessageCommand;
+        public ICommand ChangeSubMessageCommand
+        {
+            get
+            {
+                return changeSubMessageCommand;
+            }
+            set
+            {
+                changeSubMessageCommand = value;
+            }
+        }
+
+        private ICommand panelCloseCommand;
+        public ICommand PanelCloseCommand
+        {
+            get
+            {
+                return panelCloseCommand;
+            }
+            set
+            {
+                panelCloseCommand = value;
+            }
+        }
+
         private bool canExecute = true;
         #endregion
 
@@ -184,6 +249,47 @@ namespace PDADesktop.ViewModel
             set
             {
                 _txt_sincronizacion = value;
+                OnPropertyChanged();
+            }
+        }
+
+        // Atributos del Spiner
+        private bool _panelLoading;
+        public bool PanelLoading
+        {
+            get
+            {
+                return _panelLoading;
+            }
+            set
+            {
+                _panelLoading = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _panelMainMessage;
+        public string PanelMainMessage
+        {
+            get
+            {
+                return _panelMainMessage;
+            }
+            set
+            {
+                _panelMainMessage = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _panelSubMessage;
+        public string PanelSubMessage
+        {
+            get
+            {
+                return _panelSubMessage;
+            }
+            set
+            {
+                _panelSubMessage = value;
                 OnPropertyChanged();
             }
         }
@@ -225,6 +331,8 @@ namespace PDADesktop.ViewModel
         #region Constructor
         public CentroActividadesViewModel()
         {
+            PanelLoading = true;
+            PanelMainMessage = "Cargando...";
             ExitButtonCommand = new RelayCommand(ExitPortalApi, param => this.canExecute);
             SincronizarCommand = new RelayCommand(SincronizarTodosLosDatos, param => this.canExecute);
             InformarCommand = new RelayCommand(InformarGenesix, param => this.canExecute);
@@ -239,6 +347,13 @@ namespace PDADesktop.ViewModel
             EstadoGeneralCommand = new RelayCommand(BotonEstadoGeneral, param => this.canExecute);
             sincronizaciones = SincronizacionPOCO.getStaticMockList(new RelayCommand(BotonEstadoGenesix, param => this.canExecute));
             ActualizarLoteActual(sincronizaciones);
+
+            ShowPanelCommand = new RelayCommand(MostrarPanel, param => this.canExecute);
+            HidePanelCommand = new RelayCommand(OcultarPanel, param => this.canExecute);
+            ChangeMainMessageCommand = new RelayCommand(CambiarMainMensage, param => this.canExecute);
+            ChangeSubMessageCommand = new RelayCommand(CambiarSubMensage, param => this.canExecute);
+            PanelCloseCommand = new RelayCommand(CerrarPanel, param => this.canExecute);
+
         }
         #endregion
 
@@ -254,11 +369,14 @@ namespace PDADesktop.ViewModel
 
         public void SincronizarTodosLosDatos(object obj)
         {
+            PanelLoading = true;
+            PanelMainMessage = "Espere por favor";
             logger.Info("Sincronizando todos los datos");
         }
 
         public void InformarGenesix(object obj)
         {
+            PanelLoading = false;
             logger.Info("Informando a genesix");
         }
 
@@ -276,6 +394,7 @@ namespace PDADesktop.ViewModel
             {
                 MyAppProperties.idLoteActual = idLoteActual.ToString();
             }
+            PanelLoading = false;
         }
 
         public void SincronizacionAnterior(object obj)
@@ -362,6 +481,27 @@ namespace PDADesktop.ViewModel
         public void BotonEstadoGeneral(object obj)
         {
             logger.Info("Boton estado general");
+        }
+
+        public void MostrarPanel(object obj)
+        {
+            PanelLoading = true;
+        }
+        public void OcultarPanel(object obj)
+        {
+            PanelLoading = false;
+        }
+        public void CambiarMainMensage(object obj)
+        {
+            PanelMainMessage = "Espere por favor";
+        }
+        public void CambiarSubMensage(object obj)
+        {
+            PanelSubMessage = "";
+        }
+        public void CerrarPanel(object obj)
+        {
+            PanelLoading = false;
         }
         #endregion
     }
