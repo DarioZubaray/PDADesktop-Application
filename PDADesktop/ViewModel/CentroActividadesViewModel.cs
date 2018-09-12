@@ -453,7 +453,7 @@ namespace PDADesktop.ViewModel
             string _sucursal = MyAppProperties.idSucursal;
             string _idLote = MyAppProperties.idLoteActual;
             listaSincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
-            if(listaSincronizaciones.Count != 0)
+            if(listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
                 this.sincronizaciones = SincronizacionPOCO.refreshDataGrid(listaSincronizaciones);
@@ -469,7 +469,7 @@ namespace PDADesktop.ViewModel
             string _sucursal = MyAppProperties.idSucursal;
             string _idLote = MyAppProperties.idLoteActual;
             listaSincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
-            if (listaSincronizaciones.Count != 0)
+            if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
                 this.sincronizaciones = SincronizacionPOCO.refreshDataGrid(listaSincronizaciones);
@@ -490,7 +490,7 @@ namespace PDADesktop.ViewModel
             string _sucursal = MyAppProperties.idSucursal;
             string _idLote = MyAppProperties.idLoteActual;
             listaSincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
-            if (listaSincronizaciones.Count != 0)
+            if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
                 this.sincronizaciones = SincronizacionPOCO.refreshDataGrid(listaSincronizaciones);
@@ -500,7 +500,7 @@ namespace PDADesktop.ViewModel
 
         public void ActualizarLoteActual(List<SincronizacionPOCO> sincronizaciones)
         {
-            if(sincronizaciones.Count != 0)
+            if(sincronizaciones != null && sincronizaciones.Count != 0)
             {
                 var s = sincronizaciones[0] as SincronizacionPOCO;
                 string idLoteActual = s.lote;
