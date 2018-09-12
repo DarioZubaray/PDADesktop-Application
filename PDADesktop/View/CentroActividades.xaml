@@ -15,7 +15,7 @@
              Background="WhiteSmoke"
              FontFamily="{DynamicResource MaterialDesignFont}"
              mc:Ignorable="d"
-             d:DesignHeight="730" d:DesignWidth="850">
+             d:DesignHeight="730" d:DesignWidth="920">
 
     <UserControl.DataContext>
         <VM:CentroActividadesViewModel />
@@ -97,10 +97,10 @@
             </StackPanel>
         </Border>
 
-        <DataGrid x:Name="dataGrid" Grid.Row="1"
+        <DataGrid x:Name="dataGrid" Grid.Row="1" RowHeight="40" FontSize="15.5"
                   BorderThickness="0" BorderBrush="Gainsboro"
                   HorizontalAlignment="Center" VerticalAlignment="Top"
-                  Height="Auto" Width="850"
+                  Height="Auto" Width="920"
                   AutoGenerateColumns="False"
                   AlternatingRowBackground="Gainsboro" AlternationCount="2"
                   ItemsSource="{Binding sincronizaciones}" Grid.ColumnSpan="3">
