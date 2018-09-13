@@ -438,21 +438,21 @@ namespace PDADesktop.ViewModel
                 string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
                 string fileName = ConfigurationManager.AppSettings.Get("DEVICE_FILE_AJUSTES");
                 string motoApiReadDataFile = MotoApi.ReadDataFile(clientDataDir, fileName);
+                //por aca sabemos si hay ajustes realizados y de continuar
 
                 List<Ajustes> ajustes = JsonConvert.DeserializeObject<List<Ajustes>>(motoApiReadDataFile);
                 if(ajustes != null && ajustes.Count > 0)
                 {
                     logger.Debug("hay ajustes realizados");
                     logger.Debug("Dato que sera de vital importancia: ajustes.Count es el numnero del badge");
+                    // levamos a la vista que no esta creada aun
                 }
                 else
                 {
+                    //else mostramos un mensaje que no hay datos
                     logger.Debug("No, no hay ajustes hecho, para que habran pulsado en ver ajustes, por curiosidad?");
                 }
-                //por aca sabemos si hay ajustes realizados y de continuar
-                // levamos a la vista que no esta creada aun
 
-                //else mostramos un mensaje que no hay datos 
             }
         }
 
