@@ -1,9 +1,6 @@
 ﻿using log4net;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PDADesktop.Utils
 {
@@ -11,6 +8,10 @@ namespace PDADesktop.Utils
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        public static string ExpandEnviromentVariable(string source)
+        {
+            return Environment.ExpandEnvironmentVariables(source);
+        }
         public static string ParseAjusteDAT2Json(string source)
         {
             StringBuilder ajusteJSON = new StringBuilder();
@@ -45,7 +46,6 @@ namespace PDADesktop.Utils
                 }
             }
             return ajusteJSON.ToString();
-
         }
     }
 }

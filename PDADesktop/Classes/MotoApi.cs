@@ -27,16 +27,18 @@ namespace PDADesktop.Classes
         [DllImport(pdaMotoCommunication, CallingConvention = CallingConvention.Cdecl)]
         public static extern int setTime(string time);
 
-        public static string ReadDataFile(string desDir)
+        public static string ReadDataFile(string desDir, string filename)
         {
-            string versionRelPath = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH.VERSION");
-            string versionFileName = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH.FILENAME");
-            string fileRelPath = versionRelPath + "/" + versionFileName;
-            logger.Debug("descargando archivo: " + fileRelPath);
-            CodigoResultado result = getResult(MotoApi.downloadFileFromAppData(fileRelPath, desDir));
+            string versionRelPath = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
+            string fileRelPath = versionRelPath + filename;
+            logger.Debug("descargando archivo desde: " + fileRelPath);
+            string desDirExpanded = TextUtils.ExpandEnviromentVariable(desDir);
+            logger.Debug("hacia la ruta: " + desDirExpanded);
+            FileUtils.VerifyFolders(desDirExpanded);
+            CodigoResultado result = getResult(MotoApi.downloadFileFromAppData(fileRelPath, desDirExpanded + filename));
             if (result.Equals(CodigoResultado.OK))
             {
-                string ajustes = FileUtils.ReadFile(desDir + "/AJUSTES.DAT");
+                string ajustes = FileUtils.ReadFile(desDirExpanded + filename);
                 return TextUtils.ParseAjusteDAT2Json(ajustes);
             }
             else

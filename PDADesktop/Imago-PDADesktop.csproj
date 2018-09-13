@@ -178,6 +178,9 @@
     <Compile Include="Controls\LoadingPanel.xaml.cs">
       <DependentUpon>LoadingPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\Ajustes.cs" />
+    <Compile Include="Utils\FileUtils.cs" />
+    <Compile Include="Utils\TextUtils.cs" />
     <Compile Include="ViewModel\BuscarLotesViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\BuscarLotesView.xaml.cs">
