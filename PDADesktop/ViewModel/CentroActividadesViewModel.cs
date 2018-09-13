@@ -393,7 +393,6 @@ namespace PDADesktop.ViewModel
             ChangeMainMessageCommand = new RelayCommand(CambiarMainMensage, param => this.canExecute);
             ChangeSubMessageCommand = new RelayCommand(CambiarSubMensage, param => this.canExecute);
             PanelCloseCommand = new RelayCommand(CerrarPanel, param => this.canExecute);
-
         }
         #endregion
 
@@ -432,6 +431,16 @@ namespace PDADesktop.ViewModel
         public void VerAjustes(object obj)
         {
             logger.Info("Viendo ajustes realizados");
+            int estadoPda = MotoApi.isDeviceConnected();
+            if(estadoPda != 0)
+            {
+                string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
+                string motoApiReadDataFile = MotoApi.ReadDataFile(clientDataDir);
+                //por aca sabemos si hay ajustes realizados y de continuar
+                // levamos a la vista que no esta creada aun
+
+            //else mostramos un mensaje que no hay datos 
+            }
         }
 
         public void CentroActividadesLoaded(object obj)
