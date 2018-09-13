@@ -11,22 +11,9 @@ namespace PDADesktop.ViewModel
     class LoginViewModel
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #region attributes
         public string usernameText { get; set; }
         public string FloatingPasswordBox { get; set; }
-
-        private ICommand loginButtonCommand;
-        public ICommand LoginButtonCommand
-        {
-            get
-            {
-                return loginButtonCommand;
-            }
-            set
-            {
-                loginButtonCommand = value;
-            }
-        }
-        private bool canExecute = true;
 
         private bool recuerdameCheck;
         public bool RecuerdameCheck
@@ -40,7 +27,24 @@ namespace PDADesktop.ViewModel
                 recuerdameCheck = value;
             }
         }
+        #endregion
 
+        #region Command
+        private ICommand loginButtonCommand;
+        public ICommand LoginButtonCommand
+        {
+            get
+            {
+                return loginButtonCommand;
+            }
+            set
+            {
+                loginButtonCommand = value;
+            }
+        }
+        private bool canExecute = true;
+        #endregion
+        
         #region Constructor
         public LoginViewModel()
         {
