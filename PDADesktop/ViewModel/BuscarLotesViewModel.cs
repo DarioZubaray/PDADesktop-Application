@@ -98,7 +98,7 @@ namespace PDADesktop.ViewModel
             }
             set
             {
-                previousCommand = value;
+                nextCommand = value;
             }
         }
 
