@@ -3,6 +3,7 @@ using PDADesktop.Classes;
 using PDADesktop.Model;
 using PDADesktop.View;
 using Squirrel;
+using StructureMap;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -29,6 +30,17 @@ namespace PDADesktop
             {
                 mainWindowView = value;
             }
+        }
+        public static App Instance { get; private set; }
+        public Container Container { get; private set; }
+
+        public App()
+        {
+            Instance = this;
+            Container = new Container(c =>
+            {
+                c.AddRegistry(new MyContainerInitializer());
+            });
         }
 
         protected override void OnStartup(StartupEventArgs e)
