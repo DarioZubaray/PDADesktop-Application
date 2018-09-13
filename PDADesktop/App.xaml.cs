@@ -46,6 +46,7 @@ namespace PDADesktop
 
             logger.Debug("Verificando en segundo plano actualizaciones con squirrel.window");
             UpdateApp();
+            //AlertBarWpf para una segunda instancia
 
             logger.Debug("Checkeando conexión el servidor PDAExpress server");
             CheckServerStatus();
