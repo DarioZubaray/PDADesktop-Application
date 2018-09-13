@@ -17,20 +17,8 @@ namespace PDADesktop
     public partial class App : Application
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private MainWindow mainWindowView;
         private UpdateManager updateManager;
 
-        public MainWindow MainWindowView
-        {
-            get
-            {
-                return mainWindowView;
-            }
-            set
-            {
-                mainWindowView = value;
-            }
-        }
         public static App Instance { get; private set; }
         public Container Container { get; private set; }
 
@@ -165,17 +153,17 @@ namespace PDADesktop
         private void RedireccionarCentroActividades()
         {
             logger.Info("Redireccionando al centro de actividades...");
-            MainWindowView = new MainWindow();
+            var mainWindow = this.Container.GetInstance<MainWindow>();
             Uri uri = new Uri("View/CentroActividadesView.xaml", UriKind.Relative);
-            MainWindowView.frame.NavigationService.Navigate(uri);
-            MainWindowView.Show();
+            mainWindow.frame.NavigationService.Navigate(uri);
+            mainWindow.Show();
         }
 
         private void RedireccionarLogin()
         {
             logger.Info("No hay datos guardados con un usuario válido, redireccionando al login");
-            MainWindowView = new MainWindow();
-            MainWindowView.Show();
+            var mainWindow = this.Container.GetInstance<MainWindow>();
+            mainWindow.Show();
         }
         #endregion 
     }
