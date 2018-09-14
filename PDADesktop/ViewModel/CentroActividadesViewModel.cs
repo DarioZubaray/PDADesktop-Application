@@ -446,14 +446,34 @@ namespace PDADesktop.ViewModel
                 {
                     logger.Debug("hay ajustes realizados");
                     logger.Debug("Dato que sera de vital importancia: ajustes.Count es el numnero del badge");
-                    // levamos a la vista que no esta creada aun
+
+                    bool isWindowOpen = false;
+                    foreach (Window w in Application.Current.Windows)
+                    {
+                        if (w is VerAjustesView)
+                        {
+                            isWindowOpen = true;
+                            w.Activate();
+                        }
+                    }
+
+                    if (!isWindowOpen)
+                    {
+                        VerAjustesView newwindow = new VerAjustesView();
+                        newwindow.Show();
+                    }
                 }
                 else
                 {
                     //else mostramos un mensaje que no hay datos
                     logger.Debug("No, no hay ajustes hecho, para que habran pulsado en ver ajustes, por curiosidad?");
+                    AvisoAlUsuario("No se encontraron Ajustes Realizados");
                 }
 
+            }
+            else
+            {
+                AvisoAlUsuario("No se detecta conexion con la PDA");
             }
         }
 
@@ -576,6 +596,19 @@ namespace PDADesktop.ViewModel
         public void CerrarPanel(object obj)
         {
             PanelLoading = false;
+        }
+
+        public void AvisoAlUsuario(string mensaje)
+        {
+            string message = mensaje;
+            string caption = "Aviso!";
+            MessageBoxButton messageBoxButton = MessageBoxButton.OK;
+            MessageBoxImage messageBoxImage = MessageBoxImage.Error;
+            MessageBoxResult result = MessageBox.Show(message, caption, messageBoxButton, messageBoxImage);
+            if (result == MessageBoxResult.OK)
+            {
+                logger.Debug("Informando al usuario: " + mensaje);
+            }
         }
         #endregion
     }

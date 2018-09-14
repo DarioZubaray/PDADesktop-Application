@@ -57,7 +57,6 @@ namespace PDADesktop
             logger.Debug("Verificando datos guardados...");
             string isUserReminded = VerificarDatosGuardados();
 
-            isUserReminded = null;
             if (isUserReminded != null)
             {
                 bool check = isUserReminded == "true";
@@ -89,18 +88,10 @@ namespace PDADesktop
            }
            else
            {
-               //RedireccionarLogin();
-
-                CargarVistaDev("View/VerAjustesView.xaml");
+               RedireccionarLogin();
             }
         }
 
-        private void CargarVistaDev(string _uri)
-        {
-            logger.Info("Redireccionando al centro de actividades...");
-            var mainWindow = this.Container.GetInstance<VerAjustesView>();
-            mainWindow.Show();
-        }
 
         #region Methods
         private int GenerandoAleatoriedadDeCasosLogueados()
