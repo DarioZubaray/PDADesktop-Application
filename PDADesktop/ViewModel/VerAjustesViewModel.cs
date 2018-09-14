@@ -1,9 +1,13 @@
 ﻿using log4net;
+using Newtonsoft.Json;
 using PDADesktop.Classes;
 using PDADesktop.Model;
-using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace PDADesktop.ViewModel
 {
@@ -92,12 +96,31 @@ namespace PDADesktop.ViewModel
         #region Constructor
         public VerAjustesViewModel()
         {
-            Ajustes = new ObservableCollection<Ajustes>
+            int estadoPda = MotoApi.isDeviceConnected();
+            var dispatcher = Application.Current.MainWindow.Dispatcher;
+            if (estadoPda != 0)
             {
-                new Ajustes(75024956L, "2018-09-14 103512", "VTO", -2L),
-                new Ajustes(1736403L, "2018-09-14 103512", "ROT", -1L),
-                new Ajustes(75032715L, "2018-09-14 103512", "ROB", -1L)
-            };
+                string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
+                string fileName = ConfigurationManager.AppSettings.Get("DEVICE_FILE_AJUSTES");
+                string motoApiReadDataFile = MotoApi.ReadDataFile(clientDataDir, fileName);
+                if(motoApiReadDataFile != null)
+                {
+                    Ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(motoApiReadDataFile);
+                }
+                else
+                {
+                    dispatcher.BeginInvoke(
+                        new Action(() => AvisoAlUsuario("No se encotraron ajustes!")), 
+                        DispatcherPriority.ApplicationIdle);
+                }
+            }
+            else
+            {
+                dispatcher.BeginInvoke(
+                    new Action(() => AvisoAlUsuario("No se detecta conexion con la PDA")),
+                    DispatcherPriority.ApplicationIdle);
+            }
+
             Textbox_eanEnabled = false;
             Textbox_motivoEnabled = false;
             Textbox_cantidadEnabled = false;
@@ -185,6 +208,19 @@ namespace PDADesktop.ViewModel
         public void GuardarCambiosButton(object obj)
         {
             logger.Debug("GuardarCambiosButton");
+        }
+
+        public void AvisoAlUsuario(string mensaje)
+        {
+            string message = mensaje;
+            string caption = "Aviso!";
+            MessageBoxButton messageBoxButton = MessageBoxButton.OK;
+            MessageBoxImage messageBoxImage = MessageBoxImage.Error;
+            MessageBoxResult result = MessageBox.Show(message, caption, messageBoxButton, messageBoxImage);
+            if(result == MessageBoxResult.OK)
+            {
+                logger.Debug("Informando al usuario: " + mensaje);
+            }
         }
         #endregion
     }
