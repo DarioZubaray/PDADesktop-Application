@@ -3,10 +3,93 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:VM="clr-namespace:PDADesktop.ViewModel"
         xmlns:local="clr-namespace:PDADesktop.View"
         mc:Ignorable="d"
-        Title="VerAjustesView" Height="300" Width="300">
+        Title="VerAjustesView" Height="600" Width="600"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="15"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="WhiteSmoke"
+        FontFamily="{DynamicResource MaterialDesignFont}">
+
+    <Window.DataContext>
+        <VM:VerAjustesViewModel />
+    </Window.DataContext>
+
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="6*" />
+        </Grid.RowDefinitions>
+        <DataGrid x:Name="dataGrid_verAjustes" Grid.Row="0"
+                  BorderThickness="0" BorderBrush="Gainsboro"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top"
+                  AlternatingRowBackground="Gainsboro" AlternationCount="2"
+                  AutoGenerateColumns="False"
+                  ItemsSource="{Binding Ajustes}"
+                  SelectedItem="{Binding Path=SelectedAdjustment, Mode=TwoWay}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding ean}" ClipboardContentBinding="{x:Null}" Header="Ean" CanUserResize="False" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding fechaAjuste}" ClipboardContentBinding="{x:Null}" Header="Fecha" CanUserResize="False" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding motivo}" ClipboardContentBinding="{x:Null}" Header="Motivo" CanUserResize="False" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding cantidad}" ClipboardContentBinding="{x:Null}" Header="Cantidad Ajustada" CanUserResize="False" Width="Auto"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="1">
+            <Grid VerticalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Ean" Grid.Column="0" Grid.Row="0" Margin="10"/>
+                <TextBox x:Name="textbox_ean" Grid.Column="1" Grid.Row="0" Margin="10"
+                         Text="{Binding SelectedAdjustment.ean}"
+                         IsEnabled="{Binding Path=Textbox_eanEnabled, Mode=TwoWay}"/>
+
+                <Label Content="Motivo" Grid.Column="0" Grid.Row="1" Margin="10"/>
+                <TextBox x:Name="textbox_motivo" Grid.Column="1" Grid.Row="1" Margin="10"
+                         Text="{Binding SelectedAdjustment.motivo}"
+                         IsEnabled="{Binding Path=Textbox_motivoEnabled, Mode=TwoWay}"/>
+
+                <Label Content="Cantidad" Grid.Column="0" Grid.Row="2" Margin="10"/>
+                <TextBox x:Name="textbox_cantidad" Grid.Column="1" Grid.Row="2" Margin="10"
+                         Text="{Binding SelectedAdjustment.cantidad}"
+                         IsEnabled="{Binding Path=Textbox_cantidadEnabled, Mode=TwoWay}"/>
+
+                <Border Grid.Column="1" Grid.Row="3" Margin="10">
+                    <Button x:Name="button_eliminar" Style="{StaticResource MaterialDesignFlatButton}">Eliminar</Button>
+                </Border>
+                <Border Grid.Column="2" Grid.Row="3" Margin="10">
+                    <Button x:Name="button_actualizar" Style="{StaticResource MaterialDesignRaisedLightButton}">Actualizar</Button>
+                </Border>
+            </Grid>
+            <Separator></Separator>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Stretch" Height="90">
+                <Border Margin="10">
+                    <Button x:Name="button_descartar" Style="{StaticResource MaterialDesignFlatButton}">Descartar</Button>
+                </Border>
+                <Border Margin="10">
+                    <Button x:Name="button_guardarCambios">Guardar cambios</Button>
+                </Border>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>

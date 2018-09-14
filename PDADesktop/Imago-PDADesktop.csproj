@@ -182,12 +182,16 @@
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\TextUtils.cs" />
     <Compile Include="ViewModel\BuscarLotesViewModel.cs" />
+    <Compile Include="ViewModel\VerAjustesViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\BuscarLotesView.xaml.cs">
       <DependentUpon>BuscarLotesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\UserControl1.xaml.cs">
       <DependentUpon>UserControl1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\VerAjustesView.xaml.cs">
+      <DependentUpon>VerAjustesView.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\CircularProgressBar.xaml">
       <SubType>Designer</SubType>
@@ -241,6 +245,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\UserControl1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\VerAjustesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

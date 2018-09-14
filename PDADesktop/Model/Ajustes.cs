@@ -14,5 +14,13 @@ namespace PDADesktop.Model
         public string perfilGenesix { get; set; }
         public long cantidad { get; set; }
         public string claveAjuste { get; set; }
+
+        public Ajustes(long ean, string fechaAjuste, string motivo, long cantidad)
+        {
+            this.ean = ean;
+            this.fechaAjuste = fechaAjuste;
+            this.motivo = motivo;
+            this.cantidad = cantidad;
+        }
     }
 }
