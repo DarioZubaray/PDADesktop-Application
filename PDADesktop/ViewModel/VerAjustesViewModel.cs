@@ -111,14 +111,14 @@ namespace PDADesktop.ViewModel
                 else
                 {
                     dispatcher.BeginInvoke(
-                        new Action(() => AvisoAlUsuario("No se encotraron ajustes!")), 
+                        new Action(() => AvisarAlUsuario("No se encotraron ajustes!")), 
                         DispatcherPriority.ApplicationIdle);
                 }
             }
             else
             {
                 dispatcher.BeginInvoke(
-                    new Action(() => AvisoAlUsuario("No se detecta conexion con la PDA")),
+                    new Action(() => AvisarAlUsuario("No se detecta conexion con la PDA")),
                     DispatcherPriority.ApplicationIdle);
             }
 
@@ -192,8 +192,10 @@ namespace PDADesktop.ViewModel
         {
             logger.Debug("EliminarAjusteButton");
             Ajustes parametro = obj as Ajustes;
-            logger.Debug("Parametro: " + parametro.ToString());
-            logger.Debug("AjusteSeleccionado : " + SelectedAdjustment.ToString());
+            if(parametro != null)
+                logger.Debug("Parametro: " + parametro.ToString());
+            if(SelectedAdjustment != null)
+                logger.Debug("AjusteSeleccionado : " + SelectedAdjustment.ToString());
 
             Ajustes.Remove(SelectedAdjustment);
             SelectedAdjustment = null;
@@ -201,18 +203,27 @@ namespace PDADesktop.ViewModel
         public void ActualizarAjusteButton(object obj)
         {
             logger.Debug("ActualizarAjusteButton");
+            SelectedAdjustment = null;
         }
         public void DescartarCambiosButton(object obj)
         {
             logger.Debug("DescartarCambiosButton");
-
-            foreach (Window w in Application.Current.Windows)
+            string pregunta = "¿Desea descartar los cambios?";
+            if (PreguntarAlUsuario(pregunta))
             {
-                if (w is VerAjustesView)
+                foreach (Window w in Application.Current.Windows)
                 {
-                    w.Close();
-                    break;
+                    if (w is VerAjustesView)
+                    {
+                        w.Close();
+                        break;
+                    }
                 }
+            }
+            else
+            {
+                // revertir el estado del archivo?
+                // cual es esta de la lista?
             }
 
         }
@@ -221,7 +232,7 @@ namespace PDADesktop.ViewModel
             logger.Debug("GuardarCambiosButton");
         }
 
-        public void AvisoAlUsuario(string mensaje)
+        public void AvisarAlUsuario(string mensaje)
         {
             string message = mensaje;
             string caption = "Aviso!";
@@ -231,6 +242,24 @@ namespace PDADesktop.ViewModel
             if(result == MessageBoxResult.OK)
             {
                 logger.Debug("Informando al usuario: " + mensaje);
+            }
+        }
+
+        public bool PreguntarAlUsuario(string pregunta)
+        {
+            string message = pregunta;
+            string caption = "Aviso!";
+            MessageBoxButton messageBoxButton = MessageBoxButton.OKCancel;
+            MessageBoxImage messageBoxImage = MessageBoxImage.Question;
+            MessageBoxResult result = MessageBox.Show(message, caption, messageBoxButton, messageBoxImage);
+            logger.Debug("Preguntando al usuario: " + pregunta);
+            if (result == MessageBoxResult.OK)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
         #endregion
