@@ -117,19 +117,22 @@
                          IsEnabled="{Binding Path=Textbox_cantidadEnabled, Mode=TwoWay}"/>
 
                 <Border Grid.Column="1" Grid.Row="3" Margin="10">
-                    <Button x:Name="button_eliminar" Style="{StaticResource MaterialDesignFlatButton}">Eliminar</Button>
+                    <Button x:Name="button_eliminar" Style="{StaticResource MaterialDesignFlatButton}"
+                            Command="{Binding EliminarAjusteCommand}">Eliminar</Button>
                 </Border>
                 <Border Grid.Column="2" Grid.Row="3" Margin="10">
-                    <Button x:Name="button_actualizar" Style="{StaticResource MaterialDesignRaisedLightButton}">Actualizar</Button>
+                    <Button x:Name="button_actualizar" Style="{StaticResource MaterialDesignRaisedLightButton}"
+                            Command="{Binding ActualizarAjusteCommand}">Actualizar</Button>
                 </Border>
             </Grid>
             <Separator></Separator>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Stretch" Height="90">
                 <Border Margin="10">
-                    <Button x:Name="button_descartar" Style="{StaticResource MaterialDesignFlatButton}">Descartar</Button>
+                    <Button x:Name="button_descartar" Style="{StaticResource MaterialDesignFlatButton}"
+                            Command="{Binding DescartarCambiosCommand}">Descartar</Button>
                 </Border>
                 <Border Margin="10">
-                    <Button x:Name="button_guardarCambios">Guardar cambios</Button>
+                    <Button x:Name="button_guardarCambios" Command="{Binding GuardarCambiosCommand}">Guardar cambios</Button>
                 </Border>
             </StackPanel>
         </StackPanel>

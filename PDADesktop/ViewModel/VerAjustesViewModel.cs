@@ -1,6 +1,8 @@
 ﻿using log4net;
+using PDADesktop.Classes;
 using PDADesktop.Model;
 using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace PDADesktop.ViewModel
 {
@@ -8,6 +10,7 @@ namespace PDADesktop.ViewModel
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        #region Attributes
         private List<Ajustes> ajustes;
         public List<Ajustes> Ajustes
         {
@@ -33,6 +36,10 @@ namespace PDADesktop.ViewModel
                 selectedAdjustment = value;
                 logger.Debug("item seleccionado: " + selectedAdjustment.ToString());
                 OnPropertyChanged();
+                if(selectedAdjustment != null)
+                {
+                    Textbox_cantidadEnabled = true;
+                }
             }
         }
 
@@ -46,6 +53,7 @@ namespace PDADesktop.ViewModel
             set
             {
                 textbox_eanEnabled = value;
+                OnPropertyChanged();
             }
         }
         private bool textbox_motivoEnabled;
@@ -58,6 +66,7 @@ namespace PDADesktop.ViewModel
             set
             {
                 textbox_motivoEnabled = value;
+                OnPropertyChanged();
             }
         }
         private bool textbox_cantidadEnabled;
@@ -70,9 +79,12 @@ namespace PDADesktop.ViewModel
             set
             {
                 textbox_cantidadEnabled = value;
+                OnPropertyChanged();
             }
         }
+        #endregion
 
+        #region Constructor
         public VerAjustesViewModel()
         {
             Ajustes = new List<Ajustes>
@@ -84,6 +96,85 @@ namespace PDADesktop.ViewModel
             Textbox_eanEnabled = false;
             Textbox_motivoEnabled = false;
             Textbox_cantidadEnabled = false;
+
+            EliminarAjusteCommand = new RelayCommand(EliminarAjusteButton);
+            ActualizarAjusteCommand = new RelayCommand(ActualizarAjusteButton);
+            DescartarCambiosCommand = new RelayCommand(DescartarCambiosButton);
+            GuardarCambiosCommand = new RelayCommand(GuardarCambiosButton);
         }
+        #endregion
+
+        #region Commands
+        private ICommand eliminarAjusteCommand;
+        public ICommand EliminarAjusteCommand
+        {
+            get
+            {
+                return eliminarAjusteCommand;
+            }
+            set
+            {
+                eliminarAjusteCommand = value;
+            }
+        }
+
+        private ICommand actualizarAjusteCommand;
+        public ICommand ActualizarAjusteCommand
+        {
+            get
+            {
+                return actualizarAjusteCommand;
+            }
+            set
+            {
+                actualizarAjusteCommand = value;
+            }
+        }
+
+        private ICommand descartarCambiosCommand;
+        public ICommand DescartarCambiosCommand
+        {
+            get
+            {
+                return descartarCambiosCommand;
+            }
+            set
+            {
+                descartarCambiosCommand = value;
+            }
+        }
+
+        private ICommand guardarAjustesCommand;
+        public ICommand GuardarCambiosCommand
+        {
+            get
+            {
+                return guardarAjustesCommand;
+            }
+            set
+            {
+                guardarAjustesCommand = value;
+            }
+        }
+        #endregion
+
+        #region Methods
+        public void EliminarAjusteButton(object obj)
+        {
+            logger.Debug("EliminarAjusteButton");
+        }
+        public void ActualizarAjusteButton(object obj)
+        {
+            logger.Debug("ActualizarAjusteButton");
+        }
+        public void DescartarCambiosButton(object obj)
+        {
+            logger.Debug("DescartarCambiosButton");
+        }
+        public void GuardarCambiosButton(object obj)
+        {
+            logger.Debug("GuardarCambiosButton");
+        }
+        #endregion
     }
 }
