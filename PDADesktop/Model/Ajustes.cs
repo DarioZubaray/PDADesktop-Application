@@ -22,5 +22,14 @@ namespace PDADesktop.Model
             this.motivo = motivo;
             this.cantidad = cantidad;
         }
+
+        public override string ToString()
+        {
+            return "Ajuste[ean: " + this.ean
+                + ", fechaAjuste: " + this.fechaAjuste
+                + ", motivo: " + this.motivo
+                + ", cantidad: " + this.cantidad
+                + " ]";
+        }
     }
 }

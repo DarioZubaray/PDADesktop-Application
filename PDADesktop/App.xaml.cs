@@ -56,7 +56,9 @@ namespace PDADesktop
 
             logger.Debug("Verificando datos guardados...");
             string isUserReminded = VerificarDatosGuardados();
-            if(isUserReminded != null)
+
+            isUserReminded = null;
+            if (isUserReminded != null)
             {
                 bool check = isUserReminded == "true";
                 if(check)
@@ -87,14 +89,17 @@ namespace PDADesktop
            }
            else
            {
-               RedireccionarLogin();
-           }
-           /*
-            MainWindowView = new MainWindow();
-            Uri uri = new Uri("View/UserControl1.xaml", UriKind.Relative);
-            MainWindowView.frame.NavigationService.Navigate(uri);
-            MainWindowView.Show();
-            */
+               //RedireccionarLogin();
+
+                CargarVistaDev("View/VerAjustesView.xaml");
+            }
+        }
+
+        private void CargarVistaDev(string _uri)
+        {
+            logger.Info("Redireccionando al centro de actividades...");
+            var mainWindow = this.Container.GetInstance<VerAjustesView>();
+            mainWindow.Show();
         }
 
         #region Methods

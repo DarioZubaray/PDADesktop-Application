@@ -1,14 +1,13 @@
-﻿using PDADesktop.Model;
-using System;
+﻿using log4net;
+using PDADesktop.Model;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PDADesktop.ViewModel
 {
     class VerAjustesViewModel : ViewModelBase
     {
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private List<Ajustes> ajustes;
         public List<Ajustes> Ajustes
         {
@@ -32,6 +31,8 @@ namespace PDADesktop.ViewModel
             set
             {
                 selectedAdjustment = value;
+                logger.Debug("item seleccionado: " + selectedAdjustment.ToString());
+                OnPropertyChanged();
             }
         }
 
