@@ -67,15 +67,15 @@
             </DataGrid.CellStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding ean}" ClipboardContentBinding="{x:Null}"
-                                    Header="Ean" CanUserResize="False" Width="120"
+                                    Header="Ean" CanUserResize="False" Width="135"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 <DataGridTextColumn Binding="{Binding fechaAjuste}" ClipboardContentBinding="{x:Null}"
-                                    Header="Fecha" CanUserResize="False" Width="170"
+                                    Header="Fecha" CanUserResize="False" Width="180"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 <DataGridTextColumn Binding="{Binding motivo}" ClipboardContentBinding="{x:Null}"
-                                    Header="Motivo" CanUserResize="False" Width="120"
+                                    Header="Motivo" CanUserResize="False" Width="125"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 <DataGridTextColumn Binding="{Binding cantidad}" ClipboardContentBinding="{x:Null}"
@@ -119,7 +119,8 @@
 
                 <Border Grid.Column="1" Grid.Row="3" Margin="10">
                     <Button x:Name="button_eliminar" Style="{StaticResource MaterialDesignFlatButton}"
-                            Command="{Binding EliminarAjusteCommand}">Eliminar</Button>
+                            Command="{Binding EliminarAjusteCommand}"
+                            CommandParameter="{Binding Path=SelectedAdjustment, Mode=TwoWay}">Eliminar</Button>
                 </Border>
                 <Border Grid.Column="2" Grid.Row="3" Margin="10">
                     <Button x:Name="button_actualizar" Style="{StaticResource MaterialDesignRaisedLightButton}"

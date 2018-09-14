@@ -16,6 +16,7 @@ namespace PDADesktop.ViewModel
     class CentroActividadesViewModel : ViewModelBase
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         #region Commands
         private ICommand exitButtonCommand;
         public ICommand ExitButtonCommand

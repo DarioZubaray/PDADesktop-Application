@@ -2,6 +2,7 @@
 using PDADesktop.Classes;
 using PDADesktop.Model;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace PDADesktop.ViewModel
@@ -11,8 +12,8 @@ namespace PDADesktop.ViewModel
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Attributes
-        private List<Ajustes> ajustes;
-        public List<Ajustes> Ajustes
+        private ObservableCollection<Ajustes> ajustes;
+        public ObservableCollection<Ajustes> Ajustes
         {
             get
             {
@@ -21,6 +22,7 @@ namespace PDADesktop.ViewModel
             set
             {
                 ajustes = value;
+                OnPropertyChanged();
             }
         }
 
@@ -34,11 +36,14 @@ namespace PDADesktop.ViewModel
             set
             {
                 selectedAdjustment = value;
-                logger.Debug("item seleccionado: " + selectedAdjustment.ToString());
                 OnPropertyChanged();
                 if(selectedAdjustment != null)
                 {
                     Textbox_cantidadEnabled = true;
+                }
+                else
+                {
+                    Textbox_cantidadEnabled = false;
                 }
             }
         }
@@ -87,7 +92,7 @@ namespace PDADesktop.ViewModel
         #region Constructor
         public VerAjustesViewModel()
         {
-            Ajustes = new List<Ajustes>
+            Ajustes = new ObservableCollection<Ajustes>
             {
                 new Ajustes(75024956L, "2018-09-14 103512", "VTO", -2L),
                 new Ajustes(1736403L, "2018-09-14 103512", "ROT", -1L),
@@ -162,7 +167,12 @@ namespace PDADesktop.ViewModel
         public void EliminarAjusteButton(object obj)
         {
             logger.Debug("EliminarAjusteButton");
+            Ajustes parametro = obj as Ajustes;
+            logger.Debug("Parametro: " + parametro.ToString());
+            logger.Debug("AjusteSeleccionado : " + SelectedAdjustment.ToString());
+
             Ajustes.Remove(SelectedAdjustment);
+            SelectedAdjustment = null;
         }
         public void ActualizarAjusteButton(object obj)
         {
