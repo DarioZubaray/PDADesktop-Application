@@ -33,6 +33,15 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="DataGridColumnHeaderCentering" TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -57,16 +66,20 @@
             </DataGrid.CellStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding ean}" ClipboardContentBinding="{x:Null}"
-                                    Header="Ean" CanUserResize="False" Width="Auto"
+                                    Header="Ean" CanUserResize="False" Width="120"
+                                    HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 <DataGridTextColumn Binding="{Binding fechaAjuste}" ClipboardContentBinding="{x:Null}"
-                                    Header="Fecha" CanUserResize="False" Width="Auto"
+                                    Header="Fecha" CanUserResize="False" Width="170"
+                                    HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 <DataGridTextColumn Binding="{Binding motivo}" ClipboardContentBinding="{x:Null}"
-                                    Header="Motivo" CanUserResize="False" Width="Auto"
+                                    Header="Motivo" CanUserResize="False" Width="120"
+                                    HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 <DataGridTextColumn Binding="{Binding cantidad}" ClipboardContentBinding="{x:Null}"
                                     Header="Cantidad Ajustada" CanUserResize="False" Width="Auto"
+                                    HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
             </DataGrid.Columns>
         </DataGrid>
