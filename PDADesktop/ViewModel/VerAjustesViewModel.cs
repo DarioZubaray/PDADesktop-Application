@@ -162,6 +162,7 @@ namespace PDADesktop.ViewModel
         public void EliminarAjusteButton(object obj)
         {
             logger.Debug("EliminarAjusteButton");
+            Ajustes.Remove(SelectedAdjustment);
         }
         public void ActualizarAjusteButton(object obj)
         {
