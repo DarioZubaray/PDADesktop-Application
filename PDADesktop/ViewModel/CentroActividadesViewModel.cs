@@ -1,10 +1,12 @@
 ﻿using log4net;
+using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json;
 using PDADesktop.Classes;
 using PDADesktop.Model;
 using PDADesktop.View;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Reflection;
 using System.Windows;
@@ -350,20 +352,52 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        public MaterialDesignThemes.Wpf.Badged badge_informar
+        public Badged badge_verAjustes
         {
             get
             {
-                MaterialDesignThemes.Wpf.Badged badge = new MaterialDesignThemes.Wpf.Badged();
-                badge.Badge = new Random().Next(5, 15);
-                Button botonInformar = new Button();
-                botonInformar.Name = "button_informar";
-                botonInformar.Content = "Informar a Genesix todos los datos";
-                botonInformar.HorizontalAlignment = HorizontalAlignment.Left;
-                botonInformar.VerticalAlignment = VerticalAlignment.Top;
-                botonInformar.ToolTip = "Informar a genesix todos los datos realizados.";
-                botonInformar.Command = this.InformarCommand;
-                badge.Content = botonInformar;
+                Badged badge = new MaterialDesignThemes.Wpf.Badged();
+
+                Button botonVerAjustes = new Button();
+                botonVerAjustes.Name = "button_verAjustes";
+                botonVerAjustes.Content = "Ver Ajustes";
+                botonVerAjustes.HorizontalAlignment = HorizontalAlignment.Left;
+                botonVerAjustes.VerticalAlignment = VerticalAlignment.Top;
+                botonVerAjustes.ToolTip = "Ver los ajustes realizados.";
+                botonVerAjustes.Command = this.VerAjustesCommand;
+
+                int estadoPda = MotoApi.isDeviceConnected();
+                if (estadoPda != 0)
+                {
+                    string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
+                    string fileName = ConfigurationManager.AppSettings.Get("DEVICE_FILE_AJUSTES");
+                    string motoApiReadDataFile = MotoApi.ReadDataFile(clientDataDir, fileName);
+                    if (motoApiReadDataFile != null)
+                    {
+                        ObservableCollection<Ajustes> ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(motoApiReadDataFile);
+                        if(ajustes != null && ajustes.Count > 0)
+                        {
+                            badge.Badge = ajustes.Count;
+                        }
+                        else
+                        {
+                            badge.Badge = 0;
+                            botonVerAjustes.IsEnabled = false;
+                        }
+                    }
+                    else
+                    {
+                        badge.Badge = 0;
+                        botonVerAjustes.IsEnabled = false;
+                    }
+                }
+                else
+                {
+                    badge.Badge = "NO PDA";
+                    badge.BadgeColorZoneMode = ColorZoneMode.Dark;
+                    botonVerAjustes.IsEnabled = false;
+                }
+                badge.Content = botonVerAjustes;
                 return badge;
             }
         }

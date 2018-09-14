@@ -55,16 +55,16 @@
                             </i:Interaction.Triggers>
                         </Button>
 
-                        <materialDesign:Badged x:Name="badged_informar" Content="{Binding badge_informar}" Margin="10">
+                        <materialDesign:Badged x:Name="badged_informar" Badge="{materialDesign:PackIcon Kind=CloudUpload}" 
+                                               Margin="10">
+                            <Button x:Name="button_informar"
+                                    Content="Informar a Genesix todos los datos"
+                                    HorizontalAlignment="Left" VerticalAlignment="Top"
+                                    ToolTip="Informar a genesix todos los datos realizados."
+                                    Command="{Binding InformarCommand}"/>
                         </materialDesign:Badged>
 
-                        <materialDesign:Badged x:Name="badged_verAjustes" Badge="0" Margin="10">
-                            <Button x:Name="button_verAjustes"
-                                    Content="Ver Ajustes" 
-                                    HorizontalAlignment="Left" VerticalAlignment="Top"
-                                    ToolTip="Ver los ajustes realizados."
-                                    Command="{Binding VerAjustesCommand}"/>
-                        </materialDesign:Badged>
+                        <materialDesign:Badged x:Name="badged_verAjustes" Content="{Binding badge_verAjustes}" Margin="10" />
 
                         <Button x:Name="button_salir"
                                 Content="Cerrar sesión" Margin="10"
