@@ -437,7 +437,7 @@ namespace PDADesktop.ViewModel
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             label_version = assembly.GetName().Version.ToString(3);
-            // de donde obtenemos el usaurio y sucursal (?)
+            // de donde obtenemos el usuario y sucursal (?)
             label_usuario = "Admin";
             label_sucursal = "706";
         }

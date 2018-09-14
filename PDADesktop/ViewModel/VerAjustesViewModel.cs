@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using PDADesktop.Classes;
 using PDADesktop.Model;
+using PDADesktop.View;
 using System;
 using System.Collections.ObjectModel;
 using System.Configuration;
@@ -204,6 +205,16 @@ namespace PDADesktop.ViewModel
         public void DescartarCambiosButton(object obj)
         {
             logger.Debug("DescartarCambiosButton");
+
+            foreach (Window w in Application.Current.Windows)
+            {
+                if (w is VerAjustesView)
+                {
+                    w.Close();
+                    break;
+                }
+            }
+
         }
         public void GuardarCambiosButton(object obj)
         {
