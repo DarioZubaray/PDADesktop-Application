@@ -58,6 +58,15 @@
                   SelectionUnit="FullRow" IsReadOnly="True"
                   ItemsSource="{Binding Ajustes}"
                   SelectedItem="{Binding Path=SelectedAdjustment, Mode=TwoWay}">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#FFBF00" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="BorderThickness" Value="0"/>
@@ -65,17 +74,18 @@
                     <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                 </Style>
             </DataGrid.CellStyle>
+
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding ean}" ClipboardContentBinding="{x:Null}"
-                                    Header="Ean" CanUserResize="False" Width="135"
+                                    Header="Ean" CanUserResize="False" Width="140"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 <DataGridTextColumn Binding="{Binding fechaAjuste}" ClipboardContentBinding="{x:Null}"
-                                    Header="Fecha" CanUserResize="False" Width="180"
+                                    Header="Fecha" CanUserResize="False" Width="200"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 <DataGridTextColumn Binding="{Binding motivo}" ClipboardContentBinding="{x:Null}"
-                                    Header="Motivo" CanUserResize="False" Width="125"
+                                    Header="Motivo" CanUserResize="False" Width="130"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 <DataGridTextColumn Binding="{Binding cantidad}" ClipboardContentBinding="{x:Null}"
