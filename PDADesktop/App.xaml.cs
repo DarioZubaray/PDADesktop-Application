@@ -40,6 +40,7 @@ namespace PDADesktop
             string sucursalHarcodeada = "706";
             MyAppProperties.idSucursal = sucursalHarcodeada;
             /*
+             * 0- checkear que la aplicacion no este ejecutandose
              * 1- verificar en segundo plano actualizaciones con squirrel
              * 2- checkear conexion PDAExpress server
              * 3- checkear conexion PDAMoto
