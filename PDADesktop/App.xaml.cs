@@ -7,6 +7,7 @@ using StructureMap;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Threading;
 using System.Windows;
 
 namespace PDADesktop
@@ -21,6 +22,7 @@ namespace PDADesktop
 
         public static App Instance { get; private set; }
         public Container Container { get; private set; }
+        private static Mutex _mutex = null;
 
         public App()
         {
@@ -33,6 +35,7 @@ namespace PDADesktop
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            CheckApplicationRunning();
             base.OnStartup(e);
             string sucursalHarcodeada = "706";
             MyAppProperties.idSucursal = sucursalHarcodeada;
@@ -92,6 +95,19 @@ namespace PDADesktop
             }
         }
 
+        private void CheckApplicationRunning()
+        {
+            const string appName = "PDADesktop";
+            bool createdNew;
+
+            _mutex = new Mutex(true, appName, out createdNew);
+
+            if (!createdNew)
+            {
+                //app is already running! Exiting the application
+                Application.Current.Shutdown();
+            }
+        }
 
         #region Methods
         private int GenerandoAleatoriedadDeCasosLogueados()
