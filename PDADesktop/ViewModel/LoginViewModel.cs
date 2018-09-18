@@ -3,12 +3,14 @@ using PDADesktop.Classes;
 using PDADesktop.View;
 using System;
 using System.Configuration;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace PDADesktop.ViewModel
 {
-    class LoginViewModel
+    class LoginViewModel : ViewModelBase
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #region attributes
@@ -27,6 +29,48 @@ namespace PDADesktop.ViewModel
                 recuerdameCheck = value;
             }
         }
+
+        // Atributos del Spiner
+        private bool _panelLoading;
+        public bool PanelLoading
+        {
+            get
+            {
+                return _panelLoading;
+            }
+            set
+            {
+                _panelLoading = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _panelMainMessage;
+        public string PanelMainMessage
+        {
+            get
+            {
+                return _panelMainMessage;
+            }
+            set
+            {
+                _panelMainMessage = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _panelSubMessage;
+        public string PanelSubMessage
+        {
+            get
+            {
+                return _panelSubMessage;
+            }
+            set
+            {
+                _panelSubMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Command
@@ -42,6 +86,72 @@ namespace PDADesktop.ViewModel
                 loginButtonCommand = value;
             }
         }
+
+        private ICommand showPanelCommand;
+        public ICommand ShowPanelCommand
+        {
+            get
+            {
+                return showPanelCommand;
+            }
+            set
+            {
+                showPanelCommand = value;
+            }
+        }
+
+        private ICommand hidePanelCommand;
+        public ICommand HidePanelCommand
+        {
+            get
+            {
+                return hidePanelCommand;
+            }
+            set
+            {
+                hidePanelCommand = value;
+            }
+        }
+
+        private ICommand changeMainMessageCommand;
+        public ICommand ChangeMainMessageCommand
+        {
+            get
+            {
+                return changeMainMessageCommand;
+            }
+            set
+            {
+                changeMainMessageCommand = value;
+            }
+        }
+
+        private ICommand changeSubMessageCommand;
+        public ICommand ChangeSubMessageCommand
+        {
+            get
+            {
+                return changeSubMessageCommand;
+            }
+            set
+            {
+                changeSubMessageCommand = value;
+            }
+        }
+
+        private ICommand panelCloseCommand;
+        public ICommand PanelCloseCommand
+        {
+            get
+            {
+                return panelCloseCommand;
+            }
+            set
+            {
+                panelCloseCommand = value;
+            }
+        }
+
         private bool canExecute = true;
         #endregion
         
@@ -49,17 +159,37 @@ namespace PDADesktop.ViewModel
         public LoginViewModel()
         {
             LoginButtonCommand = new RelayCommand(LoginPortalApi, param => this.canExecute);
+            ShowPanelCommand = new RelayCommand(MostrarPanel, param => this.canExecute);
+            HidePanelCommand = new RelayCommand(OcultarPanel, param => this.canExecute);
+            ChangeMainMessageCommand = new RelayCommand(CambiarMainMensage, param => this.canExecute);
+            ChangeSubMessageCommand = new RelayCommand(CambiarSubMensage, param => this.canExecute);
+            PanelCloseCommand = new RelayCommand(CerrarPanel, param => this.canExecute);
             RecuerdameCheck = true;
         }
         #endregion
 
-        public void LoginPortalApi(object obj)
+        public async void LoginPortalApi(object obj)
         {
+            PanelLoading = true;
+            /*
+            var dispatcher = Application.Current.MainWindow.Dispatcher;
+            dispatcher.BeginInvoke(
+                new Action(() => LoginPortal()),
+                DispatcherPriority.ApplicationIdle);
+            */
+
+            MyAppProperties.window = (MainWindow)Application.Current.MainWindow;
+            await Task.Run(() => LoginPortal());
+        }
+
+        public void LoginPortal()
+        {
+
             logger.Info("login portal api");
             logger.Debug("Usuario: " + usernameText);
             logger.Debug("Constraseña: " + FloatingPasswordBox + ", para fines de desarrollo");
 
-            MainWindow window = (MainWindow) Application.Current.MainWindow;
+            MainWindow window = MyAppProperties.window;
             if ("juli".Equals(usernameText))
             {
                 logger.Debug("Nombre no null: " + usernameText);
@@ -80,15 +210,35 @@ namespace PDADesktop.ViewModel
             else
             {
                 //marcar como usuario y/o contraseña incorrectos
-                LoginView loginview = (LoginView) window.frame.Content;
+                LoginView loginview = (LoginView)window.frame.Content;
                 logger.Error("usuario y/o contraseña incorrectos");
                 loginview.msgbar.Clear();
                 loginview.msgbar.SetDangerAlert("usuario y/o contraseña incorrectos", 3);
                 loginview.usernameText.Text = "";
                 loginview.FloatingPasswordBox.Clear();
                 loginview.usernameText.Focus();
+                PanelLoading = false;
             }
         }
-
+        public void MostrarPanel(object obj)
+        {
+            PanelLoading = true;
+        }
+        public void OcultarPanel(object obj)
+        {
+            PanelLoading = false;
+        }
+        public void CambiarMainMensage(object obj)
+        {
+            PanelMainMessage = "Espere por favor";
+        }
+        public void CambiarSubMensage(object obj)
+        {
+            PanelSubMessage = "";
+        }
+        public void CerrarPanel(object obj)
+        {
+            PanelLoading = false;
+        }
     }
 }

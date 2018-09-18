@@ -4,6 +4,7 @@ using PDADesktop.Classes;
 using PDADesktop.Model;
 using PDADesktop.View;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Windows;
@@ -41,15 +42,19 @@ namespace PDADesktop.ViewModel
             set
             {
                 selectedAdjustment = value;
-                OnPropertyChanged();
                 if(selectedAdjustment != null)
                 {
+                    TipoDeAjusteSelected = selectedAdjustment.motivo;
+                    Textbox_cantidadValue = selectedAdjustment.cantidad.ToString();
+                    Combobox_tipoAjusteEnabled = true;
                     Textbox_cantidadEnabled = true;
                 }
                 else
                 {
+                    Combobox_tipoAjusteEnabled = false;
                     Textbox_cantidadEnabled = false;
                 }
+                OnPropertyChanged();
             }
         }
 
@@ -66,19 +71,49 @@ namespace PDADesktop.ViewModel
                 OnPropertyChanged();
             }
         }
-        private bool textbox_motivoEnabled;
-        public bool Textbox_motivoEnabled
+
+        private bool combobox_tipoAjusteEnabled;
+        public bool Combobox_tipoAjusteEnabled
         {
             get
             {
-                return textbox_motivoEnabled;
+                return combobox_tipoAjusteEnabled;
             }
             set
             {
-                textbox_motivoEnabled = value;
+                combobox_tipoAjusteEnabled = value;
                 OnPropertyChanged();
             }
         }
+
+        private string tipoDeAjusteSelected;
+        public string TipoDeAjusteSelected
+        {
+            get
+            {
+                return tipoDeAjusteSelected;
+            }
+            set
+            {
+                tipoDeAjusteSelected = value;
+                selectedAdjustment.motivo = tipoDeAjusteSelected;
+                OnPropertyChanged();
+            }
+        }
+
+        private List<string> tiposDeAjustes;
+        public List<string> TiposDeAjustes
+        {
+            get
+            {
+                return tiposDeAjustes;
+            }set
+            {
+                tiposDeAjustes = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool textbox_cantidadEnabled;
         public bool Textbox_cantidadEnabled
         {
@@ -92,6 +127,22 @@ namespace PDADesktop.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        private string textbox_cantidadValue;
+        public string Textbox_cantidadValue
+        {
+            get
+            {
+                return textbox_cantidadValue;
+            }
+            set
+            {
+                textbox_cantidadValue = value;
+                selectedAdjustment.cantidad = Convert.ToInt64(textbox_cantidadValue);
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Constructor
@@ -107,11 +158,17 @@ namespace PDADesktop.ViewModel
                 if(motoApiReadDataFile != null)
                 {
                     Ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(motoApiReadDataFile);
+
+                    // Buscar los tipos de ajustes de pda express
+                    // Me preocupa el timeout y el host inalcanzable
+                    string urlTiposAjustes = ConfigurationManager.AppSettings.Get("API_GET_TIPOS_AJUSTES");
+                    TiposDeAjustes = HttpWebClient.GetTiposDeAjustes(urlTiposAjustes);
+                    logger.Debug(TiposDeAjustes.ToString());
                 }
                 else
                 {
                     dispatcher.BeginInvoke(
-                        new Action(() => AvisarAlUsuario("No se encotraron ajustes!")), 
+                        new Action(() => AvisarAlUsuario("No se encotraron ajustes!")),
                         DispatcherPriority.ApplicationIdle);
                 }
             }
@@ -123,7 +180,7 @@ namespace PDADesktop.ViewModel
             }
 
             Textbox_eanEnabled = false;
-            Textbox_motivoEnabled = false;
+            Combobox_tipoAjusteEnabled = false;
             Textbox_cantidadEnabled = false;
 
             EliminarAjusteCommand = new RelayCommand(EliminarAjusteButton);

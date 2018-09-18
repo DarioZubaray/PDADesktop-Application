@@ -171,6 +171,7 @@
     <Compile Include="Classes\MotoApi.cs" />
     <Compile Include="Classes\MyAppProperties.cs" />
     <Compile Include="Classes\MyContainerInitializer.cs" />
+    <Compile Include="Classes\NotEmptyValidationRule.cs" />
     <Compile Include="Classes\PasswordBoxAssistant.cs" />
     <Compile Include="Controls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>

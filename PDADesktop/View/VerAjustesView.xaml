@@ -113,19 +113,44 @@
                 </Grid.RowDefinitions>
 
                 <Label Content="Ean" Grid.Column="0" Grid.Row="0" Margin="10"/>
-                <TextBox x:Name="textbox_ean" Grid.Column="1" Grid.Row="0" Margin="10"
+                <TextBox Grid.Column="1" Grid.Row="0" Margin="10"
                          Text="{Binding SelectedAdjustment.ean}"
                          IsEnabled="{Binding Path=Textbox_eanEnabled, Mode=TwoWay}"/>
 
                 <Label Content="Motivo" Grid.Column="0" Grid.Row="1" Margin="10"/>
-                <TextBox x:Name="textbox_motivo" Grid.Column="1" Grid.Row="1" Margin="10"
-                         Text="{Binding SelectedAdjustment.motivo}"
-                         IsEnabled="{Binding Path=Textbox_motivoEnabled, Mode=TwoWay}"/>
 
+                <ComboBox materialDesign:HintAssist.Hint="Tipos de Ajustes"
+                          Grid.Column="1" Grid.Row="1"
+                          MinWidth="72" Margin="10"
+                          VerticalAlignment="Bottom"
+                          ItemsSource="{Binding TiposDeAjustes}"
+                          IsEnabled="{Binding Path=Combobox_tipoAjusteEnabled, Mode=TwoWay}"
+                          SelectedValue="{Binding TipoDeAjusteSelected}">
+                    <ComboBox.SelectedItem>
+                        <Binding Path="TipoDeAjusteSelected" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <rules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:rules="clr-namespace:PDADesktop.Classes" />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </ComboBox.SelectedItem>
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
+                </ComboBox>
                 <Label Content="Cantidad" Grid.Column="0" Grid.Row="2" Margin="10"/>
-                <TextBox x:Name="textbox_cantidad" Grid.Column="1" Grid.Row="2" Margin="10"
-                         Text="{Binding SelectedAdjustment.cantidad}"
-                         IsEnabled="{Binding Path=Textbox_cantidadEnabled, Mode=TwoWay}"/>
+                <TextBox Grid.Column="1" Grid.Row="2" Margin="10"
+                         Text="{Binding Textbox_cantidadValue}"
+                         IsEnabled="{Binding Path=Textbox_cantidadEnabled, Mode=TwoWay}">
+                    <TextBox.DataContext>
+                        <Binding Path="Textbox_cantidadValue" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <rules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:rules="clr-namespace:PDADesktop.Classes" />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.DataContext>
+                </TextBox>
 
                 <Border Grid.Column="1" Grid.Row="3" Margin="10">
                     <Button x:Name="button_eliminar" Style="{StaticResource MaterialDesignFlatButton}"
