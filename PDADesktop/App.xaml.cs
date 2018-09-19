@@ -7,6 +7,7 @@ using System;
 using System.Configuration;
 using System.Threading;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace PDADesktop
 {
@@ -94,6 +95,11 @@ namespace PDADesktop
            {
                RedireccionarLogin();
             }
+        }
+
+        void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            logger.Error(e.ToString());
         }
 
         private void CheckApplicationRunning()
