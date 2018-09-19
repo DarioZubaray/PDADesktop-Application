@@ -146,7 +146,7 @@ namespace PDADesktop
         }
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            logger.Info("dispose update manager\n\n");
+            logger.Info("dispose update manager");
             updateManager.Dispose();
         }
 
