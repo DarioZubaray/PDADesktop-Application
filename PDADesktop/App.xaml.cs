@@ -24,6 +24,7 @@ namespace PDADesktop
 
         public App()
         {
+            BannerApp.printBanner();
             Instance = this;
             Container = new Container(c =>
             {

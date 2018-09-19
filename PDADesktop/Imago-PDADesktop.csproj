@@ -167,6 +167,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\BannerApp.cs" />
     <Compile Include="Classes\HttpWebClient.cs" />
     <Compile Include="Classes\MotoApi.cs" />
     <Compile Include="Classes\MyAppProperties.cs" />
