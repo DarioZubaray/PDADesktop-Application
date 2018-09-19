@@ -178,7 +178,7 @@ namespace PDADesktop.ViewModel
         {
             // run all background tasks here
             logger.Debug("worker doWork: " + sender);
-            Thread.Sleep(1000);
+            Thread.Sleep(1200);
             MainWindow window = MyAppProperties.window;
             if ("juli".Equals(usernameText))
             {
@@ -208,10 +208,10 @@ namespace PDADesktop.ViewModel
             {
                 //marcar como usuario y/o contraseña incorrectos
                 logger.Error("usuario y/o contraseña incorrectos");
-                LoginView loginview = (LoginView)window.frame.Content;
                 var dispatcher = Application.Current.Dispatcher;
                 dispatcher.BeginInvoke(new Action(() =>
                 {
+                    LoginView loginview = (LoginView)window.frame.Content;
                     loginview.msgbar.Clear();
                     loginview.msgbar.SetDangerAlert("usuario y/o contraseña incorrectos", 3);
                     loginview.usernameText.Text = "";
@@ -240,6 +240,7 @@ namespace PDADesktop.ViewModel
             logger.Debug("Usuario: " + usernameText);
             logger.Debug("Constraseña: " + FloatingPasswordBox + ", para fines de desarrollo");
             MyAppProperties.window = (MainWindow) Application.Current.MainWindow;
+            PanelMainMessage = "Espere por favor ...";
             worker.RunWorkerAsync();
         }
         public void MostrarPanel(object obj)
