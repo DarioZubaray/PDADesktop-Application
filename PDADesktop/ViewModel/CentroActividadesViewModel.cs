@@ -439,13 +439,21 @@ namespace PDADesktop.ViewModel
         #region Worker Method
         private void sincronizarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            // run all background tasks here
             logger.Debug("sincronizar Worker ->doWork: " + sender);
+            // buscar recepciones informadas pendientes
+            string idSincronizacion = "91142";
+            bool recepcionesInformadas = HttpWebClient.CheckRecepcionesInformadas(idSincronizacion);
+            logger.Debug("recepciones Informadas pendientes: " + (recepcionesInformadas ? "NO" : "SI"));
+            if(recepcionesInformadas)
+            {
+                string idSucursal = "706";
+                string maestroART = HttpWebClient.buscarMaestroArt(idSucursal);
+
+            }
         }
 
         private void sincronizarWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            //update ui once worker complete his work
             logger.Debug("sincronizar Worker ->runWorkedCompleted: " + sender);
             var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
@@ -479,6 +487,7 @@ namespace PDADesktop.ViewModel
             PanelLoading = true;
             PanelMainMessage = "Espere por favor";
             logger.Info("Sincronizando todos los datos");
+            sincronizarWorker.RunWorkerAsync();
         }
 
         public void InformarGenesix(object obj)
@@ -536,9 +545,8 @@ namespace PDADesktop.ViewModel
 
         public void CentroActividadesLoaded(object obj)
         {
-            string urlIdLoteActual = ConfigurationManager.AppSettings.Get("API_SYNC_ID_LOTE");
             string _sucursal = MyAppProperties.idSucursal;
-            int idLoteActual = HttpWebClient.GetIdLoteActual(urlIdLoteActual, _sucursal);
+            int idLoteActual = HttpWebClient.GetIdLoteActual(_sucursal);
             if (idLoteActual != 0)
             {
                 MyAppProperties.idLoteActual = idLoteActual.ToString();

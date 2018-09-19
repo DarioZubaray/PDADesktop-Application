@@ -152,8 +152,7 @@ namespace PDADesktop
 
         private void CheckServerStatus()
         {
-            string urlServerStatus = ConfigurationManager.AppSettings.Get("API_SERVER_CONEXION_STATUS");
-            bool serverStatus = HttpWebClient.getHttpWebServerConexionStatus(urlServerStatus);
+            bool serverStatus = HttpWebClient.getHttpWebServerConexionStatus();
             logger.Info("Conexión pdaexpress server " + serverStatus);
         }
 
