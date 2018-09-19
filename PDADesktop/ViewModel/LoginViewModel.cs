@@ -2,7 +2,9 @@
 using PDADesktop.Classes;
 using PDADesktop.View;
 using System;
+using System.ComponentModel;
 using System.Configuration;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -14,6 +16,7 @@ namespace PDADesktop.ViewModel
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #region attributes
+        private readonly BackgroundWorker worker = new BackgroundWorker();
         public string usernameText { get; set; }
         public string FloatingPasswordBox { get; set; }
 
@@ -164,35 +167,23 @@ namespace PDADesktop.ViewModel
             ChangeMainMessageCommand = new RelayCommand(CambiarMainMensage, param => this.canExecute);
             ChangeSubMessageCommand = new RelayCommand(CambiarSubMensage, param => this.canExecute);
             PanelCloseCommand = new RelayCommand(CerrarPanel, param => this.canExecute);
+            worker.DoWork += worker_DoWork;
+            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
             RecuerdameCheck = true;
         }
         #endregion
 
-        public async void LoginPortalApi(object obj)
+        #region Worker Method
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            PanelLoading = true;
-            /*
-            var dispatcher = Application.Current.MainWindow.Dispatcher;
-            dispatcher.BeginInvoke(
-                new Action(() => LoginPortal()),
-                DispatcherPriority.ApplicationIdle);
-            */
-
-            MyAppProperties.window = (MainWindow)Application.Current.MainWindow;
-            await Task.Run(() => LoginPortal());
-        }
-
-        public void LoginPortal()
-        {
-
-            logger.Info("login portal api");
-            logger.Debug("Usuario: " + usernameText);
-            logger.Debug("Constraseña: " + FloatingPasswordBox + ", para fines de desarrollo");
-
+            // run all background tasks here
+            logger.Debug("worker doWork: " + sender);
+            Thread.Sleep(1000);
             MainWindow window = MyAppProperties.window;
             if ("juli".Equals(usernameText))
             {
                 logger.Debug("Nombre no null: " + usernameText);
+                logger.Debug("recuerdame: " + RecuerdameCheck);
                 DateTime fechaExpiracion = new DateTime(2020, 12, 31);
                 string userCookie = "username=" + usernameText + ";expires=" + fechaExpiracion.ToString("r");
                 string urlFromProperties = ConfigurationManager.AppSettings.Get("URL_COOKIE");
@@ -205,27 +196,60 @@ namespace PDADesktop.ViewModel
                 //aca deberia llamar al servicio de login
                 //Redirecciona a centroActividades
                 Uri uri = new Uri("View/CentroActividadesView.xaml", UriKind.Relative);
-                window.frame.NavigationService.Navigate(uri);
+
+                var dispatcher = Application.Current.Dispatcher;
+                dispatcher.BeginInvoke(new Action(() =>
+                {
+                    window.frame.NavigationService.Navigate(uri);
+                }));
+                
             }
             else
             {
                 //marcar como usuario y/o contraseña incorrectos
-                LoginView loginview = (LoginView)window.frame.Content;
                 logger.Error("usuario y/o contraseña incorrectos");
-                loginview.msgbar.Clear();
-                loginview.msgbar.SetDangerAlert("usuario y/o contraseña incorrectos", 3);
-                loginview.usernameText.Text = "";
-                loginview.FloatingPasswordBox.Clear();
-                loginview.usernameText.Focus();
-                PanelLoading = false;
+                LoginView loginview = (LoginView)window.frame.Content;
+                var dispatcher = Application.Current.Dispatcher;
+                dispatcher.BeginInvoke(new Action(() =>
+                {
+                    loginview.msgbar.Clear();
+                    loginview.msgbar.SetDangerAlert("usuario y/o contraseña incorrectos", 3);
+                    loginview.usernameText.Text = "";
+                    loginview.FloatingPasswordBox.Clear();
+                    loginview.usernameText.Focus();
+                    PanelLoading = false;
+                }));
             }
+        }
+
+        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //update ui once worker complete his work
+            logger.Debug("Worker runWorkedCompleted: " + sender);
+            var dispatcher = Application.Current.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                PanelLoading = false;
+            }));
+        }
+        #endregion
+
+        public void LoginPortalApi(object obj)
+        {
+            logger.Info("login portal api");
+            logger.Debug("Usuario: " + usernameText);
+            logger.Debug("Constraseña: " + FloatingPasswordBox + ", para fines de desarrollo");
+            MyAppProperties.window = (MainWindow) Application.Current.MainWindow;
+            worker.RunWorkerAsync();
         }
         public void MostrarPanel(object obj)
         {
+            logger.Debug("Mostrando panel de carga");
             PanelLoading = true;
         }
         public void OcultarPanel(object obj)
         {
+            logger.Debug("Ocultando panel de carga");
             PanelLoading = false;
         }
         public void CambiarMainMensage(object obj)

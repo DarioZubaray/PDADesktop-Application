@@ -178,6 +178,9 @@
                                         Command="{x:Static materialDesign:Flipper.FlipCommand}" >
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
+                                            <i:InvokeCommandAction Command="{Binding ShowPanelCommand}" />
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="Click">
                                             <i:InvokeCommandAction Command="{Binding LoginButtonCommand}" />
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
