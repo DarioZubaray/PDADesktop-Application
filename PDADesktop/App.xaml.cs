@@ -47,6 +47,7 @@ namespace PDADesktop
              * 3- checkear conexion PDAMoto
              * 4- verificar datos guardados
              * 5- iniciar ventana
+             * 6- Version PDAMoto
             */
 
             logger.Debug("Verificando en segundo plano actualizaciones con squirrel.window");
@@ -57,7 +58,10 @@ namespace PDADesktop
             CheckServerStatus();
 
             logger.Debug("Checkear conexión con PDAMoto");
-            CheckDeviceConnected();
+            if (CheckDeviceConnected())
+            {
+                UpdatePDAMotoApp();
+            }
 
             logger.Debug("Verificando datos guardados...");
             string isUserReminded = VerificarDatosGuardados();
@@ -156,11 +160,17 @@ namespace PDADesktop
             logger.Info("Conexión pdaexpress server " + serverStatus);
         }
 
-        private void CheckDeviceConnected()
+        private bool CheckDeviceConnected()
         {
             int respuestaDll = MotoApi.isDeviceConnected();
-            bool boolValue = respuestaDll != 0;
-            logger.Info("PDA is connected: " + boolValue);
+            bool pdaConectada = respuestaDll != 0;
+            logger.Info("PDA is connected: " + pdaConectada);
+            return pdaConectada;
+        }
+
+        private void UpdatePDAMotoApp()
+        {
+
         }
 
         private string VerificarDatosGuardados()

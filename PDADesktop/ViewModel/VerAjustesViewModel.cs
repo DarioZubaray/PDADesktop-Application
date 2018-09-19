@@ -154,7 +154,7 @@ namespace PDADesktop.ViewModel
             {
                 string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
                 string fileName = ConfigurationManager.AppSettings.Get("DEVICE_FILE_AJUSTES");
-                string motoApiReadDataFile = MotoApi.ReadDataFile(clientDataDir, fileName);
+                string motoApiReadDataFile = MotoApi.ReadAjustesDataFile(clientDataDir, fileName);
                 if(motoApiReadDataFile != null)
                 {
                     Ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(motoApiReadDataFile);

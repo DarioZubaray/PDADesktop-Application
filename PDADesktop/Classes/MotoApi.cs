@@ -27,17 +27,13 @@ namespace PDADesktop.Classes
         [DllImport(pdaMotoCommunication, CallingConvention = CallingConvention.Cdecl)]
         public static extern int setTime(string time);
 
-        public static string ReadDataFile(string desDir, string filename)
+        public static string ReadAjustesDataFile(string desDir, string filename)
         {
-            string versionRelPath = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
-            string fileRelPath = versionRelPath + filename;
-            logger.Debug("descargando archivo desde: " + fileRelPath);
-            string desDirExpanded = TextUtils.ExpandEnviromentVariable(desDir);
-            logger.Debug("hacia la ruta: " + desDirExpanded);
-            FileUtils.VerifyFolders(desDirExpanded);
-            CodigoResultado result = getResult(MotoApi.downloadFileFromAppData(fileRelPath, desDirExpanded + filename));
+            string deviceRelativePathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
+            CodigoResultado result = getResult(CopyDeviceFile(deviceRelativePathData, desDir, filename));
             if (result.Equals(CodigoResultado.OK))
             {
+                string desDirExpanded = TextUtils.ExpandEnviromentVariable(desDir);
                 string ajustes = FileUtils.ReadFile(desDirExpanded + filename);
                 return TextUtils.ParseAjusteDAT2Json(ajustes);
             }
@@ -45,6 +41,17 @@ namespace PDADesktop.Classes
             {
                 return null;
             }
+        }
+
+        public static int CopyDeviceFile(string sourceDir, string destinationDir, string filename)
+        {
+            string fileRelPath = sourceDir + filename;
+            logger.Debug("obteniendo archivo desde: " + fileRelPath);
+            string desDirExpanded = TextUtils.ExpandEnviromentVariable(destinationDir);
+            logger.Debug("copiando hacia la ruta: " + desDirExpanded);
+            FileUtils.VerifyFolders(desDirExpanded);
+            int codigoResultado = MotoApi.downloadFileFromAppData(fileRelPath, desDirExpanded + filename);
+            return codigoResultado;
         }
 
         private static class MotoResult
