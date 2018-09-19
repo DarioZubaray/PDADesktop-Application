@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Configuration;
+using PDADesktop.Utils;
 
 namespace PDADesktop.Classes
 {
@@ -46,7 +47,9 @@ namespace PDADesktop.Classes
             {
                 logger.Debug("Enviando petición a " + ipServer + url);
                 //Si la path no existe se rompe en mil pedacitos =/
-                client.DownloadFile(ipServer + url, @"C:/dev/PDADesktop/Maestros/MaestroArticulo.DAT");
+                string destino = @"C:/dev/PDADesktop/Maestros";
+                FileUtils.VerifyFolders(destino);
+                client.DownloadFile(ipServer + url, destino + "/MaestroArticulo.DAT");
                 //logger.Debug("response: " + response);
             }
             catch (Exception e)
