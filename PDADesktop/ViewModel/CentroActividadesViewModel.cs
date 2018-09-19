@@ -7,6 +7,7 @@ using PDADesktop.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Configuration;
 using System.Reflection;
 using System.Windows;
@@ -245,6 +246,8 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Attributes
+        private readonly BackgroundWorker sincronizarWorker = new BackgroundWorker();
+
         private string _txt_sincronizacion;
         public string txt_sincronizacion
         {
@@ -423,12 +426,32 @@ namespace PDADesktop.ViewModel
             EstadoGeneralCommand = new RelayCommand(BotonEstadoGeneral, param => this.canExecute);
             sincronizaciones = SincronizacionPOCO.getStaticMockList(new RelayCommand(BotonEstadoGenesix, param => this.canExecute));
             ActualizarLoteActual(sincronizaciones);
-
+            sincronizarWorker.DoWork += sincronizarWorker_DoWork;
+            sincronizarWorker.RunWorkerCompleted += sincronizarWorker_RunWorkerCompleted;
             ShowPanelCommand = new RelayCommand(MostrarPanel, param => this.canExecute);
             HidePanelCommand = new RelayCommand(OcultarPanel, param => this.canExecute);
             ChangeMainMessageCommand = new RelayCommand(CambiarMainMensage, param => this.canExecute);
             ChangeSubMessageCommand = new RelayCommand(CambiarSubMensage, param => this.canExecute);
             PanelCloseCommand = new RelayCommand(CerrarPanel, param => this.canExecute);
+        }
+        #endregion
+
+        #region Worker Method
+        private void sincronizarWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // run all background tasks here
+            logger.Debug("sincronizar Worker ->doWork: " + sender);
+        }
+
+        private void sincronizarWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //update ui once worker complete his work
+            logger.Debug("sincronizar Worker ->runWorkedCompleted: " + sender);
+            var dispatcher = Application.Current.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                PanelLoading = false;
+            }));
         }
         #endregion
 
