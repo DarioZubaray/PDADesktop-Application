@@ -8,7 +8,7 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="bool2visibility" />
 
-        <LinearGradientBrush x:Key="panelBackground" StartPoint="0,0" EndPoint="0,1" >
+        <LinearGradientBrush x:Key="panelBackground" StartPoint="0,0" EndPoint="0,1" Opacity="0.9">
             <GradientStop Color="Transparent" Offset="0"/>
             <GradientStop Color="White" Offset="0.20" />
             <GradientStop Color="WhiteSmoke" Offset="0.50" />
