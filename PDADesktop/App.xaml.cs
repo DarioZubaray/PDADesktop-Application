@@ -22,7 +22,7 @@ namespace PDADesktop
         public static App Instance { get; private set; }
         public Container Container { get; private set; }
         private static Mutex _mutex = null;
-
+        private DeviceHandler deviceHandler { get; set; }
         public App()
         {
             BannerApp.printBanner();
@@ -31,6 +31,7 @@ namespace PDADesktop
             {
                 c.AddRegistry(new MyContainerInitializer());
             });
+            deviceHandler = this.Container.GetInstance<DeviceHandler>();
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -162,15 +163,14 @@ namespace PDADesktop
 
         private bool CheckDeviceConnected()
         {
-            int respuestaDll = MotoApi.isDeviceConnected();
-            bool pdaConectada = respuestaDll != 0;
-            logger.Info("PDA is connected: " + pdaConectada);
-            return pdaConectada;
+            bool dispositivoConectado = deviceHandler.isDeviceConnected();
+            logger.Info("PDA is connected: " + dispositivoConectado);
+            return dispositivoConectado;
         }
 
         private void UpdatePDAMotoApp()
         {
-
+            logger.Info("UpdatePDAMotoApp: ");
         }
 
         private string VerificarDatosGuardados()

@@ -30,7 +30,8 @@ namespace PDADesktop.Classes
         public static string ReadAjustesDataFile(string desDir, string filename)
         {
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
-            CodigoResultado result = getResult(CopyDeviceFile(deviceRelativePathData, desDir, filename));
+            int moverArchivo = CopyDeviceFile(deviceRelativePathData, desDir, filename);
+            CodigoResultado result = getResult(moverArchivo);
             if (result.Equals(CodigoResultado.OK))
             {
                 string desDirExpanded = TextUtils.ExpandEnviromentVariable(desDir);

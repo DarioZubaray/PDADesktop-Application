@@ -1,5 +1,9 @@
-﻿using PDADesktop.ViewModel;
+﻿using PDADesktop.Classes;
+using PDADesktop.Classes.Devices;
+using PDADesktop.ViewModel;
 using StructureMap;
+using System;
+using System.Configuration;
 
 namespace PDADesktop.Classes
 {
@@ -20,6 +24,15 @@ namespace PDADesktop.Classes
             ForConcreteType<LoginViewModel>().Configure.Singleton();
             ForConcreteType<VerAjustesViewModel>().Configure.Singleton();
 
+            string deviceHandler = ConfigurationManager.AppSettings.Get("DEVICE_HANDLER");
+            if (deviceHandler.Equals(MyAppProperties.DESKTOP_ADAPTER, StringComparison.InvariantCultureIgnoreCase))
+            {
+                this.For<DeviceHandler>().Use<DesktopAdapter>().Named("desktopAdapter");
+            }
+            else
+            {
+                this.For<DeviceHandler>().Use<MotoAdapter>().Named("motoAdapter");
+            }
         }
     }
 }

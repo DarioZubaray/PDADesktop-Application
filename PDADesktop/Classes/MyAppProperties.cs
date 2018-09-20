@@ -7,5 +7,8 @@ namespace PDADesktop.Classes
         public static string idSucursal { get; set; }
         public static string idLoteActual { get; set; }
         public static MainWindow window { get; set; }
+
+        public static string MOTO_ADAPTER = "MotoAdapter";
+        public static string DESKTOP_ADAPTER = "DesktopAdapter";
     }
 }
