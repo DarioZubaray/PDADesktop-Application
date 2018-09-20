@@ -173,6 +173,9 @@ namespace PDADesktop
         private void UpdatePDAMotoApp()
         {
             logger.Info("UpdatePDAMotoApp: ");
+            //1- obtener el archivo DEFAULT.DAT
+            //2- si no existe crearlo
+            //3- pegarle al endpoint getInfoVersion
         }
 
         private string VerificarDatosGuardados()

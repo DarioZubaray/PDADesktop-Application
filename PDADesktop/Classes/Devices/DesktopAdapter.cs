@@ -8,11 +8,10 @@ namespace PDADesktop.Classes.Devices
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private string GetUserDesktopPDATestFolderPath()
+        private string GetUserDesktopPDATestFolderPath(string deviceRelPath)
         {
             string userDesktopPDATest = TextUtils.ExpandEnviromentVariable(@"%USERPROFILE%\\Desktop\\PDATest");
-            string deviceRelPathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
-            string desktopDirectory = userDesktopPDATest + deviceRelPathData;
+            string desktopDirectory = userDesktopPDATest + deviceRelPath;
             FileUtils.VerifyFoldersOrCreate(desktopDirectory);
             return desktopDirectory;
         }
@@ -47,9 +46,22 @@ namespace PDADesktop.Classes.Devices
             return DeviceResultName.NONEXISTENT_FILE;
         }
 
+        public void CreateDefaultDataFile()
+        {
+            string fileDefaultDat = ConfigurationManager.AppSettings.Get("DEVICE_FILE_DEFAULT");
+            logger.Debug("Creando el archivo: " + fileDefaultDat);
+            string deviceRelPathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_VERSION");
+            string userDesktopPdaTestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathData);
+            string pdaControl = "0|0|0000000000000|0|0.0.0|0|0";
+            logger.Debug("Guardando en: " + deviceRelPathData + fileDefaultDat);
+            FileUtils.WriteFile(deviceRelPathData + fileDefaultDat, pdaControl);
+            logger.Debug("Resultado de crear archivo: " + FileUtils.VerifyIfExitsFile(deviceRelPathData + fileDefaultDat));
+        }
+
         public string ReadAdjustmentsDataFile(string desDir, string filename)
         {
-            string userDesktopPDATestFolderPath = GetUserDesktopPDATestFolderPath();
+            string deviceRelPathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
+            string userDesktopPDATestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathData);
             if(FileUtils.VerifyIfExitsFile(userDesktopPDATestFolderPath + filename))
             {
                 string ajustes = FileUtils.ReadFile(userDesktopPDATestFolderPath + filename);

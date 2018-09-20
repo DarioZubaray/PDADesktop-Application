@@ -29,6 +29,21 @@ namespace PDADesktop.Classes.Devices
             return getResult(codigoResultado);
         }
 
+        public void CreateDefaultDataFile()
+        {
+            string fileDefaultDat = ConfigurationManager.AppSettings.Get("DEVICE_FILE_DEFAULT");
+            logger.Debug("Creando el archivo: " + fileDefaultDat);
+            string deviceRelPathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_VERSION");
+            string userPDADocumentFolder = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
+            string userPDADocumenteFolderExtended = TextUtils.ExpandEnviromentVariable(userPDADocumentFolder);
+            string pdaControl = "0|0|0000000000000|0|0.0.0|0|0";
+            logger.Debug("Guardando temporalmente en: " + userPDADocumenteFolderExtended);
+            FileUtils.WriteFile(userPDADocumenteFolderExtended + fileDefaultDat, pdaControl);
+            int copyResult = MotoApi.copyFileToProgramFiles(userPDADocumenteFolderExtended + fileDefaultDat, deviceRelPathData);
+            logger.Debug("Moviendo al dispositivo: " + deviceRelPathData);
+            logger.Debug("Resultado obtenido: " + getResult(copyResult));
+        }
+
         public string ReadAdjustmentsDataFile(string destinationDirectory, string filename)
         {
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
