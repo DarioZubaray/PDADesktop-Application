@@ -33,6 +33,7 @@ namespace PDADesktop
                 c.AddRegistry(new MyContainerInitializer());
             });
             deviceHandler = this.Container.GetInstance<IDeviceHandler>();
+            logger.Info("Adaptador: " + ConfigurationManager.AppSettings.Get("DEVICE_HANDLER"));
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -164,7 +165,7 @@ namespace PDADesktop
 
         private bool CheckDeviceConnected()
         {
-            bool dispositivoConectado = deviceHandler.isDeviceConnected();
+            bool dispositivoConectado = deviceHandler.IsDeviceConnected();
             logger.Info("PDA is connected: " + dispositivoConectado);
             return dispositivoConectado;
         }

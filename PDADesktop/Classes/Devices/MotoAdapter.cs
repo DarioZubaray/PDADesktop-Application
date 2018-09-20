@@ -7,17 +7,32 @@ namespace PDADesktop.Classes.Devices
     class MotoAdapter : IDeviceHandler
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public string GetName()
+        {
+         return "MotoAdapter";
+        }
 
-        public bool isDeviceConnected()
+        public bool IsDeviceConnected()
         {
             return MotoApi.isDeviceConnected() != 0;
+        }
+
+        public DeviceResultName CopyDeviceFileToAppData(string sourceDirectory, string filename)
+        {
+            string fileRelPath = sourceDirectory + filename;
+            logger.Debug("obteniendo archivo desde: " + fileRelPath);
+            string clientPathData = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
+            string desDirExpanded = TextUtils.ExpandEnviromentVariable(clientPathData);
+            logger.Debug("copiando hacia la ruta: " + desDirExpanded);
+            FileUtils.VerifyFoldersOrCreate(desDirExpanded);
+            int codigoResultado = MotoApi.downloadFileFromAppData(fileRelPath, desDirExpanded + filename);
+            return getResult(codigoResultado);
         }
 
         public string ReadAjustesDataFile(string desDir, string filename)
         {
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
-            int moverArchivo = CopyDeviceFile2AppData(deviceRelativePathData, desDir, filename);
-            DeviceResultNames result = getResult(moverArchivo);
+            DeviceResultName result = CopyDeviceFileToAppData(deviceRelativePathData, filename);
             if (result.Equals(DeviceCodeResult.OK))
             {
                 string desDirExpanded = TextUtils.ExpandEnviromentVariable(desDir);
@@ -30,60 +45,49 @@ namespace PDADesktop.Classes.Devices
             }
         }
 
-        public static int CopyDeviceFile2AppData(string sourceDir, string destinationDir, string filename)
+        public static DeviceResultName getResult(int intResult)
         {
-            string fileRelPath = sourceDir + filename;
-            logger.Debug("obteniendo archivo desde: " + fileRelPath);
-            string desDirExpanded = TextUtils.ExpandEnviromentVariable(destinationDir);
-            logger.Debug("copiando hacia la ruta: " + desDirExpanded);
-            FileUtils.VerifyFoldersOrCreate(desDirExpanded);
-            int codigoResultado = MotoApi.downloadFileFromAppData(fileRelPath, desDirExpanded + filename);
-            return codigoResultado;
-        }
-
-        public static DeviceResultNames getResult(int intResult)
-        {
-            DeviceResultNames result;
+            DeviceResultName result;
             switch (intResult)
             {
 
                 case DeviceCodeResult.OK:
-                    result = DeviceResultNames.OK;
+                    result = DeviceResultName.OK;
                     break;
 
                 case DeviceCodeResult.ERROR_INIT:
-                    result = DeviceResultNames.CONNECTION_ERROR;
+                    result = DeviceResultName.CONNECTION_ERROR;
                     break;
 
                 case DeviceCodeResult.ERROR_FILENOTEXISTS:
-                    result = DeviceResultNames.NONEXISTENT_FILE;
+                    result = DeviceResultName.NONEXISTENT_FILE;
                     break;
 
                 case DeviceCodeResult.ERROR_NOTAFILE:
-                    result = DeviceResultNames.NONEXISTENT_FILE;
+                    result = DeviceResultName.NONEXISTENT_FILE;
                     break;
 
                 case (int)DeviceCodeResult.ERROR_FILEOPENING:
-                    result = DeviceResultNames.UNKNOWN;
+                    result = DeviceResultName.UNKNOWN;
                     break;
 
                 case DeviceCodeResult.ERROR_FILEWRITING:
-                    result = DeviceResultNames.UNKNOWN;
+                    result = DeviceResultName.UNKNOWN;
                     break;
 
                 case DeviceCodeResult.ERROR_FILEREADING:
-                    result = DeviceResultNames.UNKNOWN;
+                    result = DeviceResultName.UNKNOWN;
                     break;
 
                 case DeviceCodeResult.ERROR_DELETE:
-                    result = DeviceResultNames.DELETE_ERROR;
+                    result = DeviceResultName.DELETE_ERROR;
                     break;
 
                 case DeviceCodeResult.ERROR_UNKNOWN:
-                    result = DeviceResultNames.UNKNOWN;
+                    result = DeviceResultName.UNKNOWN;
                     break;
                 default:
-                    result = DeviceResultNames.UNKNOWN;
+                    result = DeviceResultName.UNKNOWN;
                     break;
             }
 

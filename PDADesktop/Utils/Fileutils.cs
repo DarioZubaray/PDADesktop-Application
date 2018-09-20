@@ -10,6 +10,11 @@ namespace PDADesktop.Utils
             return File.ReadAllText(source, Encoding.UTF8);
         }
 
+        public static void CopyFile(string source, string destination)
+        {
+            File.Copy(source, destination);
+        }
+
         public static bool VerifyIfExitsFile(string desDirExpanded)
         {
             return File.Exists(desDirExpanded);

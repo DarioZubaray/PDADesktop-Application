@@ -172,7 +172,7 @@
     <Compile Include="Classes\Devices\DeviceCodeResult.cs" />
     <Compile Include="Classes\Devices\IDeviceHandler.cs" />
     <Compile Include="Classes\Devices\MotoAdapter.cs" />
-    <Compile Include="Classes\Devices\DeviceResultNames.cs" />
+    <Compile Include="Classes\Devices\DeviceResultName.cs" />
     <Compile Include="Classes\HttpWebClient.cs" />
     <Compile Include="Classes\Devices\MotoApi.cs" />
     <Compile Include="Classes\MyAppProperties.cs" />

@@ -1,6 +1,6 @@
 ﻿namespace PDADesktop.Classes.Devices
 {
-    enum DeviceResultNames
+    public enum DeviceResultName
     {
         OK,
         NONEXISTENT_FILE,

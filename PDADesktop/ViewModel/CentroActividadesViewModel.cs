@@ -359,7 +359,7 @@ namespace PDADesktop.ViewModel
         {
             get
             {
-                Badged badge = new MaterialDesignThemes.Wpf.Badged();
+                Badged badge = new Badged();
 
                 Button botonVerAjustes = new Button();
                 botonVerAjustes.Name = "button_verAjustes";
@@ -369,15 +369,15 @@ namespace PDADesktop.ViewModel
                 botonVerAjustes.ToolTip = "Ver los ajustes realizados.";
                 botonVerAjustes.Command = this.VerAjustesCommand;
 
-                bool estadoDevice = App.Instance.deviceHandler.isDeviceConnected();
+                bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
                 if (estadoDevice)
                 {
                     string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
                     string fileName = ConfigurationManager.AppSettings.Get("DEVICE_FILE_AJUSTES");
-                    string motoApiReadDataFile = App.Instance.deviceHandler.ReadAjustesDataFile(clientDataDir, fileName);
-                    if (motoApiReadDataFile != null)
+                    string DeviceAjusteFile = App.Instance.deviceHandler.ReadAjustesDataFile(clientDataDir, fileName);
+                    if (DeviceAjusteFile != null)
                     {
-                        ObservableCollection<Ajustes> ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(motoApiReadDataFile);
+                        ObservableCollection<Ajustes> ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(DeviceAjusteFile);
                         if(ajustes != null && ajustes.Count > 0)
                         {
                             badge.Badge = ajustes.Count;
@@ -499,7 +499,7 @@ namespace PDADesktop.ViewModel
         public void VerAjustes(object obj)
         {
             logger.Info("Viendo ajustes realizados");
-            bool estadoDevice = App.Instance.deviceHandler.isDeviceConnected();
+            bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
             if(estadoDevice)
             {
                 string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");

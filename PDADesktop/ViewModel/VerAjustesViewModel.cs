@@ -149,7 +149,7 @@ namespace PDADesktop.ViewModel
         public VerAjustesViewModel()
         {
             var dispatcher = Application.Current.MainWindow.Dispatcher;
-            bool estadoDevice = App.Instance.deviceHandler.isDeviceConnected();
+            bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
             if (estadoDevice)
             {
                 string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");

@@ -1,24 +1,56 @@
-﻿using PDADesktop.Utils;
+﻿using log4net;
+using PDADesktop.Utils;
 using System.Configuration;
 
 namespace PDADesktop.Classes.Devices
 {
     class DesktopAdapter : IDeviceHandler
     {
-        public bool isDeviceConnected()
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        private string GetUserDesktopPDATestFolderPath()
+        {
+         string userDesktopPDATest = TextUtils.ExpandEnviromentVariable(@"%USERPROFILE%\\Desktop\\PDATest");
+         string deviceRelPathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
+         string desktopDirectory = userDesktopPDATest + deviceRelPathData;
+         FileUtils.VerifyFoldersOrCreate(desktopDirectory);
+         return desktopDirectory;
+        }
+
+        public string GetName()
+        {
+            return "DesktopAdapter";
+        }
+
+        public bool IsDeviceConnected()
         {
             return true;
         }
 
+        public DeviceResultName CopyDeviceFileToAppData(string sourceDirectory, string filename)
+        {
+            if (FileUtils.VerifyIfExitsFile(sourceDirectory+filename))
+            {
+                string clientPathData = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
+                FileUtils.CopyFile(sourceDirectory + filename, clientPathData + filename);
+                if(FileUtils.VerifyIfExitsFile(clientPathData + filename))
+                {
+                 return DeviceResultName.OK;
+                }
+                else
+                {
+                 return DeviceResultName.FILE_DOWNLOAD_NOTOK;
+                }
+            }
+            return DeviceResultName.NONEXISTENT_FILE;
+        }
+
         public string ReadAjustesDataFile(string desDir, string filename)
         {
-            string userDesktopPDATest = TextUtils.ExpandEnviromentVariable(@"%USERPROFILE%/PDATest");
-            string deviceRelPathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
-            string directory = userDesktopPDATest + deviceRelPathData;
-            FileUtils.VerifyFoldersOrCreate(directory);
-            if(FileUtils.VerifyIfExitsFile(directory+filename))
+            string userDesktopPDATestFolderPath = GetUserDesktopPDATestFolderPath();
+            if(FileUtils.VerifyIfExitsFile(userDesktopPDATestFolderPath + filename))
             {
-                string ajustes = FileUtils.ReadFile(userDesktopPDATest + deviceRelPathData + filename);
+                string ajustes = FileUtils.ReadFile(userDesktopPDATestFolderPath + filename);
                 return TextUtils.ParseAjusteDAT2Json(ajustes);
             }
             else
