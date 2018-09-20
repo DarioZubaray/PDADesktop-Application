@@ -10,9 +10,19 @@ namespace PDADesktop.Utils
             return File.ReadAllText(source, Encoding.UTF8);
         }
 
+        public static void WriteFile(string source, string content)
+        {
+            File.WriteAllText(source, content);
+        }
+
         public static void CopyFile(string source, string destination)
         {
             File.Copy(source, destination);
+        }
+
+        public static void DeleteFile(string source)
+        {
+            File.Delete(source);
         }
 
         public static bool VerifyIfExitsFile(string desDirExpanded)
