@@ -9,7 +9,7 @@ namespace PDADesktop.Classes.Devices
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public string GetName()
         {
-         return "MotoAdapter";
+            return "MotoAdapter";
         }
 
         public bool IsDeviceConnected()
@@ -29,15 +29,15 @@ namespace PDADesktop.Classes.Devices
             return getResult(codigoResultado);
         }
 
-        public string ReadAjustesDataFile(string desDir, string filename)
+        public string ReadAdjustmentsDataFile(string destinationDirectory, string filename)
         {
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
-            DeviceResultName result = CopyDeviceFileToAppData(deviceRelativePathData, filename);
-            if (result.Equals(DeviceCodeResult.OK))
+            DeviceResultName copyfileResult = CopyDeviceFileToAppData(deviceRelativePathData, filename);
+            if (copyfileResult.Equals(DeviceCodeResult.OK))
             {
-                string desDirExpanded = TextUtils.ExpandEnviromentVariable(desDir);
-                string ajustes = FileUtils.ReadFile(desDirExpanded + filename);
-                return TextUtils.ParseAjusteDAT2Json(ajustes);
+                string desDirExpanded = TextUtils.ExpandEnviromentVariable(destinationDirectory);
+                string adjustments = FileUtils.ReadFile(desDirExpanded + filename);
+                return TextUtils.ParseAdjustmentDAT2JsonStr(adjustments);
             }
             else
             {

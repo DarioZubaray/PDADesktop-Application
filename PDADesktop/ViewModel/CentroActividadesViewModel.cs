@@ -374,7 +374,7 @@ namespace PDADesktop.ViewModel
                 {
                     string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
                     string fileName = ConfigurationManager.AppSettings.Get("DEVICE_FILE_AJUSTES");
-                    string DeviceAjusteFile = App.Instance.deviceHandler.ReadAjustesDataFile(clientDataDir, fileName);
+                    string DeviceAjusteFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile(clientDataDir, fileName);
                     if (DeviceAjusteFile != null)
                     {
                         ObservableCollection<Ajustes> ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(DeviceAjusteFile);
@@ -504,7 +504,7 @@ namespace PDADesktop.ViewModel
             {
                 string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
                 string fileName = ConfigurationManager.AppSettings.Get("DEVICE_FILE_AJUSTES");
-                string motoApiReadDataFile = App.Instance.deviceHandler.ReadAjustesDataFile(clientDataDir, fileName);
+                string motoApiReadDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile(clientDataDir, fileName);
                 //por aca sabemos si hay ajustes realizados y de continuar
 
                 List<Ajustes> ajustes = JsonConvert.DeserializeObject<List<Ajustes>>(motoApiReadDataFile);

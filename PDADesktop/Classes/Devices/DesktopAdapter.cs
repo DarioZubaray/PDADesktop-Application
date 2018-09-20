@@ -10,11 +10,11 @@ namespace PDADesktop.Classes.Devices
 
         private string GetUserDesktopPDATestFolderPath()
         {
-         string userDesktopPDATest = TextUtils.ExpandEnviromentVariable(@"%USERPROFILE%\\Desktop\\PDATest");
-         string deviceRelPathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
-         string desktopDirectory = userDesktopPDATest + deviceRelPathData;
-         FileUtils.VerifyFoldersOrCreate(desktopDirectory);
-         return desktopDirectory;
+            string userDesktopPDATest = TextUtils.ExpandEnviromentVariable(@"%USERPROFILE%\\Desktop\\PDATest");
+            string deviceRelPathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
+            string desktopDirectory = userDesktopPDATest + deviceRelPathData;
+            FileUtils.VerifyFoldersOrCreate(desktopDirectory);
+            return desktopDirectory;
         }
 
         public string GetName()
@@ -32,26 +32,28 @@ namespace PDADesktop.Classes.Devices
             if (FileUtils.VerifyIfExitsFile(sourceDirectory+filename))
             {
                 string clientPathData = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
+                logger.Debug("obteniendo archivo desde: " + sourceDirectory + filename);
+                logger.Debug("copiando hacia la ruta: " + clientPathData + filename);
                 FileUtils.CopyFile(sourceDirectory + filename, clientPathData + filename);
                 if(FileUtils.VerifyIfExitsFile(clientPathData + filename))
                 {
-                 return DeviceResultName.OK;
+                    return DeviceResultName.OK;
                 }
                 else
                 {
-                 return DeviceResultName.FILE_DOWNLOAD_NOTOK;
+                    return DeviceResultName.FILE_DOWNLOAD_NOTOK;
                 }
             }
             return DeviceResultName.NONEXISTENT_FILE;
         }
 
-        public string ReadAjustesDataFile(string desDir, string filename)
+        public string ReadAdjustmentsDataFile(string desDir, string filename)
         {
             string userDesktopPDATestFolderPath = GetUserDesktopPDATestFolderPath();
             if(FileUtils.VerifyIfExitsFile(userDesktopPDATestFolderPath + filename))
             {
                 string ajustes = FileUtils.ReadFile(userDesktopPDATestFolderPath + filename);
-                return TextUtils.ParseAjusteDAT2Json(ajustes);
+                return TextUtils.ParseAdjustmentDAT2JsonStr(ajustes);
             }
             else
             {

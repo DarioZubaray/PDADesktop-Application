@@ -12,7 +12,7 @@ namespace PDADesktop.Utils
         {
             return Environment.ExpandEnvironmentVariables(source);
         }
-        public static string ParseAjusteDAT2Json(string source)
+        public static string ParseAdjustmentDAT2JsonStr(string source)
         {
             StringBuilder ajusteJSON = new StringBuilder();
             ajusteJSON.Append("[");

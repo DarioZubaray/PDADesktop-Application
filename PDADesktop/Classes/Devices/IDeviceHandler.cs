@@ -5,7 +5,7 @@
         string GetName();
         bool IsDeviceConnected();
         DeviceResultName CopyDeviceFileToAppData(string sourceDirectory, string filename);
-        string ReadAjustesDataFile(string desDir, string filename);
+        string ReadAdjustmentsDataFile(string desDir, string filename);
 
     }
 }
