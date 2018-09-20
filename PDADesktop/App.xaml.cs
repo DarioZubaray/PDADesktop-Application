@@ -1,5 +1,6 @@
 ﻿using log4net;
 using PDADesktop.Classes;
+using PDADesktop.Classes.Devices;
 using PDADesktop.View;
 using Squirrel;
 using StructureMap;
@@ -22,7 +23,7 @@ namespace PDADesktop
         public static App Instance { get; private set; }
         public Container Container { get; private set; }
         private static Mutex _mutex = null;
-        private DeviceHandler deviceHandler { get; set; }
+        public IDeviceHandler deviceHandler { get; private set; }
         public App()
         {
             BannerApp.printBanner();
@@ -31,7 +32,7 @@ namespace PDADesktop
             {
                 c.AddRegistry(new MyContainerInitializer());
             });
-            deviceHandler = this.Container.GetInstance<DeviceHandler>();
+            deviceHandler = this.Container.GetInstance<IDeviceHandler>();
         }
 
         protected override void OnStartup(StartupEventArgs e)

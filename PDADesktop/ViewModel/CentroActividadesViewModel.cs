@@ -369,12 +369,12 @@ namespace PDADesktop.ViewModel
                 botonVerAjustes.ToolTip = "Ver los ajustes realizados.";
                 botonVerAjustes.Command = this.VerAjustesCommand;
 
-                int estadoPda = MotoApi.isDeviceConnected();
-                if (estadoPda != 0)
+                bool estadoDevice = App.Instance.deviceHandler.isDeviceConnected();
+                if (estadoDevice)
                 {
                     string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
                     string fileName = ConfigurationManager.AppSettings.Get("DEVICE_FILE_AJUSTES");
-                    string motoApiReadDataFile = MotoApi.ReadAjustesDataFile(clientDataDir, fileName);
+                    string motoApiReadDataFile = App.Instance.deviceHandler.ReadAjustesDataFile(clientDataDir, fileName);
                     if (motoApiReadDataFile != null)
                     {
                         ObservableCollection<Ajustes> ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(motoApiReadDataFile);
@@ -499,12 +499,12 @@ namespace PDADesktop.ViewModel
         public void VerAjustes(object obj)
         {
             logger.Info("Viendo ajustes realizados");
-            int estadoPda = MotoApi.isDeviceConnected();
-            if(estadoPda != 0)
+            bool estadoDevice = App.Instance.deviceHandler.isDeviceConnected();
+            if(estadoDevice)
             {
                 string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
                 string fileName = ConfigurationManager.AppSettings.Get("DEVICE_FILE_AJUSTES");
-                string motoApiReadDataFile = MotoApi.ReadAjustesDataFile(clientDataDir, fileName);
+                string motoApiReadDataFile = App.Instance.deviceHandler.ReadAjustesDataFile(clientDataDir, fileName);
                 //por aca sabemos si hay ajustes realizados y de continuar
 
                 List<Ajustes> ajustes = JsonConvert.DeserializeObject<List<Ajustes>>(motoApiReadDataFile);

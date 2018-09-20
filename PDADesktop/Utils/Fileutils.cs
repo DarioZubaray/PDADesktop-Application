@@ -7,14 +7,17 @@ namespace PDADesktop.Utils
     {
         public static string ReadFile(string source)
         {
-            string text = File.ReadAllText(source, Encoding.UTF8);
-            return text;
+            return File.ReadAllText(source, Encoding.UTF8);
         }
 
-        internal static void VerifyFolders(string desDirExpanded)
+        public static bool VerifyIfExitsFile(string desDirExpanded)
         {
-            //http://msdn.microsoft.com/en-us/library/54a0at6s.aspx
-            System.IO.Directory.CreateDirectory(desDirExpanded);
+            return File.Exists(desDirExpanded);
+        }
+
+        public static void VerifyFoldersOrCreate(string desDirExpanded)
+        {
+            Directory.CreateDirectory(desDirExpanded);
         }
     }
 }

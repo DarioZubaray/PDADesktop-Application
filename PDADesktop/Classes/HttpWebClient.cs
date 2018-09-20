@@ -48,7 +48,7 @@ namespace PDADesktop.Classes
                 logger.Debug("Enviando petición a " + ipServer + url);
                 //Si la path no existe se rompe en mil pedacitos =/
                 string destino = @"C:/dev/PDADesktop/Maestros";
-                FileUtils.VerifyFolders(destino);
+                FileUtils.VerifyFoldersOrCreate(destino);
                 client.DownloadFile(ipServer + url, destino + "/MaestroArticulo.DAT");
                 //logger.Debug("response: " + response);
             }

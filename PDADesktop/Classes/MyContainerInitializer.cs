@@ -27,11 +27,11 @@ namespace PDADesktop.Classes
             string deviceHandler = ConfigurationManager.AppSettings.Get("DEVICE_HANDLER");
             if (deviceHandler.Equals(MyAppProperties.DESKTOP_ADAPTER, StringComparison.InvariantCultureIgnoreCase))
             {
-                this.For<DeviceHandler>().Use<DesktopAdapter>().Named("desktopAdapter");
+                this.For<IDeviceHandler>().Use<DesktopAdapter>().Named("desktopAdapter");
             }
             else
             {
-                this.For<DeviceHandler>().Use<MotoAdapter>().Named("motoAdapter");
+                this.For<IDeviceHandler>().Use<MotoAdapter>().Named("motoAdapter");
             }
         }
     }

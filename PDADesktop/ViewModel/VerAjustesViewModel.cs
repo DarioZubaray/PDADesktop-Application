@@ -148,13 +148,15 @@ namespace PDADesktop.ViewModel
         #region Constructor
         public VerAjustesViewModel()
         {
-            int estadoPda = MotoApi.isDeviceConnected();
             var dispatcher = Application.Current.MainWindow.Dispatcher;
-            if (estadoPda != 0)
+            bool estadoDevice = App.Instance.deviceHandler.isDeviceConnected();
+            if (estadoDevice)
             {
                 string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
                 string fileName = ConfigurationManager.AppSettings.Get("DEVICE_FILE_AJUSTES");
-                string motoApiReadDataFile = MotoApi.ReadAjustesDataFile(clientDataDir, fileName);
+
+                //string 
+                string motoApiReadDataFile = App.Instance.deviceHandler.ReadAjustesDataFile(clientDataDir, fileName);
                 if(motoApiReadDataFile != null)
                 {
                     Ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(motoApiReadDataFile);
