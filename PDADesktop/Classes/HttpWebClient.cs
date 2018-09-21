@@ -6,6 +6,10 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Configuration;
 using PDADesktop.Utils;
+using System.Net.Http;
+using System.Net;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace PDADesktop.Classes
 {
@@ -13,51 +17,78 @@ namespace PDADesktop.Classes
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static string sendHttpRequest(string url)
+        public static string sendHttpGetRequest(string urlPath)
         {
             string response = null;
-            var client = new System.Net.WebClient();
+            var client = new WebClient();
             string userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
             client.Headers.Add("user-agent", userAgent);
-            string ipServer = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
+            string urlAuthority = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
             try
             {
-                logger.Debug("Enviando petición a " + ipServer + url);
-                response = client.DownloadString(ipServer + url);
-                //logger.Debug("response: " + response);
+                logger.Debug("Enviando petición a " + urlAuthority + urlPath);
+                response = client.DownloadString(urlAuthority + urlPath);
+                if(response.Length < 100)
+                {
+                    logger.Debug("response: " + response);
+                }
             }
             catch (Exception e)
             {
                 logger.Error(e.GetType() + " - " + e.Message);
-                string message = e.GetType() + " - " + e.Message;
-                string caption = "Error de comunicacion con PDA Express Server";
-                MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Error);
+                showErrorMessage(e);
             }
             return response;
         }
 
-        public static string DownloadMasterFiles(string url)
+        public static string sendHttpPostRequest(string urlPath, string jsonBody)
+        {
+            string result = null;
+            string urlAuthority = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
+            var httpWebRequest = (HttpWebRequest) WebRequest.Create(urlAuthority + urlPath);
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                streamWriter.Write(jsonBody);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                result = streamReader.ReadToEnd();
+            }
+            return result;
+        }
+
+        public static void showErrorMessage(Exception e)
+        {
+            string message = e.GetType() + " - " + e.Message;
+            string caption = "Error de comunicacion con PDA Express Server";
+            MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        public static string DownloadMasterFiles(string urlPath)
         {
             string response = null;
-            var client = new System.Net.WebClient();
+            var client = new WebClient();
             string userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
             client.Headers.Add("user-agent", userAgent);
-            string ipServer = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
+            string urlAuthority = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
             try
             {
-                logger.Debug("Enviando petición a " + ipServer + url);
-                //Si la path no existe se rompe en mil pedacitos =/
+                logger.Debug("Enviando petición a " + urlAuthority + urlPath);
                 string destino = @"C:/dev/PDADesktop/Maestros";
                 FileUtils.VerifyFoldersOrCreate(destino);
-                client.DownloadFile(ipServer + url, destino + "/MaestroArticulo.DAT");
-                //logger.Debug("response: " + response);
+                client.DownloadFile(urlAuthority + urlPath, destino + "/MaestroArticulo.DAT");
             }
             catch (Exception e)
             {
                 logger.Error(e.GetType() + " - " + e.Message);
-                string message = e.GetType() + " - " + e.Message;
-                string caption = "Error de comunicacion con PDA Express Server";
-                MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Error);
+                showErrorMessage(e);
             }
             return response;
         }
@@ -66,7 +97,7 @@ namespace PDADesktop.Classes
         {
             Boolean conexionStatus = false;
             string urlServerStatus = ConfigurationManager.AppSettings.Get("API_SERVER_CONEXION_STATUS");
-            string response = sendHttpRequest(urlServerStatus);
+            string response = sendHttpGetRequest(urlServerStatus);
             if (response != null)
             {
                 conexionStatus = response.Length > 0 ? true : false;
@@ -74,12 +105,12 @@ namespace PDADesktop.Classes
             return conexionStatus;
         }
 
-        public static int GetIdLoteActual(string sucursal)
+        public static int GetIdLoteActual(string idSucursal)
         {
             int idLote = 0;
-            string urlIdLoteActual = ConfigurationManager.AppSettings.Get("API_SYNC_ID_LOTE");
-            string url = String.Format("{0}?idSucursal={1}", urlIdLoteActual, sucursal);
-            string response = sendHttpRequest(url);
+            string urlPath = ConfigurationManager.AppSettings.Get("API_SYNC_ID_LOTE");
+            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPath, idSucursal);
+            string response = sendHttpGetRequest(urlPath_urlQuery);
             if(response != null)
             {
                 if(response.Contains("\""))
@@ -91,11 +122,11 @@ namespace PDADesktop.Classes
             return idLote;
         }
 
-        public static List<Sincronizacion> GetHttpWebSincronizacion(string url, string idSucursal, string idLote)
+        public static List<Sincronizacion> GetHttpWebSincronizacion(string urlPath, string idSucursal, string idLote)
         {
             List<Sincronizacion> sincronizaciones = null;
-            string endpoint = String.Format("{0}?idSucursal={1}&idLote={2}", url, idSucursal, idLote);
-            string response = sendHttpRequest(endpoint);
+            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}&idLote={2}", urlPath, idSucursal, idLote);
+            string response = sendHttpGetRequest(urlPath_urlQuery);
             if (response != null)
             {
                 sincronizaciones = JsonConvert.DeserializeObject<List<Sincronizacion>>(response);
@@ -107,8 +138,8 @@ namespace PDADesktop.Classes
         public static List<string> GetTiposDeAjustes()
         {
             List<string> tiposAjustes = null;
-            string urlTiposAjustes = ConfigurationManager.AppSettings.Get("API_GET_TIPOS_AJUSTES");
-            string response = sendHttpRequest(urlTiposAjustes);
+            string urlPath = ConfigurationManager.AppSettings.Get("API_GET_TIPOS_AJUSTES");
+            string response = sendHttpGetRequest(urlPath);
             if (response != null)
             {
                 tiposAjustes = JsonConvert.DeserializeObject<List<string>>(response);
@@ -119,8 +150,9 @@ namespace PDADesktop.Classes
         internal static bool CheckRecepcionesInformadas(string idSincronizacion)
         {
             bool recepcionesInformadas = false;
-            string url = ConfigurationManager.AppSettings.Get("API_BUSCAR_RECEPCIONES_INFORMADAS");
-            string response = sendHttpRequest(String.Format("{0}?idSincronizacion={1}", url, idSincronizacion));
+            string urlPath = ConfigurationManager.AppSettings.Get("API_BUSCAR_RECEPCIONES_INFORMADAS");
+            string urlPath_urlQuery = String.Format("{0}?idSincronizacion={1}", urlPath, idSincronizacion);
+            string response = sendHttpGetRequest(urlPath_urlQuery);
             if (response != null)
             {
                 recepcionesInformadas = response.Equals("\"1\"") ? true : false;
@@ -130,8 +162,9 @@ namespace PDADesktop.Classes
 
         internal static string buscarMaestroArt(string idSucursal)
         {
-            string url = ConfigurationManager.AppSettings.Get("API_MAESTRO_ARTICULOS");
-            string response = DownloadMasterFiles(String.Format("{0}?idSucursal={1}", url, idSucursal));
+            string urlPath = ConfigurationManager.AppSettings.Get("API_MAESTRO_ARTICULOS");
+            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPath, idSucursal);
+            string response = DownloadMasterFiles(urlPath_urlQuery);
             return response;
         }
     }

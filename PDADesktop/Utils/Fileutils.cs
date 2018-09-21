@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using PDADesktop.Classes.Devices;
+using System.IO;
 using System.Text;
 
 namespace PDADesktop.Utils

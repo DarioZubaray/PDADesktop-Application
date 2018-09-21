@@ -3,6 +3,7 @@ using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json;
 using PDADesktop.Classes;
 using PDADesktop.Model;
+using PDADesktop.Utils;
 using PDADesktop.View;
 using System;
 using System.Collections.Generic;
@@ -426,6 +427,7 @@ namespace PDADesktop.ViewModel
             EstadoGeneralCommand = new RelayCommand(BotonEstadoGeneral, param => this.canExecute);
             sincronizaciones = SincronizacionPOCO.getStaticMockList(new RelayCommand(BotonEstadoGenesix, param => this.canExecute));
             ActualizarLoteActual(sincronizaciones);
+            GetIdAcciones();
             sincronizarWorker.DoWork += sincronizarWorker_DoWork;
             sincronizarWorker.RunWorkerCompleted += sincronizarWorker_RunWorkerCompleted;
             ShowPanelCommand = new RelayCommand(MostrarPanel, param => this.canExecute);
@@ -625,6 +627,21 @@ namespace PDADesktop.ViewModel
             string lote = sincronizacion.lote;
             string fecha = sincronizacion.fecha;
             txt_sincronizacion = " (" + lote + ") " + fecha;
+        }
+        public void GetIdAcciones()
+        {
+            string urlAcciones = "/pdaexpress/pda-api/getAllAcciones.action";
+            var responseAcciones = HttpWebClient.sendHttpGetRequest(urlAcciones);
+            List<Accion> acciones = JsonConvert.DeserializeObject<List<Accion>>(responseAcciones);
+
+            string idAcciones = TextUtils.ParseListAccion2String(acciones);
+            string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
+
+            var urlActividades = "/pdaexpress/pda-api/getActividades.action";
+            string responseActividades = HttpWebClient.sendHttpPostRequest(urlActividades, jsonBody);
+            logger.Debug(responseActividades);
+            List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);
+            logger.Debug(actividades.ToString());
         }
 
         public void BotonEstadoGenesix(object obj)

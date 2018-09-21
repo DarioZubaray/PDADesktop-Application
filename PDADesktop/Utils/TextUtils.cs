@@ -1,5 +1,7 @@
 ﻿using log4net;
+using PDADesktop.Model;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace PDADesktop.Utils
@@ -46,6 +48,24 @@ namespace PDADesktop.Utils
                 }
             }
             return ajusteJSON.ToString();
+        }
+
+        public static string ParseListAccion2String(List<Accion> acciones)
+        {
+            StringBuilder sb = new StringBuilder("[");
+            for (int i = 0; i < acciones.Count; i++)
+            {
+                sb.Append(acciones[i].idAccion.ToString());
+                if (i < acciones.Count - 1)
+                {
+                    sb.Append(", ");
+                }
+                else
+                {
+                    sb.Append("]");
+                }
+            }
+            return sb.ToString();
         }
     }
 }
