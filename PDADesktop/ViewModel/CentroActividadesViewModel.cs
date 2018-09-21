@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -630,18 +631,23 @@ namespace PDADesktop.ViewModel
         }
         public void GetIdAcciones()
         {
-            string urlAcciones = "/pdaexpress/pda-api/getAllAcciones.action";
-            var responseAcciones = HttpWebClient.sendHttpGetRequest(urlAcciones);
-            List<Accion> acciones = JsonConvert.DeserializeObject<List<Accion>>(responseAcciones);
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
 
-            string idAcciones = TextUtils.ParseListAccion2String(acciones);
-            string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
+                string urlAcciones = ConfigurationManager.AppSettings.Get("API_GET_ALL_ACCIONES");
+                var responseAcciones = HttpWebClient.sendHttpGetRequest(urlAcciones);
+                List<Accion> acciones = JsonConvert.DeserializeObject<List<Accion>>(responseAcciones);
 
-            var urlActividades = "/pdaexpress/pda-api/getActividades.action";
-            string responseActividades = HttpWebClient.sendHttpPostRequest(urlActividades, jsonBody);
-            logger.Debug(responseActividades);
-            List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);
-            logger.Debug(actividades.ToString());
+                string idAcciones = TextUtils.ParseListAccion2String(acciones);
+                string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
+
+                var urlActividades = ConfigurationManager.AppSettings.Get("API_GET_ACTIVIDADES");
+                string responseActividades = HttpWebClient.sendHttpPostRequest(urlActividades, jsonBody);
+                logger.Debug(responseActividades);
+                List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);
+                logger.Debug(actividades.ToString());
+            }).Start();
         }
 
         public void BotonEstadoGenesix(object obj)
