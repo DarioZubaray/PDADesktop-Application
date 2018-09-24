@@ -9,7 +9,7 @@ namespace PDADesktop.Classes.Devices
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public string GetName()
         {
-            return "MotoAdapter";
+            return Constants.MOTO_ADAPTER;
         }
 
         public bool IsDeviceConnected()
@@ -21,7 +21,7 @@ namespace PDADesktop.Classes.Devices
         {
             string fileRelPath = sourceDirectory + filename;
             logger.Debug("obteniendo archivo desde: " + fileRelPath);
-            string clientPathData = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
+            string clientPathData = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
             string desDirExpanded = TextUtils.ExpandEnviromentVariable(clientPathData);
             logger.Debug("copiando hacia la ruta: " + desDirExpanded);
             FileUtils.VerifyFoldersOrCreate(desDirExpanded);
@@ -31,10 +31,10 @@ namespace PDADesktop.Classes.Devices
 
         public void CreateDefaultDataFile()
         {
-            string fileDefaultDat = ConfigurationManager.AppSettings.Get("DEVICE_FILE_DEFAULT");
+            string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DEVICE_FILE_DEFAULT);
             logger.Debug("Creando el archivo: " + fileDefaultDat);
-            string deviceRelPathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_VERSION");
-            string userPDADocumentFolder = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
+            string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
+            string userPDADocumentFolder = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
             string userPDADocumenteFolderExtended = TextUtils.ExpandEnviromentVariable(userPDADocumentFolder);
             string pdaControl = "0|0|0000000000000|0|0.0.0|0|0";
             logger.Debug("Guardando temporalmente en: " + userPDADocumenteFolderExtended);
@@ -46,7 +46,7 @@ namespace PDADesktop.Classes.Devices
 
         public string ReadAdjustmentsDataFile(string destinationDirectory, string filename)
         {
-            string deviceRelativePathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
+            string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             DeviceResultName copyfileResult = CopyDeviceFileToAppData(deviceRelativePathData, filename);
             if (copyfileResult.Equals(DeviceCodeResult.OK))
             {

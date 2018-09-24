@@ -10,7 +10,8 @@ namespace PDADesktop.Classes.Devices
 
         private string GetUserDesktopPDATestFolderPath(string deviceRelPath)
         {
-            string userDesktopPDATest = TextUtils.ExpandEnviromentVariable(@"%USERPROFILE%\\Desktop\\PDATest");
+            string desktopFolder = ConfigurationManager.AppSettings.Get(Constants.DESKTOP_FOLDER);
+            string userDesktopPDATest = TextUtils.ExpandEnviromentVariable(desktopFolder);
             string desktopDirectory = userDesktopPDATest + deviceRelPath;
             FileUtils.VerifyFoldersOrCreate(desktopDirectory);
             return desktopDirectory;
@@ -18,7 +19,7 @@ namespace PDADesktop.Classes.Devices
 
         public string GetName()
         {
-            return "DesktopAdapter";
+            return Constants.DESKTOP_ADAPTER;
         }
 
         public bool IsDeviceConnected()
@@ -30,7 +31,7 @@ namespace PDADesktop.Classes.Devices
         {
             if (FileUtils.VerifyIfExitsFile(sourceDirectory+filename))
             {
-                string clientPathData = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
+                string clientPathData = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
                 logger.Debug("obteniendo archivo desde: " + sourceDirectory + filename);
                 logger.Debug("copiando hacia la ruta: " + clientPathData + filename);
                 FileUtils.CopyFile(sourceDirectory + filename, clientPathData + filename);
@@ -48,9 +49,9 @@ namespace PDADesktop.Classes.Devices
 
         public void CreateDefaultDataFile()
         {
-            string fileDefaultDat = ConfigurationManager.AppSettings.Get("DEVICE_FILE_DEFAULT");
+            string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DEVICE_FILE_DEFAULT);
             logger.Debug("Creando el archivo: " + fileDefaultDat);
-            string deviceRelPathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_VERSION");
+            string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
             string userDesktopPdaTestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathData);
             string pdaControl = "0|0|0000000000000|0|0.0.0|0|0";
             logger.Debug("Guardando en: " + deviceRelPathData + fileDefaultDat);
@@ -60,7 +61,7 @@ namespace PDADesktop.Classes.Devices
 
         public string ReadAdjustmentsDataFile(string desDir, string filename)
         {
-            string deviceRelPathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
+            string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             string userDesktopPDATestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathData);
             if(FileUtils.VerifyIfExitsFile(userDesktopPDATestFolderPath + filename))
             {

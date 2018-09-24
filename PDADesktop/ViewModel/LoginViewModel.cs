@@ -12,8 +12,8 @@ namespace PDADesktop.ViewModel
 {
     class LoginViewModel : ViewModelBase
     {
-        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #region attributes
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly BackgroundWorker worker = new BackgroundWorker();
         public string usernameText { get; set; }
         public string FloatingPasswordBox { get; set; }
@@ -71,7 +71,6 @@ namespace PDADesktop.ViewModel
                 OnPropertyChanged();
             }
         }
-
         #endregion
 
         #region Command
@@ -232,6 +231,7 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
+        #region methods
         public void LoginPortalApi(object obj)
         {
             logger.Info("login portal api");
@@ -241,11 +241,15 @@ namespace PDADesktop.ViewModel
             PanelMainMessage = "Espere por favor ...";
             worker.RunWorkerAsync();
         }
+        #endregion
+
+        #region panel methods
         public void MostrarPanel(object obj)
         {
             logger.Debug("Mostrando panel de carga");
             PanelLoading = true;
         }
+
         public void OcultarPanel(object obj)
         {
             logger.Debug("Ocultando panel de carga");
@@ -255,13 +259,16 @@ namespace PDADesktop.ViewModel
         {
             PanelMainMessage = "Espere por favor";
         }
+
         public void CambiarSubMensage(object obj)
         {
             PanelSubMessage = "";
         }
+
         public void CerrarPanel(object obj)
         {
             PanelLoading = false;
         }
+        #endregion
     }
 }

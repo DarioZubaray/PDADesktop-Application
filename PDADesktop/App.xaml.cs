@@ -12,18 +12,18 @@ using System.Windows.Threading;
 
 namespace PDADesktop
 {
-    /// <summary>
-    /// Lógica de interacción para App.xaml
-    /// </summary>
     public partial class App : Application
     {
+        #region attributes
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private UpdateManager updateManager;
-
+        private UpdateManager updateManager { get; set; }
         public static App Instance { get; private set; }
         public Container Container { get; private set; }
         private static Mutex _mutex = null;
         public IDeviceHandler deviceHandler { get; private set; }
+        #endregion
+
+        #region constructor
         public App()
         {
             BannerApp.printBanner();
@@ -33,9 +33,11 @@ namespace PDADesktop
                 c.AddRegistry(new MyContainerInitializer());
             });
             deviceHandler = this.Container.GetInstance<IDeviceHandler>();
-            logger.Info("Adaptador: " + ConfigurationManager.AppSettings.Get("DEVICE_HANDLER"));
+            logger.Info("Adaptador: " + deviceHandler.GetName());
         }
+        #endregion
 
+        #region startup
         protected override void OnStartup(StartupEventArgs e)
         {
             CheckApplicationRunning();
@@ -55,15 +57,15 @@ namespace PDADesktop
 
             logger.Debug("Verificando en segundo plano actualizaciones con squirrel.window");
             UpdateApp();
-            //AlertBarWpf para una segunda instancia
 
             logger.Debug("Checkeando conexión el servidor PDAExpress server");
             CheckServerStatus();
 
-            logger.Debug("Checkear conexión con PDAMoto");
+            logger.Debug("Checkear conexión con dispositivo");
             if (CheckDeviceConnected())
             {
-                UpdatePDAMotoApp();
+                logger.Debug("Verificando version dispositivo");
+                UpdateDeviceApp();
             }
 
             logger.Debug("Verificando datos guardados...");
@@ -75,26 +77,22 @@ namespace PDADesktop
                 if(check)
                 {
                     // user reminded
-                    // =======================================
-                    // obtain username and pass
+
                     // getUserCredentials();
-
-                    // Attempt to login through imagosur-portal
-                    // AttemptLoginPortalImagoSur();
-
-
+                    // AttemptAutoLoginPortalImagoSur();
                     if (GenerandoAleatoriedadDeCasosLogueados() == 1)
                     {
                         RedireccionarCentroActividades();
                     }
                     else
                     {
+                        // fail to autoLogin
                         RedireccionarLogin();
                     }
                 }
                 else
                 {
-                    // no user reminded
+                    // no reminded user
                     RedireccionarLogin();
                 }
            }
@@ -103,12 +101,16 @@ namespace PDADesktop
                RedireccionarLogin();
             }
         }
+        #endregion
 
+        #region unhandledException
         void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             logger.Error(e.ToString());
         }
+        #endregion
 
+        #region methods
         private void CheckApplicationRunning()
         {
             const string appName = "PDADesktop";
@@ -123,7 +125,6 @@ namespace PDADesktop
             }
         }
 
-        #region Methods
         private int GenerandoAleatoriedadDeCasosLogueados()
         {
             Random rnd = new Random();
@@ -170,7 +171,7 @@ namespace PDADesktop
             return dispositivoConectado;
         }
 
-        private void UpdatePDAMotoApp()
+        private void UpdateDeviceApp()
         {
             logger.Info("UpdatePDAMotoApp: ");
             //1- obtener el archivo DEFAULT.DAT
