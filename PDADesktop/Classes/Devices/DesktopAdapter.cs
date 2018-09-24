@@ -53,9 +53,11 @@ namespace PDADesktop.Classes.Devices
             string desDirExpanded = TextUtils.ExpandEnviromentVariable(fileRelPath);
             logger.Debug("obteniendo archivo desde public: " + desDirExpanded);
             FileUtils.VerifyFoldersOrCreate(desDirExpanded);
-            string clientPathData = destinationDirectory + filename;
+            string desktopFolder = ConfigurationManager.AppSettings.Get("DESKTOP_FOLDER");
+            string desktopFolderExtended = TextUtils.ExpandEnviromentVariable(desktopFolder);
+            string clientPathData = desktopFolderExtended + destinationDirectory + filename;
             logger.Debug("copiando hacia la ruta: " + clientPathData);
-            FileUtils.CopyFile(desDirExpanded, clientPathData);
+            FileUtils.CopyFile(desDirExpanded + filename, clientPathData);
             return DeviceResultName.OK;
         }
 
