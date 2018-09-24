@@ -176,19 +176,20 @@ namespace PDADesktop
             logger.Info("UpdatePDAMotoApp: ");
             //1- obtener el archivo DEFAULT.DAT
             //2- si no existe crearlo
-            //3- pegarle al endpoint getInfoVersion
+            //3- pegarle al endpoint getInfoVersion, comparar y evaluar
         }
 
         private string VerificarDatosGuardados()
         {
-            return CookieManager.getCookie(CookieManager.Cookie.recuerdame);
+            //return CookieManager.getCookie(CookieManager.Cookie.recuerdame);
+            return null;
         }
 
         private void RedireccionarCentroActividades()
         {
             logger.Info("Redireccionando al centro de actividades...");
             var mainWindow = this.Container.GetInstance<MainWindow>();
-            Uri uri = new Uri("View/CentroActividadesView.xaml", UriKind.Relative);
+            Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
             mainWindow.frame.NavigationService.Navigate(uri);
             mainWindow.Show();
         }

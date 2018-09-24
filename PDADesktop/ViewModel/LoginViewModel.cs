@@ -179,8 +179,9 @@ namespace PDADesktop.ViewModel
             MainWindow window = MyAppProperties.window;
             if ("juli".Equals(usernameText))
             {
-                logger.Debug("Nombre no null: " + usernameText);
                 logger.Debug("recuerdame: " + RecuerdameCheck);
+                logger.Debug("Nombre no null: " + usernameText);
+                /*
                 DateTime fechaExpiracion = new DateTime(2020, 12, 31);
                 string userCookie = "username=" + usernameText + ";expires=" + fechaExpiracion.ToString("r");
                 string urlFromProperties = ConfigurationManager.AppSettings.Get("URL_COOKIE");
@@ -190,9 +191,10 @@ namespace PDADesktop.ViewModel
 
                 string cookie = Application.GetCookie(cookieUri1);
                 logger.Info("Cookie recibida: " + cookie);
+                */
                 //aca deberia llamar al servicio de login
                 //Redirecciona a centroActividades
-                Uri uri = new Uri("View/CentroActividadesView.xaml", UriKind.Relative);
+                Uri uri = new Uri(Constants.LOGIN_VIEW, UriKind.Relative);
 
                 var dispatcher = Application.Current.Dispatcher;
                 dispatcher.BeginInvoke(new Action(() =>
@@ -204,7 +206,7 @@ namespace PDADesktop.ViewModel
             else
             {
                 //marcar como usuario y/o contraseña incorrectos
-                logger.Error("usuario y/o contraseña incorrectos");
+                logger.Info("usuario y/o contraseña incorrectos");
                 var dispatcher = Application.Current.Dispatcher;
                 dispatcher.BeginInvoke(new Action(() =>
                 {
