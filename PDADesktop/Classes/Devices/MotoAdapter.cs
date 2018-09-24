@@ -20,12 +20,24 @@ namespace PDADesktop.Classes.Devices
         public DeviceResultName CopyDeviceFileToAppData(string sourceDirectory, string filename)
         {
             string fileRelPath = sourceDirectory + filename;
-            logger.Debug("obteniendo archivo desde: " + fileRelPath);
+            logger.Debug("obteniendo archivo desde dispositivo: " + fileRelPath);
             string clientPathData = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
             string desDirExpanded = TextUtils.ExpandEnviromentVariable(clientPathData);
             logger.Debug("copiando hacia la ruta: " + desDirExpanded);
             FileUtils.VerifyFoldersOrCreate(desDirExpanded);
             int codigoResultado = MotoApi.downloadFileFromAppData(fileRelPath, desDirExpanded + filename);
+            return getResult(codigoResultado);
+        }
+
+        public DeviceResultName CopyAppDataFileToDevice(string sourceDirectory, string filename)
+        {
+            string fileRelPath = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
+            string desDirExpanded = TextUtils.ExpandEnviromentVariable(fileRelPath);
+            logger.Debug("obteniendo archivo desde public: " + desDirExpanded);
+            FileUtils.VerifyFoldersOrCreate(desDirExpanded);
+            string clientPathData = sourceDirectory + filename;
+            logger.Debug("copiando hacia la ruta: " + clientPathData);
+            int codigoResultado = MotoApi.downloadFileFromProgramFiles(clientPathData, desDirExpanded);
             return getResult(codigoResultado);
         }
 
@@ -56,6 +68,7 @@ namespace PDADesktop.Classes.Devices
             }
             else
             {
+                logger.Debug("No existe archivo: " + filename + ", en: " + deviceRelativePathData);
                 return null;
             }
         }

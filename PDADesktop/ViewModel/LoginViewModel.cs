@@ -194,7 +194,7 @@ namespace PDADesktop.ViewModel
                 */
                 //aca deberia llamar al servicio de login
                 //Redirecciona a centroActividades
-                Uri uri = new Uri(Constants.LOGIN_VIEW, UriKind.Relative);
+                Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
 
                 var dispatcher = Application.Current.Dispatcher;
                 dispatcher.BeginInvoke(new Action(() =>

@@ -71,9 +71,8 @@ namespace PDADesktop.Classes
             MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
-        public static string DownloadMasterFiles(string urlPath)
+        public static bool DownloadMasterFiles(string urlPath, string masterFile)
         {
-            string response = null;
             var client = new WebClient();
             string userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
             client.Headers.Add("user-agent", userAgent);
@@ -81,16 +80,19 @@ namespace PDADesktop.Classes
             try
             {
                 logger.Debug("Enviando petición a " + urlAuthority + urlPath);
-                string destino = @"C:/dev/PDADesktop/Maestros";
+                string destino = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
+                destino = TextUtils.ExpandEnviromentVariable(destino);
                 FileUtils.VerifyFoldersOrCreate(destino);
-                client.DownloadFile(urlAuthority + urlPath, destino + "/MaestroArticulo.DAT");
+                logger.Debug("Descargando en: " + destino + String.Format("/{0}.DAT", masterFile));
+                client.DownloadFile(urlAuthority + urlPath, destino + String.Format("/{0}.DAT", masterFile));
+                return true;
             }
             catch (Exception e)
             {
                 logger.Error(e.GetType() + " - " + e.Message);
                 showErrorMessage(e);
+                return false;
             }
-            return response;
         }
 
         public static Boolean getHttpWebServerConexionStatus()
@@ -160,12 +162,34 @@ namespace PDADesktop.Classes
             return recepcionesInformadas;
         }
 
-        internal static string buscarMaestroArt(string idSucursal)
+        internal static bool buscarMaestrosDAT(int idActividad, string idSucursal)
         {
-            string urlPath = ConfigurationManager.AppSettings.Get("API_MAESTRO_ARTICULOS");
+            string masterFile = null;
+            string urlPath = ConfigurationManager.AppSettings.Get("API_MAESTRO_URLPATH");
+            switch(idActividad)
+            {
+                case 201:
+                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_ARTICULOS");
+                    break;
+                case 202:
+                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_UBICACIONES");
+                    break;
+                case 203:
+                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_UBICACION_ARTICULOS");
+                    break;
+                case 204:
+                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_PEDIDOS");
+                    break;
+                case 205:
+                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_TIPOS_ETIQUETAS");
+                    break;
+                case 206:
+                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_TIPOS_AJUSTES");
+                    break;
+            }
+            urlPath = String.Format(urlPath, masterFile);
             string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPath, idSucursal);
-            string response = DownloadMasterFiles(urlPath_urlQuery);
-            return response;
+            return DownloadMasterFiles(urlPath_urlQuery, masterFile);
         }
     }
 }

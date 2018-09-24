@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace PDADesktop.Model
 {
-    class SincronizacionPOCO
+    class SincronizacionDtoDataGrid
     {
         public string lote { get; set; }
         public int idAccion { get; set; }
@@ -33,12 +33,12 @@ namespace PDADesktop.Model
             }
         }
 
-        public static List<SincronizacionPOCO> refreshDataGrid(List<Sincronizacion> sincro)
+        public static List<SincronizacionDtoDataGrid> refreshDataGrid(List<Sincronizacion> sincro)
         {
-            List<SincronizacionPOCO> dataGridRefresh = new List<SincronizacionPOCO>();
+            List<SincronizacionDtoDataGrid> dataGridRefresh = new List<SincronizacionDtoDataGrid>();
             foreach(Sincronizacion s in sincro)
             {
-                SincronizacionPOCO sPoco = new SincronizacionPOCO();
+                SincronizacionDtoDataGrid sPoco = new SincronizacionDtoDataGrid();
                 sPoco.lote = s.lote.idLote.ToString();
                 sPoco.accion = s.actividad.accion.descripcion;
                 sPoco.fecha = s.lote.fecha.ToString();
@@ -51,14 +51,14 @@ namespace PDADesktop.Model
             return dataGridRefresh;
         }
 
-        public static List<SincronizacionPOCO> getStaticMockList(RelayCommand command)
+        public static List<SincronizacionDtoDataGrid> getStaticMockList(RelayCommand command)
         {
             string idLote = "111153";
             string informar = "Informar a Genesix";
             string descargar = "Descargar de Genesix";
             string formato = "dd/MM/yyyy HH:mm \'hs\'";
-            List<SincronizacionPOCO> sincros = new List<SincronizacionPOCO>();
-            sincros.Add(new SincronizacionPOCO
+            List<SincronizacionDtoDataGrid> sincros = new List<SincronizacionDtoDataGrid>();
+            sincros.Add(new SincronizacionDtoDataGrid
             {
                 lote = idLote,
                 accion = informar,
@@ -69,7 +69,7 @@ namespace PDADesktop.Model
                 estado = "OK",
                 EstadoGenesixCommand = command
             });
-            sincros.Add(new SincronizacionPOCO
+            sincros.Add(new SincronizacionDtoDataGrid
             {
                 lote = idLote,
                 accion = informar,
@@ -80,7 +80,7 @@ namespace PDADesktop.Model
                 estado = "OK",
                 EstadoGenesixCommand = command
             });
-            sincros.Add(new SincronizacionPOCO
+            sincros.Add(new SincronizacionDtoDataGrid
             {
                 lote = idLote,
                 accion = informar,
@@ -91,7 +91,7 @@ namespace PDADesktop.Model
                 estado = "OK",
                 EstadoGenesixCommand = command
             });
-            sincros.Add(new SincronizacionPOCO
+            sincros.Add(new SincronizacionDtoDataGrid
             {
                 lote = idLote,
                 accion = informar,
@@ -103,7 +103,7 @@ namespace PDADesktop.Model
                 EstadoGenesixCommand = command
             });
 
-            sincros.Add(new SincronizacionPOCO
+            sincros.Add(new SincronizacionDtoDataGrid
             {
                 lote = idLote,
                 accion = descargar,
@@ -114,7 +114,7 @@ namespace PDADesktop.Model
                 estado = "OK",
                 EstadoGenesixCommand = command
             });
-            sincros.Add(new SincronizacionPOCO
+            sincros.Add(new SincronizacionDtoDataGrid
             {
                 lote = idLote,
                 accion = descargar,
@@ -125,7 +125,7 @@ namespace PDADesktop.Model
                 estado = "OK",
                 EstadoGenesixCommand = command
             });
-            sincros.Add(new SincronizacionPOCO
+            sincros.Add(new SincronizacionDtoDataGrid
             {
                 lote = idLote,
                 accion = descargar,
@@ -136,7 +136,7 @@ namespace PDADesktop.Model
                 estado = "OK",
                 EstadoGenesixCommand = command
             });
-            sincros.Add(new SincronizacionPOCO
+            sincros.Add(new SincronizacionDtoDataGrid
             {
                 lote = idLote,
                 accion = descargar,
@@ -147,7 +147,7 @@ namespace PDADesktop.Model
                 estado = "OK",
                 EstadoGenesixCommand = command
             });
-            sincros.Add(new SincronizacionPOCO
+            sincros.Add(new SincronizacionDtoDataGrid
             {
                 lote = idLote,
                 accion = descargar,
@@ -158,7 +158,7 @@ namespace PDADesktop.Model
                 estado = "OK",
                 EstadoGenesixCommand = command
             });
-            sincros.Add(new SincronizacionPOCO
+            sincros.Add(new SincronizacionDtoDataGrid
             {
                 lote = idLote,
                 accion = descargar,

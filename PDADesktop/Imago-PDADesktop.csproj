@@ -238,7 +238,7 @@
     <Compile Include="Model\EstadoPDA.cs" />
     <Compile Include="Model\Lote.cs" />
     <Compile Include="Model\Sincronizacion.cs" />
-    <Compile Include="Model\SincronizacionPOCO.cs" />
+    <Compile Include="Model\SincronizacionDtoDataGrid.cs" />
     <Compile Include="ViewModel\CentroActividadesViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />

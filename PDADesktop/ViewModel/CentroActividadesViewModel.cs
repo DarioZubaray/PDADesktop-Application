@@ -343,8 +343,8 @@ namespace PDADesktop.ViewModel
         }
 
         //Con ObservableCollection no se actualiza la grilla :\
-        private List<SincronizacionPOCO> _sincronizaciones;
-        public List<SincronizacionPOCO> sincronizaciones
+        private List<SincronizacionDtoDataGrid> _sincronizaciones;
+        public List<SincronizacionDtoDataGrid> sincronizaciones
         {
             get
             {
@@ -414,6 +414,7 @@ namespace PDADesktop.ViewModel
             PanelLoading = true;
             PanelMainMessage = "Cargando...";
             setInfoLabels();
+
             ExitButtonCommand = new RelayCommand(ExitPortalApi, param => this.canExecute);
             SincronizarCommand = new RelayCommand(SincronizarTodosLosDatos, param => this.canExecute);
             InformarCommand = new RelayCommand(InformarGenesix, param => this.canExecute);
@@ -426,11 +427,13 @@ namespace PDADesktop.ViewModel
             EstadoGenesixCommand = new RelayCommand(BotonEstadoGenesix, param => this.canExecute);
             EstadoPDACommand = new RelayCommand(BotonEstadoPDA, param => this.canExecute);
             EstadoGeneralCommand = new RelayCommand(BotonEstadoGeneral, param => this.canExecute);
-            sincronizaciones = SincronizacionPOCO.getStaticMockList(new RelayCommand(BotonEstadoGenesix, param => this.canExecute));
+
+            sincronizaciones = SincronizacionDtoDataGrid.getStaticMockList(new RelayCommand(BotonEstadoGenesix, param => this.canExecute));
             ActualizarLoteActual(sincronizaciones);
-            GetIdAcciones();
+            GetIdAccionesAsync();
             sincronizarWorker.DoWork += sincronizarWorker_DoWork;
             sincronizarWorker.RunWorkerCompleted += sincronizarWorker_RunWorkerCompleted;
+
             ShowPanelCommand = new RelayCommand(MostrarPanel, param => this.canExecute);
             HidePanelCommand = new RelayCommand(OcultarPanel, param => this.canExecute);
             ChangeMainMessageCommand = new RelayCommand(CambiarMainMensage, param => this.canExecute);
@@ -444,14 +447,24 @@ namespace PDADesktop.ViewModel
         {
             logger.Debug("sincronizar Worker ->doWork: " + sender);
             // buscar recepciones informadas pendientes
-            string idSincronizacion = "91142";
+            string idSucursal = MyAppProperties.idSucursal;
+            string idSincronizacion = HttpWebClient.GetIdLoteActual(idSucursal).ToString();
             bool recepcionesInformadas = HttpWebClient.CheckRecepcionesInformadas(idSincronizacion);
             logger.Debug("recepciones Informadas pendientes: " + (recepcionesInformadas ? "NO" : "SI"));
             if(recepcionesInformadas)
             {
-                string idSucursal = "706";
-                string maestroART = HttpWebClient.buscarMaestroArt(idSucursal);
-
+                List<Actividad> actividades = GetIdAcciones();
+                foreach(Actividad actividad in actividades)
+                {
+                    if (Constants.DESCARGAR_GENESIX.Equals(actividad.accion.idAccion))
+                    {
+                        bool descarga = HttpWebClient.buscarMaestrosDAT((int)actividad.idActividad, idSucursal);
+                        if(descarga)
+                        {
+                            //App.Instance.deviceHandler.;
+                        }
+                    }
+                }
             }
         }
 
@@ -473,7 +486,7 @@ namespace PDADesktop.ViewModel
             label_version = assembly.GetName().Version.ToString(3);
             // de donde obtenemos el usuario y sucursal (?)
             label_usuario = "Admin";
-            label_sucursal = "706";
+            label_sucursal = MyAppProperties.idSucursal;
         }
 
         public void ExitPortalApi(object obj)
@@ -481,7 +494,7 @@ namespace PDADesktop.ViewModel
             logger.Info("exit portal api");
             //aca deberia invocar el logout al portal?
             MainWindow window = (MainWindow) Application.Current.MainWindow;
-            Uri uri = new Uri("View/LoginView.xaml", UriKind.Relative);
+            Uri uri = new Uri(Constants.LOGIN_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
         }
 
@@ -554,6 +567,7 @@ namespace PDADesktop.ViewModel
             {
                 MyAppProperties.idLoteActual = idLoteActual.ToString();
             }
+            logger.Debug("Centro de actividades, carga finalizada ocultando el panelLoading");
             PanelLoading = false;
         }
 
@@ -568,7 +582,7 @@ namespace PDADesktop.ViewModel
             if(listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
-                this.sincronizaciones = SincronizacionPOCO.refreshDataGrid(listaSincronizaciones);
+                this.sincronizaciones = SincronizacionDtoDataGrid.refreshDataGrid(listaSincronizaciones);
                 ActualizarLoteActual(sincronizaciones);
             }
         }
@@ -584,7 +598,7 @@ namespace PDADesktop.ViewModel
             if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
-                this.sincronizaciones = SincronizacionPOCO.refreshDataGrid(listaSincronizaciones);
+                this.sincronizaciones = SincronizacionDtoDataGrid.refreshDataGrid(listaSincronizaciones);
                 ActualizarLoteActual(sincronizaciones);
             }
         }
@@ -607,47 +621,53 @@ namespace PDADesktop.ViewModel
             if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
-                this.sincronizaciones = SincronizacionPOCO.refreshDataGrid(listaSincronizaciones);
+                this.sincronizaciones = SincronizacionDtoDataGrid.refreshDataGrid(listaSincronizaciones);
                 ActualizarLoteActual(sincronizaciones);
             }
         }
 
-        public void ActualizarLoteActual(List<SincronizacionPOCO> sincronizaciones)
+        public void ActualizarLoteActual(List<SincronizacionDtoDataGrid> sincronizaciones)
         {
             if(sincronizaciones != null && sincronizaciones.Count != 0)
             {
-                var s = sincronizaciones[0] as SincronizacionPOCO;
+                var s = sincronizaciones[0] as SincronizacionDtoDataGrid;
                 string idLoteActual = s.lote;
                 MyAppProperties.idLoteActual = idLoteActual;
                 ActualizarTxt_Sincronizar(s);
             }
         }
 
-        public void ActualizarTxt_Sincronizar(SincronizacionPOCO sincronizacion)
+        public void ActualizarTxt_Sincronizar(SincronizacionDtoDataGrid sincronizacion)
         {
             string lote = sincronizacion.lote;
             string fecha = sincronizacion.fecha;
             txt_sincronizacion = " (" + lote + ") " + fecha;
         }
-        public void GetIdAcciones()
+        public void GetIdAccionesAsync()
         {
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
-                string urlAcciones = ConfigurationManager.AppSettings.Get("API_GET_ALL_ACCIONES");
-                var responseAcciones = HttpWebClient.sendHttpGetRequest(urlAcciones);
-                List<Accion> acciones = JsonConvert.DeserializeObject<List<Accion>>(responseAcciones);
-
-                string idAcciones = TextUtils.ParseListAccion2String(acciones);
-                string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
-
-                var urlActividades = ConfigurationManager.AppSettings.Get("API_GET_ACTIVIDADES");
-                string responseActividades = HttpWebClient.sendHttpPostRequest(urlActividades, jsonBody);
-                logger.Debug(responseActividades);
-                List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);
-                logger.Debug(actividades.ToString());
+                GetIdAcciones();
             }).Start();
+        }
+
+        public List<Actividad> GetIdAcciones()
+        {
+            string urlAcciones = ConfigurationManager.AppSettings.Get("API_GET_ALL_ACCIONES");
+            var responseAcciones = HttpWebClient.sendHttpGetRequest(urlAcciones);
+            List<Accion> acciones = JsonConvert.DeserializeObject<List<Accion>>(responseAcciones);
+
+            string idAcciones = TextUtils.ParseListAccion2String(acciones);
+            string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
+
+            var urlActividades = ConfigurationManager.AppSettings.Get("API_GET_ACTIVIDADES");
+            string responseActividades = HttpWebClient.sendHttpPostRequest(urlActividades, jsonBody);
+            logger.Debug(responseActividades);
+            List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);
+            logger.Debug(actividades.ToString());
+            return actividades;
         }
 
         public void BotonEstadoGenesix(object obj)
