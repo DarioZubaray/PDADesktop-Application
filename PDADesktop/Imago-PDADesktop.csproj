@@ -188,6 +188,7 @@
     </Compile>
     <Compile Include="Model\Ajustes.cs" />
     <Compile Include="Utils\FileUtils.cs" />
+    <Compile Include="Utils\MaestrosUtils.cs" />
     <Compile Include="Utils\TextUtils.cs" />
     <Compile Include="ViewModel\BuscarLotesViewModel.cs" />
     <Compile Include="ViewModel\VerAjustesViewModel.cs" />

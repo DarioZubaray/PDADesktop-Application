@@ -29,15 +29,15 @@ namespace PDADesktop.Classes.Devices
             return getResult(codigoResultado);
         }
 
-        public DeviceResultName CopyAppDataFileToDevice(string sourceDirectory, string filename)
+        public DeviceResultName CopyAppDataFileToDevice(string destinationDirectory, string filename)
         {
             string fileRelPath = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
             string desDirExpanded = TextUtils.ExpandEnviromentVariable(fileRelPath);
-            logger.Debug("obteniendo archivo desde public: " + desDirExpanded);
+            logger.Debug("obteniendo archivo desde public: " + desDirExpanded + filename);
             FileUtils.VerifyFoldersOrCreate(desDirExpanded);
-            string clientPathData = sourceDirectory + filename;
+            string clientPathData = destinationDirectory;
             logger.Debug("copiando hacia la ruta: " + clientPathData);
-            int codigoResultado = MotoApi.downloadFileFromProgramFiles(clientPathData, desDirExpanded);
+            int codigoResultado = MotoApi.copyFileToAppData(desDirExpanded + filename, clientPathData);
             return getResult(codigoResultado);
         }
 
@@ -60,7 +60,7 @@ namespace PDADesktop.Classes.Devices
         {
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             DeviceResultName copyfileResult = CopyDeviceFileToAppData(deviceRelativePathData, filename);
-            if (copyfileResult.Equals(DeviceCodeResult.OK))
+            if (copyfileResult.Equals(DeviceResultName.OK))
             {
                 string desDirExpanded = TextUtils.ExpandEnviromentVariable(destinationDirectory);
                 string adjustments = FileUtils.ReadFile(desDirExpanded + filename);

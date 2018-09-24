@@ -10,9 +10,9 @@
 
         <LinearGradientBrush x:Key="panelBackground" StartPoint="0,0" EndPoint="0,1" Opacity="0.9">
             <GradientStop Color="Transparent" Offset="0"/>
-            <GradientStop Color="White" Offset="0.20" />
-            <GradientStop Color="WhiteSmoke" Offset="0.50" />
-            <GradientStop Color="White" Offset="0.80" />
+            <GradientStop Color="WhiteSmoke" Offset="0.20" />
+            <GradientStop Color="White" Offset="0.50" />
+            <GradientStop Color="WhiteSmoke" Offset="0.80" />
             <GradientStop Color="Transparent" Offset="1" />
         </LinearGradientBrush>
 
@@ -60,7 +60,7 @@
             <TextBlock x:Name="txtSubMessage" HorizontalAlignment="Center"
                  Style="{StaticResource panelSubMessageText}" 
                  Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=SubMessage}" 
-                 Foreground="Black" />
+                 Foreground="#FFBF00" FontSize="16"/>
         </StackPanel>
     </DockPanel>
 </UserControl>

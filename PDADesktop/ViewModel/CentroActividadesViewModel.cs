@@ -2,6 +2,7 @@
 using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json;
 using PDADesktop.Classes;
+using PDADesktop.Classes.Devices;
 using PDADesktop.Model;
 using PDADesktop.Utils;
 using PDADesktop.View;
@@ -459,9 +460,17 @@ namespace PDADesktop.ViewModel
                     if (Constants.DESCARGAR_GENESIX.Equals(actividad.accion.idAccion))
                     {
                         bool descarga = HttpWebClient.buscarMaestrosDAT((int)actividad.idActividad, idSucursal);
+                        PanelSubMessage = "Descargando " + actividad.descripcion.ToString();
+                        Thread.Sleep(500);
                         if(descarga)
                         {
-                            //App.Instance.deviceHandler.;
+                            string destinationDirectory = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
+                            string filename = MaestrosUtils.GetMasterFileName((int)actividad.idActividad);
+
+                            DeviceResultName result = App.Instance.deviceHandler.CopyAppDataFileToDevice(destinationDirectory, "/"+filename+".DAT");
+                            logger.Debug("result: " + result);
+                            PanelSubMessage = "Moviendo a " + destinationDirectory;
+                            Thread.Sleep(500);
                         }
                     }
                 }

@@ -164,29 +164,8 @@ namespace PDADesktop.Classes
 
         internal static bool buscarMaestrosDAT(int idActividad, string idSucursal)
         {
-            string masterFile = null;
+            string masterFile = MaestrosUtils.GetMasterFileName(idActividad);
             string urlPath = ConfigurationManager.AppSettings.Get("API_MAESTRO_URLPATH");
-            switch(idActividad)
-            {
-                case 201:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_ARTICULOS");
-                    break;
-                case 202:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_UBICACIONES");
-                    break;
-                case 203:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_UBICACION_ARTICULOS");
-                    break;
-                case 204:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_PEDIDOS");
-                    break;
-                case 205:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_TIPOS_ETIQUETAS");
-                    break;
-                case 206:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_TIPOS_AJUSTES");
-                    break;
-            }
             urlPath = String.Format(urlPath, masterFile);
             string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPath, idSucursal);
             return DownloadMasterFiles(urlPath_urlQuery, masterFile);

@@ -47,13 +47,13 @@ namespace PDADesktop.Classes.Devices
             return DeviceResultName.NONEXISTENT_FILE;
         }
 
-        public DeviceResultName CopyAppDataFileToDevice(string sourceDirectory, string filename)
+        public DeviceResultName CopyAppDataFileToDevice(string destinationDirectory, string filename)
         {
             string fileRelPath = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
             string desDirExpanded = TextUtils.ExpandEnviromentVariable(fileRelPath);
             logger.Debug("obteniendo archivo desde public: " + desDirExpanded);
             FileUtils.VerifyFoldersOrCreate(desDirExpanded);
-            string clientPathData = sourceDirectory + filename;
+            string clientPathData = destinationDirectory + filename;
             logger.Debug("copiando hacia la ruta: " + clientPathData);
             FileUtils.CopyFile(desDirExpanded, clientPathData);
             return DeviceResultName.OK;
