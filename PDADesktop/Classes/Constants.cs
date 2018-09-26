@@ -19,5 +19,7 @@ namespace PDADesktop.Classes
         public const string DEVICE_RELPATH_VERSION = "DEVICE_RELPATH_VERSION";
         public const string DEVICE_RELPATH_DATA = "DEVICE_RELPATH_DATA";
         public const string DESKTOP_FOLDER = "DESKTOP_FOLDER";
+        public const long UBICART = 203L;
+        public const long PEDIDOS = 204L;
     }
 }

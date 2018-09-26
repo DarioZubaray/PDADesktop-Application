@@ -459,11 +459,22 @@ namespace PDADesktop.ViewModel
                 {
                     if (Constants.DESCARGAR_GENESIX.Equals(actividad.accion.idAccion))
                     {
-                        bool descarga = HttpWebClient.buscarMaestrosDAT((int)actividad.idActividad, idSucursal);
+                        bool descargaMaestroCorrecta = HttpWebClient.buscarMaestrosDAT((int)actividad.idActividad, idSucursal);
                         PanelSubMessage = "Descargando " + actividad.descripcion.ToString();
                         Thread.Sleep(500);
-                        if(descarga)
+                        if(descargaMaestroCorrecta)
                         {
+                            if(actividad.idActividad.Equals(Constants.UBICART))
+                            {
+                                logger.Debug("Ubicart -> creando Archivos PAS");
+                                MaestrosUtils.crearArchivoPAS();
+                            }
+                            if(actividad.idActividad.Equals(Constants.PEDIDOS))
+                            {
+                                logger.Debug("Pedidos -> creando Archivos Pedidos");
+                                MaestrosUtils.crearArchivosPedidos();
+                            }
+
                             string destinationDirectory = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
                             string filename = MaestrosUtils.GetMasterFileName((int)actividad.idActividad);
 
