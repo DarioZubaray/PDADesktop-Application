@@ -2,7 +2,7 @@
 
 namespace PDADesktop.Model
 {
-    class Sincronizacion
+    public class Sincronizacion
     {
         public Int64 idSincronizacion { get; set; }
         public Lote lote { get; set; }

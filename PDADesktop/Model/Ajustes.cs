@@ -1,6 +1,6 @@
 ﻿namespace PDADesktop.Model
 {
-    class Ajustes
+    public class Ajustes
     {
         public long ean { get; set; }
         public string fechaAjuste { get; set; }

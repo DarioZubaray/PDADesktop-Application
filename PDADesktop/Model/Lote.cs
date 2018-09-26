@@ -2,7 +2,7 @@
 
 namespace PDADesktop.Model
 {
-    class Lote
+    public class Lote
     {
         public Int64 idLote { get; set; }
         public DateTime fecha { get; set; }

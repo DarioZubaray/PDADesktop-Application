@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace PDADesktop.Model
 {
-    class SincronizacionDtoDataGrid
+    public class SincronizacionDtoDataGrid
     {
         public string lote { get; set; }
         public int idAccion { get; set; }

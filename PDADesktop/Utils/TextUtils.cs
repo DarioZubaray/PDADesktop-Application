@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PDADesktop.Utils
 {
-    class TextUtils
+    public static class TextUtils
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

@@ -2,7 +2,7 @@
 
 namespace PDADesktop.Model
 {
-    class EstadoPDA
+    public class EstadoPDA
     {
         public Int64 idEstado { get; set; }
         public String descripcion { get; set; }
