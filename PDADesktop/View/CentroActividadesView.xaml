@@ -16,11 +16,9 @@
              Background="WhiteSmoke"
              FontFamily="{DynamicResource MaterialDesignFont}"
              mc:Ignorable="d"
-             d:DesignHeight="730" d:DesignWidth="920">
-
-    <UserControl.DataContext>
-        <VM:CentroActividadesViewModel />
-    </UserControl.DataContext>
+             d:DesignHeight="730" d:DesignWidth="920"
+             xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+             Dialog:DialogParticipation.Register="{Binding}">
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">

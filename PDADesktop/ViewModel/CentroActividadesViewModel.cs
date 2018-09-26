@@ -1,4 +1,5 @@
 ﻿using log4net;
+using MahApps.Metro.Controls.Dialogs;
 using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json;
 using PDADesktop.Classes;
@@ -250,7 +251,7 @@ namespace PDADesktop.ViewModel
 
         #region Attributes
         private readonly BackgroundWorker sincronizarWorker = new BackgroundWorker();
-
+        private IDialogCoordinator dialogCoordinator;
         private string _txt_sincronizacion;
         public string txt_sincronizacion
         {
@@ -410,11 +411,12 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Constructor
-        public CentroActividadesViewModel()
+        public CentroActividadesViewModel(IDialogCoordinator instance)
         {
             PanelLoading = true;
             PanelMainMessage = "Cargando...";
             setInfoLabels();
+            dialogCoordinator = instance;
 
             ExitButtonCommand = new RelayCommand(ExitPortalApi, param => this.canExecute);
             SincronizarCommand = new RelayCommand(SincronizarTodosLosDatos, param => this.canExecute);
@@ -444,7 +446,7 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Worker Method
-        private void sincronizarWorker_DoWork(object sender, DoWorkEventArgs e)
+        private async void sincronizarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("sincronizar Worker ->doWork: " + sender);
             // buscar datos antiguos
@@ -462,34 +464,36 @@ namespace PDADesktop.ViewModel
             logger.Debug("recepciones Informadas pendientes: " + (recepcionesInformadas ? "NO" : "SI"));
             // Consultar por un SI-No si desea continuar
             bool confirmaDescartarRecepciones = true;
-            if(!recepcionesInformadas)
+            if (!recepcionesInformadas)
             {
                 string message = "Existen recepciones pendientes de informar, ¿Desea continuar y descartar las mismas?";
                 string caption = "Aviso";
-                MessageBoxResult result = MessageBox.Show(message, caption, MessageBoxButton.OKCancel, MessageBoxImage.Asterisk);
-                if (result.Equals(MessageBoxResult.Cancel))
+                MessageDialogResult x = await dialogCoordinator.ShowMessageAsync(this, caption, message);
+
+                if(x.Equals(MessageDialogResult.Canceled))
                 {
                     confirmaDescartarRecepciones = false;
                 }
+
             }
-            if(confirmaDescartarRecepciones)
+            if (confirmaDescartarRecepciones)
             {
                 List<Actividad> actividades = GetIdAcciones();
-                foreach(Actividad actividad in actividades)
+                foreach (Actividad actividad in actividades)
                 {
                     if (Constants.DESCARGAR_GENESIX.Equals(actividad.accion.idAccion))
                     {
                         bool descargaMaestroCorrecta = HttpWebClient.buscarMaestrosDAT((int)actividad.idActividad, idSucursal);
                         PanelSubMessage = "Descargando " + actividad.descripcion.ToString();
                         Thread.Sleep(500);
-                        if(descargaMaestroCorrecta)
+                        if (descargaMaestroCorrecta)
                         {
-                            if(actividad.idActividad.Equals(Constants.UBICART))
+                            if (actividad.idActividad.Equals(Constants.UBICART))
                             {
                                 logger.Debug("Ubicart -> creando Archivos PAS");
                                 MaestrosUtils.crearArchivoPAS();
                             }
-                            if(actividad.idActividad.Equals(Constants.PEDIDOS))
+                            if (actividad.idActividad.Equals(Constants.PEDIDOS))
                             {
                                 logger.Debug("Pedidos -> creando Archivos Pedidos");
                                 MaestrosUtils.crearArchivosPedidos();
@@ -498,7 +502,7 @@ namespace PDADesktop.ViewModel
                             string destinationDirectory = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
                             string filename = MaestrosUtils.GetMasterFileName((int)actividad.idActividad);
 
-                            DeviceResultName result = App.Instance.deviceHandler.CopyAppDataFileToDevice(destinationDirectory, "/"+filename+".DAT");
+                            DeviceResultName result = App.Instance.deviceHandler.CopyAppDataFileToDevice(destinationDirectory, "/" + filename + ".DAT");
                             logger.Debug("result: " + result);
                             PanelSubMessage = "Moviendo al dispositivo";
                             Thread.Sleep(500);
