@@ -40,6 +40,9 @@ namespace PDADesktop
         #region startup
         protected override void OnStartup(StartupEventArgs e)
         {
+            logger.Debug("Leyendo Default.dat");
+            string x = deviceHandler.ReadDefaultDataFile();
+            logger.Debug(x);
             CheckApplicationRunning();
             base.OnStartup(e);
             string sucursalHarcodeada = "706";

@@ -58,7 +58,23 @@ namespace PDADesktop.Classes.Devices
 
         public string ReadDefaultDataFile()
         {
-            return "";
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DEVICE_FILE_DEFAULT);
+            logger.Debug("Leyendo el archivo: " + filenameAndExtension);
+            string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
+
+            DeviceResultName copyfileResult = CopyDeviceFileToAppData(deviceRelativePathData, filenameAndExtension);
+            logger.Debug("resultado de copiar el default.dat: " + copyfileResult.ToString());
+            if (copyfileResult.Equals(DeviceResultName.OK))
+            {
+                string userPDADocumentFolder = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
+                string userPDADocumenteFolderExtended = TextUtils.ExpandEnviromentVariable(userPDADocumentFolder);
+                string contentDefault = FileUtils.ReadFile(userPDADocumenteFolderExtended + filenameAndExtension);
+                return contentDefault;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public string ReadAdjustmentsDataFile(string destinationDirectory, string filenameAndExtension)
