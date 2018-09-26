@@ -2,6 +2,7 @@
 using PDADesktop.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace PDADesktop.Utils
@@ -66,6 +67,14 @@ namespace PDADesktop.Utils
                 }
             }
             return sb.ToString();
+        }
+
+        public static ArchivoActividadAttributes getAAAttributes(this ArchivoActividad value)
+        {
+            var enumType = value.GetType();
+            var name = Enum.GetName(enumType, value);
+            var aa = enumType.GetField(name).GetCustomAttributes(false).OfType<ArchivoActividadAttributes>().SingleOrDefault();
+            return aa as ArchivoActividadAttributes;
         }
     }
 }
