@@ -56,6 +56,11 @@ namespace PDADesktop.Classes.Devices
             logger.Debug("Resultado obtenido: " + getResult(copyResult));
         }
 
+        public string ReadDefaultDataFile()
+        {
+            return "";
+        }
+
         public string ReadAdjustmentsDataFile(string destinationDirectory, string filenameAndExtension)
         {
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);

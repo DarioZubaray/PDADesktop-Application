@@ -73,6 +73,11 @@ namespace PDADesktop.Classes.Devices
             logger.Debug("Resultado de crear archivo: " + FileUtils.VerifyIfExitsFile(deviceRelPathData + fileDefaultDat));
         }
 
+        public string ReadDefaultDataFile()
+        {
+            return "";
+        }
+
         public string ReadAdjustmentsDataFile(string desDir, string filenameAndExtension)
         {
             string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
