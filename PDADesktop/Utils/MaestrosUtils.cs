@@ -54,6 +54,7 @@ namespace PDADesktop.Utils
         public static void crearArchivoPAS()
         {
             string separador = "*eof*";
+            string deviceRelativePathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
             string publicUbicart = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
             string publicUbicartExtended = TextUtils.ExpandEnviromentVariable(publicUbicart);
             string ubicartFileName = TextUtils.getAAAttributes(Model.ArchivoActividad.UBICART).nombreArchivo;
@@ -65,7 +66,7 @@ namespace PDADesktop.Utils
 
                 ubicartContent = resultadoPartes[0];
                 logger.Debug("Sobreescribiendo: " + ubicartFileName);
-                FileUtils.WriteFile(publicUbicartExtended + "/" + ubicartFileName, ubicartContent + "\r\n");
+                FileUtils.WriteFile(publicUbicartExtended + "/" + ubicartFileName, ubicartContent);
 
                 for (int i = 1; i < resultadoPartes.Length; i++)
                 {
@@ -75,6 +76,7 @@ namespace PDADesktop.Utils
                     string rutaPas = publicUbicartExtended + "/" + nombrePas;
                     logger.Debug("Guardando archivo pas: " + rutaPas);
                     FileUtils.WriteFile(rutaPas, contenido + "\r\n");
+                    App.Instance.deviceHandler.CopyAppDataFileToDevice(deviceRelativePathData, "/" + nombrePas);
                 }
             }
         }
@@ -94,19 +96,22 @@ namespace PDADesktop.Utils
             }
             String[] resultadoPartes = Regex.Split(pedidosContent, "\\*eof\\*");
             pedidosContent = resultadoPartes[0];
-            FileUtils.WriteFile(publicPedidosExtended + "/" + pedidosFileName, pedidosContent + "\r\n");
+            logger.Debug("sobreescribiendo: " + pedidosFileName);
+            FileUtils.WriteFile(publicPedidosExtended + "/" + pedidosFileName, pedidosContent);
 
-            crearArchivoDePEDIDOS(publicPedidosExtended, "LPEDIDOS.DAT", resultadoPartes[1]);
-            crearArchivoDePEDIDOS(publicPedidosExtended, "APEDIDOS.DAT", resultadoPartes[2]);
-            crearArchivoDePEDIDOS(publicPedidosExtended, "EPEDIDOS.DAT", resultadoPartes[3]);
-            crearArchivoDePEDIDOS(publicPedidosExtended, "RPEDIDOS.DAT", resultadoPartes[4]);
+            crearMoverArchivoDePEDIDOS(publicPedidosExtended, "LPEDIDOS.DAT", resultadoPartes[1]);
+            crearMoverArchivoDePEDIDOS(publicPedidosExtended, "APEDIDOS.DAT", resultadoPartes[2]);
+            crearMoverArchivoDePEDIDOS(publicPedidosExtended, "EPEDIDOS.DAT", resultadoPartes[3]);
+            crearMoverArchivoDePEDIDOS(publicPedidosExtended, "RPEDIDOS.DAT", resultadoPartes[4]);
         }
 
-        private static void crearArchivoDePEDIDOS(string rutaArchivo, string nombreArchivo, string texto)
+        private static void crearMoverArchivoDePEDIDOS(string rutaArchivo, string nombreArchivo, string texto)
         {
+            string deviceRelativePathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
             string contenido = texto.Trim();
             logger.Debug("Guardando archivo pedidos: " + rutaArchivo + "/" + nombreArchivo);
             FileUtils.WriteFile(rutaArchivo + "/" + nombreArchivo, contenido + "\r\n");
+            App.Instance.deviceHandler.CopyAppDataFileToDevice(deviceRelativePathData, "/" + nombreArchivo);
         }
     }
 }

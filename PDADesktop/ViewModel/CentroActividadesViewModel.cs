@@ -480,7 +480,7 @@ namespace PDADesktop.ViewModel
 
                             DeviceResultName result = App.Instance.deviceHandler.CopyAppDataFileToDevice(destinationDirectory, "/"+filename+".DAT");
                             logger.Debug("result: " + result);
-                            PanelSubMessage = "Moviendo a " + destinationDirectory;
+                            PanelSubMessage = "Moviendo al dispositivo";
                             Thread.Sleep(500);
                         }
                     }

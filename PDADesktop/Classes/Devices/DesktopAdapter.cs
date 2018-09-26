@@ -27,15 +27,15 @@ namespace PDADesktop.Classes.Devices
             return true;
         }
 
-        public DeviceResultName CopyDeviceFileToAppData(string sourceDirectory, string filename)
+        public DeviceResultName CopyDeviceFileToAppData(string sourceDirectory, string filenameAndExtension)
         {
-            if (FileUtils.VerifyIfExitsFile(sourceDirectory+filename))
+            if (FileUtils.VerifyIfExitsFile(sourceDirectory+filenameAndExtension))
             {
                 string clientPathData = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
-                logger.Debug("obteniendo archivo desde dispositivo: " + sourceDirectory + filename);
-                logger.Debug("copiando hacia la ruta public: " + clientPathData + filename);
-                FileUtils.CopyFile(sourceDirectory + filename, clientPathData + filename);
-                if(FileUtils.VerifyIfExitsFile(clientPathData + filename))
+                logger.Debug("obteniendo archivo desde dispositivo: " + sourceDirectory + filenameAndExtension);
+                logger.Debug("copiando hacia la ruta public: " + clientPathData + filenameAndExtension);
+                FileUtils.CopyFile(sourceDirectory + filenameAndExtension, clientPathData + filenameAndExtension);
+                if(FileUtils.VerifyIfExitsFile(clientPathData + filenameAndExtension))
                 {
                     return DeviceResultName.OK;
                 }
@@ -47,7 +47,7 @@ namespace PDADesktop.Classes.Devices
             return DeviceResultName.NONEXISTENT_FILE;
         }
 
-        public DeviceResultName CopyAppDataFileToDevice(string destinationDirectory, string filename)
+        public DeviceResultName CopyAppDataFileToDevice(string destinationDirectory, string filenameAndExtension)
         {
             string fileRelPath = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
             string desDirExpanded = TextUtils.ExpandEnviromentVariable(fileRelPath);
@@ -55,9 +55,9 @@ namespace PDADesktop.Classes.Devices
             FileUtils.VerifyFoldersOrCreate(desDirExpanded);
             string desktopFolder = ConfigurationManager.AppSettings.Get("DESKTOP_FOLDER");
             string desktopFolderExtended = TextUtils.ExpandEnviromentVariable(desktopFolder);
-            string clientPathData = desktopFolderExtended + destinationDirectory + filename;
+            string clientPathData = desktopFolderExtended + destinationDirectory + filenameAndExtension;
             logger.Debug("copiando hacia la ruta: " + clientPathData);
-            FileUtils.CopyFile(desDirExpanded + filename, clientPathData);
+            FileUtils.CopyFile(desDirExpanded + filenameAndExtension, clientPathData);
             return DeviceResultName.OK;
         }
 
@@ -73,13 +73,13 @@ namespace PDADesktop.Classes.Devices
             logger.Debug("Resultado de crear archivo: " + FileUtils.VerifyIfExitsFile(deviceRelPathData + fileDefaultDat));
         }
 
-        public string ReadAdjustmentsDataFile(string desDir, string filename)
+        public string ReadAdjustmentsDataFile(string desDir, string filenameAndExtension)
         {
             string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             string userDesktopPDATestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathData);
-            if(FileUtils.VerifyIfExitsFile(userDesktopPDATestFolderPath + filename))
+            if(FileUtils.VerifyIfExitsFile(userDesktopPDATestFolderPath + filenameAndExtension))
             {
-                string ajustes = FileUtils.ReadFile(userDesktopPDATestFolderPath + filename);
+                string ajustes = FileUtils.ReadFile(userDesktopPDATestFolderPath + filenameAndExtension);
                 return TextUtils.ParseAdjustmentDAT2JsonStr(ajustes);
             }
             else

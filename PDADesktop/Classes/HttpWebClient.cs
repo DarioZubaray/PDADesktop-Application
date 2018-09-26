@@ -6,9 +6,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Configuration;
 using PDADesktop.Utils;
-using System.Net.Http;
 using System.Net;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace PDADesktop.Classes
