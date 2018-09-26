@@ -447,12 +447,32 @@ namespace PDADesktop.ViewModel
         private void sincronizarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("sincronizar Worker ->doWork: " + sender);
+            // buscar datos antiguos
+            /*
+             * 1-obtener el default.DAT
+             *      si no existe crearlo y construirlo
+             * 2-obtener la fecha de ultima sincronizacion
+             *      si es mayor a 1 dia, consultar descartar datos antiguos
+            */
+
             // buscar recepciones informadas pendientes
             string idSucursal = MyAppProperties.idSucursal;
             string idSincronizacion = HttpWebClient.GetIdLoteActual(idSucursal).ToString();
             bool recepcionesInformadas = HttpWebClient.CheckRecepcionesInformadas(idSincronizacion);
             logger.Debug("recepciones Informadas pendientes: " + (recepcionesInformadas ? "NO" : "SI"));
-            if(recepcionesInformadas)
+            // Consultar por un SI-No si desea continuar
+            bool confirmaDescartarRecepciones = true;
+            if(!recepcionesInformadas)
+            {
+                string message = "Existen recepciones pendientes de informar, ¿Desea continuar y descartar las mismas?";
+                string caption = "Aviso";
+                MessageBoxResult result = MessageBox.Show(message, caption, MessageBoxButton.OKCancel, MessageBoxImage.Asterisk);
+                if (result.Equals(MessageBoxResult.Cancel))
+                {
+                    confirmaDescartarRecepciones = false;
+                }
+            }
+            if(confirmaDescartarRecepciones)
             {
                 List<Actividad> actividades = GetIdAcciones();
                 foreach(Actividad actividad in actividades)
