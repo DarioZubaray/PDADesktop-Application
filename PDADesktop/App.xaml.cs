@@ -40,9 +40,6 @@ namespace PDADesktop
         #region startup
         protected override void OnStartup(StartupEventArgs e)
         {
-            logger.Debug("Leyendo Default.dat");
-            string x = deviceHandler.ReadDefaultDataFile();
-            logger.Debug(x);
             CheckApplicationRunning();
             base.OnStartup(e);
             string sucursalHarcodeada = "706";
@@ -138,8 +135,8 @@ namespace PDADesktop
 
         async void UpdateApp()
         {
-            string hostIpPort = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
-            string urlOrPath = hostIpPort + ConfigurationManager.AppSettings.Get("URL_UPDATE");
+            string hostIpPort = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
+            string urlOrPath = hostIpPort + ConfigurationManager.AppSettings.Get(Constants.URL_APPLICATION_UPDATE);
             try
             {
                 using (updateManager = new UpdateManager(urlOrPath))
@@ -180,6 +177,9 @@ namespace PDADesktop
             //1- obtener el archivo DEFAULT.DAT
             //2- si no existe crearlo
             //3- pegarle al endpoint getInfoVersion, comparar y evaluar
+            logger.Debug("Leyendo Default.dat");
+            string defaultData = deviceHandler.ReadDefaultDataFile();
+            logger.Debug(defaultData);
         }
 
         private string VerificarDatosGuardados()

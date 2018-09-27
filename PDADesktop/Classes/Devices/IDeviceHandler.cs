@@ -8,7 +8,7 @@
         DeviceResultName CopyAppDataFileToDevice(string DestinationDirectory, string filenameAndExtension);
         void CreateDefaultDataFile();
         string ReadDefaultDataFile();
-        string ReadAdjustmentsDataFile(string desDir, string filenameAndExtension);
-
+        string ReadAdjustmentsDataFile();
+        bool OverWriteAdjustmentMade(string newContent);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using log4net;
+using PDADesktop.Classes;
 using System;
 using System.Configuration;
 using System.Text.RegularExpressions;
@@ -15,37 +16,37 @@ namespace PDADesktop.Utils
             switch (idActividad)
             {
                 case 101:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_CONTROL_PRECIOS_CON_UBICACIONES");
+                    masterFile = ConfigurationManager.AppSettings.Get(Constants.CONTROL_PRECIOS_CON_UBICACIONES);
                     break;
                 case 102:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_CONTROL_PRECIOS_SIN_UBICACIONES");
+                    masterFile = ConfigurationManager.AppSettings.Get(Constants.CONTROL_PRECIOS_SIN_UBICACIONES);
                     break;
                 case 103:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_AJUSTES");
+                    masterFile = ConfigurationManager.AppSettings.Get(Constants.AJUSTES);
                     break;
                 case 104:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_RECEPCIONES");
+                    masterFile = ConfigurationManager.AppSettings.Get(Constants.RECEPCIONES);
                     break;
                 case 105:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_IMPRESION_ETIQUETAS");
+                    masterFile = ConfigurationManager.AppSettings.Get(Constants.IMPRESION_ETIQUETAS);
                     break;
                 case 201:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_ARTICULOS");
+                    masterFile = ConfigurationManager.AppSettings.Get(Constants.ARTICULOS);
                     break;
                 case 202:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_UBICACIONES");
+                    masterFile = ConfigurationManager.AppSettings.Get(Constants.UBICACIONES);
                     break;
                 case 203:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_UBICACION_ARTICULOS");
+                    masterFile = ConfigurationManager.AppSettings.Get(Constants.UBICACION_ARTICULOS);
                     break;
                 case 204:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_PEDIDOS");
+                    masterFile = ConfigurationManager.AppSettings.Get(Constants.PEDIDOS);
                     break;
                 case 205:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_TIPOS_ETIQUETAS");
+                    masterFile = ConfigurationManager.AppSettings.Get(Constants.TIPOS_ETIQUETAS);
                     break;
                 case 206:
-                    masterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_TIPOS_AJUSTES");
+                    masterFile = ConfigurationManager.AppSettings.Get(Constants.TIPOS_AJUSTES);
                     break;
             }
             return masterFile;
@@ -54,8 +55,8 @@ namespace PDADesktop.Utils
         public static void crearArchivoPAS()
         {
             string separador = "*eof*";
-            string deviceRelativePathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
-            string publicUbicart = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
+            string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+            string publicUbicart = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
             string publicUbicartExtended = TextUtils.ExpandEnviromentVariable(publicUbicart);
             string ubicartFileName = TextUtils.getAAAttributes(Model.ArchivoActividad.UBICART).nombreArchivo;
             logger.Debug("Leyendo archivo: " + ubicartFileName);
@@ -84,7 +85,7 @@ namespace PDADesktop.Utils
         public static void crearArchivosPedidos()
         {
             string separador = "*eof*";
-            string publicPedidos = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
+            string publicPedidos = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
             string publicPedidosExtended = TextUtils.ExpandEnviromentVariable(publicPedidos);
             string pedidosFileName = TextUtils.getAAAttributes(Model.ArchivoActividad.PEDIDOS).nombreArchivo;
             logger.Debug("Leyendo archivo pedidos: " + publicPedidosExtended + "/" + pedidosFileName);
@@ -99,19 +100,19 @@ namespace PDADesktop.Utils
             logger.Debug("sobreescribiendo: " + pedidosFileName);
             FileUtils.WriteFile(publicPedidosExtended + "/" + pedidosFileName, pedidosContent);
 
-            crearMoverArchivoDePEDIDOS(publicPedidosExtended, "LPEDIDOS.DAT", resultadoPartes[1]);
-            crearMoverArchivoDePEDIDOS(publicPedidosExtended, "APEDIDOS.DAT", resultadoPartes[2]);
-            crearMoverArchivoDePEDIDOS(publicPedidosExtended, "EPEDIDOS.DAT", resultadoPartes[3]);
-            crearMoverArchivoDePEDIDOS(publicPedidosExtended, "RPEDIDOS.DAT", resultadoPartes[4]);
+            crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.RPEDIDOS, resultadoPartes[1]);
+            crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.APEDIDOS, resultadoPartes[2]);
+            crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.EPEDIDOS, resultadoPartes[3]);
+            crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.RPEDIDOS, resultadoPartes[4]);
         }
 
-        private static void crearMoverArchivoDePEDIDOS(string rutaArchivo, string nombreArchivo, string texto)
+        private static void crearMoverArchivoDePEDIDOS(string rutaArchivo, string filenameAndExtension, string texto)
         {
-            string deviceRelativePathData = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
+            string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             string contenido = texto.Trim();
-            logger.Debug("Guardando archivo pedidos: " + rutaArchivo + "/" + nombreArchivo);
-            FileUtils.WriteFile(rutaArchivo + "/" + nombreArchivo, contenido + "\r\n");
-            App.Instance.deviceHandler.CopyAppDataFileToDevice(deviceRelativePathData, "/" + nombreArchivo);
+            logger.Debug("Guardando archivo pedidos: " + rutaArchivo + filenameAndExtension);
+            FileUtils.WriteFile(rutaArchivo + filenameAndExtension, contenido + "\r\n");
+            App.Instance.deviceHandler.CopyAppDataFileToDevice(deviceRelativePathData, filenameAndExtension);
         }
     }
 }

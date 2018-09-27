@@ -375,9 +375,7 @@ namespace PDADesktop.ViewModel
                 bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
                 if (estadoDevice)
                 {
-                    string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
-                    string fileName = ConfigurationManager.AppSettings.Get("DEVICE_FILE_AJUSTES");
-                    string DeviceAjusteFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile(clientDataDir, fileName);
+                    string DeviceAjusteFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
                     if (DeviceAjusteFile != null)
                     {
                         ObservableCollection<Ajustes> ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(DeviceAjusteFile);
@@ -484,21 +482,22 @@ namespace PDADesktop.ViewModel
                         Thread.Sleep(500);
                         if(descargaMaestroCorrecta)
                         {
-                            if(actividad.idActividad.Equals(Constants.UBICART))
+                            if(actividad.idActividad.Equals(Constants.ubicart))
                             {
                                 logger.Debug("Ubicart -> creando Archivos PAS");
                                 MaestrosUtils.crearArchivoPAS();
                             }
-                            if(actividad.idActividad.Equals(Constants.PEDIDOS))
+                            if(actividad.idActividad.Equals(Constants.pedidos))
                             {
                                 logger.Debug("Pedidos -> creando Archivos Pedidos");
                                 MaestrosUtils.crearArchivosPedidos();
                             }
 
-                            string destinationDirectory = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_DATA");
+                            string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
                             string filename = MaestrosUtils.GetMasterFileName((int)actividad.idActividad);
+                            string filenameAndExtension = "/" + filename + ".DAT";
 
-                            DeviceResultName result = App.Instance.deviceHandler.CopyAppDataFileToDevice(destinationDirectory, "/"+filename+".DAT");
+                            DeviceResultName result = App.Instance.deviceHandler.CopyAppDataFileToDevice(destinationDirectory, filenameAndExtension);
                             logger.Debug("result: " + result);
                             PanelSubMessage = "Moviendo al dispositivo";
                             Thread.Sleep(500);
@@ -558,9 +557,7 @@ namespace PDADesktop.ViewModel
             bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
             if(estadoDevice)
             {
-                string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
-                string fileName = ConfigurationManager.AppSettings.Get("DEVICE_FILE_AJUSTES");
-                string motoApiReadDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile(clientDataDir, fileName);
+                string motoApiReadDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
                 //por aca sabemos si hay ajustes realizados y de continuar
 
                 List<Ajustes> ajustes = JsonConvert.DeserializeObject<List<Ajustes>>(motoApiReadDataFile);
@@ -615,7 +612,7 @@ namespace PDADesktop.ViewModel
         {
             List<Sincronizacion> listaSincronizaciones = null;
             logger.Info("<- Ejecutando la vista anterior a la actual de la grilla");
-            string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get("API_SYNC_ANTERIOR");
+            string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ANTERIOR);
             string _sucursal = MyAppProperties.idSucursal;
             string _idLote = MyAppProperties.idLoteActual;
             listaSincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
@@ -631,7 +628,7 @@ namespace PDADesktop.ViewModel
         {
             List<Sincronizacion> listaSincronizaciones = null;
             logger.Info("-> Solicitando la vista siguiente de la grilla, si es que la hay...");
-            string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get("API_SYNC_SIGUIENTE");
+            string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_SIGUIENTE);
             string _sucursal = MyAppProperties.idSucursal;
             string _idLote = MyAppProperties.idLoteActual;
             listaSincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
@@ -654,7 +651,7 @@ namespace PDADesktop.ViewModel
         {
             List<Sincronizacion> listaSincronizaciones = null;
             logger.Info("Llendo a la ultima sincronizacion");
-            string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get("API_SYNC_ULTIMA");
+            string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
             string _sucursal = MyAppProperties.idSucursal;
             string _idLote = MyAppProperties.idLoteActual;
             listaSincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
@@ -695,14 +692,14 @@ namespace PDADesktop.ViewModel
 
         public List<Actividad> GetIdAcciones()
         {
-            string urlAcciones = ConfigurationManager.AppSettings.Get("API_GET_ALL_ACCIONES");
+            string urlAcciones = ConfigurationManager.AppSettings.Get(Constants.API_GET_ALL_ACCIONES);
             var responseAcciones = HttpWebClient.sendHttpGetRequest(urlAcciones);
             List<Accion> acciones = JsonConvert.DeserializeObject<List<Accion>>(responseAcciones);
 
             string idAcciones = TextUtils.ParseListAccion2String(acciones);
             string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
 
-            var urlActividades = ConfigurationManager.AppSettings.Get("API_GET_ACTIVIDADES");
+            var urlActividades = ConfigurationManager.AppSettings.Get(Constants.API_GET_ACTIVIDADES);
             string responseActividades = HttpWebClient.sendHttpPostRequest(urlActividades, jsonBody);
             logger.Debug(responseActividades);
             List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);

@@ -1,5 +1,4 @@
-﻿using PDADesktop.Classes;
-using PDADesktop.Classes.Devices;
+﻿using PDADesktop.Classes.Devices;
 using PDADesktop.ViewModel;
 using StructureMap;
 using System;
@@ -25,7 +24,7 @@ namespace PDADesktop.Classes
             ForConcreteType<VerAjustesViewModel>().Configure.Singleton();
 
             string deviceHandler = ConfigurationManager.AppSettings.Get("DEVICE_HANDLER");
-            if (deviceHandler.Equals(MyAppProperties.DESKTOP_ADAPTER, StringComparison.InvariantCultureIgnoreCase))
+            if (deviceHandler.Equals(Constants.DESKTOP_ADAPTER, StringComparison.InvariantCultureIgnoreCase))
             {
                 this.For<IDeviceHandler>().Use<DesktopAdapter>().Named("desktopAdapter");
             }

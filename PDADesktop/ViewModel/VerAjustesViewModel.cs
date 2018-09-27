@@ -152,14 +152,10 @@ namespace PDADesktop.ViewModel
             bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
             if (estadoDevice)
             {
-                string clientDataDir = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
-                string fileName = ConfigurationManager.AppSettings.Get("DEVICE_FILE_AJUSTES");
-
-                //string 
-                string motoApiReadDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile(clientDataDir, fileName);
-                if(motoApiReadDataFile != null)
+                string deviceReadDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
+                if(deviceReadDataFile != null)
                 {
-                    Ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(motoApiReadDataFile);
+                    Ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(deviceReadDataFile);
 
                     // Buscar los tipos de ajustes de pda express
                     // Me preocupa el timeout y el host inalcanzable

@@ -53,7 +53,7 @@ namespace PDADesktop.Classes.Devices
             string desDirExpanded = TextUtils.ExpandEnviromentVariable(fileRelPath);
             logger.Debug("obteniendo archivo desde public: " + desDirExpanded);
             FileUtils.VerifyFoldersOrCreate(desDirExpanded);
-            string desktopFolder = ConfigurationManager.AppSettings.Get("DESKTOP_FOLDER");
+            string desktopFolder = ConfigurationManager.AppSettings.Get(Constants.DESKTOP_FOLDER);
             string desktopFolderExtended = TextUtils.ExpandEnviromentVariable(desktopFolder);
             string clientPathData = desktopFolderExtended + destinationDirectory + filenameAndExtension;
             logger.Debug("copiando hacia la ruta: " + clientPathData);
@@ -63,7 +63,7 @@ namespace PDADesktop.Classes.Devices
 
         public void CreateDefaultDataFile()
         {
-            string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DEVICE_FILE_DEFAULT);
+            string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             logger.Debug("Creando el archivo: " + fileDefaultDat);
             string deviceRelPathVersion = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
             string userDesktopPdaTestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathVersion);
@@ -76,14 +76,14 @@ namespace PDADesktop.Classes.Devices
 
         public string ReadDefaultDataFile()
         {
-            string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DEVICE_FILE_DEFAULT);
+            string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             string deviceRelPathVersion = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
             string userDesktopPdaTestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathVersion);
             if (!FileUtils.VerifyIfExitsFile(userDesktopPdaTestFolderPath + fileDefaultDat))
             {
                 CreateDefaultDataFile();
             }
-            string clientPathVersion = ConfigurationManager.AppSettings.Get("CLIENT_PATH_VERSION");
+            string clientPathVersion = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_VERSION);
             string clientPathVersionExtended = TextUtils.ExpandEnviromentVariable(clientPathVersion);
 
             FileUtils.VerifyFoldersOrCreate(clientPathVersionExtended);
@@ -92,10 +92,11 @@ namespace PDADesktop.Classes.Devices
             return defaultDat;
         }
 
-        public string ReadAdjustmentsDataFile(string desDir, string filenameAndExtension)
+        public string ReadAdjustmentsDataFile()
         {
             string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             string userDesktopPDATestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathData);
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             if(FileUtils.VerifyIfExitsFile(userDesktopPDATestFolderPath + filenameAndExtension))
             {
                 string ajustes = FileUtils.ReadFile(userDesktopPDATestFolderPath + filenameAndExtension);
@@ -105,6 +106,11 @@ namespace PDADesktop.Classes.Devices
             {
                 return null;
             }
+        }
+
+        public bool OverWriteAdjustmentMade(string newContent)
+        {
+            return false;
         }
     }
 }
