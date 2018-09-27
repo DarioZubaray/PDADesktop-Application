@@ -64,7 +64,7 @@
                                     Command="{Binding InformarCommand}"/>
                         </materialDesign:Badged>
 
-                        <materialDesign:Badged x:Name="badged_verAjustes" Content="{Binding badge_verAjustes}" Margin="10" />
+                        <materialDesign:Badged Content="{Binding Badge_verAjustes}" Margin="10" />
 
                         <Button x:Name="button_salir"
                                 Content="Cerrar sesión" Margin="10"

@@ -46,6 +46,10 @@ namespace PDADesktop.Utils
                 }
                 else
                 {
+                    if (i >= tamanioArray)
+                    {
+                        ajusteJSON.Append("]");
+                    }
                     logger.Info("VA - parseAjusteDAT2Json linea skipeada: " + ajuste);
                 }
             }

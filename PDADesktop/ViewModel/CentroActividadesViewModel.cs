@@ -249,6 +249,7 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Attributes
+        private readonly BackgroundWorker loadCentroActividades = new BackgroundWorker();
         private readonly BackgroundWorker sincronizarWorker = new BackgroundWorker();
 
         private string _txt_sincronizacion;
@@ -357,13 +358,81 @@ namespace PDADesktop.ViewModel
                 OnPropertyChanged();
             }
         }
-
-        public Badged badge_verAjustes
+        private Badged badge_verAjustes;
+        public Badged Badge_verAjustes
         {
             get
             {
-                Badged badge = new Badged();
+                return badge_verAjustes;
+            }
+            set
+            {
+                badge_verAjustes = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
 
+        #region Constructor
+        public CentroActividadesViewModel()
+        {
+            PanelLoading = true;
+            PanelMainMessage = "Cargando...";
+
+            ExitButtonCommand = new RelayCommand(ExitPortalApi, param => this.canExecute);
+            SincronizarCommand = new RelayCommand(SincronizarTodosLosDatos, param => this.canExecute);
+            InformarCommand = new RelayCommand(InformarGenesix, param => this.canExecute);
+            VerAjustesCommand = new RelayCommand(VerAjustes, param => this.canExecute);
+            CentroActividadesLoadedCommand = new RelayCommand(CentroActividadesLoaded, param => this.canExecute);
+            AnteriorCommand = new RelayCommand(SincronizacionAnterior, param => this.canExecute);
+            SiguienteCommand = new RelayCommand(SincronizacionSiguiente, param => this.canExecute);
+            BuscarCommand = new RelayCommand(BuscarSincronizaciones, param => this.canExecute);
+            UltimaCommand = new RelayCommand(IrUltimaSincronizacion, param => this.canExecute);
+            EstadoGenesixCommand = new RelayCommand(BotonEstadoGenesix, param => this.canExecute);
+            EstadoPDACommand = new RelayCommand(BotonEstadoPDA, param => this.canExecute);
+            EstadoGeneralCommand = new RelayCommand(BotonEstadoGeneral, param => this.canExecute);
+
+            loadCentroActividades.DoWork += loadCentroActividadesWorker_DoWork;
+            loadCentroActividades.RunWorkerCompleted += loadCentroActividadesWorker_RunWorkerCompleted;
+            
+            sincronizarWorker.DoWork += sincronizarWorker_DoWork;
+            sincronizarWorker.RunWorkerCompleted += sincronizarWorker_RunWorkerCompleted;
+
+            ShowPanelCommand = new RelayCommand(MostrarPanel, param => this.canExecute);
+            HidePanelCommand = new RelayCommand(OcultarPanel, param => this.canExecute);
+            ChangeMainMessageCommand = new RelayCommand(CambiarMainMensage, param => this.canExecute);
+            ChangeSubMessageCommand = new RelayCommand(CambiarSubMensage, param => this.canExecute);
+            PanelCloseCommand = new RelayCommand(CerrarPanel, param => this.canExecute);
+        }
+        #endregion
+
+        #region Worker Method
+        private void loadCentroActividadesWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            setInfoLabels();
+            GetIdAccionesAsync();
+            string _sucursal = MyAppProperties.idSucursal;
+            int idLoteActual = HttpWebClient.GetIdLoteActual(_sucursal);
+            if (idLoteActual != 0)
+            {
+                MyAppProperties.idLoteActual = idLoteActual.ToString();
+                List<Sincronizacion> listaSincronizaciones = null;
+                string urlPath = ConfigurationManager.AppSettings.Get("API_SYNC_ULTIMA");
+                listaSincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlPath, _sucursal, idLoteActual.ToString());
+                if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
+                {
+                    this.sincronizaciones = SincronizacionDtoDataGrid.refreshDataGrid(listaSincronizaciones);
+                    ActualizarLoteActual(sincronizaciones);
+                }
+            }
+            createBadgeVerAjustes();
+        }
+
+        public void createBadgeVerAjustes()
+        {
+            var dispatcher = Application.Current.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() =>
+            {
                 Button botonVerAjustes = new Button();
                 botonVerAjustes.Name = "button_verAjustes";
                 botonVerAjustes.Content = "Ver Ajustes";
@@ -372,6 +441,7 @@ namespace PDADesktop.ViewModel
                 botonVerAjustes.ToolTip = "Ver los ajustes realizados.";
                 botonVerAjustes.Command = this.VerAjustesCommand;
 
+                Badged badge = new Badged();
                 bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
                 if (estadoDevice)
                 {
@@ -379,7 +449,7 @@ namespace PDADesktop.ViewModel
                     if (DeviceAjusteFile != null)
                     {
                         ObservableCollection<Ajustes> ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(DeviceAjusteFile);
-                        if(ajustes != null && ajustes.Count > 0)
+                        if (ajustes != null && ajustes.Count > 0)
                         {
                             badge.Badge = ajustes.Count;
                         }
@@ -402,46 +472,16 @@ namespace PDADesktop.ViewModel
                     botonVerAjustes.IsEnabled = false;
                 }
                 badge.Content = botonVerAjustes;
-                return badge;
-            }
+                Badge_verAjustes = badge;
+            }));
         }
-        #endregion
 
-        #region Constructor
-        public CentroActividadesViewModel()
+        private void loadCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            PanelLoading = true;
-            PanelMainMessage = "Cargando...";
-            setInfoLabels();
-
-            ExitButtonCommand = new RelayCommand(ExitPortalApi, param => this.canExecute);
-            SincronizarCommand = new RelayCommand(SincronizarTodosLosDatos, param => this.canExecute);
-            InformarCommand = new RelayCommand(InformarGenesix, param => this.canExecute);
-            VerAjustesCommand = new RelayCommand(VerAjustes, param => this.canExecute);
-            CentroActividadesLoadedCommand = new RelayCommand(CentroActividadesLoaded, param => this.canExecute);
-            AnteriorCommand = new RelayCommand(SincronizacionAnterior, param => this.canExecute);
-            SiguienteCommand = new RelayCommand(SincronizacionSiguiente, param => this.canExecute);
-            BuscarCommand = new RelayCommand(BuscarSincronizaciones, param => this.canExecute);
-            UltimaCommand = new RelayCommand(IrUltimaSincronizacion, param => this.canExecute);
-            EstadoGenesixCommand = new RelayCommand(BotonEstadoGenesix, param => this.canExecute);
-            EstadoPDACommand = new RelayCommand(BotonEstadoPDA, param => this.canExecute);
-            EstadoGeneralCommand = new RelayCommand(BotonEstadoGeneral, param => this.canExecute);
-
-            sincronizaciones = SincronizacionDtoDataGrid.getStaticMockList(new RelayCommand(BotonEstadoGenesix, param => this.canExecute));
-            ActualizarLoteActual(sincronizaciones);
-            GetIdAccionesAsync();
-            sincronizarWorker.DoWork += sincronizarWorker_DoWork;
-            sincronizarWorker.RunWorkerCompleted += sincronizarWorker_RunWorkerCompleted;
-
-            ShowPanelCommand = new RelayCommand(MostrarPanel, param => this.canExecute);
-            HidePanelCommand = new RelayCommand(OcultarPanel, param => this.canExecute);
-            ChangeMainMessageCommand = new RelayCommand(CambiarMainMensage, param => this.canExecute);
-            ChangeSubMessageCommand = new RelayCommand(CambiarSubMensage, param => this.canExecute);
-            PanelCloseCommand = new RelayCommand(CerrarPanel, param => this.canExecute);
+            logger.Debug("Centro de actividades, carga finalizada ocultando el panelLoading");
+            PanelLoading = false;
         }
-        #endregion
 
-        #region Worker Method
         private void sincronizarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("sincronizar Worker ->doWork: " + sender);
@@ -598,14 +638,52 @@ namespace PDADesktop.ViewModel
 
         public void CentroActividadesLoaded(object obj)
         {
-            string _sucursal = MyAppProperties.idSucursal;
-            int idLoteActual = HttpWebClient.GetIdLoteActual(_sucursal);
-            if (idLoteActual != 0)
+            loadCentroActividades.RunWorkerAsync();
+        }
+
+        public Badged createVerAjustesBadge()
+        {
+            Badged badge = new Badged();
+
+            Button botonVerAjustes = new Button();
+            botonVerAjustes.Name = "button_verAjustes";
+            botonVerAjustes.Content = "Ver Ajustes";
+            botonVerAjustes.HorizontalAlignment = HorizontalAlignment.Left;
+            botonVerAjustes.VerticalAlignment = VerticalAlignment.Top;
+            botonVerAjustes.ToolTip = "Ver los ajustes realizados.";
+            botonVerAjustes.Command = this.VerAjustesCommand;
+
+            bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
+            if (estadoDevice)
             {
-                MyAppProperties.idLoteActual = idLoteActual.ToString();
+                string DeviceAjusteFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
+                if (DeviceAjusteFile != null)
+                {
+                    ObservableCollection<Ajustes> ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(DeviceAjusteFile);
+                    if (ajustes != null && ajustes.Count > 0)
+                    {
+                        badge.Badge = ajustes.Count;
+                    }
+                    else
+                    {
+                        badge.Badge = 0;
+                        botonVerAjustes.IsEnabled = false;
+                    }
+                }
+                else
+                {
+                    badge.Badge = 0;
+                    botonVerAjustes.IsEnabled = false;
+                }
             }
-            logger.Debug("Centro de actividades, carga finalizada ocultando el panelLoading");
-            PanelLoading = false;
+            else
+            {
+                badge.Badge = "NO PDA";
+                badge.BadgeColorZoneMode = ColorZoneMode.Dark;
+                botonVerAjustes.IsEnabled = false;
+            }
+            badge.Content = botonVerAjustes;
+            return badge;
         }
 
         public void SincronizacionAnterior(object obj)
