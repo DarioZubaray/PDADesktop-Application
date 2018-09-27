@@ -105,7 +105,8 @@ namespace PDADesktop.Classes.Devices
             if (FileUtils.VerifyIfExitsFile(clientPathDataExtended + filenameAndExtension))
             {
                 FileUtils.WriteFile(clientPathDataExtended + filenameAndExtension, newContent);
-                CopyAppDataFileToDevice(clientPathData, filenameAndExtension);
+                string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+                CopyAppDataFileToDevice(deviceRelPathData, filenameAndExtension);
                 return true;
             }
             else

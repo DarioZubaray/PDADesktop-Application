@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using PDADesktop.Classes;
 using PDADesktop.Model;
+using PDADesktop.Utils;
 using PDADesktop.View;
 using System;
 using System.Collections.Generic;
@@ -265,14 +266,7 @@ namespace PDADesktop.ViewModel
             string pregunta = "¿Desea descartar los cambios?";
             if (PreguntarAlUsuario(pregunta))
             {
-                foreach (Window w in Application.Current.Windows)
-                {
-                    if (w is VerAjustesView)
-                    {
-                        w.Close();
-                        break;
-                    }
-                }
+                CloseVerAjustesWindow();
             }
             else
             {
@@ -284,6 +278,29 @@ namespace PDADesktop.ViewModel
         public void GuardarCambiosButton(object obj)
         {
             logger.Debug("GuardarCambiosButton");
+            string newAdjustmentContent = TextUtils.ParseCollectionToAdjustmentDAT(Ajustes);
+            logger.Debug("Nuevos ajustes: " + newAdjustmentContent);
+
+            if (App.Instance.deviceHandler.OverWriteAdjustmentMade(newAdjustmentContent))
+            {
+                CloseVerAjustesWindow();
+            }
+            else
+            {
+                AvisarAlUsuario("ERROR");
+            }
+        }
+
+        private void CloseVerAjustesWindow()
+        {
+            foreach (Window w in Application.Current.Windows)
+            {
+                if (w is VerAjustesView)
+                {
+                    w.Close();
+                    break;
+                }
+            }
         }
 
         public void AvisarAlUsuario(string mensaje)

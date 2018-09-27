@@ -2,6 +2,7 @@
 using PDADesktop.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -51,6 +52,20 @@ namespace PDADesktop.Utils
             return ajusteJSON.ToString();
         }
 
+        public static string ParseCollectionToAdjustmentDAT(ObservableCollection<Ajustes> ajustes)
+        {
+            StringBuilder adjustmentContent = new StringBuilder();
+            foreach(Ajustes ajuste in ajustes)
+            {
+                adjustmentContent.Append(ajuste.ean).Append("|");
+                adjustmentContent.Append(ajuste.fechaAjuste).Append("|");
+                adjustmentContent.Append(ajuste.motivo).Append("|");
+                adjustmentContent.Append(ajuste.cantidad).Append("|");
+                adjustmentContent.Append(ajuste.perfilGenesix).Append("|");
+                adjustmentContent.Append(ajuste.claveAjuste).Append("\r\n");
+            }
+            return adjustmentContent.ToString();
+        }
         public static string ParseListAccion2String(List<Accion> acciones)
         {
             StringBuilder sb = new StringBuilder("[");
