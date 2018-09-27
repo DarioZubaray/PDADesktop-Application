@@ -110,7 +110,20 @@ namespace PDADesktop.Classes.Devices
 
         public bool OverWriteAdjustmentMade(string newContent)
         {
-            return false;
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
+            string clientPathData = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
+            string clientPathDataExtended = TextUtils.ExpandEnviromentVariable(clientPathData);
+            FileUtils.VerifyFoldersOrCreate(clientPathDataExtended);
+            if (FileUtils.VerifyIfExitsFile(clientPathDataExtended + filenameAndExtension))
+            {
+                FileUtils.WriteFile(clientPathDataExtended + filenameAndExtension, newContent);
+                CopyAppDataFileToDevice(clientPathData, filenameAndExtension);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

@@ -29,15 +29,14 @@ namespace PDADesktop.Classes.Devices
             return getResult(codigoResultado);
         }
 
-        public DeviceResultName CopyAppDataFileToDevice(string destinationDirectory, string filenameAndExtension)
+        public DeviceResultName CopyAppDataFileToDevice(string relativeDestinationDirectory, string filenameAndExtension)
         {
-            string fileRelPath = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
-            string desDirExpanded = TextUtils.ExpandEnviromentVariable(fileRelPath);
-            logger.Debug("obteniendo archivo desde public: " + desDirExpanded + filenameAndExtension);
-            FileUtils.VerifyFoldersOrCreate(desDirExpanded);
-            string clientPathData = destinationDirectory;
-            logger.Debug("copiando hacia la ruta: " + clientPathData);
-            int codigoResultado = MotoApi.copyFileToAppData(desDirExpanded + filenameAndExtension, clientPathData);
+            string publicPDADataFolder = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
+            string publicPDADataFolderExtended = TextUtils.ExpandEnviromentVariable(publicPDADataFolder);
+            logger.Debug("obteniendo archivo desde public: " + publicPDADataFolderExtended + filenameAndExtension);
+            FileUtils.VerifyFoldersOrCreate(publicPDADataFolderExtended);
+            logger.Debug("copiando hacia la ruta: " + relativeDestinationDirectory);
+            int codigoResultado = MotoApi.copyFileToAppData(publicPDADataFolderExtended + filenameAndExtension, relativeDestinationDirectory);
             return getResult(codigoResultado);
         }
 
@@ -80,7 +79,7 @@ namespace PDADesktop.Classes.Devices
 
         public string ReadAdjustmentsDataFile()
         {
-            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             DeviceResultName copyfileResult = CopyDeviceFileToAppData(deviceRelativePathData, filenameAndExtension);
             if (copyfileResult.Equals(DeviceResultName.OK))
@@ -99,7 +98,20 @@ namespace PDADesktop.Classes.Devices
 
         public bool OverWriteAdjustmentMade(string newContent)
         {
-            return false;
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
+            string clientPathData = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
+            string clientPathDataExtended = TextUtils.ExpandEnviromentVariable(clientPathData);
+            FileUtils.VerifyFoldersOrCreate(clientPathDataExtended);
+            if (FileUtils.VerifyIfExitsFile(clientPathDataExtended + filenameAndExtension))
+            {
+                FileUtils.WriteFile(clientPathDataExtended + filenameAndExtension, newContent);
+                CopyAppDataFileToDevice(clientPathData, filenameAndExtension);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public static DeviceResultName getResult(int intResult)

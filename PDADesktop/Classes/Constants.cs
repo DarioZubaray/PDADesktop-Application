@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PDADesktop.Classes
+﻿namespace PDADesktop.Classes
 {
     internal class Constants
     {
@@ -23,6 +17,7 @@ namespace PDADesktop.Classes
         public const string API_GET_ACTIVIDADES = "API_GET_ACTIVIDADES";
         public const string CLIENT_PATH_DATA = "CLIENT_PATH_DATA";
         public const string CLIENT_PATH_VERSION = "CLIENT_PATH_VERSION";
+        public const string DAT_FILE_AJUSTES = "DAT_FILE_AJUSTES";
         public const string DAT_FILE_DEFAULT = "DAT_FILE_DEFAULT";
         public const string DAT_FILE_LPEDIDOS = "DAT_FILE_LPEDIDOS";
         public const string DAT_FILE_APEDIDOS = "DAT_FILE_APEDIDOS";
