@@ -46,8 +46,9 @@ namespace PDADesktop.Classes.Devices
             string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DEVICE_FILE_DEFAULT);
             logger.Debug("Creando el archivo: " + fileDefaultDat);
             string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
-            string userPDADocumentFolder = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
+            string userPDADocumentFolder = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_VERSION);
             string userPDADocumenteFolderExtended = TextUtils.ExpandEnviromentVariable(userPDADocumentFolder);
+            FileUtils.VerifyFoldersOrCreate(userPDADocumenteFolderExtended);
             string pdaControl = "0|0|0000000000000|0|0.0.0|0|0";
             logger.Debug("Guardando temporalmente en: " + userPDADocumenteFolderExtended);
             FileUtils.WriteFile(userPDADocumenteFolderExtended + fileDefaultDat, pdaControl);
@@ -64,17 +65,17 @@ namespace PDADesktop.Classes.Devices
 
             DeviceResultName copyfileResult = CopyDeviceFileToAppData(deviceRelativePathData, filenameAndExtension);
             logger.Debug("resultado de copiar el default.dat: " + copyfileResult.ToString());
-            if (copyfileResult.Equals(DeviceResultName.OK))
+            if (copyfileResult.Equals(DeviceResultName.NONEXISTENT_FILE))
             {
-                string userPDADocumentFolder = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
-                string userPDADocumenteFolderExtended = TextUtils.ExpandEnviromentVariable(userPDADocumentFolder);
-                string contentDefault = FileUtils.ReadFile(userPDADocumenteFolderExtended + filenameAndExtension);
-                return contentDefault;
+                CreateDefaultDataFile();
+                CopyDeviceFileToAppData(deviceRelativePathData, filenameAndExtension);
             }
-            else
-            {
-                return null;
-            }
+            string userPublicFolder = ConfigurationManager.AppSettings.Get("CLIENT_PATH_VERSION");
+            string userPublicFolderExtended = TextUtils.ExpandEnviromentVariable(userPublicFolder);
+            FileUtils.VerifyFoldersOrCreate(userPublicFolderExtended);
+
+            string contentDefault = FileUtils.ReadFile(userPublicFolderExtended+ filenameAndExtension);
+            return contentDefault;
         }
 
         public string ReadAdjustmentsDataFile(string destinationDirectory, string filenameAndExtension)

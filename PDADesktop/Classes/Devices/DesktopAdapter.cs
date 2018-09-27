@@ -65,17 +65,31 @@ namespace PDADesktop.Classes.Devices
         {
             string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DEVICE_FILE_DEFAULT);
             logger.Debug("Creando el archivo: " + fileDefaultDat);
-            string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
-            string userDesktopPdaTestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathData);
+            string deviceRelPathVersion = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
+            string userDesktopPdaTestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathVersion);
+            FileUtils.VerifyFoldersOrCreate(userDesktopPdaTestFolderPath);
             string pdaControl = "0|0|0000000000000|0|0.0.0|0|0";
-            logger.Debug("Guardando en: " + deviceRelPathData + fileDefaultDat);
-            FileUtils.WriteFile(deviceRelPathData + fileDefaultDat, pdaControl);
-            logger.Debug("Resultado de crear archivo: " + FileUtils.VerifyIfExitsFile(deviceRelPathData + fileDefaultDat));
+            logger.Debug("Guardando en: " + userDesktopPdaTestFolderPath + fileDefaultDat);
+            FileUtils.WriteFile(userDesktopPdaTestFolderPath + fileDefaultDat, pdaControl);
+            logger.Debug("Resultado de crear archivo: " + FileUtils.VerifyIfExitsFile(userDesktopPdaTestFolderPath + fileDefaultDat));
         }
 
         public string ReadDefaultDataFile()
         {
-            return "";
+            string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DEVICE_FILE_DEFAULT);
+            string deviceRelPathVersion = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
+            string userDesktopPdaTestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathVersion);
+            if (!FileUtils.VerifyIfExitsFile(userDesktopPdaTestFolderPath + fileDefaultDat))
+            {
+                CreateDefaultDataFile();
+            }
+            string clientPathVersion = ConfigurationManager.AppSettings.Get("CLIENT_PATH_VERSION");
+            string clientPathVersionExtended = TextUtils.ExpandEnviromentVariable(clientPathVersion);
+
+            FileUtils.VerifyFoldersOrCreate(clientPathVersionExtended);
+            FileUtils.CopyFile(userDesktopPdaTestFolderPath + fileDefaultDat, clientPathVersionExtended +  fileDefaultDat);
+            string defaultDat = FileUtils.ReadFile(clientPathVersionExtended +  fileDefaultDat);
+            return defaultDat;
         }
 
         public string ReadAdjustmentsDataFile(string desDir, string filenameAndExtension)
