@@ -358,6 +358,21 @@ namespace PDADesktop.ViewModel
                 OnPropertyChanged();
             }
         }
+        private SincronizacionDtoDataGrid selectedSynchronization;
+        public SincronizacionDtoDataGrid SelectedSynchronization
+        {
+            get
+            {
+                return selectedSynchronization;
+            }
+            set
+            {
+                selectedSynchronization = value;
+                MyAppProperties.SelectedSynchronization = selectedSynchronization;
+                OnPropertyChanged();
+            }
+        }
+
         private Badged badge_verAjustes;
         public Badged Badge_verAjustes
         {
@@ -409,6 +424,7 @@ namespace PDADesktop.ViewModel
         #region Worker Method
         private void loadCentroActividadesWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            logger.Debug("loadCentroActividades Worker ->doWork: " + sender);
             setInfoLabels();
             GetIdAccionesAsync();
             string _sucursal = MyAppProperties.idSucursal;
@@ -478,7 +494,7 @@ namespace PDADesktop.ViewModel
 
         private void loadCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("Centro de actividades, carga finalizada ocultando el panelLoading");
+            logger.Debug("loadCentroActividades Worker ->runWorkedCompleted");
             PanelLoading = false;
         }
 
@@ -497,7 +513,7 @@ namespace PDADesktop.ViewModel
             string idSucursal = MyAppProperties.idSucursal;
             string idSincronizacion = HttpWebClient.GetIdLoteActual(idSucursal).ToString();
             bool recepcionesInformadas = HttpWebClient.CheckRecepcionesInformadas(idSincronizacion);
-            logger.Debug("recepciones Informadas pendientes: " + (recepcionesInformadas ? "NO" : "SI"));
+            logger.Info("recepciones Informadas pendientes: " + (recepcionesInformadas ? "NO" : "SI"));
             // Consultar por un SI-No si desea continuar
             bool confirmaDescartarRecepciones = true;
             if(!recepcionesInformadas)
@@ -593,7 +609,7 @@ namespace PDADesktop.ViewModel
 
         public void VerAjustes(object obj)
         {
-            logger.Info("Viendo ajustes realizados");
+            logger.Debug("Viendo ajustes realizados");
             bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
             if(estadoDevice)
             {
@@ -639,51 +655,6 @@ namespace PDADesktop.ViewModel
         public void CentroActividadesLoaded(object obj)
         {
             loadCentroActividades.RunWorkerAsync();
-        }
-
-        public Badged createVerAjustesBadge()
-        {
-            Badged badge = new Badged();
-
-            Button botonVerAjustes = new Button();
-            botonVerAjustes.Name = "button_verAjustes";
-            botonVerAjustes.Content = "Ver Ajustes";
-            botonVerAjustes.HorizontalAlignment = HorizontalAlignment.Left;
-            botonVerAjustes.VerticalAlignment = VerticalAlignment.Top;
-            botonVerAjustes.ToolTip = "Ver los ajustes realizados.";
-            botonVerAjustes.Command = this.VerAjustesCommand;
-
-            bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
-            if (estadoDevice)
-            {
-                string DeviceAjusteFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
-                if (DeviceAjusteFile != null)
-                {
-                    ObservableCollection<Ajustes> ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(DeviceAjusteFile);
-                    if (ajustes != null && ajustes.Count > 0)
-                    {
-                        badge.Badge = ajustes.Count;
-                    }
-                    else
-                    {
-                        badge.Badge = 0;
-                        botonVerAjustes.IsEnabled = false;
-                    }
-                }
-                else
-                {
-                    badge.Badge = 0;
-                    botonVerAjustes.IsEnabled = false;
-                }
-            }
-            else
-            {
-                badge.Badge = "NO PDA";
-                badge.BadgeColorZoneMode = ColorZoneMode.Dark;
-                botonVerAjustes.IsEnabled = false;
-            }
-            badge.Content = botonVerAjustes;
-            return badge;
         }
 
         public void SincronizacionAnterior(object obj)
@@ -781,24 +752,28 @@ namespace PDADesktop.ViewModel
             string responseActividades = HttpWebClient.sendHttpPostRequest(urlActividades, jsonBody);
             logger.Debug(responseActividades);
             List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);
-            logger.Debug(actividades.ToString());
             return actividades;
         }
 
-        public void BotonEstadoGenesix(object obj)
+        #region ButtonStates
+        public static void BotonEstadoGenesix(object obj)
         {
-            logger.Info("Boton estado genesix");
-            logger.Debug(this);
+            logger.Info("Boton estado genesix: " + obj);
+            logger.Info(MyAppProperties.SelectedSynchronization.actividad);
             //Sincronizacion row = (Sincronizacion)((Button)e.Source).DataContext;
         }
-        public void BotonEstadoPDA(object obj)
+        public static void BotonEstadoPDA(object obj)
         {
             logger.Info("Boton estado pda");
+            logger.Info(MyAppProperties.SelectedSynchronization.actividad);
         }
-        public void BotonEstadoGeneral(object obj)
+        public static void BotonEstadoGeneral(object obj)
         {
             logger.Info("Boton estado general");
+            logger.Info(MyAppProperties.SelectedSynchronization.actividad);
         }
+        #endregion
+
 
         public void MostrarPanel(object obj)
         {

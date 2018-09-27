@@ -1,4 +1,5 @@
-﻿using PDADesktop.View;
+﻿using PDADesktop.Model;
+using PDADesktop.View;
 
 namespace PDADesktop.Classes
 {
@@ -7,5 +8,7 @@ namespace PDADesktop.Classes
         public static string idSucursal { get; set; }
         public static string idLoteActual { get; set; }
         public static MainWindow window { get; set; }
+
+        public static SincronizacionDtoDataGrid SelectedSynchronization { get; set; }
     }
 }

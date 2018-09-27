@@ -112,7 +112,8 @@
                       Height="Auto" Width="920"
                       AutoGenerateColumns="False"
                       AlternatingRowBackground="Gainsboro" AlternationCount="2"
-                      ItemsSource="{Binding sincronizaciones}" Grid.ColumnSpan="3">
+                      ItemsSource="{Binding sincronizaciones}" Grid.ColumnSpan="3"
+                      SelectedItem="{Binding Path=SelectedSynchronization, Mode=TwoWay}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding lote}" ClipboardContentBinding="{x:Null}" Header="Lote" CanUserResize="False" Width="Auto"/>
                     <DataGridTextColumn Binding="{Binding accion}" ClipboardContentBinding="{x:Null}" Header="Accion" CanUserResize="False" Width="Auto"/>

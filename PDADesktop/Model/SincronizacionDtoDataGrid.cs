@@ -1,4 +1,5 @@
 ﻿using PDADesktop.Classes;
+using PDADesktop.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
@@ -62,15 +63,18 @@ namespace PDADesktop.Model
             List<SincronizacionDtoDataGrid> dataGridRefresh = new List<SincronizacionDtoDataGrid>();
             foreach(Sincronizacion s in sincro)
             {
-                SincronizacionDtoDataGrid sPoco = new SincronizacionDtoDataGrid();
-                sPoco.lote = s.lote.idLote.ToString();
-                sPoco.accion = s.actividad.accion.descripcion;
-                sPoco.fecha = s.lote.fecha.ToString();
-                sPoco.actividad = s.actividad.descripcion;
-                sPoco.genesix = s.egx.descripcion;
-                sPoco.pda = s.epda.descripcion;
-                sPoco.estado = s.egral.descripcion;
-                dataGridRefresh.Add(sPoco);
+                SincronizacionDtoDataGrid sincroDTOGrid = new SincronizacionDtoDataGrid();
+                sincroDTOGrid.lote = s.lote.idLote.ToString();
+                sincroDTOGrid.accion = s.actividad.accion.descripcion;
+                sincroDTOGrid.fecha = s.lote.fecha.ToString();
+                sincroDTOGrid.actividad = s.actividad.descripcion;
+                sincroDTOGrid.genesix = s.egx.descripcion;
+                sincroDTOGrid.pda = s.epda.descripcion;
+                sincroDTOGrid.estado = s.egral.descripcion;
+                sincroDTOGrid.EstadoGeneralCommand = new RelayCommand(CentroActividadesViewModel.BotonEstadoGeneral, param => true);
+                sincroDTOGrid.EstadoGenesixCommand = new RelayCommand(CentroActividadesViewModel.BotonEstadoGenesix, param => true);
+                sincroDTOGrid.EstadoPDACommand = new RelayCommand(CentroActividadesViewModel.BotonEstadoPDA, param => true);
+                dataGridRefresh.Add(sincroDTOGrid);
             }
             return dataGridRefresh;
         }
