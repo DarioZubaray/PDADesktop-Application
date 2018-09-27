@@ -393,7 +393,7 @@ namespace PDADesktop.ViewModel
         {
             PanelLoading = true;
             PanelMainMessage = "Cargando...";
-
+            setInfoLabels();
             ExitButtonCommand = new RelayCommand(ExitPortalApi, param => this.canExecute);
             SincronizarCommand = new RelayCommand(SincronizarTodosLosDatos, param => this.canExecute);
             InformarCommand = new RelayCommand(InformarGenesix, param => this.canExecute);
@@ -425,7 +425,6 @@ namespace PDADesktop.ViewModel
         private void loadCentroActividadesWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("loadCentroActividades Worker ->doWork: " + sender);
-            setInfoLabels();
             GetIdAccionesAsync();
             string _sucursal = MyAppProperties.idSucursal;
             int idLoteActual = HttpWebClient.GetIdLoteActual(_sucursal);
@@ -582,6 +581,8 @@ namespace PDADesktop.ViewModel
             // de donde obtenemos el usuario y sucursal (?)
             label_usuario = "Admin";
             label_sucursal = MyAppProperties.idSucursal;
+            logger.Debug("setInfoLabels[version: " + label_version
+                + ", usuario: " + label_usuario + ", sucursal: " + label_sucursal + "]");
         }
 
         public void ExitPortalApi(object obj)
@@ -744,7 +745,7 @@ namespace PDADesktop.ViewModel
             string urlAcciones = ConfigurationManager.AppSettings.Get(Constants.API_GET_ALL_ACCIONES);
             var responseAcciones = HttpWebClient.sendHttpGetRequest(urlAcciones);
             List<Accion> acciones = JsonConvert.DeserializeObject<List<Accion>>(responseAcciones);
-
+            MyAppProperties.accionesDisponibles = acciones;
             string idAcciones = TextUtils.ParseListAccion2String(acciones);
             string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
 
@@ -752,6 +753,7 @@ namespace PDADesktop.ViewModel
             string responseActividades = HttpWebClient.sendHttpPostRequest(urlActividades, jsonBody);
             logger.Debug(responseActividades);
             List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);
+            MyAppProperties.actividadesDisponibles = actividades;
             return actividades;
         }
 
@@ -760,7 +762,6 @@ namespace PDADesktop.ViewModel
         {
             logger.Info("Boton estado genesix: " + obj);
             logger.Info(MyAppProperties.SelectedSynchronization.actividad);
-            //Sincronizacion row = (Sincronizacion)((Button)e.Source).DataContext;
         }
         public static void BotonEstadoPDA(object obj)
         {
@@ -774,7 +775,7 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-
+        #region Panel Methods
         public void MostrarPanel(object obj)
         {
             PanelLoading = true;
@@ -795,6 +796,7 @@ namespace PDADesktop.ViewModel
         {
             PanelLoading = false;
         }
+        #endregion
 
         public void AvisoAlUsuario(string mensaje)
         {

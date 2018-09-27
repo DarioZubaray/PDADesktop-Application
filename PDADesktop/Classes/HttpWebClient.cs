@@ -111,7 +111,7 @@ namespace PDADesktop.Classes
             string urlPath = ConfigurationManager.AppSettings.Get("API_SYNC_ID_LOTE");
             string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPath, idSucursal);
             string response = sendHttpGetRequest(urlPath_urlQuery);
-            if(response != null)
+            if(response != null && !response.Equals("null"))
             {
                 if(response.Contains("\""))
                 {

@@ -1,5 +1,6 @@
 ﻿using PDADesktop.Model;
 using PDADesktop.View;
+using System.Collections.Generic;
 
 namespace PDADesktop.Classes
 {
@@ -10,5 +11,7 @@ namespace PDADesktop.Classes
         public static MainWindow window { get; set; }
 
         public static SincronizacionDtoDataGrid SelectedSynchronization { get; set; }
+        public static List<Accion> accionesDisponibles { get; set; }
+        public static List<Actividad> actividadesDisponibles { get; set; }
     }
 }
