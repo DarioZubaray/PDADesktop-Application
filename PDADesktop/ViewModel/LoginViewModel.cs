@@ -14,7 +14,7 @@ namespace PDADesktop.ViewModel
     {
         #region attributes
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly BackgroundWorker worker = new BackgroundWorker();
+        private readonly BackgroundWorker loginWorker = new BackgroundWorker();
         public string usernameText { get; set; }
         public string FloatingPasswordBox { get; set; }
 
@@ -164,8 +164,8 @@ namespace PDADesktop.ViewModel
             ChangeMainMessageCommand = new RelayCommand(CambiarMainMensage, param => this.canExecute);
             ChangeSubMessageCommand = new RelayCommand(CambiarSubMensage, param => this.canExecute);
             PanelCloseCommand = new RelayCommand(CerrarPanel, param => this.canExecute);
-            worker.DoWork += worker_DoWork;
-            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            loginWorker.DoWork += worker_DoWork;
+            loginWorker.RunWorkerCompleted += worker_RunWorkerCompleted;
             RecuerdameCheck = true;
         }
         #endregion
@@ -174,7 +174,7 @@ namespace PDADesktop.ViewModel
         private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
             // run all background tasks here
-            logger.Debug("worker doWork: " + sender);
+            logger.Debug("login worker -> doWork");
             Thread.Sleep(1200);
             MainWindow window = MyAppProperties.window;
             if ("juli".Equals(usernameText))
@@ -224,7 +224,7 @@ namespace PDADesktop.ViewModel
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //update ui once worker complete his work
-            logger.Debug("Worker runWorkedCompleted: " + sender);
+            logger.Debug("login Worker ->runWorkedCompleted");
             var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
@@ -241,7 +241,7 @@ namespace PDADesktop.ViewModel
             logger.Debug("Constraseña: " + FloatingPasswordBox + ", para fines de desarrollo");
             MyAppProperties.window = (MainWindow) Application.Current.MainWindow;
             PanelMainMessage = "Espere por favor ...";
-            worker.RunWorkerAsync();
+            loginWorker.RunWorkerAsync();
         }
         #endregion
 

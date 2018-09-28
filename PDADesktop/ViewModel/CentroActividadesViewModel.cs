@@ -249,7 +249,7 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Attributes
-        private readonly BackgroundWorker loadCentroActividades = new BackgroundWorker();
+        private readonly BackgroundWorker loadCentroActividadesWorker = new BackgroundWorker();
         private readonly BackgroundWorker sincronizarWorker = new BackgroundWorker();
 
         private string _txt_sincronizacion;
@@ -407,8 +407,8 @@ namespace PDADesktop.ViewModel
             EstadoPDACommand = new RelayCommand(BotonEstadoPDA, param => this.canExecute);
             EstadoGeneralCommand = new RelayCommand(BotonEstadoGeneral, param => this.canExecute);
 
-            loadCentroActividades.DoWork += loadCentroActividadesWorker_DoWork;
-            loadCentroActividades.RunWorkerCompleted += loadCentroActividadesWorker_RunWorkerCompleted;
+            loadCentroActividadesWorker.DoWork += loadCentroActividadesWorker_DoWork;
+            loadCentroActividadesWorker.RunWorkerCompleted += loadCentroActividadesWorker_RunWorkerCompleted;
             
             sincronizarWorker.DoWork += sincronizarWorker_DoWork;
             sincronizarWorker.RunWorkerCompleted += sincronizarWorker_RunWorkerCompleted;
@@ -424,7 +424,7 @@ namespace PDADesktop.ViewModel
         #region Worker Method
         private void loadCentroActividadesWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("loadCentroActividades Worker ->doWork: " + sender);
+            logger.Debug("loadCentroActividades Worker ->doWork");
             GetIdAccionesAsync();
             string _sucursal = MyAppProperties.idSucursal;
             int idLoteActual = HttpWebClient.GetIdLoteActual(_sucursal);
@@ -432,7 +432,7 @@ namespace PDADesktop.ViewModel
             {
                 MyAppProperties.idLoteActual = idLoteActual.ToString();
                 List<Sincronizacion> listaSincronizaciones = null;
-                string urlPath = ConfigurationManager.AppSettings.Get("API_SYNC_ULTIMA");
+                string urlPath = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
                 listaSincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlPath, _sucursal, idLoteActual.ToString());
                 if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
                 {
@@ -499,7 +499,7 @@ namespace PDADesktop.ViewModel
 
         private void sincronizarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("sincronizar Worker ->doWork: " + sender);
+            logger.Debug("sincronizar Worker ->doWork");
             // buscar datos antiguos
             /*
              * 1-obtener el default.DAT
@@ -564,7 +564,7 @@ namespace PDADesktop.ViewModel
 
         private void sincronizarWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("sincronizar Worker ->runWorkedCompleted: " + sender);
+            logger.Debug("sincronizar Worker ->runWorkedCompleted");
             var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
@@ -655,7 +655,7 @@ namespace PDADesktop.ViewModel
 
         public void CentroActividadesLoaded(object obj)
         {
-            loadCentroActividades.RunWorkerAsync();
+            loadCentroActividadesWorker.RunWorkerAsync();
         }
 
         public void SincronizacionAnterior(object obj)
