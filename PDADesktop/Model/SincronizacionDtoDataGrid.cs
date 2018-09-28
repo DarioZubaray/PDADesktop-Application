@@ -2,6 +2,7 @@
 using PDADesktop.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 
 namespace PDADesktop.Model
@@ -65,8 +66,8 @@ namespace PDADesktop.Model
             {
                 SincronizacionDtoDataGrid sincroDTOGrid = new SincronizacionDtoDataGrid();
                 sincroDTOGrid.lote = s.lote.idLote.ToString();
-                sincroDTOGrid.accion = s.actividad.accion.descripcion;
-                sincroDTOGrid.fecha = s.lote.fecha.ToString();
+                sincroDTOGrid.accion = s.actividad.accion.descripcion.Split(' ').First();
+                sincroDTOGrid.fecha = s.lote.fecha.ToString("dd/MM/yyyy HH:mm");
                 sincroDTOGrid.actividad = s.actividad.descripcion;
                 sincroDTOGrid.genesix = s.egx.descripcion;
                 sincroDTOGrid.pda = s.epda.descripcion;
