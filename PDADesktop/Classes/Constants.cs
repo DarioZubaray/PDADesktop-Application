@@ -2,11 +2,13 @@
 {
     internal class Constants
     {
+        public const string MOTO = "moto";
         public const string MOTO_ADAPTER = "MotoAdapter";
+        public const string DESKTOP = "moto";
         public const string DESKTOP_ADAPTER = "DesktopAdapter";
         public const long INFORMAR_GENESIX = 1;
         public const long DESCARGAR_GENESIX = 2;
-        public const string SERVER_HOST_PROTOCOL_IP_PORT = "SERVER_HOST_PROTOCOL_IP_PORT";
+        public const string SERVER_IP = "SERVER_HOST_PROTOCOL_IP_PORT";
         public const string URL_APPLICATION_UPDATE = "URL_UPDATE";
         public const string CENTRO_ACTIVIDADES_VIEW = "View/CentroActividadesView.xaml";
         public const string LOGIN_VIEW = "View/LoginView.xaml";
@@ -15,6 +17,7 @@
         public const string API_SYNC_ULTIMA = "API_SYNC_ULTIMA";
         public const string API_GET_ALL_ACCIONES = "API_GET_ALL_ACCIONES";
         public const string API_GET_ACTIVIDADES = "API_GET_ACTIVIDADES";
+        public const string API_GET_DEFAULT_FILE = "API_GET_DEFAULT_FILE_BY_SUCURSAL";
         public const string CLIENT_PATH_DATA = "CLIENT_PATH_DATA";
         public const string CLIENT_PATH_VERSION = "CLIENT_PATH_VERSION";
         public const string DAT_FILE_AJUSTES = "DAT_FILE_AJUSTES";

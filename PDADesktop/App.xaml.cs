@@ -135,7 +135,7 @@ namespace PDADesktop
 
         async void UpdateApp()
         {
-            string hostIpPort = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
+            string hostIpPort = ConfigurationManager.AppSettings.Get(Constants.SERVER_IP);
             string urlOrPath = hostIpPort + ConfigurationManager.AppSettings.Get(Constants.URL_APPLICATION_UPDATE);
             try
             {
