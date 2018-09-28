@@ -68,10 +68,18 @@ namespace PDADesktop.Classes.Devices
             string deviceRelPathVersion = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
             string userDesktopPdaTestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathVersion);
             FileUtils.VerifyFoldersOrCreate(userDesktopPdaTestFolderPath);
-            string pdaControl = "0|0|0000000000000|0|0.0.0|0|0";
+            string pdaControl = getDefaultDatacontent();
             logger.Debug("Guardando en: " + userDesktopPdaTestFolderPath + fileDefaultDat);
             FileUtils.WriteFile(userDesktopPdaTestFolderPath + fileDefaultDat, pdaControl);
             logger.Debug("Resultado de crear archivo: " + FileUtils.VerifyIfExitsFile(userDesktopPdaTestFolderPath + fileDefaultDat));
+        }
+
+        public string getDefaultDatacontent()
+        {
+            string urlLastVersion = ConfigurationManager.AppSettings.Get(Constants.API_GET_LAST_VERSION_FILE_PROGRAM);
+            string programFilename = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_FILENAME");
+            string queryParameters = "?nombreDispositivo=" + Constants.DESKTOP + "&nombreArchivoPrograma=" + programFilename;
+            return HttpWebClient.sendHttpGetRequest(urlLastVersion + queryParameters);
         }
 
         public string ReadDefaultDataFile()

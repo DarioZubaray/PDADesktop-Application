@@ -174,8 +174,8 @@ namespace PDADesktop
         private void UpdateDeviceApp()
         {
             logger.Info("UpdatePDAMotoApp: ");
-            //1- obtener el archivo DEFAULT.DAT
-            //2- si no existe crearlo
+            //1- obtener el archivo DEFAULT.DAT (:check)
+            //2- si no existe crearlo (:check) extraer la version
             //3- pegarle al endpoint getInfoVersion, comparar y evaluar
             logger.Debug("Leyendo Default.dat");
             string defaultData = deviceHandler.ReadDefaultDataFile();
