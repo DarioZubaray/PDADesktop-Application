@@ -519,6 +519,7 @@ namespace PDADesktop.ViewModel
                     //if(!isUpdated) 
                     string idSucursal = MyAppProperties.idSucursal;
                     App.Instance.deviceHandler.CreateDefaultDataFile(idSucursal);
+                    //con el idVersionArchivo descargo desde API_DOWNLOAD_PROGRAM_FILE?idVersionArchivo=20043
                     //downloadDeviceProgramFile(Constants.MOTO);
                 }
                 else
