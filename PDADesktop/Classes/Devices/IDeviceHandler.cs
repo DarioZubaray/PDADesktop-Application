@@ -6,8 +6,12 @@
         bool IsDeviceConnected();
         DeviceResultName CopyDeviceFileToAppData(string sourceDirectory, string filenameAndExtension);
         DeviceResultName CopyAppDataFileToDevice(string DestinationDirectory, string filenameAndExtension);
-        void CreateDefaultDataFile();
-        string ReadDefaultDataFile();
+
+        string getVersionProgramFileFromDevice();
+        void CreateDefaultDataFile(string idSucursal);
+        string getLastVersionProgramFileFromServer();
+        string getNewDefaultDatacontent();
+
         string ReadAdjustmentsDataFile();
         bool OverWriteAdjustmentMade(string newContent);
     }

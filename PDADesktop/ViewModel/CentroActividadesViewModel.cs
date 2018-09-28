@@ -440,7 +440,10 @@ namespace PDADesktop.ViewModel
                     ActualizarLoteActual(sincronizaciones);
                 }
             }
+            logger.Debug("Creando badge de VerAjustes...");
             createBadgeVerAjustes();
+            logger.Debug("Verificando version dispositivo");
+            UpdateDeviceApp();
         }
 
         public void createBadgeVerAjustes()
@@ -489,6 +492,48 @@ namespace PDADesktop.ViewModel
                 badge.Content = botonVerAjustes;
                 Badge_verAjustes = badge;
             }));
+        }
+
+        public void UpdateDeviceApp()
+        {
+            //1- obtener del dispositivo, la version del programa desde el archivo default
+            //  1-A No existe archivo: Se crea, y descarga pdaMoto.exe (fin)
+            //  1-B Existe: Se parsea y analiza:
+            //    1-B-1 Esta corrupto/Todo cero: idem '1-A' [Se crea, y descarga pdaMoto.exe (fin)]
+            //    1-B-2 Todo OK: continua con '2'
+            //2- obtener la ultima version desde el server
+            //3- comparar versiones:
+            //  3-A iguales = no hacer nada (fin)
+            //  3-B menor = descargar pdaMoto.exe (fin)
+            //  3-C mayor = algo raro sucede, reemplazar pdaMoto.exe (fin)
+
+
+            string lastVersionFromDevice = App.Instance.deviceHandler.getVersionProgramFileFromDevice();
+            if(lastVersionFromDevice != null)
+            {
+                string version = TextUtils.getVersionFromDefaultDat(lastVersionFromDevice);
+                if(version != null)
+                {
+                    string lastVersion = App.Instance.deviceHandler.getLastVersionProgramFileFromServer();
+                    //bool isUpdated = compareDeviceVersions(version, lastVersion);
+                    //if(!isUpdated) 
+                    string idSucursal = MyAppProperties.idSucursal;
+                    App.Instance.deviceHandler.CreateDefaultDataFile(idSucursal);
+                    //downloadDeviceProgramFile(Constants.MOTO);
+                }
+                else
+                {
+                    string idSucursal = MyAppProperties.idSucursal;
+                    App.Instance.deviceHandler.CreateDefaultDataFile(idSucursal);
+                    //downloadDeviceProgramFile(Constants.MOTO);
+                }
+            }
+            else
+            {
+                string idSucursal = MyAppProperties.idSucursal;
+                App.Instance.deviceHandler.CreateDefaultDataFile(idSucursal);
+                //downloadDeviceProgramFile(Constants.MOTO);
+            }
         }
 
         private void loadCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

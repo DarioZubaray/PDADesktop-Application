@@ -62,10 +62,9 @@ namespace PDADesktop
             CheckServerStatus();
 
             logger.Debug("Checkear conexión con dispositivo");
-            if (CheckDeviceConnected())
+            if (!CheckDeviceConnected())
             {
-                logger.Debug("Verificando version dispositivo");
-                UpdateDeviceApp();
+                //impedir continuar hasta que se conecte el dispositivo (?)
             }
 
             logger.Debug("Verificando datos guardados...");
@@ -169,17 +168,6 @@ namespace PDADesktop
             bool dispositivoConectado = deviceHandler.IsDeviceConnected();
             logger.Info("PDA is connected: " + dispositivoConectado);
             return dispositivoConectado;
-        }
-
-        private void UpdateDeviceApp()
-        {
-            logger.Info("UpdatePDAMotoApp: ");
-            //1- obtener el archivo DEFAULT.DAT (:check)
-            //2- si no existe crearlo (:check) extraer la version
-            //3- pegarle al endpoint getInfoVersion, comparar y evaluar
-            logger.Debug("Leyendo Default.dat");
-            string defaultData = deviceHandler.ReadDefaultDataFile();
-            logger.Debug(defaultData);
         }
 
         private string VerificarDatosGuardados()

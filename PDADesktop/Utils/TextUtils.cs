@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace PDADesktop.Utils
 {
@@ -94,6 +95,20 @@ namespace PDADesktop.Utils
             var name = Enum.GetName(enumType, value);
             var aa = enumType.GetField(name).GetCustomAttributes(false).OfType<ArchivoActividadAttributes>().SingleOrDefault();
             return aa as ArchivoActividadAttributes;
+        }
+
+        public static string getVersionFromDefaultDat(string defaultContent)
+        {
+            String[] defaultArray = defaultContent.Split('|');
+            if(defaultArray.Length == 5)
+            {
+                int indiceVersion = 4;
+                return defaultArray[indiceVersion];
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

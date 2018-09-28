@@ -61,43 +61,47 @@ namespace PDADesktop.Classes.Devices
             return DeviceResultName.OK;
         }
 
-        public void CreateDefaultDataFile()
-        {
-            string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
-            logger.Debug("Creando el archivo: " + fileDefaultDat);
-            string deviceRelPathVersion = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
-            string userDesktopPdaTestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathVersion);
-            FileUtils.VerifyFoldersOrCreate(userDesktopPdaTestFolderPath);
-            string pdaControl = getDefaultDatacontent();
-            logger.Debug("Guardando en: " + userDesktopPdaTestFolderPath + fileDefaultDat);
-            FileUtils.WriteFile(userDesktopPdaTestFolderPath + fileDefaultDat, pdaControl);
-            logger.Debug("Resultado de crear archivo: " + FileUtils.VerifyIfExitsFile(userDesktopPdaTestFolderPath + fileDefaultDat));
-        }
-
-        public string getDefaultDatacontent()
-        {
-            string urlLastVersion = ConfigurationManager.AppSettings.Get(Constants.API_GET_LAST_VERSION_FILE_PROGRAM);
-            string programFilename = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_FILENAME");
-            string queryParameters = "?nombreDispositivo=" + Constants.DESKTOP + "&nombreArchivoPrograma=" + programFilename;
-            return HttpWebClient.sendHttpGetRequest(urlLastVersion + queryParameters);
-        }
-
-        public string ReadDefaultDataFile()
+        public string getVersionProgramFileFromDevice()
         {
             string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             string deviceRelPathVersion = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
             string userDesktopPdaTestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathVersion);
             if (!FileUtils.VerifyIfExitsFile(userDesktopPdaTestFolderPath + fileDefaultDat))
             {
-                CreateDefaultDataFile();
+                return null;
             }
             string clientPathVersion = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_VERSION);
             string clientPathVersionExtended = TextUtils.ExpandEnviromentVariable(clientPathVersion);
 
             FileUtils.VerifyFoldersOrCreate(clientPathVersionExtended);
-            FileUtils.CopyFile(userDesktopPdaTestFolderPath + fileDefaultDat, clientPathVersionExtended +  fileDefaultDat);
-            string defaultDat = FileUtils.ReadFile(clientPathVersionExtended +  fileDefaultDat);
-            return defaultDat;
+            FileUtils.CopyFile(userDesktopPdaTestFolderPath + fileDefaultDat, clientPathVersionExtended + fileDefaultDat);
+            string contentDefault = FileUtils.ReadFile(clientPathVersionExtended + fileDefaultDat);
+            return TextUtils.getVersionFromDefaultDat(contentDefault);
+        }
+
+        public void CreateDefaultDataFile(string idSucursal)
+        {
+            string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
+            logger.Debug("Creando el archivo: " + fileDefaultDat);
+            string deviceRelPathVersion = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
+            string userDesktopPdaTestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathVersion);
+            FileUtils.VerifyFoldersOrCreate(userDesktopPdaTestFolderPath);
+            string pdaControl = getNewDefaultDatacontent();
+            logger.Debug("Guardando en: " + userDesktopPdaTestFolderPath + fileDefaultDat);
+            FileUtils.WriteFile(userDesktopPdaTestFolderPath + fileDefaultDat, pdaControl);
+            logger.Debug("Resultado de crear archivo: " + FileUtils.VerifyIfExitsFile(userDesktopPdaTestFolderPath + fileDefaultDat));
+        }
+
+        public string getLastVersionProgramFileFromServer()
+        {
+            string urlLastVersion = ConfigurationManager.AppSettings.Get(Constants.API_GET_LAST_VERSION_FILE_PROGRAM);
+            string programFilename = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_FILENAME");
+            string queryParameters = "?nombreDispositivo=" + Constants.DESKTOP + "&nombreArchivoPrograma=" + programFilename;
+            return HttpWebClient.sendHttpGetRequest(urlLastVersion + queryParameters);
+        }
+        public string getNewDefaultDatacontent()
+        {
+            return "0|0|yyyyMMddHHmmss|sucursal|" + getLastVersionProgramFileFromServer() + "|0";
         }
 
         public string ReadAdjustmentsDataFile()
