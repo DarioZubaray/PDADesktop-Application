@@ -180,18 +180,18 @@
     <Compile Include="Classes\MyContainerInitializer.cs" />
     <Compile Include="Classes\NotEmptyValidationRule.cs" />
     <Compile Include="Classes\PasswordBoxAssistant.cs" />
-    <Compile Include="Controls\CircularProgressBar.xaml.cs">
+    <Compile Include="View\Controls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\LoadingPanel.xaml.cs">
+    <Compile Include="View\Controls\LoadingPanel.xaml.cs">
       <DependentUpon>LoadingPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Ajustes.cs" />
     <Compile Include="Model\ArchivoActividad.cs" />
     <Compile Include="Model\ArchivoActividadAttributes.cs" />
-    <Compile Include="Utils\FileUtils.cs" />
-    <Compile Include="Utils\MaestrosUtils.cs" />
-    <Compile Include="Utils\TextUtils.cs" />
+    <Compile Include="Classes\Utils\FileUtils.cs" />
+    <Compile Include="Classes\Utils\MaestrosUtils.cs" />
+    <Compile Include="Classes\Utils\TextUtils.cs" />
     <Compile Include="ViewModel\BuscarLotesViewModel.cs" />
     <Compile Include="ViewModel\VerAjustesViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
@@ -204,11 +204,11 @@
     <Compile Include="View\VerAjustesView.xaml.cs">
       <DependentUpon>VerAjustesView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\CircularProgressBar.xaml">
+    <Page Include="View\Controls\CircularProgressBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\LoadingPanel.xaml">
+    <Page Include="View\Controls\LoadingPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
