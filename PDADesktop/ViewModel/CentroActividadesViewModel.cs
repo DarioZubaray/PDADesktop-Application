@@ -251,6 +251,7 @@ namespace PDADesktop.ViewModel
         #region Attributes
         private readonly BackgroundWorker loadCentroActividadesWorker = new BackgroundWorker();
         private readonly BackgroundWorker sincronizarWorker = new BackgroundWorker();
+        private readonly BackgroundWorker informarWorker = new BackgroundWorker();
 
         private string _txt_sincronizacion;
         public string txt_sincronizacion
@@ -412,6 +413,9 @@ namespace PDADesktop.ViewModel
             
             sincronizarWorker.DoWork += sincronizarWorker_DoWork;
             sincronizarWorker.RunWorkerCompleted += sincronizarWorker_RunWorkerCompleted;
+
+            informarWorker.DoWork += informarWorker_DoWork;
+            informarWorker.RunWorkerCompleted += informarWorker_RunWorkerCompleted;
 
             ShowPanelCommand = new RelayCommand(MostrarPanel, param => this.canExecute);
             HidePanelCommand = new RelayCommand(OcultarPanel, param => this.canExecute);
@@ -618,6 +622,17 @@ namespace PDADesktop.ViewModel
                 PanelLoading = false;
             }));
         }
+        
+        private void informarWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Debug("informar Worker ->doWork");
+        }
+
+        private void informarWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("informar Worker ->runWorkedCompleted");
+        }
+
         #endregion
 
         #region Methods
@@ -647,12 +662,14 @@ namespace PDADesktop.ViewModel
             PanelMainMessage = "Espere por favor";
             logger.Info("Sincronizando todos los datos");
             sincronizarWorker.RunWorkerAsync();
+            informarWorker.RunWorkerAsync();
         }
 
         public void InformarGenesix(object obj)
         {
-            PanelLoading = false;
+            PanelLoading = true;
             logger.Info("Informando a genesix");
+            informarWorker.RunWorkerAsync();
         }
 
         public void VerAjustes(object obj)
