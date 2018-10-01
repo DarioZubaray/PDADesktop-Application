@@ -4,8 +4,8 @@
     {
         string GetName();
         bool IsDeviceConnected();
-        DeviceResultName CopyDeviceFileToAppData(string sourceDirectory, string filenameAndExtension);
-        DeviceResultName CopyAppDataFileToDevice(string DestinationDirectory, string filenameAndExtension);
+        DeviceResultName CopyDeviceFileToPublicData(string sourceDirectory, string filenameAndExtension);
+        DeviceResultName CopyPublicDataFileToDevice(string DestinationDirectory, string filenameAndExtension);
 
         string getVersionProgramFileFromDevice();
         void CreateDefaultDataFile(string idSucursal);

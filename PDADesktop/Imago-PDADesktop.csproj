@@ -190,7 +190,7 @@
     <Compile Include="Model\ArchivoActividad.cs" />
     <Compile Include="Model\ArchivoActividadAttributes.cs" />
     <Compile Include="Classes\Utils\FileUtils.cs" />
-    <Compile Include="Classes\Utils\MaestrosUtils.cs" />
+    <Compile Include="Classes\Utils\ArchivosDATUtils.cs" />
     <Compile Include="Classes\Utils\TextUtils.cs" />
     <Compile Include="ViewModel\BuscarLotesViewModel.cs" />
     <Compile Include="ViewModel\VerAjustesViewModel.cs" />

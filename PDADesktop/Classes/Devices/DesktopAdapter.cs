@@ -27,7 +27,7 @@ namespace PDADesktop.Classes.Devices
             return true;
         }
 
-        public DeviceResultName CopyDeviceFileToAppData(string sourceDirectory, string filenameAndExtension)
+        public DeviceResultName CopyDeviceFileToPublicData(string sourceDirectory, string filenameAndExtension)
         {
             if (FileUtils.VerifyIfExitsFile(sourceDirectory+filenameAndExtension))
             {
@@ -47,7 +47,7 @@ namespace PDADesktop.Classes.Devices
             return DeviceResultName.NONEXISTENT_FILE;
         }
 
-        public DeviceResultName CopyAppDataFileToDevice(string destinationDirectory, string filenameAndExtension)
+        public DeviceResultName CopyPublicDataFileToDevice(string destinationDirectory, string filenameAndExtension)
         {
             string fileRelPath = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
             string desDirExpanded = TextUtils.ExpandEnviromentVariable(fileRelPath);
@@ -97,7 +97,7 @@ namespace PDADesktop.Classes.Devices
             string urlLastVersion = ConfigurationManager.AppSettings.Get(Constants.API_GET_LAST_VERSION_FILE_PROGRAM);
             string programFilename = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_FILENAME");
             string queryParameters = "?nombreDispositivo=" + Constants.DESKTOP + "&nombreArchivoPrograma=" + programFilename;
-            return HttpWebClient.sendHttpGetRequest(urlLastVersion + queryParameters);
+            return HttpWebClient.SendHttpGetRequest(urlLastVersion + queryParameters);
         }
         public string getNewDefaultDatacontent()
         {
@@ -129,7 +129,7 @@ namespace PDADesktop.Classes.Devices
             if (FileUtils.VerifyIfExitsFile(clientPathDataExtended + filenameAndExtension))
             {
                 FileUtils.WriteFile(clientPathDataExtended + filenameAndExtension, newContent);
-                CopyAppDataFileToDevice(clientPathData, filenameAndExtension);
+                CopyPublicDataFileToDevice(clientPathData, filenameAndExtension);
                 return true;
             }
             else

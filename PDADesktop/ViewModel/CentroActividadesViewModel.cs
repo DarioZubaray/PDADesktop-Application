@@ -583,7 +583,7 @@ namespace PDADesktop.ViewModel
                 {
                     if (Constants.DESCARGAR_GENESIX.Equals(actividad.accion.idAccion))
                     {
-                        bool descargaMaestroCorrecta = HttpWebClient.buscarMaestrosDAT((int)actividad.idActividad, idSucursal);
+                        bool descargaMaestroCorrecta = HttpWebClient.BuscarMaestrosDAT((int)actividad.idActividad, idSucursal);
                         PanelSubMessage = "Descargando " + actividad.descripcion.ToString();
                         Thread.Sleep(500);
                         if(descargaMaestroCorrecta)
@@ -591,19 +591,19 @@ namespace PDADesktop.ViewModel
                             if(actividad.idActividad.Equals(Constants.ubicart))
                             {
                                 logger.Debug("Ubicart -> creando Archivos PAS");
-                                MaestrosUtils.crearArchivoPAS();
+                                ArchivosDATUtils.crearArchivoPAS();
                             }
                             if(actividad.idActividad.Equals(Constants.pedidos))
                             {
                                 logger.Debug("Pedidos -> creando Archivos Pedidos");
-                                MaestrosUtils.crearArchivosPedidos();
+                                ArchivosDATUtils.crearArchivosPedidos();
                             }
 
                             string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
-                            string filename = MaestrosUtils.GetMasterFileName((int)actividad.idActividad);
+                            string filename = ArchivosDATUtils.GetDataFileNameByIdActividad((int)actividad.idActividad);
                             string filenameAndExtension = "/" + filename + ".DAT";
 
-                            DeviceResultName result = App.Instance.deviceHandler.CopyAppDataFileToDevice(destinationDirectory, filenameAndExtension);
+                            DeviceResultName result = App.Instance.deviceHandler.CopyPublicDataFileToDevice(destinationDirectory, filenameAndExtension);
                             logger.Debug("result: " + result);
                             PanelSubMessage = "Moviendo al dispositivo";
                             Thread.Sleep(500);
@@ -626,9 +626,59 @@ namespace PDADesktop.ViewModel
         private void informarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("informar Worker ->doWork");
+            
             //1- Buscar las actividades de informar
             //2- mover las actividades a public
             //3- enviar los archivos por post al server
+            List<Actividad> actividades = MyAppProperties.actividadesDisponibles;
+            List<long> actividadesInformar = new List<long>();
+            logger.Debug("Buscando las actividad a informar");
+            foreach(Actividad actividad in actividades)
+            {
+                long idAccion = actividad.accion.idAccion;
+                if (idAccion.Equals(Constants.INFORMAR_GENESIX))
+                {
+                    actividadesInformar.Add(actividad.idActividad);
+                }
+            }
+            string urlSincronizacion = ConfigurationManager.AppSettings.Get("API_SYNC_ACTUAL");
+            string idSucursal = MyAppProperties.idSucursal;
+            string idLote = MyAppProperties.idLoteActual;
+            List<Sincronizacion> sincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacion, idSucursal, idLote);
+            string sourceDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+            foreach(long actividad in actividadesInformar)
+            {
+                ArchivoActividad archivoActividad = ArchivosDATUtils.GetArchivoActividadByIdActividad(Convert.ToInt32(actividad));
+                ArchivoActividadAttributes archivoActividadAtributos = ArchivosDATUtils.GetAAAttributes(archivoActividad);
+                string FilenameAndExtension = "/" + archivoActividadAtributos.nombreArchivo;
+                logger.Debug("Buscando archivo : " + FilenameAndExtension);
+                DeviceResultName copyResult = App.Instance.deviceHandler.CopyDeviceFileToPublicData(sourceDirectory, FilenameAndExtension);
+                if(copyResult.Equals(DeviceResultName.OK))
+                {
+                    logger.Debug("Reultado de copiar a public - OK");
+                    string filePath = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA) + FilenameAndExtension;
+                    string urlSubirArchivo = ConfigurationManager.AppSettings.Get("API_SUBIR_ARCHIVO");
+                    string sincronizacionActividad = "";
+                    foreach(Sincronizacion sincronizacion in sincronizaciones)
+                    {
+                        if(sincronizacion.actividad.idActividad.Equals(actividad))
+                        {
+                            sincronizacionActividad = "" + sincronizacion.idSincronizacion;
+                        }
+                    }
+                    string parametros = "?idActividad={0}&idSincronizacion={1}&registros={2}";
+                    parametros = String.Format(parametros, actividad, sincronizacionActividad, 0);
+                    logger.Debug("Subiendo Archivo: " + urlSubirArchivo);
+                    string respuesta = HttpWebClient.SendFileHttpRequest(filePath, urlSubirArchivo+parametros);
+                    logger.Debug(respuesta);
+                }
+                else
+                {
+                    logger.Debug("Copia de archivo no OK: " + copyResult.ToString());
+                    logger.Debug("Skipeando actividad: " + actividad);
+                }
+            }
+
             //4- executar el action de informar
         }
 
@@ -816,7 +866,7 @@ namespace PDADesktop.ViewModel
         public List<Actividad> GetIdAcciones()
         {
             string urlAcciones = ConfigurationManager.AppSettings.Get(Constants.API_GET_ALL_ACCIONES);
-            var responseAcciones = HttpWebClient.sendHttpGetRequest(urlAcciones);
+            var responseAcciones = HttpWebClient.SendHttpGetRequest(urlAcciones);
             if (responseAcciones != null)
             {
                 List<Accion> acciones = JsonConvert.DeserializeObject<List<Accion>>(responseAcciones);
@@ -825,7 +875,7 @@ namespace PDADesktop.ViewModel
                 string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
 
                 var urlActividades = ConfigurationManager.AppSettings.Get(Constants.API_GET_ACTIVIDADES);
-                string responseActividades = HttpWebClient.sendHttpPostRequest(urlActividades, jsonBody);
+                string responseActividades = HttpWebClient.SendHttpPostRequest(urlActividades, jsonBody);
                 logger.Debug(responseActividades);
                 List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);
                 MyAppProperties.actividadesDisponibles = actividades;

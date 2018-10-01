@@ -8,6 +8,7 @@ using System.Configuration;
 using PDADesktop.Utils;
 using System.Net;
 using System.IO;
+using System.Text;
 
 namespace PDADesktop.Classes
 {
@@ -15,7 +16,8 @@ namespace PDADesktop.Classes
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static string sendHttpGetRequest(string urlPath)
+        #region Request
+        public static string SendHttpGetRequest(string urlPath)
         {
             string response = null;
             var client = new WebClient();
@@ -34,12 +36,12 @@ namespace PDADesktop.Classes
             catch (Exception e)
             {
                 logger.Error(e.GetType() + " - " + e.Message);
-                showErrorMessage(e);
+                ShowErrorMessage(e);
             }
             return response;
         }
 
-        public static string sendHttpPostRequest(string urlPath, string jsonBody)
+        public static string SendHttpPostRequest(string urlPath, string jsonBody)
         {
             string result = null;
             string urlAuthority = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
@@ -67,25 +69,27 @@ namespace PDADesktop.Classes
             WebResponse response = null;
             try
             {
-                string sWebAddress = url;
+                filePath = TextUtils.ExpandEnviromentVariable(filePath);
+                string urlAuthority = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
+                string sWebAddress = urlAuthority + url;
 
                 string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
-                byte[] boundarybytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
-                HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(sWebAddress);
+                byte[] boundarybytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+                HttpWebRequest wr = (HttpWebRequest) WebRequest.Create(sWebAddress);
                 wr.Timeout = 1000 * 15;
                 wr.ContentType = "multipart/form-data; boundary=" + boundary;
                 wr.Method = "POST";
                 wr.KeepAlive = true;
-                wr.Credentials = System.Net.CredentialCache.DefaultCredentials;
+                wr.Credentials = CredentialCache.DefaultCredentials;
                 Stream stream = wr.GetRequestStream();
 
                 stream.Write(boundarybytes, 0, boundarybytes.Length);
-                byte[] formitembytes = System.Text.Encoding.UTF8.GetBytes(filePath);
+                byte[] formitembytes = Encoding.UTF8.GetBytes(filePath);
                 stream.Write(formitembytes, 0, formitembytes.Length);
                 stream.Write(boundarybytes, 0, boundarybytes.Length);
                 string headerTemplate = "Content-Disposition: form-data; name=\"archivo\"; filename=\"{0}\"\r\nContent-Type: application/octet-stream\r\n\r\n";
                 string header = string.Format(headerTemplate, Path.GetFileName(filePath));
-                byte[] headerbytes = System.Text.Encoding.UTF8.GetBytes(header);
+                byte[] headerbytes = Encoding.UTF8.GetBytes(header);
                 stream.Write(headerbytes, 0, headerbytes.Length);
 
                 FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
@@ -95,7 +99,7 @@ namespace PDADesktop.Classes
                     stream.Write(buffer, 0, bytesRead);
                 fileStream.Close();
 
-                byte[] trailer = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+                byte[] trailer = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
                 stream.Write(trailer, 0, trailer.Length);
                 stream.Close();
 
@@ -115,8 +119,9 @@ namespace PDADesktop.Classes
                     response.Close();
             }
         }
+        #endregion
 
-        public static void showErrorMessage(Exception e)
+        public static void ShowErrorMessage(Exception e)
         {
             string message = e.GetType() + " - " + e.Message;
             string caption = "Error de comunicacion con PDA Express Server";
@@ -142,16 +147,16 @@ namespace PDADesktop.Classes
             catch (Exception e)
             {
                 logger.Error(e.GetType() + " - " + e.Message);
-                showErrorMessage(e);
+                ShowErrorMessage(e);
                 return false;
             }
         }
 
-        public static Boolean getHttpWebServerConexionStatus()
+        public static Boolean GetHttpWebServerConexionStatus()
         {
             Boolean conexionStatus = false;
             string urlServerStatus = ConfigurationManager.AppSettings.Get("API_SERVER_CONEXION_STATUS");
-            string response = sendHttpGetRequest(urlServerStatus);
+            string response = SendHttpGetRequest(urlServerStatus);
             if (response != null)
             {
                 conexionStatus = response.Length > 0 ? true : false;
@@ -164,7 +169,7 @@ namespace PDADesktop.Classes
             int idLote = 0;
             string urlPath = ConfigurationManager.AppSettings.Get("API_SYNC_ID_LOTE");
             string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPath, idSucursal);
-            string response = sendHttpGetRequest(urlPath_urlQuery);
+            string response = SendHttpGetRequest(urlPath_urlQuery);
             if(response != null && !response.Equals("null"))
             {
                 if(response.Contains("\""))
@@ -180,7 +185,7 @@ namespace PDADesktop.Classes
         {
             List<Sincronizacion> sincronizaciones = null;
             string urlPath_urlQuery = String.Format("{0}?idSucursal={1}&idLote={2}", urlPath, idSucursal, idLote);
-            string response = sendHttpGetRequest(urlPath_urlQuery);
+            string response = SendHttpGetRequest(urlPath_urlQuery);
             if (response != null)
             {
                 sincronizaciones = JsonConvert.DeserializeObject<List<Sincronizacion>>(response);
@@ -193,7 +198,7 @@ namespace PDADesktop.Classes
         {
             List<string> tiposAjustes = null;
             string urlPath = ConfigurationManager.AppSettings.Get("API_GET_TIPOS_AJUSTES");
-            string response = sendHttpGetRequest(urlPath);
+            string response = SendHttpGetRequest(urlPath);
             if (response != null)
             {
                 tiposAjustes = JsonConvert.DeserializeObject<List<string>>(response);
@@ -206,7 +211,7 @@ namespace PDADesktop.Classes
             bool recepcionesInformadas = false;
             string urlPath = ConfigurationManager.AppSettings.Get("API_BUSCAR_RECEPCIONES_INFORMADAS");
             string urlPath_urlQuery = String.Format("{0}?idSincronizacion={1}", urlPath, idSincronizacion);
-            string response = sendHttpGetRequest(urlPath_urlQuery);
+            string response = SendHttpGetRequest(urlPath_urlQuery);
             if (response != null)
             {
                 recepcionesInformadas = response.Equals("\"1\"") ? true : false;
@@ -214,9 +219,9 @@ namespace PDADesktop.Classes
             return recepcionesInformadas;
         }
 
-        internal static bool buscarMaestrosDAT(int idActividad, string idSucursal)
+        internal static bool BuscarMaestrosDAT(int idActividad, string idSucursal)
         {
-            string masterFile = MaestrosUtils.GetMasterFileName(idActividad);
+            string masterFile = ArchivosDATUtils.GetDataFileNameByIdActividad(idActividad);
             string urlPath = ConfigurationManager.AppSettings.Get("API_MAESTRO_URLPATH");
             urlPath = String.Format(urlPath, masterFile);
             string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPath, idSucursal);

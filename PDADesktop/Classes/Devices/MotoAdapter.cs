@@ -17,7 +17,7 @@ namespace PDADesktop.Classes.Devices
             return MotoApi.isDeviceConnected() != 0;
         }
 
-        public DeviceResultName CopyDeviceFileToAppData(string sourceDirectory, string filenameAndExtension)
+        public DeviceResultName CopyDeviceFileToPublicData(string sourceDirectory, string filenameAndExtension)
         {
             string fileRelPath = sourceDirectory + filenameAndExtension;
             logger.Debug("obteniendo archivo desde dispositivo: " + fileRelPath);
@@ -29,7 +29,7 @@ namespace PDADesktop.Classes.Devices
             return getResult(codigoResultado);
         }
 
-        public DeviceResultName CopyAppDataFileToDevice(string relativeDestinationDirectory, string filenameAndExtension)
+        public DeviceResultName CopyPublicDataFileToDevice(string relativeDestinationDirectory, string filenameAndExtension)
         {
             string publicPDADataFolder = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
             string publicPDADataFolderExtended = TextUtils.ExpandEnviromentVariable(publicPDADataFolder);
@@ -46,7 +46,7 @@ namespace PDADesktop.Classes.Devices
             logger.Debug("Leyendo el archivo: " + filenameAndExtension);
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
 
-            DeviceResultName copyfileResult = CopyDeviceFileToAppData(deviceRelativePathData, filenameAndExtension);
+            DeviceResultName copyfileResult = CopyDeviceFileToPublicData(deviceRelativePathData, filenameAndExtension);
             logger.Debug("resultado de copiar el default.dat: " + copyfileResult.ToString());
             if (copyfileResult.Equals(DeviceResultName.NONEXISTENT_FILE))
             {
@@ -83,7 +83,7 @@ namespace PDADesktop.Classes.Devices
             string urlLastVersion = ConfigurationManager.AppSettings.Get(Constants.API_GET_LAST_VERSION_FILE_PROGRAM);
             string programFilename = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_FILENAME");
             string queryParameters = "?nombreDispositivo=" + Constants.MOTO + "&nombreArchivoPrograma=" + programFilename;
-            return HttpWebClient.sendHttpGetRequest(urlLastVersion + queryParameters);
+            return HttpWebClient.SendHttpGetRequest(urlLastVersion + queryParameters);
         }
         public string getNewDefaultDatacontent()
         {
@@ -94,7 +94,7 @@ namespace PDADesktop.Classes.Devices
         {
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
-            DeviceResultName copyfileResult = CopyDeviceFileToAppData(deviceRelativePathData, filenameAndExtension);
+            DeviceResultName copyfileResult = CopyDeviceFileToPublicData(deviceRelativePathData, filenameAndExtension);
             if (copyfileResult.Equals(DeviceResultName.OK))
             {
                 string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
@@ -119,7 +119,7 @@ namespace PDADesktop.Classes.Devices
             {
                 FileUtils.WriteFile(clientPathDataExtended + filenameAndExtension, newContent);
                 string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
-                CopyAppDataFileToDevice(deviceRelPathData, filenameAndExtension);
+                CopyPublicDataFileToDevice(deviceRelPathData, filenameAndExtension);
                 return true;
             }
             else

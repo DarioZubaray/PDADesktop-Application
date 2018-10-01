@@ -1,55 +1,123 @@
 ﻿using log4net;
 using PDADesktop.Classes;
+using PDADesktop.Model;
 using System;
 using System.Configuration;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace PDADesktop.Utils
 {
-    class MaestrosUtils
+    public static class ArchivosDATUtils
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static string GetMasterFileName(int idActividad)
+        public static ArchivoActividad GetArchivoActividadByIdActividad(int idActividad)
         {
-            string masterFile = null;
+            ArchivoActividad archivoActividad;
             switch (idActividad)
             {
                 case 101:
-                    masterFile = ConfigurationManager.AppSettings.Get(Constants.CONTROL_PRECIOS_CON_UBICACIONES);
+                    archivoActividad = ArchivoActividad.CTRUBIC;
                     break;
                 case 102:
-                    masterFile = ConfigurationManager.AppSettings.Get(Constants.CONTROL_PRECIOS_SIN_UBICACIONES);
+                    archivoActividad = ArchivoActividad.CTRSUBIC;
                     break;
                 case 103:
-                    masterFile = ConfigurationManager.AppSettings.Get(Constants.AJUSTES);
+                    archivoActividad = ArchivoActividad.AJUTES;
                     break;
                 case 104:
-                    masterFile = ConfigurationManager.AppSettings.Get(Constants.RECEPCIONES);
+                    archivoActividad = ArchivoActividad.RECEP;
                     break;
                 case 105:
-                    masterFile = ConfigurationManager.AppSettings.Get(Constants.IMPRESION_ETIQUETAS);
+                    archivoActividad = ArchivoActividad.ETIQ;
                     break;
                 case 201:
-                    masterFile = ConfigurationManager.AppSettings.Get(Constants.ARTICULOS);
+                    archivoActividad = ArchivoActividad.ART;
                     break;
                 case 202:
-                    masterFile = ConfigurationManager.AppSettings.Get(Constants.UBICACIONES);
+                    archivoActividad = ArchivoActividad.UBIC;
                     break;
                 case 203:
-                    masterFile = ConfigurationManager.AppSettings.Get(Constants.UBICACION_ARTICULOS);
+                    archivoActividad = ArchivoActividad.UBICART;
                     break;
                 case 204:
-                    masterFile = ConfigurationManager.AppSettings.Get(Constants.PEDIDOS);
+                    archivoActividad = ArchivoActividad.PEDIDOS;
                     break;
                 case 205:
-                    masterFile = ConfigurationManager.AppSettings.Get(Constants.TIPOS_ETIQUETAS);
+                    archivoActividad = ArchivoActividad.TETIQ;
                     break;
                 case 206:
-                    masterFile = ConfigurationManager.AppSettings.Get(Constants.TIPOS_AJUSTES);
+                    archivoActividad = ArchivoActividad.TAJUS;
+                    break;
+                case 207:
+                    archivoActividad = ArchivoActividad.PROVEED;
+                    break;
+                case 208:
+                    archivoActividad = ArchivoActividad.PROVART;
+                    break;
+                case 209:
+                    archivoActividad = ArchivoActividad.MOTIDEV;
+                    break;
+                default:
+                    throw new Exception("No se puede obtener la actividad " + idActividad);
+            }
+            return archivoActividad;
+        }
+
+        public static ArchivoActividadAttributes GetAAAttributes(this ArchivoActividad value)
+        {
+            var enumType = value.GetType();
+            var enumName = Enum.GetName(enumType, value);
+            var archiveAttribute = enumType.GetField(enumName).GetCustomAttributes(false).OfType<ArchivoActividadAttributes>().SingleOrDefault();
+            return archiveAttribute as ArchivoActividadAttributes;
+        }
+
+        public static string GetDataFileNameAndExtensionByIdActividad(int idActividad)
+        {
+            return "/" + GetDataFileNameByIdActividad(idActividad) + ".DAT";
+        }
+
+        public static string GetDataFileNameByIdActividad(int idActividad)
+        {
+            string dataFileName = null;
+            switch (idActividad)
+            {
+                case 101:
+                    dataFileName = ConfigurationManager.AppSettings.Get(Constants.CONTROL_PRECIOS_CON_UBICACIONES);
+                    break;
+                case 102:
+                    dataFileName = ConfigurationManager.AppSettings.Get(Constants.CONTROL_PRECIOS_SIN_UBICACIONES);
+                    break;
+                case 103:
+                    dataFileName = ConfigurationManager.AppSettings.Get(Constants.AJUSTES);
+                    break;
+                case 104:
+                    dataFileName = ConfigurationManager.AppSettings.Get(Constants.RECEPCIONES);
+                    break;
+                case 105:
+                    dataFileName = ConfigurationManager.AppSettings.Get(Constants.IMPRESION_ETIQUETAS);
+                    break;
+                case 201:
+                    dataFileName = ConfigurationManager.AppSettings.Get(Constants.ARTICULOS);
+                    break;
+                case 202:
+                    dataFileName = ConfigurationManager.AppSettings.Get(Constants.UBICACIONES);
+                    break;
+                case 203:
+                    dataFileName = ConfigurationManager.AppSettings.Get(Constants.UBICACION_ARTICULOS);
+                    break;
+                case 204:
+                    dataFileName = ConfigurationManager.AppSettings.Get(Constants.PEDIDOS);
+                    break;
+                case 205:
+                    dataFileName = ConfigurationManager.AppSettings.Get(Constants.TIPOS_ETIQUETAS);
+                    break;
+                case 206:
+                    dataFileName = ConfigurationManager.AppSettings.Get(Constants.TIPOS_AJUSTES);
                     break;
             }
-            return masterFile;
+            return dataFileName;
         }
 
         public static void crearArchivoPAS()
@@ -58,7 +126,7 @@ namespace PDADesktop.Utils
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             string publicUbicart = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
             string publicUbicartExtended = TextUtils.ExpandEnviromentVariable(publicUbicart);
-            string ubicartFileName = TextUtils.getAAAttributes(Model.ArchivoActividad.UBICART).nombreArchivo;
+            string ubicartFileName = GetAAAttributes(Model.ArchivoActividad.UBICART).nombreArchivo;
             logger.Debug("Leyendo archivo: " + ubicartFileName);
             string ubicartContent = FileUtils.ReadFile(publicUbicartExtended + "/" + ubicartFileName);
             if(ubicartContent.IndexOf(separador) != -1)
@@ -77,7 +145,7 @@ namespace PDADesktop.Utils
                     string rutaPas = publicUbicartExtended + "/" + nombrePas;
                     logger.Debug("Guardando archivo pas: " + rutaPas);
                     FileUtils.WriteFile(rutaPas, contenido + "\r\n");
-                    App.Instance.deviceHandler.CopyAppDataFileToDevice(deviceRelativePathData, "/" + nombrePas);
+                    App.Instance.deviceHandler.CopyPublicDataFileToDevice(deviceRelativePathData, "/" + nombrePas);
                 }
             }
         }
@@ -87,7 +155,7 @@ namespace PDADesktop.Utils
             string separador = "*eof*";
             string publicPedidos = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
             string publicPedidosExtended = TextUtils.ExpandEnviromentVariable(publicPedidos);
-            string pedidosFileName = TextUtils.getAAAttributes(Model.ArchivoActividad.PEDIDOS).nombreArchivo;
+            string pedidosFileName = GetAAAttributes(Model.ArchivoActividad.PEDIDOS).nombreArchivo;
             logger.Debug("Leyendo archivo pedidos: " + publicPedidosExtended + "/" + pedidosFileName);
             string pedidosContent = FileUtils.ReadFile(publicPedidosExtended + "/" + pedidosFileName);
             if (pedidosContent.Substring(pedidosContent.Length - 5).Equals(separador))
@@ -112,7 +180,7 @@ namespace PDADesktop.Utils
             string contenido = texto.Trim();
             logger.Debug("Guardando archivo pedidos: " + rutaArchivo + filenameAndExtension);
             FileUtils.WriteFile(rutaArchivo + filenameAndExtension, contenido + "\r\n");
-            App.Instance.deviceHandler.CopyAppDataFileToDevice(deviceRelativePathData, filenameAndExtension);
+            App.Instance.deviceHandler.CopyPublicDataFileToDevice(deviceRelativePathData, filenameAndExtension);
         }
     }
 }
