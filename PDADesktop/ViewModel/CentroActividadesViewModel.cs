@@ -791,17 +791,24 @@ namespace PDADesktop.ViewModel
         {
             string urlAcciones = ConfigurationManager.AppSettings.Get(Constants.API_GET_ALL_ACCIONES);
             var responseAcciones = HttpWebClient.sendHttpGetRequest(urlAcciones);
-            List<Accion> acciones = JsonConvert.DeserializeObject<List<Accion>>(responseAcciones);
-            MyAppProperties.accionesDisponibles = acciones;
-            string idAcciones = TextUtils.ParseListAccion2String(acciones);
-            string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
+            if (responseAcciones != null)
+            {
+                List<Accion> acciones = JsonConvert.DeserializeObject<List<Accion>>(responseAcciones);
+                MyAppProperties.accionesDisponibles = acciones;
+                string idAcciones = TextUtils.ParseListAccion2String(acciones);
+                string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
 
-            var urlActividades = ConfigurationManager.AppSettings.Get(Constants.API_GET_ACTIVIDADES);
-            string responseActividades = HttpWebClient.sendHttpPostRequest(urlActividades, jsonBody);
-            logger.Debug(responseActividades);
-            List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);
-            MyAppProperties.actividadesDisponibles = actividades;
-            return actividades;
+                var urlActividades = ConfigurationManager.AppSettings.Get(Constants.API_GET_ACTIVIDADES);
+                string responseActividades = HttpWebClient.sendHttpPostRequest(urlActividades, jsonBody);
+                logger.Debug(responseActividades);
+                List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);
+                MyAppProperties.actividadesDisponibles = actividades;
+                return actividades;
+            }
+            else
+            {
+                return new List<Actividad>();
+            }
         }
 
         #region ButtonStates

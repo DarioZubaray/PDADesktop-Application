@@ -17,7 +17,7 @@
         public const string API_SYNC_ULTIMA = "API_SYNC_ULTIMA";
         public const string API_GET_ALL_ACCIONES = "API_GET_ALL_ACCIONES";
         public const string API_GET_ACTIVIDADES = "API_GET_ACTIVIDADES";
-        public const string API_GET_LAST_VERSION_FILE_PROGRAM = "API_LAST_VERSION_FILE_PROGRAM";
+        public const string API_GET_LAST_VERSION_FILE_PROGRAM = "API_GET_LAST_VERSION_FILE_PROGRAM";
         public const string API_GET_DEFAULT_FILE = "API_GET_DEFAULT_FILE_BY_SUCURSAL";
         public const string CLIENT_PATH_DATA = "CLIENT_PATH_DATA";
         public const string CLIENT_PATH_VERSION = "CLIENT_PATH_VERSION";
