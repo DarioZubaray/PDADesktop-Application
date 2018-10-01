@@ -62,6 +62,60 @@ namespace PDADesktop.Classes
             return result;
         }
 
+        public static string SendFileHttpRequest(string filePath, string url)
+        {
+            WebResponse response = null;
+            try
+            {
+                string sWebAddress = url;
+
+                string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
+                byte[] boundarybytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+                HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(sWebAddress);
+                wr.Timeout = 1000 * 15;
+                wr.ContentType = "multipart/form-data; boundary=" + boundary;
+                wr.Method = "POST";
+                wr.KeepAlive = true;
+                wr.Credentials = System.Net.CredentialCache.DefaultCredentials;
+                Stream stream = wr.GetRequestStream();
+
+                stream.Write(boundarybytes, 0, boundarybytes.Length);
+                byte[] formitembytes = System.Text.Encoding.UTF8.GetBytes(filePath);
+                stream.Write(formitembytes, 0, formitembytes.Length);
+                stream.Write(boundarybytes, 0, boundarybytes.Length);
+                string headerTemplate = "Content-Disposition: form-data; name=\"archivo\"; filename=\"{0}\"\r\nContent-Type: application/octet-stream\r\n\r\n";
+                string header = string.Format(headerTemplate, Path.GetFileName(filePath));
+                byte[] headerbytes = System.Text.Encoding.UTF8.GetBytes(header);
+                stream.Write(headerbytes, 0, headerbytes.Length);
+
+                FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                byte[] buffer = new byte[4096];
+                int bytesRead = 0;
+                while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0)
+                    stream.Write(buffer, 0, bytesRead);
+                fileStream.Close();
+
+                byte[] trailer = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+                stream.Write(trailer, 0, trailer.Length);
+                stream.Close();
+
+                response = wr.GetResponse();
+                Stream responseStream = response.GetResponseStream();
+                StreamReader streamReader = new StreamReader(responseStream);
+                string responseData = streamReader.ReadToEnd();
+                return responseData;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+            finally
+            {
+                if (response != null)
+                    response.Close();
+            }
+        }
+
         public static void showErrorMessage(Exception e)
         {
             string message = e.GetType() + " - " + e.Message;
