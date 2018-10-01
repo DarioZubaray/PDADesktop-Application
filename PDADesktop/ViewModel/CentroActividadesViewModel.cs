@@ -535,6 +535,7 @@ namespace PDADesktop.ViewModel
                 App.Instance.deviceHandler.CreateDefaultDataFile(idSucursal);
                 //downloadDeviceProgramFile(Constants.MOTO);
             }
+            logger.Debug("Fin UpdateDeviceApp");
         }
 
         private void loadCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
