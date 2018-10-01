@@ -626,11 +626,20 @@ namespace PDADesktop.ViewModel
         private void informarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("informar Worker ->doWork");
+            //1- Buscar las actividades de informar
+            //2- mover las actividades a public
+            //3- enviar los archivos por post al server
+            //4- executar el action de informar
         }
 
         private void informarWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("informar Worker ->runWorkedCompleted");
+            var dispatcher = Application.Current.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                PanelLoading = false;
+            }));
         }
 
         #endregion
