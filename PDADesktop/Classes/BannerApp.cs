@@ -11,5 +11,19 @@ namespace PDADesktop.Classes
             logger.Debug("  IMAGO - PDA DESKTOP APPLICATION ");
             logger.Debug("==================================");
         }
+
+        public static void printSynchronization()
+        {
+            logger.Debug("==================================");
+            logger.Debug("=  S y n c h r o n i z a t i o n =");
+            logger.Debug("==================================");
+        }
+
+        public static void printInformGX()
+        {
+            logger.Debug("==================================");
+            logger.Debug("=  I n f o r m ==  G e n e s i x =");
+            logger.Debug("==================================");
+        }
     }
 }

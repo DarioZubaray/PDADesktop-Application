@@ -551,6 +551,7 @@ namespace PDADesktop.ViewModel
         private void sincronizarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("sincronizar Worker ->doWork");
+            BannerApp.printSynchronization();
             // buscar datos antiguos
             /*
              * 1-obtener el default.DAT
@@ -621,12 +622,13 @@ namespace PDADesktop.ViewModel
             {
                 PanelLoading = false;
             }));
+            informarWorker.RunWorkerAsync();
         }
-        
+
         private void informarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("informar Worker ->doWork");
-
+            BannerApp.printInformGX();
             //1- Buscar las actividades de informar
             List<Actividad> actividades = MyAppProperties.actividadesDisponibles;
             List<long> actividadesInformar = new List<long>();
@@ -728,7 +730,6 @@ namespace PDADesktop.ViewModel
             PanelMainMessage = "Espere por favor";
             logger.Info("Sincronizando todos los datos");
             sincronizarWorker.RunWorkerAsync();
-            informarWorker.RunWorkerAsync();
         }
 
         public void InformarGenesix(object obj)
