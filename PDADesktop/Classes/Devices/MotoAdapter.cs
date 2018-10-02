@@ -42,12 +42,37 @@ namespace PDADesktop.Classes.Devices
 
         public ResultFileOperation DeleteDeviceDataFile(string filename)
         {
-            return ResultFileOperation.OK;
+            string deviceRelpathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+            string fileToDelete = deviceRelpathData + FileUtils.WrapSlashAndDATExtension(filename);
+            logger.Debug("obteniendo archivo desde public: " + fileToDelete);
+            int motoApiResult = MotoApi.deleteFileFromAppData(fileToDelete);
+            return getResult(motoApiResult);
         }
 
         public ResultFileOperation DeletePublicDataFile(string filename)
         {
-            return ResultFileOperation.OK;
+            string publicFolderPath = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string publicFolderPathExtended = TextUtils.ExpandEnviromentVariable(publicFolderPath);
+            string fileToDelete = publicFolderPathExtended + FileUtils.WrapSlashAndDATExtension(filename);
+            logger.Debug("obteniendo archivo desde public: " + fileToDelete);
+            bool verificationPreviousInexistenceFile = FileUtils.VerifyIfExitsFile(fileToDelete);
+            if (!verificationPreviousInexistenceFile)
+            {
+                logger.Debug("Archivo solicitado para borrar no existe");
+                return ResultFileOperation.NONEXISTENT_FILE;
+            }
+            logger.Debug("borrando el siguiente archivo: " + fileToDelete);
+            FileUtils.DeleteFile(fileToDelete);
+            bool verificationExistenceFile = FileUtils.VerifyIfExitsFile(fileToDelete);
+            if (verificationExistenceFile)
+            {
+                logger.Info("No se pudo borrar el archivo " + filename);
+                return ResultFileOperation.DELETE_ERROR;
+            }
+            else
+            {
+                return ResultFileOperation.OK;
+            }
         }
 
         public string getVersionProgramFileFromDevice()

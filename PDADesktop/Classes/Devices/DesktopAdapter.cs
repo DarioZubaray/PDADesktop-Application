@@ -63,10 +63,27 @@ namespace PDADesktop.Classes.Devices
 
         public ResultFileOperation DeleteDeviceDataFile(string filename)
         {
-            string publicPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
-            string publicPathDataExtended = TextUtils.ExpandEnviromentVariable(publicPathData);
-            logger.Debug("obteniendo archivo desde public: " + publicPathDataExtended);
-            return ResultFileOperation.OK;
+            string publicFolder = ConfigurationManager.AppSettings.Get(Constants.DESKTOP_FOLDER);
+            string publicFolderExtended = TextUtils.ExpandEnviromentVariable(publicFolder);
+            string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+            string fileToDelete = publicFolderExtended + deviceRelPathData + FileUtils.WrapSlashAndDATExtension(filename);
+            logger.Debug("obteniendo archivo desde public: " + fileToDelete);
+            bool verificationPreviousExistenceFile = FileUtils.VerifyIfExitsFile(fileToDelete);
+            if (!verificationPreviousExistenceFile)
+            {
+                logger.Debug("Archivo solicitado para borrar no existe");
+                return ResultFileOperation.NONEXISTENT_FILE;
+            }
+            FileUtils.DeleteFile(fileToDelete);
+            bool verifySuccessfullDeleteFile = FileUtils.VerifyIfExitsFile(fileToDelete);
+            if(verifySuccessfullDeleteFile)
+            {
+                return ResultFileOperation.DELETE_ERROR;
+            }
+            else
+            {
+                return ResultFileOperation.OK;
+            }
         }
 
         public ResultFileOperation DeletePublicDataFile(string filename)
@@ -74,6 +91,7 @@ namespace PDADesktop.Classes.Devices
             string publicFolderPath = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
             string publicFolderPathExtended = TextUtils.ExpandEnviromentVariable(publicFolderPath);
             string fileToDelete = publicFolderPathExtended + FileUtils.WrapSlashAndDATExtension(filename);
+            logger.Debug("obteniendo archivo desde public: " + fileToDelete);
             bool verificationPreviousInexistenceFile = FileUtils.VerifyIfExitsFile(fileToDelete);
             if(!verificationPreviousInexistenceFile)
             {
