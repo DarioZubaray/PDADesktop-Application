@@ -27,38 +27,71 @@ namespace PDADesktop.Classes.Devices
             return true;
         }
 
-        public DeviceResultName CopyDeviceFileToPublicData(string sourceDirectory, string filenameAndExtension)
+        public ResultFileOperation CopyDeviceFileToPublicData(string sourceDirectory, string filenameAndExtension)
         {
             if (FileUtils.VerifyIfExitsFile(sourceDirectory+filenameAndExtension))
             {
-                string clientPathData = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
+                string clientPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
                 logger.Debug("obteniendo archivo desde dispositivo: " + sourceDirectory + filenameAndExtension);
                 logger.Debug("copiando hacia la ruta public: " + clientPathData + filenameAndExtension);
                 FileUtils.CopyFile(sourceDirectory + filenameAndExtension, clientPathData + filenameAndExtension);
                 if(FileUtils.VerifyIfExitsFile(clientPathData + filenameAndExtension))
                 {
-                    return DeviceResultName.OK;
+                    return ResultFileOperation.OK;
                 }
                 else
                 {
-                    return DeviceResultName.FILE_DOWNLOAD_NOTOK;
+                    return ResultFileOperation.FILE_DOWNLOAD_NOTOK;
                 }
             }
-            return DeviceResultName.NONEXISTENT_FILE;
+            return ResultFileOperation.NONEXISTENT_FILE;
         }
 
-        public DeviceResultName CopyPublicDataFileToDevice(string destinationDirectory, string filenameAndExtension)
+        public ResultFileOperation CopyPublicDataFileToDevice(string destinationDirectory, string filenameAndExtension)
         {
-            string fileRelPath = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
-            string desDirExpanded = TextUtils.ExpandEnviromentVariable(fileRelPath);
-            logger.Debug("obteniendo archivo desde public: " + desDirExpanded);
-            FileUtils.VerifyFoldersOrCreate(desDirExpanded);
+            string publicPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string publicPathDataExtended = TextUtils.ExpandEnviromentVariable(publicPathData);
+            logger.Debug("obteniendo archivo desde public: " + publicPathDataExtended);
+            FileUtils.VerifyFoldersOrCreate(publicPathDataExtended);
             string desktopFolder = ConfigurationManager.AppSettings.Get(Constants.DESKTOP_FOLDER);
             string desktopFolderExtended = TextUtils.ExpandEnviromentVariable(desktopFolder);
             string clientPathData = desktopFolderExtended + destinationDirectory + filenameAndExtension;
             logger.Debug("copiando hacia la ruta: " + clientPathData);
-            FileUtils.CopyFile(desDirExpanded + filenameAndExtension, clientPathData);
-            return DeviceResultName.OK;
+            FileUtils.CopyFile(publicPathDataExtended + filenameAndExtension, clientPathData);
+            return ResultFileOperation.OK;
+        }
+
+        public ResultFileOperation DeleteDeviceDataFile(string filename)
+        {
+            string publicPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string publicPathDataExtended = TextUtils.ExpandEnviromentVariable(publicPathData);
+            logger.Debug("obteniendo archivo desde public: " + publicPathDataExtended);
+            return ResultFileOperation.OK;
+        }
+
+        public ResultFileOperation DeletePublicDataFile(string filename)
+        {
+            string publicFolderPath = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string publicFolderPathExtended = TextUtils.ExpandEnviromentVariable(publicFolderPath);
+            string fileToDelete = publicFolderPathExtended + FileUtils.WrapSlashAndDATExtension(filename);
+            bool verificationPreviousInexistenceFile = FileUtils.VerifyIfExitsFile(fileToDelete);
+            if(!verificationPreviousInexistenceFile)
+            {
+                logger.Debug("Archivo solicitado para borrar no existe");
+                return ResultFileOperation.NONEXISTENT_FILE;
+            }
+            logger.Debug("borrando el siguiente archivo: " + fileToDelete);
+            FileUtils.DeleteFile(fileToDelete);
+            bool verificationExistenceFile = FileUtils.VerifyIfExitsFile(fileToDelete);
+            if(verificationExistenceFile)
+            {
+                logger.Info("No se pudo borrar el archivo " + filename );
+                return ResultFileOperation.DELETE_ERROR;
+            }
+            else
+            {
+                return ResultFileOperation.OK;
+            }
         }
 
         public string getVersionProgramFileFromDevice()
@@ -123,7 +156,7 @@ namespace PDADesktop.Classes.Devices
         public bool OverWriteAdjustmentMade(string newContent)
         {
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
-            string clientPathData = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
+            string clientPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
             string clientPathDataExtended = TextUtils.ExpandEnviromentVariable(clientPathData);
             FileUtils.VerifyFoldersOrCreate(clientPathDataExtended);
             if (FileUtils.VerifyIfExitsFile(clientPathDataExtended + filenameAndExtension))

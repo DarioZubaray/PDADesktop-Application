@@ -123,7 +123,7 @@ namespace PDADesktop.Classes.Utils
         {
             string separador = "*eof*";
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
-            string publicUbicart = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
+            string publicUbicart = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
             string publicUbicartExtended = TextUtils.ExpandEnviromentVariable(publicUbicart);
             string ubicartFileName = GetAAAttributes(Model.ArchivoActividad.UBICART).nombreArchivo;
             logger.Debug("Leyendo archivo: " + ubicartFileName);
@@ -152,7 +152,7 @@ namespace PDADesktop.Classes.Utils
         public static void crearArchivosPedidos()
         {
             string separador = "*eof*";
-            string publicPedidos = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
+            string publicPedidos = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
             string publicPedidosExtended = TextUtils.ExpandEnviromentVariable(publicPedidos);
             string pedidosFileName = GetAAAttributes(Model.ArchivoActividad.PEDIDOS).nombreArchivo;
             logger.Debug("Leyendo archivo pedidos: " + publicPedidosExtended + "/" + pedidosFileName);

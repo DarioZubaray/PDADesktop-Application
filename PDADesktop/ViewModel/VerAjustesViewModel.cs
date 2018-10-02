@@ -19,16 +19,16 @@ namespace PDADesktop.ViewModel
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Attributes
-        private ObservableCollection<Ajustes> ajustes;
-        public ObservableCollection<Ajustes> Ajustes
+        private ObservableCollection<Ajustes> adjustments;
+        public ObservableCollection<Ajustes> Adjustments
         {
             get
             {
-                return ajustes;
+                return adjustments;
             }
             set
             {
-                ajustes = value;
+                adjustments = value;
                 OnPropertyChanged();
             }
         }
@@ -45,15 +45,15 @@ namespace PDADesktop.ViewModel
                 selectedAdjustment = value;
                 if(selectedAdjustment != null)
                 {
-                    TipoDeAjusteSelected = selectedAdjustment.motivo;
-                    Textbox_cantidadValue = selectedAdjustment.cantidad.ToString();
-                    Combobox_tipoAjusteEnabled = true;
-                    Textbox_cantidadEnabled = true;
+                    AdjustmentTypeSelected = selectedAdjustment.motivo;
+                    Textbox_amountValue = selectedAdjustment.cantidad.ToString();
+                    Combobox_adjustmentTypeEnabled = true;
+                    Textbox_amountEnabled = true;
                 }
                 else
                 {
-                    Combobox_tipoAjusteEnabled = false;
-                    Textbox_cantidadEnabled = false;
+                    Combobox_adjustmentTypeEnabled = false;
+                    Textbox_amountEnabled = false;
                 }
                 OnPropertyChanged();
             }
@@ -73,73 +73,73 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private bool combobox_tipoAjusteEnabled;
-        public bool Combobox_tipoAjusteEnabled
+        private bool combobox_adjustmentTypeEnabled;
+        public bool Combobox_adjustmentTypeEnabled
         {
             get
             {
-                return combobox_tipoAjusteEnabled;
+                return combobox_adjustmentTypeEnabled;
             }
             set
             {
-                combobox_tipoAjusteEnabled = value;
+                combobox_adjustmentTypeEnabled = value;
                 OnPropertyChanged();
             }
         }
 
-        private string tipoDeAjusteSelected;
-        public string TipoDeAjusteSelected
+        private string adjustmentTypeSelected;
+        public string AdjustmentTypeSelected
         {
             get
             {
-                return tipoDeAjusteSelected;
+                return adjustmentTypeSelected;
             }
             set
             {
-                tipoDeAjusteSelected = value;
-                selectedAdjustment.motivo = tipoDeAjusteSelected;
+                adjustmentTypeSelected = value;
+                selectedAdjustment.motivo = adjustmentTypeSelected;
                 OnPropertyChanged();
             }
         }
 
-        private List<string> tiposDeAjustes;
-        public List<string> TiposDeAjustes
+        private List<string> adjustmentsTypes;
+        public List<string> AdjustmentsTypes
         {
             get
             {
-                return tiposDeAjustes;
+                return adjustmentsTypes;
             }set
             {
-                tiposDeAjustes = value;
+                adjustmentsTypes = value;
                 OnPropertyChanged();
             }
         }
 
-        private bool textbox_cantidadEnabled;
-        public bool Textbox_cantidadEnabled
+        private bool textbox_amountEnabled;
+        public bool Textbox_amountEnabled
         {
             get
             {
-                return textbox_cantidadEnabled;
+                return textbox_amountEnabled;
             }
             set
             {
-                textbox_cantidadEnabled = value;
+                textbox_amountEnabled = value;
                 OnPropertyChanged();
             }
         }
 
-        private string textbox_cantidadValue;
-        public string Textbox_cantidadValue
+        private string textbox_amountValue;
+        public string Textbox_amountValue
         {
             get
             {
-                return textbox_cantidadValue;
+                return textbox_amountValue;
             }
             set
             {
-                textbox_cantidadValue = value;
-                selectedAdjustment.cantidad = Convert.ToInt64(textbox_cantidadValue);
+                textbox_amountValue = value;
+                selectedAdjustment.cantidad = Convert.ToInt64(textbox_amountValue);
                 OnPropertyChanged();
             }
         }
@@ -150,100 +150,100 @@ namespace PDADesktop.ViewModel
         public VerAjustesViewModel()
         {
             var dispatcher = Application.Current.MainWindow.Dispatcher;
-            bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
-            if (estadoDevice)
+            bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
+            if (deviceStatus)
             {
-                string deviceReadDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
-                if(deviceReadDataFile != null)
+                string deviceReadAdjustmentDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
+                if(deviceReadAdjustmentDataFile != null)
                 {
-                    Ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(deviceReadDataFile);
+                    Adjustments = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(deviceReadAdjustmentDataFile);
 
                     // Buscar los tipos de ajustes de pda express
                     // Me preocupa el timeout y el host inalcanzable
-                    TiposDeAjustes = HttpWebClient.GetTiposDeAjustes();
-                    logger.Debug(TiposDeAjustes.ToString());
+                    AdjustmentsTypes = HttpWebClient.GetTiposDeAjustes();
+                    logger.Debug(AdjustmentsTypes.ToString());
                 }
                 else
                 {
                     dispatcher.BeginInvoke(
-                        new Action(() => AvisarAlUsuario("No se encotraron ajustes!")),
+                        new Action(() => UserNotify("No se encotraron ajustes!")),
                         DispatcherPriority.ApplicationIdle);
                 }
             }
             else
             {
                 dispatcher.BeginInvoke(
-                    new Action(() => AvisarAlUsuario("No se detecta conexion con la PDA")),
+                    new Action(() => UserNotify("No se detecta conexion con la PDA")),
                     DispatcherPriority.ApplicationIdle);
             }
 
             Textbox_eanEnabled = false;
-            Combobox_tipoAjusteEnabled = false;
-            Textbox_cantidadEnabled = false;
+            Combobox_adjustmentTypeEnabled = false;
+            Textbox_amountEnabled = false;
 
-            EliminarAjusteCommand = new RelayCommand(EliminarAjusteButton);
-            ActualizarAjusteCommand = new RelayCommand(ActualizarAjusteButton);
-            DescartarCambiosCommand = new RelayCommand(DescartarCambiosButton);
-            GuardarCambiosCommand = new RelayCommand(GuardarCambiosButton);
+            DeleteAdjustmentCommand = new RelayCommand(DeleteAdjustmentMethod);
+            UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentMethod);
+            DiscardChangesCommand = new RelayCommand(DiscardChangesMethod);
+            SaveChangesCommand = new RelayCommand(SaveChangesMethod);
         }
         #endregion
 
         #region Commands
-        private ICommand eliminarAjusteCommand;
-        public ICommand EliminarAjusteCommand
+        private ICommand deleteAdjustmentCommand;
+        public ICommand DeleteAdjustmentCommand
         {
             get
             {
-                return eliminarAjusteCommand;
+                return deleteAdjustmentCommand;
             }
             set
             {
-                eliminarAjusteCommand = value;
+                deleteAdjustmentCommand = value;
             }
         }
 
-        private ICommand actualizarAjusteCommand;
-        public ICommand ActualizarAjusteCommand
+        private ICommand updateAdjustmentCommand;
+        public ICommand UpdateAdjustmentCommand
         {
             get
             {
-                return actualizarAjusteCommand;
+                return updateAdjustmentCommand;
             }
             set
             {
-                actualizarAjusteCommand = value;
+                updateAdjustmentCommand = value;
             }
         }
 
-        private ICommand descartarCambiosCommand;
-        public ICommand DescartarCambiosCommand
+        private ICommand discardChangesCommand;
+        public ICommand DiscardChangesCommand
         {
             get
             {
-                return descartarCambiosCommand;
+                return discardChangesCommand;
             }
             set
             {
-                descartarCambiosCommand = value;
+                discardChangesCommand = value;
             }
         }
 
-        private ICommand guardarAjustesCommand;
-        public ICommand GuardarCambiosCommand
+        private ICommand saveChangesCommand;
+        public ICommand SaveChangesCommand
         {
             get
             {
-                return guardarAjustesCommand;
+                return saveChangesCommand;
             }
             set
             {
-                guardarAjustesCommand = value;
+                saveChangesCommand = value;
             }
         }
         #endregion
 
         #region Methods
-        public void EliminarAjusteButton(object obj)
+        public void DeleteAdjustmentMethod(object obj)
         {
             logger.Debug("EliminarAjusteButton");
             Ajustes parametro = obj as Ajustes;
@@ -252,15 +252,15 @@ namespace PDADesktop.ViewModel
             if(SelectedAdjustment != null)
                 logger.Debug("AjusteSeleccionado : " + SelectedAdjustment.ToString());
 
-            Ajustes.Remove(SelectedAdjustment);
+            Adjustments.Remove(SelectedAdjustment);
             SelectedAdjustment = null;
         }
-        public void ActualizarAjusteButton(object obj)
+        public void UpdateAdjustmentMethod(object obj)
         {
             logger.Debug("ActualizarAjusteButton");
             SelectedAdjustment = null;
         }
-        public void DescartarCambiosButton(object obj)
+        public void DiscardChangesMethod(object obj)
         {
             logger.Debug("DescartarCambiosButton");
             string pregunta = "¿Desea descartar los cambios?";
@@ -275,10 +275,10 @@ namespace PDADesktop.ViewModel
             }
 
         }
-        public void GuardarCambiosButton(object obj)
+        public void SaveChangesMethod(object obj)
         {
             logger.Debug("GuardarCambiosButton");
-            string newAdjustmentContent = TextUtils.ParseCollectionToAdjustmentDAT(Ajustes);
+            string newAdjustmentContent = TextUtils.ParseCollectionToAdjustmentDAT(Adjustments);
             logger.Debug("Nuevos ajustes: " + newAdjustmentContent);
 
             if (App.Instance.deviceHandler.OverWriteAdjustmentMade(newAdjustmentContent))
@@ -287,7 +287,7 @@ namespace PDADesktop.ViewModel
             }
             else
             {
-                AvisarAlUsuario("ERROR");
+                UserNotify("ERROR");
             }
         }
 
@@ -303,7 +303,7 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        public void AvisarAlUsuario(string mensaje)
+        public void UserNotify(string mensaje)
         {
             string message = mensaje;
             string caption = "Aviso!";

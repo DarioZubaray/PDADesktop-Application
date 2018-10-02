@@ -170,10 +170,10 @@
     <Compile Include="Classes\BannerApp.cs" />
     <Compile Include="Classes\Constants.cs" />
     <Compile Include="Classes\Devices\DesktopAdapter.cs" />
-    <Compile Include="Classes\Devices\DeviceCodeResult.cs" />
+    <Compile Include="Classes\Devices\FileOperationCode.cs" />
     <Compile Include="Classes\Devices\IDeviceHandler.cs" />
     <Compile Include="Classes\Devices\MotoAdapter.cs" />
-    <Compile Include="Classes\Devices\DeviceResultName.cs" />
+    <Compile Include="Classes\Devices\ResultFileOperation.cs" />
     <Compile Include="Classes\Exceptions\DeviceMainDataException.cs" />
     <Compile Include="Classes\HttpWebClient.cs" />
     <Compile Include="Classes\Devices\MotoApi.cs" />

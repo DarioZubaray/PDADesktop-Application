@@ -26,20 +26,25 @@ namespace PDADesktop.Classes.Utils
             File.Delete(source);
         }
 
-        public static bool VerifyIfExitsFile(string desDirExpanded)
+        public static bool VerifyIfExitsFile(string fullFilePath)
         {
-            return File.Exists(desDirExpanded);
+            return File.Exists(fullFilePath);
         }
 
-        public static void VerifyFoldersOrCreate(string desDirExpanded)
+        public static void VerifyFoldersOrCreate(string fullDirectoryPathExtended)
         {
-            Directory.CreateDirectory(desDirExpanded);
+            Directory.CreateDirectory(fullDirectoryPathExtended);
         }
 
         public static string CountRegistryWithinFile(string filepath)
         {
             var lines = File.ReadAllLines(filepath).Length;
             return lines.ToString();
+        }
+
+        public static string WrapSlashAndDATExtension(string filename)
+        {
+            return "/" + filename + ".DAT";
         }
     }
 }

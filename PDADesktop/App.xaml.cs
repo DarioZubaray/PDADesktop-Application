@@ -26,7 +26,7 @@ namespace PDADesktop
         #region constructor
         public App()
         {
-            BannerApp.printBanner();
+            BannerApp.printAppBanner();
             Instance = this;
             Container = new Container(c =>
             {
@@ -68,7 +68,7 @@ namespace PDADesktop
             }
 
             logger.Debug("Verificando datos guardados...");
-            string isUserReminded = VerificarDatosGuardados();
+            string isUserReminded = VerifySavedData();
 
             if (isUserReminded != null)
             {
@@ -81,23 +81,23 @@ namespace PDADesktop
                     // AttemptAutoLoginPortalImagoSur();
                     if (GenerandoAleatoriedadDeCasosLogueados() == 1)
                     {
-                        RedireccionarCentroActividades();
+                        RedirectToActivitiesCenter();
                     }
                     else
                     {
                         // fail to autoLogin
-                        RedireccionarLogin();
+                        RedirectLogin();
                     }
                 }
                 else
                 {
                     // no reminded user
-                    RedireccionarLogin();
+                    RedirectLogin();
                 }
            }
            else
            {
-               RedireccionarLogin();
+               RedirectLogin();
             }
         }
         #endregion
@@ -170,13 +170,13 @@ namespace PDADesktop
             return dispositivoConectado;
         }
 
-        private string VerificarDatosGuardados()
+        private string VerifySavedData()
         {
             //return CookieManager.getCookie(CookieManager.Cookie.recuerdame);
             return null;
         }
 
-        private void RedireccionarCentroActividades()
+        private void RedirectToActivitiesCenter()
         {
             logger.Info("Redireccionando al centro de actividades...");
             var mainWindow = this.Container.GetInstance<MainWindow>();
@@ -185,7 +185,7 @@ namespace PDADesktop
             mainWindow.Show();
         }
 
-        private void RedireccionarLogin()
+        private void RedirectLogin()
         {
             logger.Info("No hay datos guardados con un usuario válido, redireccionando al login");
             var mainWindow = this.Container.GetInstance<MainWindow>();

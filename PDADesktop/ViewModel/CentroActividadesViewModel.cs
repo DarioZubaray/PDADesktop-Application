@@ -609,7 +609,7 @@ namespace PDADesktop.ViewModel
                             string filename = ArchivosDATUtils.GetDataFileNameByIdActividad((int)actividad.idActividad);
                             string filenameAndExtension = "/" + filename + ".DAT";
 
-                            DeviceResultName result = App.Instance.deviceHandler.CopyPublicDataFileToDevice(destinationDirectory, filenameAndExtension);
+                            ResultFileOperation result = App.Instance.deviceHandler.CopyPublicDataFileToDevice(destinationDirectory, filenameAndExtension);
                             logger.Debug("result: " + result);
                             PanelSubMessage = "Moviendo al dispositivo";
                             Thread.Sleep(500);
@@ -658,12 +658,12 @@ namespace PDADesktop.ViewModel
                 ArchivoActividadAttributes archivoActividadAtributos = ArchivosDATUtils.GetAAAttributes(archivoActividad);
                 string FilenameAndExtension = "/" + archivoActividadAtributos.nombreArchivo;
                 logger.Debug("Buscando archivo : " + FilenameAndExtension);
-                DeviceResultName copyResult = App.Instance.deviceHandler.CopyDeviceFileToPublicData(sourceDirectory, FilenameAndExtension);
-                if(copyResult.Equals(DeviceResultName.OK))
+                ResultFileOperation copyResult = App.Instance.deviceHandler.CopyDeviceFileToPublicData(sourceDirectory, FilenameAndExtension);
+                if(copyResult.Equals(ResultFileOperation.OK))
                 {
                     //3- enviar los archivos por post al server
                     logger.Debug("Reultado de copiar a public - OK");
-                    string filePath = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA) + FilenameAndExtension;
+                    string filePath = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA) + FilenameAndExtension;
                     string urlSubirArchivo = ConfigurationManager.AppSettings.Get("API_SUBIR_ARCHIVO");
                     string sincronizacionActividad = "";
                     foreach(Sincronizacion sincronizacion in sincronizaciones)

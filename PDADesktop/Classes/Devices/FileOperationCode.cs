@@ -1,6 +1,6 @@
 ﻿namespace PDADesktop.Classes.Devices
 {
-        static class DeviceCodeResult
+        static class FileOperationCode
     {
         public const int OK = 1;
         public const int ERROR_UNKNOWN = 50;

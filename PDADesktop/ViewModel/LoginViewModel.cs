@@ -3,7 +3,6 @@ using PDADesktop.Classes;
 using PDADesktop.View;
 using System;
 using System.ComponentModel;
-using System.Configuration;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
@@ -18,16 +17,16 @@ namespace PDADesktop.ViewModel
         public string usernameText { get; set; }
         public string FloatingPasswordBox { get; set; }
 
-        private bool recuerdameCheck;
-        public bool RecuerdameCheck
+        private bool remembermeCheck;
+        public bool RemembermeCheck
         {
             get
             {
-                return recuerdameCheck;
+                return remembermeCheck;
             }
             set
             {
-                recuerdameCheck = value;
+                remembermeCheck = value;
             }
         }
 
@@ -159,14 +158,14 @@ namespace PDADesktop.ViewModel
         public LoginViewModel()
         {
             LoginButtonCommand = new RelayCommand(LoginPortalApi, param => this.canExecute);
-            ShowPanelCommand = new RelayCommand(MostrarPanel, param => this.canExecute);
-            HidePanelCommand = new RelayCommand(OcultarPanel, param => this.canExecute);
-            ChangeMainMessageCommand = new RelayCommand(CambiarMainMensage, param => this.canExecute);
-            ChangeSubMessageCommand = new RelayCommand(CambiarSubMensage, param => this.canExecute);
-            PanelCloseCommand = new RelayCommand(CerrarPanel, param => this.canExecute);
+            ShowPanelCommand = new RelayCommand(ShowPanel, param => this.canExecute);
+            HidePanelCommand = new RelayCommand(HidePanel, param => this.canExecute);
+            ChangeMainMessageCommand = new RelayCommand(ChangeMainMensage, param => this.canExecute);
+            ChangeSubMessageCommand = new RelayCommand(ChangeSubMensage, param => this.canExecute);
+            PanelCloseCommand = new RelayCommand(ClosePanel, param => this.canExecute);
             loginWorker.DoWork += worker_DoWork;
             loginWorker.RunWorkerCompleted += worker_RunWorkerCompleted;
-            RecuerdameCheck = true;
+            RemembermeCheck = true;
         }
         #endregion
 
@@ -179,7 +178,7 @@ namespace PDADesktop.ViewModel
             MainWindow window = MyAppProperties.window;
             if ("juli".Equals(usernameText))
             {
-                logger.Debug("recuerdame: " + RecuerdameCheck);
+                logger.Debug("recuerdame: " + RemembermeCheck);
                 logger.Debug("Nombre no null: " + usernameText);
                 /*
                 DateTime fechaExpiracion = new DateTime(2020, 12, 31);
@@ -194,12 +193,12 @@ namespace PDADesktop.ViewModel
                 */
                 //aca deberia llamar al servicio de login
                 //Redirecciona a centroActividades
-                Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
+                Uri uriActivityCenter = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
 
                 var dispatcher = Application.Current.Dispatcher;
                 dispatcher.BeginInvoke(new Action(() =>
                 {
-                    window.frame.NavigationService.Navigate(uri);
+                    window.frame.NavigationService.Navigate(uriActivityCenter);
                 }));
                 
             }
@@ -246,28 +245,28 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region panel methods
-        public void MostrarPanel(object obj)
+        public void ShowPanel(object obj)
         {
             logger.Debug("Mostrando panel de carga");
             PanelLoading = true;
         }
 
-        public void OcultarPanel(object obj)
+        public void HidePanel(object obj)
         {
             logger.Debug("Ocultando panel de carga");
             PanelLoading = false;
         }
-        public void CambiarMainMensage(object obj)
+        public void ChangeMainMensage(object obj)
         {
             PanelMainMessage = "Espere por favor";
         }
 
-        public void CambiarSubMensage(object obj)
+        public void ChangeSubMensage(object obj)
         {
             PanelSubMessage = "";
         }
 
-        public void CerrarPanel(object obj)
+        public void ClosePanel(object obj)
         {
             PanelLoading = false;
         }

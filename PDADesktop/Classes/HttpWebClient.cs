@@ -137,7 +137,7 @@ namespace PDADesktop.Classes
             try
             {
                 logger.Debug("Enviando petición a " + urlAuthority + urlPath);
-                string destino = ConfigurationManager.AppSettings.Get("CLIENT_PATH_DATA");
+                string destino = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
                 destino = TextUtils.ExpandEnviromentVariable(destino);
                 FileUtils.VerifyFoldersOrCreate(destino);
                 logger.Debug("Descargando en: " + destino + String.Format("/{0}.DAT", masterFile));

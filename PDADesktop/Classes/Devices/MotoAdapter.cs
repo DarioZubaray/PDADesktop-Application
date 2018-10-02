@@ -17,11 +17,11 @@ namespace PDADesktop.Classes.Devices
             return MotoApi.isDeviceConnected() != 0;
         }
 
-        public DeviceResultName CopyDeviceFileToPublicData(string sourceDirectory, string filenameAndExtension)
+        public ResultFileOperation CopyDeviceFileToPublicData(string sourceDirectory, string filenameAndExtension)
         {
             string fileRelPath = sourceDirectory + filenameAndExtension;
             logger.Debug("obteniendo archivo desde dispositivo: " + fileRelPath);
-            string clientPathData = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
+            string clientPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
             string desDirExpanded = TextUtils.ExpandEnviromentVariable(clientPathData);
             logger.Debug("copiando hacia la ruta: " + desDirExpanded);
             FileUtils.VerifyFoldersOrCreate(desDirExpanded);
@@ -29,9 +29,9 @@ namespace PDADesktop.Classes.Devices
             return getResult(codigoResultado);
         }
 
-        public DeviceResultName CopyPublicDataFileToDevice(string relativeDestinationDirectory, string filenameAndExtension)
+        public ResultFileOperation CopyPublicDataFileToDevice(string relativeDestinationDirectory, string filenameAndExtension)
         {
-            string publicPDADataFolder = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
+            string publicPDADataFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
             string publicPDADataFolderExtended = TextUtils.ExpandEnviromentVariable(publicPDADataFolder);
             logger.Debug("obteniendo archivo desde public: " + publicPDADataFolderExtended + filenameAndExtension);
             FileUtils.VerifyFoldersOrCreate(publicPDADataFolderExtended);
@@ -40,15 +40,25 @@ namespace PDADesktop.Classes.Devices
             return getResult(codigoResultado);
         }
 
+        public ResultFileOperation DeleteDeviceDataFile(string filename)
+        {
+            return ResultFileOperation.OK;
+        }
+
+        public ResultFileOperation DeletePublicDataFile(string filename)
+        {
+            return ResultFileOperation.OK;
+        }
+
         public string getVersionProgramFileFromDevice()
         {
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             logger.Debug("Leyendo el archivo: " + filenameAndExtension);
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
 
-            DeviceResultName copyfileResult = CopyDeviceFileToPublicData(deviceRelativePathData, filenameAndExtension);
+            ResultFileOperation copyfileResult = CopyDeviceFileToPublicData(deviceRelativePathData, filenameAndExtension);
             logger.Debug("resultado de copiar el default.dat: " + copyfileResult.ToString());
-            if (copyfileResult.Equals(DeviceResultName.NONEXISTENT_FILE))
+            if (copyfileResult.Equals(ResultFileOperation.NONEXISTENT_FILE))
             {
                 return null;
             }
@@ -94,10 +104,10 @@ namespace PDADesktop.Classes.Devices
         {
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
-            DeviceResultName copyfileResult = CopyDeviceFileToPublicData(deviceRelativePathData, filenameAndExtension);
-            if (copyfileResult.Equals(DeviceResultName.OK))
+            ResultFileOperation copyfileResult = CopyDeviceFileToPublicData(deviceRelativePathData, filenameAndExtension);
+            if (copyfileResult.Equals(ResultFileOperation.OK))
             {
-                string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
+                string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
                 string destinationDirectoryExpanded = TextUtils.ExpandEnviromentVariable(destinationDirectory);
                 string adjustments = FileUtils.ReadFile(destinationDirectoryExpanded + filenameAndExtension);
                 return TextUtils.ParseAdjustmentDAT2JsonStr(adjustments);
@@ -112,7 +122,7 @@ namespace PDADesktop.Classes.Devices
         public bool OverWriteAdjustmentMade(string newContent)
         {
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
-            string clientPathData = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA);
+            string clientPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
             string clientPathDataExtended = TextUtils.ExpandEnviromentVariable(clientPathData);
             FileUtils.VerifyFoldersOrCreate(clientPathDataExtended);
             if (FileUtils.VerifyIfExitsFile(clientPathDataExtended + filenameAndExtension))
@@ -128,49 +138,49 @@ namespace PDADesktop.Classes.Devices
             }
         }
 
-        public static DeviceResultName getResult(int intResult)
+        public static ResultFileOperation getResult(int intResult)
         {
-            DeviceResultName result;
+            ResultFileOperation result;
             switch (intResult)
             {
 
-                case DeviceCodeResult.OK:
-                    result = DeviceResultName.OK;
+                case FileOperationCode.OK:
+                    result = ResultFileOperation.OK;
                     break;
 
-                case DeviceCodeResult.ERROR_INIT:
-                    result = DeviceResultName.CONNECTION_ERROR;
+                case FileOperationCode.ERROR_INIT:
+                    result = ResultFileOperation.CONNECTION_ERROR;
                     break;
 
-                case DeviceCodeResult.ERROR_FILENOTEXISTS:
-                    result = DeviceResultName.NONEXISTENT_FILE;
+                case FileOperationCode.ERROR_FILENOTEXISTS:
+                    result = ResultFileOperation.NONEXISTENT_FILE;
                     break;
 
-                case DeviceCodeResult.ERROR_NOTAFILE:
-                    result = DeviceResultName.NONEXISTENT_FILE;
+                case FileOperationCode.ERROR_NOTAFILE:
+                    result = ResultFileOperation.NONEXISTENT_FILE;
                     break;
 
-                case (int)DeviceCodeResult.ERROR_FILEOPENING:
-                    result = DeviceResultName.UNKNOWN;
+                case (int)FileOperationCode.ERROR_FILEOPENING:
+                    result = ResultFileOperation.UNKNOWN;
                     break;
 
-                case DeviceCodeResult.ERROR_FILEWRITING:
-                    result = DeviceResultName.UNKNOWN;
+                case FileOperationCode.ERROR_FILEWRITING:
+                    result = ResultFileOperation.UNKNOWN;
                     break;
 
-                case DeviceCodeResult.ERROR_FILEREADING:
-                    result = DeviceResultName.UNKNOWN;
+                case FileOperationCode.ERROR_FILEREADING:
+                    result = ResultFileOperation.UNKNOWN;
                     break;
 
-                case DeviceCodeResult.ERROR_DELETE:
-                    result = DeviceResultName.DELETE_ERROR;
+                case FileOperationCode.ERROR_DELETE:
+                    result = ResultFileOperation.DELETE_ERROR;
                     break;
 
-                case DeviceCodeResult.ERROR_UNKNOWN:
-                    result = DeviceResultName.UNKNOWN;
+                case FileOperationCode.ERROR_UNKNOWN:
+                    result = ResultFileOperation.UNKNOWN;
                     break;
                 default:
-                    result = DeviceResultName.UNKNOWN;
+                    result = ResultFileOperation.UNKNOWN;
                     break;
             }
 
