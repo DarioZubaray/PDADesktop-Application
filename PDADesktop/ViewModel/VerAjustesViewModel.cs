@@ -160,7 +160,7 @@ namespace PDADesktop.ViewModel
 
                     // Buscar los tipos de ajustes de pda express
                     // Me preocupa el timeout y el host inalcanzable
-                    AdjustmentsTypes = HttpWebClient.GetTiposDeAjustes();
+                    AdjustmentsTypes = HttpWebClientUtil.GetTiposDeAjustes();
                     logger.Debug(AdjustmentsTypes.ToString());
                 }
                 else

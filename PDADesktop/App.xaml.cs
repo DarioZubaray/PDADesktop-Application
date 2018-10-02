@@ -1,5 +1,6 @@
 ﻿using log4net;
 using PDADesktop.Classes;
+using PDADesktop.Classes.Utils;
 using PDADesktop.Classes.Devices;
 using PDADesktop.View;
 using Squirrel;
@@ -159,7 +160,7 @@ namespace PDADesktop
 
         private void CheckServerStatus()
         {
-            bool serverStatus = HttpWebClient.GetHttpWebServerConexionStatus();
+            bool serverStatus = HttpWebClientUtil.GetHttpWebServerConexionStatus();
             logger.Info("Conexión pdaexpress server " + serverStatus);
         }
 

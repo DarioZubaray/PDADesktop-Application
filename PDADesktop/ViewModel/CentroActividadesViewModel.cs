@@ -432,13 +432,13 @@ namespace PDADesktop.ViewModel
             logger.Debug("loadCentroActividades Worker ->doWork");
             GetIdAccionesAsync();
             string _sucursal = MyAppProperties.idSucursal;
-            int idLoteActual = HttpWebClient.GetIdLoteActual(_sucursal);
+            int idLoteActual = HttpWebClientUtil.GetIdLoteActual(_sucursal);
             if (idLoteActual != 0)
             {
                 MyAppProperties.idLoteActual = idLoteActual.ToString();
                 List<Sincronizacion> listaSincronizaciones = null;
                 string urlPath = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
-                listaSincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlPath, _sucursal, idLoteActual.ToString());
+                listaSincronizaciones = HttpWebClientUtil.GetHttpWebSincronizacion(urlPath, _sucursal, idLoteActual.ToString());
                 if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
                 {
                     this.sincronizaciones = SincronizacionDtoDataGrid.refreshDataGrid(listaSincronizaciones);
@@ -563,8 +563,8 @@ namespace PDADesktop.ViewModel
 
             // buscar recepciones informadas pendientes
             string idSucursal = MyAppProperties.idSucursal;
-            string idSincronizacion = HttpWebClient.GetIdLoteActual(idSucursal).ToString();
-            bool recepcionesInformadas = HttpWebClient.CheckRecepcionesInformadas(idSincronizacion);
+            string idSincronizacion = HttpWebClientUtil.GetIdLoteActual(idSucursal).ToString();
+            bool recepcionesInformadas = HttpWebClientUtil.CheckRecepcionesInformadas(idSincronizacion);
             logger.Info("recepciones Informadas pendientes: " + (recepcionesInformadas ? "NO" : "SI"));
             // Consultar por un SI-No si desea continuar
             bool confirmaDescartarRecepciones = true;
@@ -589,7 +589,7 @@ namespace PDADesktop.ViewModel
                 {
                     if (Constants.DESCARGAR_GENESIX.Equals(actividad.accion.idAccion))
                     {
-                        bool descargaMaestroCorrecta = HttpWebClient.BuscarMaestrosDAT((int)actividad.idActividad, idSucursal);
+                        bool descargaMaestroCorrecta = HttpWebClientUtil.BuscarMaestrosDAT((int)actividad.idActividad, idSucursal);
                         PanelSubMessage = "Descargando " + actividad.descripcion.ToString();
                         Thread.Sleep(500);
                         if(descargaMaestroCorrecta)
@@ -649,7 +649,7 @@ namespace PDADesktop.ViewModel
             string urlSincronizacion = ConfigurationManager.AppSettings.Get("API_SYNC_ACTUAL");
             string idSucursal = MyAppProperties.idSucursal;
             string idLote = MyAppProperties.idLoteActual;
-            List<Sincronizacion> sincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacion, idSucursal, idLote);
+            List<Sincronizacion> sincronizaciones = HttpWebClientUtil.GetHttpWebSincronizacion(urlSincronizacion, idSucursal, idLote);
             string sourceDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             foreach(long actividad in actividadesInformar)
             {
@@ -678,12 +678,12 @@ namespace PDADesktop.ViewModel
                     var lineCount = FileUtils.CountRegistryWithinFile(filePath);
                     parametros = String.Format(parametros, actividad, sincronizacionActividad, lineCount);
                     logger.Debug("Subiendo Archivo: " + urlSubirArchivo);
-                    string respuesta = HttpWebClient.SendFileHttpRequest(filePath, urlSubirArchivo+parametros);
+                    string respuesta = HttpWebClientUtil.SendFileHttpRequest(filePath, urlSubirArchivo+parametros);
                     logger.Debug(respuesta);
 
                     //4- executar el action de informar
                     string urlInformarGX = ConfigurationManager.AppSettings.Get("API_INFORMAR_GX");
-                    string responseInformarGX = HttpWebClient.SendHttpGetRequest(urlInformarGX + "?idSucursal=" + idSucursal);
+                    string responseInformarGX = HttpWebClientUtil.SendHttpGetRequest(urlInformarGX + "?idSucursal=" + idSucursal);
                     logger.Debug(responseInformarGX);
                 }
                 else
@@ -801,7 +801,7 @@ namespace PDADesktop.ViewModel
             string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ANTERIOR);
             string _sucursal = MyAppProperties.idSucursal;
             string _idLote = MyAppProperties.idLoteActual;
-            listaSincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
+            listaSincronizaciones = HttpWebClientUtil.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
             if(listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
@@ -817,7 +817,7 @@ namespace PDADesktop.ViewModel
             string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_SIGUIENTE);
             string _sucursal = MyAppProperties.idSucursal;
             string _idLote = MyAppProperties.idLoteActual;
-            listaSincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
+            listaSincronizaciones = HttpWebClientUtil.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
             if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
@@ -840,7 +840,7 @@ namespace PDADesktop.ViewModel
             string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
             string _sucursal = MyAppProperties.idSucursal;
             string _idLote = MyAppProperties.idLoteActual;
-            listaSincronizaciones = HttpWebClient.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
+            listaSincronizaciones = HttpWebClientUtil.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
             if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
@@ -879,7 +879,7 @@ namespace PDADesktop.ViewModel
         public List<Actividad> GetIdAcciones()
         {
             string urlAcciones = ConfigurationManager.AppSettings.Get(Constants.API_GET_ALL_ACCIONES);
-            var responseAcciones = HttpWebClient.SendHttpGetRequest(urlAcciones);
+            var responseAcciones = HttpWebClientUtil.SendHttpGetRequest(urlAcciones);
             if (responseAcciones != null)
             {
                 List<Accion> acciones = JsonConvert.DeserializeObject<List<Accion>>(responseAcciones);
@@ -888,7 +888,7 @@ namespace PDADesktop.ViewModel
                 string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
 
                 var urlActividades = ConfigurationManager.AppSettings.Get(Constants.API_GET_ACTIVIDADES);
-                string responseActividades = HttpWebClient.SendHttpPostRequest(urlActividades, jsonBody);
+                string responseActividades = HttpWebClientUtil.SendHttpPostRequest(urlActividades, jsonBody);
                 logger.Debug(responseActividades);
                 List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);
                 MyAppProperties.actividadesDisponibles = actividades;

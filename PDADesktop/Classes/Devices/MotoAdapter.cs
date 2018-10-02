@@ -118,7 +118,7 @@ namespace PDADesktop.Classes.Devices
             string urlLastVersion = ConfigurationManager.AppSettings.Get(Constants.API_GET_LAST_VERSION_FILE_PROGRAM);
             string programFilename = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_FILENAME");
             string queryParameters = "?nombreDispositivo=" + Constants.MOTO + "&nombreArchivoPrograma=" + programFilename;
-            return HttpWebClient.SendHttpGetRequest(urlLastVersion + queryParameters);
+            return HttpWebClientUtil.SendHttpGetRequest(urlLastVersion + queryParameters);
         }
         public string getNewDefaultDatacontent()
         {

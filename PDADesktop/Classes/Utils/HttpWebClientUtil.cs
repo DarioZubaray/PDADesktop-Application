@@ -10,9 +10,9 @@ using System.Net;
 using System.IO;
 using System.Text;
 
-namespace PDADesktop.Classes
+namespace PDADesktop.Classes.Utils
 {
-    class HttpWebClient
+    class HttpWebClientUtil
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
