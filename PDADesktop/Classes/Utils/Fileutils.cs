@@ -35,5 +35,11 @@ namespace PDADesktop.Utils
         {
             Directory.CreateDirectory(desDirExpanded);
         }
+
+        public static string CountRegistryWithinFile(string filepath)
+        {
+            var lines = File.ReadAllLines(filepath).Length;
+            return lines.ToString();
+        }
     }
 }

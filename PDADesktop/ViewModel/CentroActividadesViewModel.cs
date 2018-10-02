@@ -626,10 +626,8 @@ namespace PDADesktop.ViewModel
         private void informarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("informar Worker ->doWork");
-            
+
             //1- Buscar las actividades de informar
-            //2- mover las actividades a public
-            //3- enviar los archivos por post al server
             List<Actividad> actividades = MyAppProperties.actividadesDisponibles;
             List<long> actividadesInformar = new List<long>();
             logger.Debug("Buscando las actividad a informar");
@@ -648,6 +646,7 @@ namespace PDADesktop.ViewModel
             string sourceDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             foreach(long actividad in actividadesInformar)
             {
+                //2- mover las actividades a public
                 ArchivoActividad archivoActividad = ArchivosDATUtils.GetArchivoActividadByIdActividad(Convert.ToInt32(actividad));
                 ArchivoActividadAttributes archivoActividadAtributos = ArchivosDATUtils.GetAAAttributes(archivoActividad);
                 string FilenameAndExtension = "/" + archivoActividadAtributos.nombreArchivo;
@@ -655,6 +654,7 @@ namespace PDADesktop.ViewModel
                 DeviceResultName copyResult = App.Instance.deviceHandler.CopyDeviceFileToPublicData(sourceDirectory, FilenameAndExtension);
                 if(copyResult.Equals(DeviceResultName.OK))
                 {
+                    //3- enviar los archivos por post al server
                     logger.Debug("Reultado de copiar a public - OK");
                     string filePath = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_DATA) + FilenameAndExtension;
                     string urlSubirArchivo = ConfigurationManager.AppSettings.Get("API_SUBIR_ARCHIVO");
@@ -663,14 +663,21 @@ namespace PDADesktop.ViewModel
                     {
                         if(sincronizacion.actividad.idActividad.Equals(actividad))
                         {
-                            sincronizacionActividad = "" + sincronizacion.idSincronizacion;
+                            sincronizacionActividad = sincronizacion.idSincronizacion.ToString();
+                            break;
                         }
                     }
                     string parametros = "?idActividad={0}&idSincronizacion={1}&registros={2}";
-                    parametros = String.Format(parametros, actividad, sincronizacionActividad, 0);
+                    var lineCount = FileUtils.CountRegistryWithinFile(filePath);
+                    parametros = String.Format(parametros, actividad, sincronizacionActividad, lineCount);
                     logger.Debug("Subiendo Archivo: " + urlSubirArchivo);
                     string respuesta = HttpWebClient.SendFileHttpRequest(filePath, urlSubirArchivo+parametros);
                     logger.Debug(respuesta);
+
+                    //4- executar el action de informar
+                    string urlInformarGX = ConfigurationManager.AppSettings.Get("API_INFORMAR_GX");
+                    string responseInformarGX = HttpWebClient.SendHttpGetRequest(urlInformarGX + "?idSucursal=" + idSucursal);
+                    logger.Debug(responseInformarGX);
                 }
                 else
                 {
@@ -679,7 +686,7 @@ namespace PDADesktop.ViewModel
                 }
             }
 
-            //4- executar el action de informar
+
         }
 
         private void informarWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
