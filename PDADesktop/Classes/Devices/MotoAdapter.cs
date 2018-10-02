@@ -89,7 +89,7 @@ namespace PDADesktop.Classes.Devices
             }
             else
             {
-                string userPublicFolder = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_VERSION);
+                string userPublicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_VERSION);
                 string userPublicFolderExtended = TextUtils.ExpandEnviromentVariable(userPublicFolder);
                 FileUtils.VerifyFoldersOrCreate(userPublicFolderExtended);
 
@@ -103,7 +103,7 @@ namespace PDADesktop.Classes.Devices
             string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             logger.Debug("Creando el archivo: " + fileDefaultDat);
             string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
-            string userPDADocumentFolder = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_VERSION);
+            string userPDADocumentFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_VERSION);
             string userPDADocumenteFolderExtended = TextUtils.ExpandEnviromentVariable(userPDADocumentFolder);
             FileUtils.VerifyFoldersOrCreate(userPDADocumenteFolderExtended);
             string pdaControl = getNewDefaultDatacontent();

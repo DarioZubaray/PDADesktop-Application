@@ -20,7 +20,7 @@
         public const string API_GET_LAST_VERSION_FILE_PROGRAM = "API_GET_LAST_VERSION_FILE_PROGRAM";
         public const string API_GET_DEFAULT_FILE = "API_GET_DEFAULT_FILE_BY_SUCURSAL";
         public const string PUBLIC_PATH_DATA = "CLIENT_PATH_DATA";
-        public const string CLIENT_PATH_VERSION = "CLIENT_PATH_VERSION";
+        public const string PUBLIC_PATH_VERSION = "CLIENT_PATH_VERSION";
         public const string DAT_FILE_AJUSTES = "DAT_FILE_AJUSTES";
         public const string DAT_FILE_DEFAULT = "DAT_FILE_DEFAULT";
         public const string DAT_FILE_LPEDIDOS = "DAT_FILE_LPEDIDOS";

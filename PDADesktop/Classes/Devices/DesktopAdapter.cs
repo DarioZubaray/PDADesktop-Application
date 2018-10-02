@@ -121,7 +121,7 @@ namespace PDADesktop.Classes.Devices
             {
                 return null;
             }
-            string clientPathVersion = ConfigurationManager.AppSettings.Get(Constants.CLIENT_PATH_VERSION);
+            string clientPathVersion = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_VERSION);
             string clientPathVersionExtended = TextUtils.ExpandEnviromentVariable(clientPathVersion);
 
             FileUtils.VerifyFoldersOrCreate(clientPathVersionExtended);

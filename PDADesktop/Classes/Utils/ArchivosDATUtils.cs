@@ -74,7 +74,8 @@ namespace PDADesktop.Classes.Utils
 
         public static string GetDataFileNameAndExtensionByIdActividad(int idActividad)
         {
-            return "/" + GetDataFileNameByIdActividad(idActividad) + ".DAT";
+            string dataFileName = GetDataFileNameByIdActividad(idActividad);
+            return FileUtils.WrapSlashAndDATExtension(dataFileName);
         }
 
         public static string GetDataFileNameByIdActividad(int idActividad)
@@ -127,24 +128,25 @@ namespace PDADesktop.Classes.Utils
             string publicUbicartExtended = TextUtils.ExpandEnviromentVariable(publicUbicart);
             string ubicartFileName = GetAAAttributes(Model.ArchivoActividad.UBICART).nombreArchivo;
             logger.Debug("Leyendo archivo: " + ubicartFileName);
-            string ubicartContent = FileUtils.ReadFile(publicUbicartExtended + "/" + ubicartFileName);
+            string ubicarPath = publicUbicartExtended + FileUtils.PrependSlash(ubicartFileName);
+            string ubicartContent = FileUtils.ReadFile(ubicarPath);
             if(ubicartContent.IndexOf(separador) != -1)
             {
                 String[] resultadoPartes = Regex.Split(ubicartContent, "\\*eof\\*");
 
                 ubicartContent = resultadoPartes[0];
                 logger.Debug("Sobreescribiendo: " + ubicartFileName);
-                FileUtils.WriteFile(publicUbicartExtended + "/" + ubicartFileName, ubicartContent);
+                FileUtils.WriteFile(ubicarPath, ubicartContent);
 
                 for (int i = 1; i < resultadoPartes.Length; i++)
                 {
                     string parteActual = resultadoPartes[i];
                     string nombrePas = parteActual.Split(':')[0].Trim() + ".pas";
                     string contenido = parteActual.Split(':')[1].Trim();
-                    string rutaPas = publicUbicartExtended + "/" + nombrePas;
+                    string rutaPas = publicUbicartExtended + FileUtils.PrependSlash(nombrePas);
                     logger.Debug("Guardando archivo pas: " + rutaPas);
                     FileUtils.WriteFile(rutaPas, contenido + "\r\n");
-                    App.Instance.deviceHandler.CopyPublicDataFileToDevice(deviceRelativePathData, "/" + nombrePas);
+                    App.Instance.deviceHandler.CopyPublicDataFileToDevice(deviceRelativePathData, FileUtils.PrependSlash(nombrePas));
                 }
             }
         }
@@ -155,8 +157,8 @@ namespace PDADesktop.Classes.Utils
             string publicPedidos = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
             string publicPedidosExtended = TextUtils.ExpandEnviromentVariable(publicPedidos);
             string pedidosFileName = GetAAAttributes(Model.ArchivoActividad.PEDIDOS).nombreArchivo;
-            logger.Debug("Leyendo archivo pedidos: " + publicPedidosExtended + "/" + pedidosFileName);
-            string pedidosContent = FileUtils.ReadFile(publicPedidosExtended + "/" + pedidosFileName);
+            logger.Debug("Leyendo archivo pedidos: " + publicPedidosExtended + FileUtils.PrependSlash(pedidosFileName));
+            string pedidosContent = FileUtils.ReadFile(publicPedidosExtended + FileUtils.PrependSlash(pedidosFileName));
             if (pedidosContent.Substring(pedidosContent.Length - 5).Equals(separador))
             {
                 //Si el último campo es vacío, agrego un espacio para que lo reconozca el split
@@ -165,7 +167,7 @@ namespace PDADesktop.Classes.Utils
             String[] resultadoPartes = Regex.Split(pedidosContent, "\\*eof\\*");
             pedidosContent = resultadoPartes[0];
             logger.Debug("sobreescribiendo: " + pedidosFileName);
-            FileUtils.WriteFile(publicPedidosExtended + "/" + pedidosFileName, pedidosContent);
+            FileUtils.WriteFile(publicPedidosExtended + FileUtils.PrependSlash(pedidosFileName), pedidosContent);
 
             crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.RPEDIDOS, resultadoPartes[1]);
             crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.APEDIDOS, resultadoPartes[2]);

@@ -607,7 +607,7 @@ namespace PDADesktop.ViewModel
 
                             string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
                             string filename = ArchivosDATUtils.GetDataFileNameByIdActividad((int)actividad.idActividad);
-                            string filenameAndExtension = "/" + filename + ".DAT";
+                            string filenameAndExtension = FileUtils.WrapSlashAndDATExtension(filename);
 
                             ResultFileOperation result = App.Instance.deviceHandler.CopyPublicDataFileToDevice(destinationDirectory, filenameAndExtension);
                             logger.Debug("result: " + result);
@@ -656,7 +656,7 @@ namespace PDADesktop.ViewModel
                 //2- mover las actividades a public
                 ArchivoActividad archivoActividad = ArchivosDATUtils.GetArchivoActividadByIdActividad(Convert.ToInt32(actividad));
                 ArchivoActividadAttributes archivoActividadAtributos = ArchivosDATUtils.GetAAAttributes(archivoActividad);
-                string FilenameAndExtension = "/" + archivoActividadAtributos.nombreArchivo;
+                string FilenameAndExtension = FileUtils.PrependSlash(archivoActividadAtributos.nombreArchivo);
                 logger.Debug("Buscando archivo : " + FilenameAndExtension);
                 ResultFileOperation copyResult = App.Instance.deviceHandler.CopyDeviceFileToPublicData(sourceDirectory, FilenameAndExtension);
                 if(copyResult.Equals(ResultFileOperation.OK))

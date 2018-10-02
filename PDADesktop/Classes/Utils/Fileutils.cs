@@ -1,5 +1,4 @@
-﻿using PDADesktop.Classes.Devices;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 
 namespace PDADesktop.Classes.Utils
@@ -44,7 +43,17 @@ namespace PDADesktop.Classes.Utils
 
         public static string WrapSlashAndDATExtension(string filename)
         {
-            return "/" + filename + ".DAT";
+            return PrependSlash(AppendDATExtension(filename));
+        }
+
+        public static string PrependSlash(string filename)
+        {
+            return "/" + filename;
+        }
+
+        public static string AppendDATExtension(string filename)
+        {
+            return filename + ".DAT";
         }
     }
 }
