@@ -178,8 +178,8 @@ namespace PDADesktop.Utils
         {
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             string contenido = texto.Trim();
-            logger.Debug("Guardando archivo pedidos: " + rutaArchivo + filenameAndExtension);
-            FileUtils.WriteFile(rutaArchivo + filenameAndExtension, contenido + "\r\n");
+            logger.Debug("Guardando archivo pedidos: " + rutaArchivo + "/" + filenameAndExtension);
+            FileUtils.WriteFile(rutaArchivo + "/" + filenameAndExtension, contenido + "\r\n");
             App.Instance.deviceHandler.CopyPublicDataFileToDevice(deviceRelativePathData, filenameAndExtension);
         }
     }
