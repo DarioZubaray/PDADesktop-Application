@@ -6,7 +6,7 @@
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:ff="clr-namespace:PDADesktop.Clases"
              xmlns:mbar="clr-namespace:AlertBarWpf;assembly=AlertBarWpf"
-             xmlns:ctr="clr-namespace:PDADesktop.Controls"
+             xmlns:ctr="clr-namespace:PDADesktop.View.Controls"
              xmlns:local="clr-namespace:PDADesktop.View"
              xmlns:VM="clr-namespace:PDADesktop.ViewModel"
              mc:Ignorable="d" 

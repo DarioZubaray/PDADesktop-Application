@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using PDADesktop.Classes;
 using PDADesktop.Classes.Devices;
 using PDADesktop.Model;
-using PDADesktop.Utils;
+using PDADesktop.Classes.Utils;
 using PDADesktop.View;
 using System;
 using System.Collections.Generic;
@@ -16,6 +16,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using PDADesktop.Model.Dto;
 
 namespace PDADesktop.ViewModel
 {

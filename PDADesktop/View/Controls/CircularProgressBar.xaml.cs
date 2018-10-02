@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
-namespace PDADesktop.Controls
+namespace PDADesktop.View.Controls
 {
     /// <summary>
     /// Interaction logic for CircularProgressBar.xaml

@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using PDADesktop.Classes;
 using PDADesktop.Model;
-using PDADesktop.Utils;
+using PDADesktop.Classes.Utils;
 using PDADesktop.View;
 using System;
 using System.Collections.Generic;

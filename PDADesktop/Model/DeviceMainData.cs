@@ -1,4 +1,4 @@
-﻿using PDADesktop.Classes.Exception;
+﻿using PDADesktop.Classes.Exceptions;
 using System;
 
 namespace PDADesktop.Model
@@ -46,7 +46,7 @@ namespace PDADesktop.Model
 
         private static void ThrowDeviceMainDataException(Exception e)
         {
-            string message = "archivo de configuracion con mal formato";
+            string message = "No se pudo leer archivo de configuración del dispositivo";
             throw new DeviceMainDataException(message, e);
         }
         #endregion

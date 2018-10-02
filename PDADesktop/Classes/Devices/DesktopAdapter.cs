@@ -1,5 +1,5 @@
 ﻿using log4net;
-using PDADesktop.Utils;
+using PDADesktop.Classes.Utils;
 using System.Configuration;
 
 namespace PDADesktop.Classes.Devices

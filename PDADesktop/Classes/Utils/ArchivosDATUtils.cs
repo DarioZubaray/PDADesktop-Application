@@ -1,12 +1,11 @@
 ﻿using log4net;
-using PDADesktop.Classes;
 using PDADesktop.Model;
 using System;
 using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace PDADesktop.Utils
+namespace PDADesktop.Classes.Utils
 {
     public static class ArchivosDATUtils
     {

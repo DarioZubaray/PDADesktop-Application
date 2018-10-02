@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace PDADesktop.Utils
+namespace PDADesktop.Classes.Utils
 {
     class FileUtils
     {

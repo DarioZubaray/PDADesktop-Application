@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace PDADesktop.Utils
+namespace PDADesktop.Classes.Utils
 {
     public static class TextUtils
     {

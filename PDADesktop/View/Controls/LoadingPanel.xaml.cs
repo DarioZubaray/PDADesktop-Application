@@ -7,7 +7,7 @@
 using System.Windows;
 using System.Windows.Input;
 
-namespace PDADesktop.Controls
+namespace PDADesktop.View.Controls
 {
     /// <summary>
     /// Interaction logic for LoadingPanel.xaml

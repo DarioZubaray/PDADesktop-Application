@@ -1,4 +1,5 @@
 ﻿using PDADesktop.Model;
+using PDADesktop.Model.Dto;
 using PDADesktop.View;
 using System.Collections.Generic;
 

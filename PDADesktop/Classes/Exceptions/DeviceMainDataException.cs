@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace PDADesktop.Classes.Exception
+namespace PDADesktop.Classes.Exceptions
 {
-    public class DeviceMainDataException : System.Exception
+    public class DeviceMainDataException : Exception
     {
         public DeviceMainDataException()
         {
@@ -12,7 +12,7 @@ namespace PDADesktop.Classes.Exception
         {
         }
 
-        public DeviceMainDataException(string message, System.Exception inner) : base(message, inner)
+        public DeviceMainDataException(string message, Exception inner) : base(message, inner)
         {
         }
     }

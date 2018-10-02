@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 
-namespace PDADesktop.Model
+namespace PDADesktop.Model.Dto
 {
     public class SincronizacionDtoDataGrid
     {
