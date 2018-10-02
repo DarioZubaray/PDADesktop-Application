@@ -576,6 +576,10 @@ namespace PDADesktop.ViewModel
                 {
                     confirmaDescartarRecepciones = false;
                 }
+                else
+                {
+                    //borrar archivos accion informar ?
+                }
             }
             if(confirmaDescartarRecepciones)
             {
