@@ -181,6 +181,9 @@
     <Compile Include="Classes\MyContainerInitializer.cs" />
     <Compile Include="Classes\NotEmptyValidationRule.cs" />
     <Compile Include="Classes\PasswordBoxAssistant.cs" />
+    <Compile Include="Classes\Utils\PDAWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Model\DeviceMainData.cs" />
     <Compile Include="View\Controls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>

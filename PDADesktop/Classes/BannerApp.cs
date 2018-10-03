@@ -7,23 +7,23 @@ namespace PDADesktop.Classes
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public static void printAppBanner()
         {
-            logger.Debug("\n==================================");
-            logger.Debug("  IMAGO - PDA DESKTOP APPLICATION ");
-            logger.Debug("==================================");
+            logger.Debug("\n=================================="
+                        +"\n IMAGO - PDA DESKTOP APPLICATION  "
+                        +"\n==================================");
         }
 
         public static void printSynchronization()
         {
-            logger.Debug("\n==================================");
-            logger.Debug("=  S y n c h r o n i z a t i o n =");
-            logger.Debug("==================================");
+            logger.Debug("\n=================================="
+                          +"=  S y n c h r o n i z a t i o n ="
+                          +"==================================");
         }
 
         public static void printInformGX()
         {
-            logger.Debug("\n==================================");
-            logger.Debug("=  I n f o r m     G e n e s i x =");
-            logger.Debug("==================================");
+            logger.Debug("\n=================================="
+                          +"=  I n f o r m  to  G e n e s i x ="
+                          +"==================================");
         }
     }
 }
