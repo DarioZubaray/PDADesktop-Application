@@ -20,15 +20,17 @@ namespace PDADesktop.Classes.Utils
         public static string SendHttpGetRequest(string urlPath)
         {
             string response = null;
-            var client = new PDAWebClient(20000);
             string urlAuthority = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
             try
             {
                 logger.Debug("Enviando petición a " + urlAuthority + urlPath);
-                response = client.DownloadString(urlAuthority + urlPath);
-                if(response.Length < 100)
+                using (var client = new PDAWebClient(20000))
                 {
-                    logger.Debug("response: " + response);
+                    response = client.DownloadString(urlAuthority + urlPath);
+                    if (response.Length < 100)
+                    {
+                        logger.Debug("response: " + response);
+                    }
                 }
             }
             catch (Exception e)
