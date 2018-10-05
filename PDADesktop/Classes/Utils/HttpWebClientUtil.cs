@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Configuration;
-using PDADesktop.Classes.Utils;
 using System.Net;
 using System.IO;
 using System.Text;
@@ -45,7 +44,7 @@ namespace PDADesktop.Classes.Utils
         {
             string result = null;
             string urlAuthority = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
-            var httpWebRequest = (HttpWebRequest) WebRequest.Create(urlAuthority + urlPath);
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(urlAuthority + urlPath);
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
 
@@ -75,7 +74,7 @@ namespace PDADesktop.Classes.Utils
 
                 string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
                 byte[] boundarybytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
-                HttpWebRequest wr = (HttpWebRequest) WebRequest.Create(sWebAddress);
+                HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(sWebAddress);
                 wr.Timeout = 1000 * 15;
                 wr.ContentType = "multipart/form-data; boundary=" + boundary;
                 wr.Method = "POST";
@@ -128,7 +127,7 @@ namespace PDADesktop.Classes.Utils
             MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
-        public static bool DownloadMasterFiles(string urlPath, string masterFile)
+        public static bool DownloadFileFromServer(string urlPath, string filenameAndExtension, string destino)
         {
             var client = new WebClient();
             string userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
@@ -137,11 +136,10 @@ namespace PDADesktop.Classes.Utils
             try
             {
                 logger.Debug("Enviando petición a " + urlAuthority + urlPath);
-                string destino = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
                 destino = TextUtils.ExpandEnviromentVariable(destino);
                 FileUtils.VerifyFoldersOrCreate(destino);
-                logger.Debug("Descargando en: " + destino + String.Format("/{0}.DAT", masterFile));
-                client.DownloadFile(urlAuthority + urlPath, destino + String.Format("/{0}.DAT", masterFile));
+                logger.Debug("Descargando en: " + destino + filenameAndExtension);
+                client.DownloadFile(urlAuthority + urlPath, destino + filenameAndExtension);
                 return true;
             }
             catch (Exception e)
@@ -170,9 +168,9 @@ namespace PDADesktop.Classes.Utils
             string urlPath = ConfigurationManager.AppSettings.Get("API_SYNC_ID_LOTE");
             string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPath, idSucursal);
             string response = SendHttpGetRequest(urlPath_urlQuery);
-            if(response != null && !response.Equals("null"))
+            if (response != null && !response.Equals("null"))
             {
-                if(response.Contains("\""))
+                if (response.Contains("\""))
                 {
                     response = response.Replace("\"", "");
                 }
@@ -225,7 +223,37 @@ namespace PDADesktop.Classes.Utils
             string urlPath = ConfigurationManager.AppSettings.Get("API_MAESTRO_URLPATH");
             urlPath = String.Format(urlPath, masterFile);
             string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPath, idSucursal);
-            return DownloadMasterFiles(urlPath_urlQuery, masterFile);
+            string filenameAndExtension = String.Format("/{0}.DAT", masterFile);
+            string destinoPublicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+
+            return DownloadFileFromServer(urlPath_urlQuery, filenameAndExtension, destinoPublicFolder);
+        }
+
+        public static List<VersionDispositivo> GetInfoVersiones(int dispositivo, Boolean habilitada)
+        {
+            string urlGetInfoVersiones = ConfigurationManager.AppSettings.Get(Constants.API_GET_INFO_VERSION);
+            string queryParams = "?dispositivo={0}&habilitada={1}";
+            queryParams = String.Format(queryParams, dispositivo, habilitada);
+            var responseInfoVersiones = HttpWebClientUtil.SendHttpGetRequest(urlGetInfoVersiones + queryParams);
+            if (responseInfoVersiones != null)
+            {
+                List<VersionDispositivo> inforVersiones = JsonConvert.DeserializeObject<List<VersionDispositivo>>(responseInfoVersiones);
+                return inforVersiones;
+            }
+            else
+            {
+                return new List<VersionDispositivo>();
+            }
+        }
+
+        internal static void DownloadDevicePrograms(long idVersionArchivo, string nombre)
+        {
+            string urlDownloadFile = ConfigurationManager.AppSettings.Get(Constants.API_DOWNLOAD_PROGRAM_FILE);
+            string queryParams = "?idVersionArchivo={0}";
+            queryParams = String.Format(queryParams, idVersionArchivo);
+            
+            string destino = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_BIN);
+            DownloadFileFromServer(urlDownloadFile+queryParams, FileUtils.PrependSlash(nombre), destino);
         }
     }
 }

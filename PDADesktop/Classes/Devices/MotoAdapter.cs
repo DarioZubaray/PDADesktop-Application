@@ -29,14 +29,26 @@ namespace PDADesktop.Classes.Devices
             return getResult(codigoResultado);
         }
 
+        public ResultFileOperation CopyPublicBinFileToDevice(string relativeDestinationDirectory, string filenameAndExtension)
+        {
+            string publicPDABinFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_BIN);
+            string publicPDABinFolderExtended = TextUtils.ExpandEnviromentVariable(publicPDABinFolder);
+            return CopyPublicFileToDevice(publicPDABinFolderExtended, relativeDestinationDirectory, filenameAndExtension);
+        }
+
         public ResultFileOperation CopyPublicDataFileToDevice(string relativeDestinationDirectory, string filenameAndExtension)
         {
             string publicPDADataFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
             string publicPDADataFolderExtended = TextUtils.ExpandEnviromentVariable(publicPDADataFolder);
-            logger.Debug("obteniendo archivo desde public: " + publicPDADataFolderExtended + filenameAndExtension);
-            FileUtils.VerifyFoldersOrCreate(publicPDADataFolderExtended);
+            return CopyPublicFileToDevice(publicPDADataFolderExtended, relativeDestinationDirectory, filenameAndExtension);
+        }
+
+        private ResultFileOperation CopyPublicFileToDevice(string publicPathExtended, string relativeDestinationDirectory, string filenameAndExtension)
+        {
+            logger.Debug("obteniendo archivo desde public: " + publicPathExtended + filenameAndExtension);
+            FileUtils.VerifyFoldersOrCreate(publicPathExtended);
             logger.Debug("copiando hacia la ruta: " + relativeDestinationDirectory);
-            int codigoResultado = MotoApi.copyFileToAppData(publicPDADataFolderExtended + filenameAndExtension, relativeDestinationDirectory);
+            int codigoResultado = MotoApi.copyFileToAppData(publicPathExtended + filenameAndExtension, relativeDestinationDirectory);
             return getResult(codigoResultado);
         }
 
@@ -75,7 +87,7 @@ namespace PDADesktop.Classes.Devices
             }
         }
 
-        public string getVersionProgramFileFromDevice()
+        public string ReadVersionDeviceProgramFileFromDefaultData()
         {
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             logger.Debug("Leyendo el archivo: " + filenameAndExtension);
@@ -98,7 +110,7 @@ namespace PDADesktop.Classes.Devices
             }
         }
 
-        public void CreateDefaultDataFile(string idSucursal)
+        public void CreateEmptyDefaultDataFile()
         {
             string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             logger.Debug("Creando el archivo: " + fileDefaultDat);
@@ -106,23 +118,25 @@ namespace PDADesktop.Classes.Devices
             string userPDADocumentFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_VERSION);
             string userPDADocumenteFolderExtended = TextUtils.ExpandEnviromentVariable(userPDADocumentFolder);
             FileUtils.VerifyFoldersOrCreate(userPDADocumenteFolderExtended);
-            string pdaControl = getNewDefaultDatacontent();
+            string pdaControl = GetNewDefaultDataContent();
             logger.Debug("Guardando temporalmente en: " + userPDADocumenteFolderExtended);
             FileUtils.WriteFile(userPDADocumenteFolderExtended + fileDefaultDat, pdaControl);
             int copyResult = MotoApi.copyFileToProgramFiles(userPDADocumenteFolderExtended + fileDefaultDat, deviceRelPathData);
             logger.Debug("Moviendo al dispositivo: " + deviceRelPathData);
             logger.Debug("Resultado obtenido: " + getResult(copyResult));
         }
-        public string getLastVersionProgramFileFromServer()
+
+        public string GetLastVersionProgramFileFromServer()
         {
             string urlLastVersion = ConfigurationManager.AppSettings.Get(Constants.API_GET_LAST_VERSION_FILE_PROGRAM);
             string programFilename = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_FILENAME");
             string queryParameters = "?nombreDispositivo=" + Constants.MOTO + "&nombreArchivoPrograma=" + programFilename;
             return HttpWebClientUtil.SendHttpGetRequest(urlLastVersion + queryParameters);
         }
-        public string getNewDefaultDatacontent()
+
+        public string GetNewDefaultDataContent()
         {
-            return "0|0|yyyyMMddHHmmss|sucursal|"+ getLastVersionProgramFileFromServer() + "|0";
+            return "0|0|00000000000000|0|0.0.0.0|0";
         }
 
         public string ReadAdjustmentsDataFile()

@@ -29,7 +29,7 @@ namespace PDADesktop.Classes.Devices
 
         public ResultFileOperation CopyDeviceFileToPublicData(string sourceDirectory, string filenameAndExtension)
         {
-            if (FileUtils.VerifyIfExitsFile(sourceDirectory+filenameAndExtension))
+            if (FileUtils.VerifyIfExitsFile(sourceDirectory + filenameAndExtension))
             {
                 string clientPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
                 logger.Debug("obteniendo archivo desde dispositivo: " + sourceDirectory + filenameAndExtension);
@@ -47,17 +47,29 @@ namespace PDADesktop.Classes.Devices
             return ResultFileOperation.NONEXISTENT_FILE;
         }
 
+        public ResultFileOperation CopyPublicBinFileToDevice(string destinationDirectory, string filenameAndExtension)
+        {
+            string publicPathBin = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_BIN);
+            string publicPathBinExtended = TextUtils.ExpandEnviromentVariable(publicPathBin);
+            return CopyPublicFileToDevice(publicPathBinExtended, destinationDirectory, filenameAndExtension);
+        }
+
         public ResultFileOperation CopyPublicDataFileToDevice(string destinationDirectory, string filenameAndExtension)
         {
             string publicPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
             string publicPathDataExtended = TextUtils.ExpandEnviromentVariable(publicPathData);
-            logger.Debug("obteniendo archivo desde public: " + publicPathDataExtended);
-            FileUtils.VerifyFoldersOrCreate(publicPathDataExtended);
+            return CopyPublicFileToDevice(publicPathDataExtended, destinationDirectory, filenameAndExtension);
+        }
+
+        private ResultFileOperation CopyPublicFileToDevice(string publicPathExtended, string destinationDirectory, string filenameAndExtension)
+        {
+            logger.Debug("obteniendo archivo desde public: " + publicPathExtended);
+            FileUtils.VerifyFoldersOrCreate(publicPathExtended);
             string desktopFolder = ConfigurationManager.AppSettings.Get(Constants.DESKTOP_FOLDER);
             string desktopFolderExtended = TextUtils.ExpandEnviromentVariable(desktopFolder);
             string clientPathData = desktopFolderExtended + destinationDirectory + filenameAndExtension;
             logger.Debug("copiando hacia la ruta: " + clientPathData);
-            FileUtils.CopyFile(publicPathDataExtended + filenameAndExtension, clientPathData);
+            FileUtils.CopyFile(publicPathExtended + filenameAndExtension, clientPathData);
             return ResultFileOperation.OK;
         }
 
@@ -112,7 +124,7 @@ namespace PDADesktop.Classes.Devices
             }
         }
 
-        public string getVersionProgramFileFromDevice()
+        public string ReadVersionDeviceProgramFileFromDefaultData()
         {
             string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             string deviceRelPathVersion = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
@@ -130,29 +142,30 @@ namespace PDADesktop.Classes.Devices
             return TextUtils.getVersionFromDefaultDat(contentDefault);
         }
 
-        public void CreateDefaultDataFile(string idSucursal)
+        public void CreateEmptyDefaultDataFile()
         {
             string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             logger.Debug("Creando el archivo: " + fileDefaultDat);
             string deviceRelPathVersion = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
             string userDesktopPdaTestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathVersion);
             FileUtils.VerifyFoldersOrCreate(userDesktopPdaTestFolderPath);
-            string pdaControl = getNewDefaultDatacontent();
+            string pdaControl = GetNewDefaultDataContent();
             logger.Debug("Guardando en: " + userDesktopPdaTestFolderPath + fileDefaultDat);
             FileUtils.WriteFile(userDesktopPdaTestFolderPath + fileDefaultDat, pdaControl);
             logger.Debug("Resultado de crear archivo: " + FileUtils.VerifyIfExitsFile(userDesktopPdaTestFolderPath + fileDefaultDat));
         }
 
-        public string getLastVersionProgramFileFromServer()
+        public string GetLastVersionProgramFileFromServer()
         {
             string urlLastVersion = ConfigurationManager.AppSettings.Get(Constants.API_GET_LAST_VERSION_FILE_PROGRAM);
             string programFilename = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_FILENAME");
             string queryParameters = "?nombreDispositivo=" + Constants.DESKTOP + "&nombreArchivoPrograma=" + programFilename;
             return HttpWebClientUtil.SendHttpGetRequest(urlLastVersion + queryParameters);
         }
-        public string getNewDefaultDatacontent()
+
+        public string GetNewDefaultDataContent()
         {
-            return "0|0|yyyyMMddHHmmss|sucursal|" + getLastVersionProgramFileFromServer() + "|0";
+            return "0|0|00000000000000|0|0.0.0.0|0";
         }
 
         public string ReadAdjustmentsDataFile()

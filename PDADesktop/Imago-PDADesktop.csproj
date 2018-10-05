@@ -185,6 +185,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Model\DeviceMainData.cs" />
+    <Compile Include="Model\Dispositivo.cs" />
+    <Compile Include="Model\VersionArchivo.cs" />
+    <Compile Include="Model\VersionDispositivo.cs" />
     <Compile Include="View\Controls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>

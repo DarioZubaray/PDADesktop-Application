@@ -429,10 +429,88 @@ namespace PDADesktop.ViewModel
         #region Worker Method
         private void loadCentroActividadesWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("loadCentroActividades Worker ->doWork");
-            GetIdAccionesAsync();
+            string currentMessage = "loadCentroActividades Worker ->doWork";
+            logger.Debug(currentMessage);
+
+            currentMessage = "Obteniendo actividades de todas las acciones...";
+            NotifyCurrentMessage(currentMessage);
+            GetActividadesByAllAccionesAsync();
+
             string _sucursal = MyAppProperties.idSucursal;
+
+            currentMessage = "Obteniendo el id del último lote para sucursal " + _sucursal;
+            NotifyCurrentMessage(currentMessage);
             int idLoteActual = HttpWebClientUtil.GetIdLoteActual(_sucursal);
+
+            currentMessage = "Obteniendo detalles de sincronización para lote " + idLoteActual;
+            NotifyCurrentMessage(currentMessage);
+            GetUltimaSincronizacion(idLoteActual, _sucursal);
+
+            currentMessage = "Checkeando conexión con el dispositivo...";
+            NotifyCurrentMessage(currentMessage);
+            bool isConneted = CheckDeviceConnected();
+
+            if(isConneted)
+            {
+                currentMessage = "Leyendo Ajustes realizados...";
+                NotifyCurrentMessage(currentMessage);
+                CreateBadgeVerAjustes();
+
+                currentMessage = "Leyendo configuración del dispositivo...";
+                NotifyCurrentMessage(currentMessage);
+                ReadDeviceMainDataFile();
+
+                currentMessage = "Controlando componentes del dispositivo...";
+                NotifyCurrentMessage(currentMessage);
+                ControlDevicePrograms();
+            }
+
+        }
+
+        public void NotifyCurrentMessage(string currentMessage)
+        {
+            logger.Debug(currentMessage);
+            PanelSubMessage = currentMessage;
+            Thread.Sleep(100);
+        }
+
+        public void GetActividadesByAllAccionesAsync()
+        {
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                GetActividadesByAllAcciones();
+            }).Start();
+        }
+
+        public List<Actividad> GetActividadesByAllAcciones()
+        {
+            //TODO llevar al Utils la logica de conexion
+            string urlAcciones = ConfigurationManager.AppSettings.Get(Constants.API_GET_ALL_ACCIONES);
+            var responseAcciones = HttpWebClientUtil.SendHttpGetRequest(urlAcciones);
+            if (responseAcciones != null)
+            {
+                List<Accion> acciones = JsonConvert.DeserializeObject<List<Accion>>(responseAcciones);
+                MyAppProperties.accionesDisponibles = acciones;
+                string idAcciones = TextUtils.ParseListAccion2String(acciones);
+                string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
+
+                var urlActividades = ConfigurationManager.AppSettings.Get(Constants.API_GET_ACTIVIDADES);
+                string responseActividades = HttpWebClientUtil.SendHttpPostRequest(urlActividades, jsonBody);
+                logger.Debug(responseActividades);
+                List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);
+                MyAppProperties.actividadesDisponibles = actividades;
+                return actividades;
+            }
+            else
+            {
+                return new List<Actividad>();
+            }
+        }
+
+        public void GetUltimaSincronizacion(int idLoteActual, string _sucursal)
+        {
             if (idLoteActual != 0)
             {
                 MyAppProperties.idLoteActual = idLoteActual.ToString();
@@ -445,13 +523,16 @@ namespace PDADesktop.ViewModel
                     ActualizarLoteActual(sincronizaciones);
                 }
             }
-            logger.Debug("Creando badge de VerAjustes...");
-            createBadgeVerAjustes();
-            logger.Debug("Verificando version dispositivo");
-            UpdateDeviceApp();
         }
 
-        public void createBadgeVerAjustes()
+        private bool CheckDeviceConnected()
+        {
+            bool dispositivoConectado = App.Instance.deviceHandler.IsDeviceConnected();
+            logger.Info("Device is connected: " + dispositivoConectado);
+            return dispositivoConectado;
+        }
+
+        public void CreateBadgeVerAjustes()
         {
             var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
@@ -499,48 +580,58 @@ namespace PDADesktop.ViewModel
             }));
         }
 
-        public void UpdateDeviceApp()
+        private void ReadDeviceMainDataFile()
         {
-            //1- obtener del dispositivo, la version del programa desde el archivo default
-            //  1-A No existe archivo: Se crea, y descarga pdaMoto.exe (fin)
-            //  1-B Existe: Se parsea y analiza:
-            //    1-B-1 Esta corrupto/Todo cero: idem '1-A' [Se crea, y descarga pdaMoto.exe (fin)]
-            //    1-B-2 Todo OK: continua con '2'
-            //2- obtener la ultima version desde el server
-            //3- comparar versiones:
-            //  3-A iguales = no hacer nada (fin)
-            //  3-B menor = descargar pdaMoto.exe (fin)
-            //  3-C mayor = algo raro sucede, reemplazar pdaMoto.exe (fin)
-
-
-            string lastVersionFromDevice = App.Instance.deviceHandler.getVersionProgramFileFromDevice();
-            if(lastVersionFromDevice != null)
+            string publicPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string publicPathDataExtended = TextUtils.ExpandEnviromentVariable(publicPathData);
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
+            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
+            ResultFileOperation deviceCopyResult = deviceHandler.CopyDeviceFileToPublicData(publicPathDataExtended, filenameAndExtension);
+            if(deviceCopyResult.Equals(ResultFileOperation.OK))
             {
-                string version = TextUtils.getVersionFromDefaultDat(lastVersionFromDevice);
-                if(version != null)
-                {
-                    string lastVersion = App.Instance.deviceHandler.getLastVersionProgramFileFromServer();
-                    //bool isUpdated = compareDeviceVersions(version, lastVersion);
-                    //if(!isUpdated) 
-                    string idSucursal = MyAppProperties.idSucursal;
-                    App.Instance.deviceHandler.CreateDefaultDataFile(idSucursal);
-                    //con el idVersionArchivo descargo desde API_DOWNLOAD_PROGRAM_FILE?idVersionArchivo=20043
-                    //downloadDeviceProgramFile(Constants.MOTO);
-                }
-                else
-                {
-                    string idSucursal = MyAppProperties.idSucursal;
-                    App.Instance.deviceHandler.CreateDefaultDataFile(idSucursal);
-                    //downloadDeviceProgramFile(Constants.MOTO);
-                }
+                logger.Debug("Archivo copiado con éxito.");
             }
             else
             {
-                string idSucursal = MyAppProperties.idSucursal;
-                App.Instance.deviceHandler.CreateDefaultDataFile(idSucursal);
-                //downloadDeviceProgramFile(Constants.MOTO);
+                string errorCopyDeviceFile = "Error al leer el archivo DEFAULT, Regenerándolo...";
+                NotifyCurrentMessage(errorCopyDeviceFile);
+                deviceHandler.CreateEmptyDefaultDataFile();
             }
-            logger.Debug("Fin UpdateDeviceApp");
+        }
+
+        private void ControlDevicePrograms()
+        {
+            int dispositivo = 2;
+            Boolean habilitada = true;
+            List<VersionDispositivo> versionesActualizadas =  HttpWebClientUtil.GetInfoVersiones(dispositivo, habilitada);
+            if(versionesActualizadas != null)
+            {
+                VersionDispositivo ultimaVersionServidor = versionesActualizadas[0];
+                string serverVersion = ultimaVersionServidor.version;
+                logger.Debug("Ultima versión en el servidor: " + serverVersion);
+
+                IDeviceHandler deviceHandler = App.Instance.deviceHandler;
+                string deviceMainVersion =  deviceHandler.ReadVersionDeviceProgramFileFromDefaultData();
+                logger.Debug("Versión del dispositivo: " + deviceMainVersion);
+
+                if(!serverVersion.Equals(deviceMainVersion))
+                {
+                    NotifyCurrentMessage("Descargando componentes del dispositivo...");
+                    HashSet<VersionArchivo> versionesArchivos = (HashSet<VersionArchivo>)ultimaVersionServidor.versionesArchivos;
+                    foreach(VersionArchivo versionArchivo in versionesArchivos)
+                    {
+                        string nombre = versionArchivo.nombre;
+                        logger.Debug("Descargando " + nombre);
+                        long idVersionArchivo = versionArchivo.idVersion;
+                        HttpWebClientUtil.DownloadDevicePrograms(idVersionArchivo, nombre);
+
+                        string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_BIN);
+                        string filenameAndExtension = FileUtils.PrependSlash(nombre);
+                        ResultFileOperation copyResult = deviceHandler.CopyPublicBinFileToDevice(destinationDirectory, filenameAndExtension);
+                        logger.Debug("Resultado de copiar el archivo " + copyResult.ToString());
+                    }
+                }
+            }
         }
 
         private void loadCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -584,7 +675,7 @@ namespace PDADesktop.ViewModel
             }
             if(confirmaDescartarRecepciones)
             {
-                List<Actividad> actividades = GetIdAcciones();
+                List<Actividad> actividades = MyAppProperties.actividadesDisponibles;
                 foreach(Actividad actividad in actividades)
                 {
                     if (Constants.DESCARGAR_GENESIX.Equals(actividad.accion.idAccion))
@@ -866,41 +957,8 @@ namespace PDADesktop.ViewModel
             string fecha = sincronizacion.fecha;
             txt_sincronizacion = " (" + lote + ") " + fecha;
         }
-        public void GetIdAccionesAsync()
-        {
-            new Thread(() =>
-            {
-                Thread.CurrentThread.IsBackground = true;
 
-                GetIdAcciones();
-            }).Start();
-        }
-
-        public List<Actividad> GetIdAcciones()
-        {
-            string urlAcciones = ConfigurationManager.AppSettings.Get(Constants.API_GET_ALL_ACCIONES);
-            var responseAcciones = HttpWebClientUtil.SendHttpGetRequest(urlAcciones);
-            if (responseAcciones != null)
-            {
-                List<Accion> acciones = JsonConvert.DeserializeObject<List<Accion>>(responseAcciones);
-                MyAppProperties.accionesDisponibles = acciones;
-                string idAcciones = TextUtils.ParseListAccion2String(acciones);
-                string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
-
-                var urlActividades = ConfigurationManager.AppSettings.Get(Constants.API_GET_ACTIVIDADES);
-                string responseActividades = HttpWebClientUtil.SendHttpPostRequest(urlActividades, jsonBody);
-                logger.Debug(responseActividades);
-                List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);
-                MyAppProperties.actividadesDisponibles = actividades;
-                return actividades;
-            }
-            else
-            {
-                return new List<Actividad>();
-            }
-        }
-
-        #region ButtonStates
+        #region Button States
         public static void BotonEstadoGenesix(object obj)
         {
             logger.Info("Boton estado genesix: " + obj);
@@ -941,6 +999,7 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
+        
         public void AvisoAlUsuario(string mensaje)
         {
             string message = mensaje;
