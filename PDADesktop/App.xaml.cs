@@ -27,7 +27,7 @@ namespace PDADesktop
         #region constructor
         public App()
         {
-            BannerApp.printAppBanner();
+            BannerApp.PrintAppBanner();
             Instance = this;
             Container = new Container(c =>
             {

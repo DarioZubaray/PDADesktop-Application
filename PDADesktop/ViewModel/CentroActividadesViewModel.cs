@@ -393,6 +393,7 @@ namespace PDADesktop.ViewModel
         #region Constructor
         public CentroActividadesViewModel()
         {
+            BannerApp.PrintActivityCenter();
             PanelLoading = true;
             PanelMainMessage = "Cargando...";
             setInfoLabels();
@@ -722,7 +723,7 @@ namespace PDADesktop.ViewModel
         private void sincronizarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("sincronizar Worker ->doWork");
-            BannerApp.printSynchronization();
+            BannerApp.PrintSynchronization();
             // buscar datos antiguos
             /*
              * 1-obtener el default.DAT
@@ -803,7 +804,7 @@ namespace PDADesktop.ViewModel
         private void informarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("informar Worker ->doWork");
-            BannerApp.printInformGX();
+            BannerApp.PrintInformGX();
             //1- Buscar las actividades de informar
             List<Actividad> actividades = MyAppProperties.actividadesDisponibles;
             List<long> actividadesInformar = new List<long>();
