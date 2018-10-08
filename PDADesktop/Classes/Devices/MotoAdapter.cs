@@ -94,7 +94,7 @@ namespace PDADesktop.Classes.Devices
             return ResultFileOperation.OK;
         }
 
-        public string ReadBranchOfficeFromDefaultData()
+        private string ReadDefaultContentFromDefaultData()
         {
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
 
@@ -103,20 +103,25 @@ namespace PDADesktop.Classes.Devices
             FileUtils.VerifyFoldersOrCreate(userPublicFolderExtended);
             logger.Debug("Leyendo el archivo: " + userPublicFolderExtended + filenameAndExtension);
 
-            string contentDefault = FileUtils.ReadFile(userPublicFolderExtended + filenameAndExtension);
+            return FileUtils.ReadFile(userPublicFolderExtended + filenameAndExtension);
+        }
+
+        public string ReadSynchronizationDateFromDefaultData()
+        {
+            string contentDefault = ReadDefaultContentFromDefaultData();
+            return TextUtils.GetSynchronizationDateFromDefaultDat(contentDefault);
+        }
+
+        public string ReadBranchOfficeFromDefaultData()
+        {
+            string contentDefault = ReadDefaultContentFromDefaultData();
             return TextUtils.GetBranchOfficeFromDefaultDat(contentDefault);
         }
 
         public string ReadVersionDeviceProgramFileFromDefaultData()
         {
-            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
-
-            string userPublicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_VERSION);
-            string userPublicFolderExtended = TextUtils.ExpandEnviromentVariable(userPublicFolder);
-            FileUtils.VerifyFoldersOrCreate(userPublicFolderExtended);
-            logger.Debug("Leyendo el archivo: " + userPublicFolderExtended + filenameAndExtension);
-
-            string contentDefault = FileUtils.ReadFile(userPublicFolderExtended + filenameAndExtension);
+            string contentDefault = ReadDefaultContentFromDefaultData();
+            contentDefault = TextUtils.RemoveQuotesMarks(contentDefault);
             return TextUtils.GetVersionFromDefaultDat(contentDefault);
         }
 

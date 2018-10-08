@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace PDADesktop.Classes.Utils
 {
@@ -98,27 +97,39 @@ namespace PDADesktop.Classes.Utils
             return aa as ArchivoActividadAttributes;
         }
 
+        public static string RemoveQuotesMarks(string defaultContent)
+        {
+            if (defaultContent != null)
+            {
+                if (defaultContent.Contains("\""))
+                {
+                    defaultContent = defaultContent.Replace("\"", "");
+                }
+            }
+            return defaultContent;
+        }
+
         public static string GetVersionFromDefaultDat(string defaultContent)
         {
-            String[] defaultArray = defaultContent.Split('|');
-            if(defaultArray.Length == DeviceMainData.TOTAL_POSITION)
-            {
-                int indiceVersion = DeviceMainData.POSITION_VERSION;
-                return defaultArray[indiceVersion];
-            }
-            else
-            {
-                return null;
-            }
+            return GetIndexContentByDefaultDatPosition(defaultContent, DeviceMainData.POSITION_VERSION);
         }
 
         public static string GetBranchOfficeFromDefaultDat(string defaultContent)
         {
+            return GetIndexContentByDefaultDatPosition(defaultContent, DeviceMainData.POSITION_SUCURSAL);
+        }
+
+        public static string GetSynchronizationDateFromDefaultDat(string defaultContent)
+        {
+            return GetIndexContentByDefaultDatPosition(defaultContent, DeviceMainData.POSITION_FECHA_SINCO);
+        }
+
+        private static string GetIndexContentByDefaultDatPosition(string defaultContent, int indiceDefault)
+        {
             String[] defaultArray = defaultContent.Split('|');
             if (defaultArray.Length == DeviceMainData.TOTAL_POSITION)
             {
-                int indiceSucursal = DeviceMainData.POSITION_SUCURSAL;
-                return defaultArray[indiceSucursal];
+                return defaultArray[indiceDefault];
             }
             else
             {

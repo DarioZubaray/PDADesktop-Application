@@ -477,6 +477,14 @@ namespace PDADesktop.ViewModel
                     NotifyCurrentMessage(currentMessage);
                     AssociateCurrentBranchOffice(_sucursal);
                 }
+
+                currentMessage = "Borrando datos antiguos ...";
+                NotifyCurrentMessage(currentMessage);
+                CheckLastSynchronizationDateFromDefault();
+
+                currentMessage = "Actualizando archivo principal de configuración del dispositivo ...";
+                NotifyCurrentMessage(currentMessage);
+                UpdateDeviceMainFile(_sucursal);
             }
             else
             {
@@ -687,6 +695,22 @@ namespace PDADesktop.ViewModel
                 string filename = ArchivosDATUtils.GetDataFileNameByIdActividad((int)idActividadActual);
                 App.Instance.deviceHandler.DeleteDeviceAndPublicDataFiles(filename);
             }
+        }
+
+        private void CheckLastSynchronizationDateFromDefault()
+        {
+            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
+            string synchronizationDefault = deviceHandler.ReadSynchronizationDateFromDefaultData();
+            bool isGreatherThanToday = DateTimeUtils.IsGreatherThanToday(synchronizationDefault);
+            if(isGreatherThanToday)
+            {
+                DeleteAllPreviousFiles();
+            }
+        }
+
+        private void UpdateDeviceMainFile(string sucursal)
+        {
+            FileUtils.UpdateDeviceMainFile(sucursal);
         }
 
         private void loadCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

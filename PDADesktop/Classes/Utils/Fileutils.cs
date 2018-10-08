@@ -2,6 +2,8 @@
 using System.Configuration;
 using System.IO;
 using System.Text;
+using System;
+using PDADesktop.Model;
 
 namespace PDADesktop.Classes.Utils
 {
@@ -60,14 +62,45 @@ namespace PDADesktop.Classes.Utils
             return filename + ".DAT";
         }
 
-        public static void UpdateDefaultDatFileInPublic(string positionContent, int position)
+        public static string UpdateDefaultDatContentFileByPositionInPublic(string positionContent, int position)
         {
             string defaultPathPublic = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
             string defaultPathPublicExtended = TextUtils.ExpandEnviromentVariable(defaultPathPublic);
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             string currentDefaultContent = ReadFile(defaultPathPublicExtended + filenameAndExtension);
-            string content = TextUtils.BuildDefaultContent(currentDefaultContent, positionContent, position);
+            return TextUtils.BuildDefaultContent(currentDefaultContent, positionContent, position);
+        }
+
+        public static void UpdateDefaultDatFileInPublic(string positionContent, int position)
+        {
+            string content = UpdateDefaultDatContentFileByPositionInPublic(positionContent, position);
+
+            string defaultPathPublic = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string defaultPathPublicExtended = TextUtils.ExpandEnviromentVariable(defaultPathPublic);
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
+            string currentDefaultContent = ReadFile(defaultPathPublicExtended + filenameAndExtension);
             WriteFile(defaultPathPublic, content);
+        }
+
+        public static void UpdateDeviceMainFile(string _sucursal)
+        {
+            string defaultPathPublic = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string defaultPathPublicExtended = TextUtils.ExpandEnviromentVariable(defaultPathPublic);
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
+
+            string currentDefaultContent = ReadFile(defaultPathPublicExtended + filenameAndExtension);
+            String[] defaultArray = currentDefaultContent.Split('|');
+
+            if (defaultArray.Length == DeviceMainData.TOTAL_POSITION)
+            {
+                defaultArray[DeviceMainData.POSITION_ESTADO_ESCUCHA] = "0";
+                defaultArray[DeviceMainData.POSITION_ESTADO_SINCRO] = "0";
+                defaultArray[DeviceMainData.POSITION_FECHA_SINCO] = DateTime.Now.ToString("yyyyMMddHHmmss");
+                defaultArray[DeviceMainData.POSITION_SUCURSAL] = _sucursal;
+                defaultArray[DeviceMainData.POSITION_AUTOOFF] = "0";
+            }
+            string updatedDefaultContent = String.Join("|", defaultArray);
+            WriteFile(defaultPathPublic, updatedDefaultContent);
         }
     }
 }

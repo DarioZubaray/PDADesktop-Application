@@ -131,26 +131,34 @@ namespace PDADesktop.Classes.Devices
             return ResultFileOperation.OK;
         }
 
+        private string ReadDefaultContentFromDefaultData()
+        {
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
+
+            string userPublicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_VERSION);
+            string userPublicFolderExtended = TextUtils.ExpandEnviromentVariable(userPublicFolder);
+            FileUtils.VerifyFoldersOrCreate(userPublicFolderExtended);
+            logger.Debug("Leyendo el archivo: " + userPublicFolderExtended + filenameAndExtension);
+
+            return FileUtils.ReadFile(userPublicFolderExtended + filenameAndExtension);
+        }
+
+        public string ReadSynchronizationDateFromDefaultData()
+        {
+            string contentDefault = ReadDefaultContentFromDefaultData();
+            return TextUtils.GetSynchronizationDateFromDefaultDat(contentDefault);
+        }
+
         public string ReadBranchOfficeFromDefaultData()
         {
-            return "";
+            string contentDefault = ReadDefaultContentFromDefaultData();
+            return TextUtils.GetBranchOfficeFromDefaultDat(contentDefault);
         }
 
         public string ReadVersionDeviceProgramFileFromDefaultData()
         {
-            string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
-            string deviceRelPathVersion = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
-            string userDesktopPdaTestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathVersion);
-            if (!FileUtils.VerifyIfExitsFile(userDesktopPdaTestFolderPath + fileDefaultDat))
-            {
-                return null;
-            }
-            string clientPathVersion = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_VERSION);
-            string clientPathVersionExtended = TextUtils.ExpandEnviromentVariable(clientPathVersion);
-
-            FileUtils.VerifyFoldersOrCreate(clientPathVersionExtended);
-            FileUtils.CopyFile(userDesktopPdaTestFolderPath + fileDefaultDat, clientPathVersionExtended + fileDefaultDat);
-            string contentDefault = FileUtils.ReadFile(clientPathVersionExtended + fileDefaultDat);
+            string contentDefault = ReadDefaultContentFromDefaultData();
+            contentDefault = TextUtils.RemoveQuotesMarks(contentDefault);
             return TextUtils.GetVersionFromDefaultDat(contentDefault);
         }
 

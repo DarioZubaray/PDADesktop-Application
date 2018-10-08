@@ -13,13 +13,13 @@
         ResultFileOperation DeleteDeviceAndPublicDataFiles(string filename);
 
         string ReadVersionDeviceProgramFileFromDefaultData();
-        void CreateEmptyDefaultDataFile();
+        string ReadSynchronizationDateFromDefaultData();
         string ReadBranchOfficeFromDefaultData();
+        void CreateEmptyDefaultDataFile();
         string GetLastVersionProgramFileFromServer();
         string GetNewDefaultDataContent();
 
         string ReadAdjustmentsDataFile();
         bool OverWriteAdjustmentMade(string newContent);
-        
     }
 }
