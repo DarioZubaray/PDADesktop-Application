@@ -431,7 +431,10 @@ namespace PDADesktop.ViewModel
         {
             string currentMessage = "loadCentroActividades Worker ->doWork";
             logger.Debug(currentMessage);
-            //checkServerStatus
+
+            currentMessage = "Verificando conexión con el servidor PDAExpress...";
+            NotifyCurrentMessage(currentMessage);
+            bool serverStatus = CheckServerStatus();
 
             currentMessage = "Obteniendo actividades de todas las acciones...";
             NotifyCurrentMessage(currentMessage);
@@ -439,11 +442,11 @@ namespace PDADesktop.ViewModel
 
             string _sucursal = MyAppProperties.idSucursal;
 
-            currentMessage = "Obteniendo el id del último lote para sucursal " + _sucursal;
+            currentMessage = "Obteniendo el id del último lote para sucursal " + _sucursal + " ...";
             NotifyCurrentMessage(currentMessage);
             int idLoteActual = HttpWebClientUtil.GetIdLoteActual(_sucursal);
 
-            currentMessage = "Obteniendo detalles de sincronización para lote " + idLoteActual;
+            currentMessage = "Obteniendo detalles de sincronización para lote " + idLoteActual + " ...";
             NotifyCurrentMessage(currentMessage);
             GetUltimaSincronizacion(idLoteActual, _sucursal);
 
@@ -470,7 +473,7 @@ namespace PDADesktop.ViewModel
                 bool needAssociateBranchOffice = CheckBranchOfficeDevice();
                 if (needAssociateBranchOffice)
                 {
-                    currentMessage = "Asociando sucursal del dispositivo al n°" + _sucursal;
+                    currentMessage = "Asociando sucursal del dispositivo al n°" + _sucursal + " ...";
                     NotifyCurrentMessage(currentMessage);
                     AssociateCurrentBranchOffice(_sucursal);
                 }
@@ -487,6 +490,11 @@ namespace PDADesktop.ViewModel
             logger.Debug(currentMessage);
             PanelSubMessage = currentMessage;
             Thread.Sleep(300);
+        }
+
+        private bool CheckServerStatus()
+        {
+            return HttpWebClientUtil.GetHttpWebServerConexionStatus();
         }
 
         public void GetActividadesByAllAccionesAsync()
