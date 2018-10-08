@@ -5,11 +5,11 @@ namespace PDADesktop.Model
 {
     public class VersionDispositivo
     {
-        public long id { get; set; }
-        public Dispositivo dispositivo { get; set; }
+        public long idVersion { get; set; }
+        public string dispositivo { get; set; }
         public string version { get; set; }
-        public Boolean habilitada { get; set; }
+        public bool habilitada { get; set; }
 
-        public ISet<VersionArchivo> versionesArchivos { get; set; }
+        public List<VersionArchivo> versionesArchivos { get; set; }
     }
 }
