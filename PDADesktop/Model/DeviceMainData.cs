@@ -6,12 +6,13 @@ namespace PDADesktop.Model
     class DeviceMainData
     {
         #region Constants
-        private const int POSITION_ESTADO_ESCUCHA = 0;
-        private const int POSITION_ESTADO_SINCRO = 1;
-        private const int POSITION_FECHA_SINCO = 2;
-        private const int POSITION_SUCURSAL = 3;
-        private const int POSITION_VERSION = 4;
-        private const int POSITION_AUTOOFF = 5;
+        public const int POSITION_ESTADO_ESCUCHA = 0;
+        public const int POSITION_ESTADO_SINCRO = 1;
+        public const int POSITION_FECHA_SINCO = 2;
+        public const int POSITION_SUCURSAL = 3;
+        public const int POSITION_VERSION = 4;
+        public const int POSITION_AUTOOFF = 5;
+        public const int TOTAL_POSITION = 5;
         #endregion
 
         #region Attributes

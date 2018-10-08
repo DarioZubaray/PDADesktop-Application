@@ -17,6 +17,7 @@ namespace PDADesktop.Classes.Utils
         {
             return Environment.ExpandEnvironmentVariables(source);
         }
+
         public static string ParseAdjustmentDAT2JsonStr(string source)
         {
             StringBuilder ajusteJSON = new StringBuilder();
@@ -89,7 +90,7 @@ namespace PDADesktop.Classes.Utils
             return sb.ToString();
         }
 
-        public static ArchivoActividadAttributes getAAAttributes(this ArchivoActividad value)
+        public static ArchivoActividadAttributes GetAAAttributes(this ArchivoActividad value)
         {
             var enumType = value.GetType();
             var name = Enum.GetName(enumType, value);
@@ -97,18 +98,54 @@ namespace PDADesktop.Classes.Utils
             return aa as ArchivoActividadAttributes;
         }
 
-        public static string getVersionFromDefaultDat(string defaultContent)
+        public static string GetVersionFromDefaultDat(string defaultContent)
         {
             String[] defaultArray = defaultContent.Split('|');
-            if(defaultArray.Length == 5)
+            if(defaultArray.Length == DeviceMainData.TOTAL_POSITION)
             {
-                int indiceVersion = 4;
+                int indiceVersion = DeviceMainData.POSITION_VERSION;
                 return defaultArray[indiceVersion];
             }
             else
             {
                 return null;
             }
+        }
+
+        public static string GetBranchOfficeFromDefaultDat(string defaultContent)
+        {
+            String[] defaultArray = defaultContent.Split('|');
+            if (defaultArray.Length == DeviceMainData.TOTAL_POSITION)
+            {
+                int indiceSucursal = DeviceMainData.POSITION_SUCURSAL;
+                return defaultArray[indiceSucursal];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static bool CompareBranchOffice(string bf1, string bf2)
+        {
+            if(bf1 != null && bf2 != null)
+            {
+                return bf1.Trim().Equals(bf2.Trim(), StringComparison.InvariantCultureIgnoreCase);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static string BuildDefaultContent(string previousContent, string newContent, int position)
+        {
+            String[] defaultArray = previousContent.Split('|');
+            if (defaultArray.Length == DeviceMainData.TOTAL_POSITION)
+            {
+                defaultArray[position] = newContent;
+            }
+            return String.Join("|", defaultArray);
         }
     }
 }

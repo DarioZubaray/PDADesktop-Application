@@ -124,6 +124,18 @@ namespace PDADesktop.Classes.Devices
             }
         }
 
+        public ResultFileOperation DeleteDeviceAndPublicDataFiles(string filename)
+        {
+            ResultFileOperation deleteDevice = DeleteDeviceDataFile(filename);
+            ResultFileOperation deletePublic = DeletePublicDataFile(filename);
+            return ResultFileOperation.OK;
+        }
+
+        public string ReadBranchOfficeFromDefaultData()
+        {
+            return "";
+        }
+
         public string ReadVersionDeviceProgramFileFromDefaultData()
         {
             string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
@@ -139,7 +151,7 @@ namespace PDADesktop.Classes.Devices
             FileUtils.VerifyFoldersOrCreate(clientPathVersionExtended);
             FileUtils.CopyFile(userDesktopPdaTestFolderPath + fileDefaultDat, clientPathVersionExtended + fileDefaultDat);
             string contentDefault = FileUtils.ReadFile(clientPathVersionExtended + fileDefaultDat);
-            return TextUtils.getVersionFromDefaultDat(contentDefault);
+            return TextUtils.GetVersionFromDefaultDat(contentDefault);
         }
 
         public void CreateEmptyDefaultDataFile()

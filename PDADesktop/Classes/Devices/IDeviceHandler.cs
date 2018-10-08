@@ -10,13 +10,16 @@
         ResultFileOperation CopyPublicBinFileToDevice(string DestinationDirectory, string filenameAndExtension);
         ResultFileOperation DeleteDeviceDataFile(string filename);
         ResultFileOperation DeletePublicDataFile(string filename);
+        ResultFileOperation DeleteDeviceAndPublicDataFiles(string filename);
 
         string ReadVersionDeviceProgramFileFromDefaultData();
         void CreateEmptyDefaultDataFile();
+        string ReadBranchOfficeFromDefaultData();
         string GetLastVersionProgramFileFromServer();
         string GetNewDefaultDataContent();
 
         string ReadAdjustmentsDataFile();
         bool OverWriteAdjustmentMade(string newContent);
+        
     }
 }

@@ -431,6 +431,7 @@ namespace PDADesktop.ViewModel
         {
             string currentMessage = "loadCentroActividades Worker ->doWork";
             logger.Debug(currentMessage);
+            //checkServerStatus
 
             currentMessage = "Obteniendo actividades de todas las acciones...";
             NotifyCurrentMessage(currentMessage);
@@ -458,11 +459,25 @@ namespace PDADesktop.ViewModel
 
                 currentMessage = "Leyendo configuración del dispositivo...";
                 NotifyCurrentMessage(currentMessage);
-                ReadDeviceMainDataFile();
+                CopyDeviceMainDataFileToPublic();
 
                 currentMessage = "Controlando componentes del dispositivo...";
                 NotifyCurrentMessage(currentMessage);
                 ControlDevicePrograms();
+
+                currentMessage = "Verificando sucursal configurada en el dispositivo...";
+                NotifyCurrentMessage(currentMessage);
+                bool needAssociateBranchOffice = CheckBranchOfficeDevice();
+                if (needAssociateBranchOffice)
+                {
+                    currentMessage = "Asociando sucursal del dispositivo al n°" + _sucursal;
+                    NotifyCurrentMessage(currentMessage);
+                    AssociateCurrentBranchOffice(_sucursal);
+                }
+            }
+            else
+            {
+                //Dispositivo No conectado
             }
 
         }
@@ -471,7 +486,7 @@ namespace PDADesktop.ViewModel
         {
             logger.Debug(currentMessage);
             PanelSubMessage = currentMessage;
-            Thread.Sleep(100);
+            Thread.Sleep(300);
         }
 
         public void GetActividadesByAllAccionesAsync()
@@ -580,7 +595,7 @@ namespace PDADesktop.ViewModel
             }));
         }
 
-        private void ReadDeviceMainDataFile()
+        private void CopyDeviceMainDataFileToPublic()
         {
             string publicPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
             string publicPathDataExtended = TextUtils.ExpandEnviromentVariable(publicPathData);
@@ -602,7 +617,7 @@ namespace PDADesktop.ViewModel
         private void ControlDevicePrograms()
         {
             int dispositivo = 2;
-            Boolean habilitada = true;
+            bool habilitada = true;
             List<VersionDispositivo> versionesActualizadas =  HttpWebClientUtil.GetInfoVersiones(dispositivo, habilitada);
             if(versionesActualizadas != null)
             {
@@ -631,6 +646,38 @@ namespace PDADesktop.ViewModel
                         logger.Debug("Resultado de copiar el archivo " + copyResult.ToString());
                     }
                 }
+            }
+        }
+
+        private bool CheckBranchOfficeDevice()
+        {
+            bool needAssociate = false;
+            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
+            string sucursalFromDevice = deviceHandler.ReadBranchOfficeFromDefaultData();
+            string sucursalFromLogin = MyAppProperties.idSucursal;
+            if(!TextUtils.CompareBranchOffice(sucursalFromDevice, sucursalFromLogin))
+            {
+                needAssociate = true;
+            }
+            return needAssociate;
+        }
+
+        private void AssociateCurrentBranchOffice(string sucursal)
+        {
+            //escribir el idSucursal de la session al DEFAULT.DAT en public
+            FileUtils.UpdateDefaultDatFileInPublic(sucursal, DeviceMainData.POSITION_SUCURSAL);
+            //borrar todos los archivos del dispositivo y public salvo el mismo DEFAULT...
+            DeleteAllPreviousFiles();
+        }
+
+        private void DeleteAllPreviousFiles()
+        {
+            List<Actividad> actividades = MyAppProperties.actividadesDisponibles;
+            foreach(Actividad actividad in actividades)
+            {
+                long idActividadActual = actividad.idActividad;
+                string filename = ArchivosDATUtils.GetDataFileNameByIdActividad((int)idActividadActual);
+                App.Instance.deviceHandler.DeleteDeviceAndPublicDataFiles(filename);
             }
         }
 

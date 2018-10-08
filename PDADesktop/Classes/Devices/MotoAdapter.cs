@@ -87,27 +87,37 @@ namespace PDADesktop.Classes.Devices
             }
         }
 
+        public ResultFileOperation DeleteDeviceAndPublicDataFiles(string filename)
+        {
+            ResultFileOperation deleteDevice = DeleteDeviceDataFile(filename);
+            ResultFileOperation deletePublic = DeletePublicDataFile(filename);
+            return ResultFileOperation.OK;
+        }
+
+        public string ReadBranchOfficeFromDefaultData()
+        {
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
+
+            string userPublicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_VERSION);
+            string userPublicFolderExtended = TextUtils.ExpandEnviromentVariable(userPublicFolder);
+            FileUtils.VerifyFoldersOrCreate(userPublicFolderExtended);
+            logger.Debug("Leyendo el archivo: " + userPublicFolderExtended + filenameAndExtension);
+
+            string contentDefault = FileUtils.ReadFile(userPublicFolderExtended + filenameAndExtension);
+            return TextUtils.GetBranchOfficeFromDefaultDat(contentDefault);
+        }
+
         public string ReadVersionDeviceProgramFileFromDefaultData()
         {
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
-            logger.Debug("Leyendo el archivo: " + filenameAndExtension);
-            string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
 
-            ResultFileOperation copyfileResult = CopyDeviceFileToPublicData(deviceRelativePathData, filenameAndExtension);
-            logger.Debug("resultado de copiar el default.dat: " + copyfileResult.ToString());
-            if (copyfileResult.Equals(ResultFileOperation.NONEXISTENT_FILE))
-            {
-                return null;
-            }
-            else
-            {
-                string userPublicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_VERSION);
-                string userPublicFolderExtended = TextUtils.ExpandEnviromentVariable(userPublicFolder);
-                FileUtils.VerifyFoldersOrCreate(userPublicFolderExtended);
+            string userPublicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_VERSION);
+            string userPublicFolderExtended = TextUtils.ExpandEnviromentVariable(userPublicFolder);
+            FileUtils.VerifyFoldersOrCreate(userPublicFolderExtended);
+            logger.Debug("Leyendo el archivo: " + userPublicFolderExtended + filenameAndExtension);
 
-                string contentDefault = FileUtils.ReadFile(userPublicFolderExtended + filenameAndExtension);
-                return TextUtils.getVersionFromDefaultDat(contentDefault);
-            }
+            string contentDefault = FileUtils.ReadFile(userPublicFolderExtended + filenameAndExtension);
+            return TextUtils.GetVersionFromDefaultDat(contentDefault);
         }
 
         public void CreateEmptyDefaultDataFile()

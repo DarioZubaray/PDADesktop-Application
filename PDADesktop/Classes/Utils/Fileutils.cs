@@ -1,10 +1,14 @@
-﻿using System.IO;
+﻿using log4net;
+using System.Configuration;
+using System.IO;
 using System.Text;
 
 namespace PDADesktop.Classes.Utils
 {
     class FileUtils
     {
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public static string ReadFile(string source)
         {
             return File.ReadAllText(source, Encoding.UTF8);
@@ -54,6 +58,16 @@ namespace PDADesktop.Classes.Utils
         public static string AppendDATExtension(string filename)
         {
             return filename + ".DAT";
+        }
+
+        public static void UpdateDefaultDatFileInPublic(string positionContent, int position)
+        {
+            string defaultPathPublic = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string defaultPathPublicExtended = TextUtils.ExpandEnviromentVariable(defaultPathPublic);
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
+            string currentDefaultContent = ReadFile(defaultPathPublicExtended + filenameAndExtension);
+            string content = TextUtils.BuildDefaultContent(currentDefaultContent, positionContent, position);
+            WriteFile(defaultPathPublic, content);
         }
     }
 }
