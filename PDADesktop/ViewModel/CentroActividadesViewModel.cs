@@ -428,6 +428,7 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Worker Method
+        #region Loaded Activity Center
         private void loadCentroActividadesWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             string currentMessage = "loadCentroActividades Worker ->doWork";
@@ -437,19 +438,26 @@ namespace PDADesktop.ViewModel
             NotifyCurrentMessage(currentMessage);
             bool serverStatus = CheckServerStatus();
 
-            currentMessage = "Obteniendo actividades de todas las acciones...";
-            NotifyCurrentMessage(currentMessage);
-            GetActividadesByAllAccionesAsync();
-
             string _sucursal = MyAppProperties.idSucursal;
+            if(serverStatus)
+            {
+                currentMessage = "Obteniendo actividades de todas las acciones...";
+                NotifyCurrentMessage(currentMessage);
+                GetActividadesByAllAccionesAsync();
 
-            currentMessage = "Obteniendo el id del último lote para sucursal " + _sucursal + " ...";
-            NotifyCurrentMessage(currentMessage);
-            int idLoteActual = HttpWebClientUtil.GetIdLoteActual(_sucursal);
 
-            currentMessage = "Obteniendo detalles de sincronización para lote " + idLoteActual + " ...";
-            NotifyCurrentMessage(currentMessage);
-            GetUltimaSincronizacion(idLoteActual, _sucursal);
+                currentMessage = "Obteniendo el id del último lote para sucursal " + _sucursal + " ...";
+                NotifyCurrentMessage(currentMessage);
+                int idLoteActual = HttpWebClientUtil.GetIdLoteActual(_sucursal);
+
+                currentMessage = "Obteniendo detalles de sincronización para lote " + idLoteActual + " ...";
+                NotifyCurrentMessage(currentMessage);
+                GetUltimaSincronizacion(idLoteActual, _sucursal);
+            }
+            else
+            {
+                logger.Info("Server no disponible");
+            }
 
             currentMessage = "Checkeando conexión con el dispositivo...";
             NotifyCurrentMessage(currentMessage);
@@ -489,7 +497,8 @@ namespace PDADesktop.ViewModel
             }
             else
             {
-                //Dispositivo No conectado
+                logger.Info("Dispositivo no detectado");
+                CreateBadgeVerAjustes();
             }
 
         }
@@ -523,7 +532,7 @@ namespace PDADesktop.ViewModel
             var responseAcciones = HttpWebClientUtil.SendHttpGetRequest(urlAcciones);
             if (responseAcciones != null)
             {
-                List<Accion> acciones = JsonConvert.DeserializeObject<List<Accion>>(responseAcciones);
+                List<Accion> acciones = JsonUtils.GetListAcciones(responseAcciones);
                 MyAppProperties.accionesDisponibles = acciones;
                 string idAcciones = TextUtils.ParseListAccion2String(acciones);
                 string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
@@ -531,7 +540,7 @@ namespace PDADesktop.ViewModel
                 var urlActividades = ConfigurationManager.AppSettings.Get(Constants.API_GET_ACTIVIDADES);
                 string responseActividades = HttpWebClientUtil.SendHttpPostRequest(urlActividades, jsonBody);
                 logger.Debug(responseActividades);
-                List<Actividad> actividades = JsonConvert.DeserializeObject<List<Actividad>>(responseActividades);
+                List<Actividad> actividades = JsonUtils.GetListActividades(responseActividades);
                 MyAppProperties.actividadesDisponibles = actividades;
                 return actividades;
             }
@@ -584,7 +593,7 @@ namespace PDADesktop.ViewModel
                     string DeviceAjusteFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
                     if (DeviceAjusteFile != null)
                     {
-                        ObservableCollection<Ajustes> ajustes = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(DeviceAjusteFile);
+                        ObservableCollection<Ajustes> ajustes = JsonUtils.GetObservableCollectionAjustes(DeviceAjusteFile);
                         if (ajustes != null && ajustes.Count > 0)
                         {
                             badge.Badge = ajustes.Count;
@@ -649,12 +658,12 @@ namespace PDADesktop.ViewModel
                 if(!serverVersion.Equals(deviceMainVersion))
                 {
                     NotifyCurrentMessage("Descargando componentes del dispositivo...");
-                    HashSet<VersionArchivo> versionesArchivos = (HashSet<VersionArchivo>)ultimaVersionServidor.versionesArchivos;
+                    List<VersionArchivo> versionesArchivos = (List<VersionArchivo>)ultimaVersionServidor.versionesArchivos;
                     foreach(VersionArchivo versionArchivo in versionesArchivos)
                     {
                         string nombre = versionArchivo.nombre;
                         logger.Debug("Descargando " + nombre);
-                        long idVersionArchivo = versionArchivo.idVersion;
+                        string idVersionArchivo = versionArchivo.idVersion;
                         HttpWebClientUtil.DownloadDevicePrograms(idVersionArchivo, nombre);
 
                         string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_BIN);
@@ -719,6 +728,7 @@ namespace PDADesktop.ViewModel
             logger.Debug("loadCentroActividades Worker ->runWorkedCompleted");
             PanelLoading = false;
         }
+        #endregion
 
         private void sincronizarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -924,7 +934,7 @@ namespace PDADesktop.ViewModel
                 string motoApiReadDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
                 //por aca sabemos si hay ajustes realizados y de continuar
 
-                List<Ajustes> ajustes = JsonConvert.DeserializeObject<List<Ajustes>>(motoApiReadDataFile);
+                List<Ajustes> ajustes = JsonUtils.GetListAjustes(motoApiReadDataFile);
                 if(ajustes != null && ajustes.Count > 0)
                 {
                     logger.Debug("hay ajustes realizados");

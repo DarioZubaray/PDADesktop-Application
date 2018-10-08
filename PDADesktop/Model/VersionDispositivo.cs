@@ -6,7 +6,7 @@ namespace PDADesktop.Model
     public class VersionDispositivo
     {
         public long idVersion { get; set; }
-        public string dispositivo { get; set; }
+        public int dispositivo { get; set; }
         public string version { get; set; }
         public bool habilitada { get; set; }
 

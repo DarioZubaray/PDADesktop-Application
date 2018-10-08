@@ -156,7 +156,7 @@ namespace PDADesktop.ViewModel
                 string deviceReadAdjustmentDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
                 if(deviceReadAdjustmentDataFile != null)
                 {
-                    Adjustments = JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(deviceReadAdjustmentDataFile);
+                    Adjustments = JsonUtils.GetObservableCollectionAjustes(deviceReadAdjustmentDataFile);
 
                     // Buscar los tipos de ajustes de pda express
                     // Me preocupa el timeout y el host inalcanzable

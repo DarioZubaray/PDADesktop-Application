@@ -186,7 +186,7 @@ namespace PDADesktop.Classes.Utils
             string response = SendHttpGetRequest(urlPath_urlQuery);
             if (response != null)
             {
-                sincronizaciones = JsonConvert.DeserializeObject<List<Sincronizacion>>(response);
+                sincronizaciones = JsonUtils.GetListSinchronization(response);
             }
 
             return sincronizaciones;
@@ -199,7 +199,7 @@ namespace PDADesktop.Classes.Utils
             string response = SendHttpGetRequest(urlPath);
             if (response != null)
             {
-                tiposAjustes = JsonConvert.DeserializeObject<List<string>>(response);
+                tiposAjustes = JsonUtils.GetListStringOfAdjustment(response);
             }
             return tiposAjustes;
         }
@@ -237,8 +237,10 @@ namespace PDADesktop.Classes.Utils
             var responseInfoVersiones = HttpWebClientUtil.SendHttpGetRequest(urlGetInfoVersiones + queryParams);
             if (responseInfoVersiones != null)
             {
-                List<VersionDispositivo> inforVersiones = JsonConvert.DeserializeObject<List<VersionDispositivo>>(responseInfoVersiones);
-                return inforVersiones;
+                logger.Debug("respuesta recibida de GetInfoVersiones");
+                logger.Debug(responseInfoVersiones);
+                List<VersionDispositivo> inforVersiones = JsonUtils.GetVersionDispositivo<VersionDispositivo>(responseInfoVersiones);
+                return new List<VersionDispositivo>(inforVersiones);
             }
             else
             {
@@ -246,7 +248,7 @@ namespace PDADesktop.Classes.Utils
             }
         }
 
-        internal static void DownloadDevicePrograms(long idVersionArchivo, string nombre)
+        internal static void DownloadDevicePrograms(string idVersionArchivo, string nombre)
         {
             string urlDownloadFile = ConfigurationManager.AppSettings.Get(Constants.API_DOWNLOAD_PROGRAM_FILE);
             string queryParams = "?idVersionArchivo={0}";

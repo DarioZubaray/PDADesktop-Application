@@ -29,8 +29,8 @@ namespace PDADesktop.Classes
         public static void PrintInformGX()
         {
             logger.Debug("\n=================================="
-                          +"=  I n f o r m  to  G e n e s i x ="
-                          +"==================================");
+                         +"=  I n f o r m  to  G e n e s i x ="
+                         +"==================================");
         }
     }
 }
