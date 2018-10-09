@@ -63,9 +63,11 @@ namespace PDADesktop.Classes.Devices
         {
             string deviceRelpathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             string fileToDelete = deviceRelpathData + FileUtils.WrapSlashAndDATExtension(filename);
-            logger.Debug("obteniendo archivo desde public: " + fileToDelete);
+            logger.Debug("borrando archivo desde el dispositivo: " + fileToDelete);
             int motoApiResult = MotoApi.deleteFileFromAppData(fileToDelete);
-            return getResult(motoApiResult);
+            ResultFileOperation result = getResult(motoApiResult);
+            logger.Debug("Resultado de borrar: " + result.ToString());
+            return result;
         }
 
         public ResultFileOperation DeletePublicDataFile(string filename)
@@ -73,7 +75,7 @@ namespace PDADesktop.Classes.Devices
             string publicFolderPath = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
             string publicFolderPathExtended = TextUtils.ExpandEnviromentVariable(publicFolderPath);
             string fileToDelete = publicFolderPathExtended + FileUtils.WrapSlashAndDATExtension(filename);
-            logger.Debug("obteniendo archivo desde public: " + fileToDelete);
+            logger.Debug("verificando la existencia del archivo en: " + fileToDelete);
             bool verificationPreviousInexistenceFile = FileUtils.VerifyIfExitsFile(fileToDelete);
             if (!verificationPreviousInexistenceFile)
             {
