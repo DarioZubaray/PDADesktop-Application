@@ -14,5 +14,7 @@ namespace PDADesktop.Classes
         public static SincronizacionDtoDataGrid SelectedSynchronization { get; set; }
         public static List<Accion> accionesDisponibles { get; set; }
         public static List<Actividad> actividadesDisponibles { get; set; }
+
+        public static bool isSynchronizationComplete { get; set; }
     }
 }

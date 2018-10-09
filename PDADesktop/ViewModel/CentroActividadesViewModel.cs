@@ -745,6 +745,7 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
+        #region Synchonization
         private void sincronizarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("sincronizar Worker ->doWork");
@@ -825,6 +826,7 @@ namespace PDADesktop.ViewModel
             }));
             informarWorker.RunWorkerAsync();
         }
+        #endregion
 
         private void informarWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -927,7 +929,9 @@ namespace PDADesktop.ViewModel
         public void SincronizarTodosLosDatos(object obj)
         {
             PanelLoading = true;
-            PanelMainMessage = "Espere por favor";
+            BannerApp.PrintSynchronization();
+            MyAppProperties.isSynchronizationComplete = true;
+            PanelMainMessage = "Sincronizando todos los datos, Espere por favor";
             logger.Info("Sincronizando todos los datos");
             sincronizarWorker.RunWorkerAsync();
         }
@@ -935,6 +939,9 @@ namespace PDADesktop.ViewModel
         public void InformarGenesix(object obj)
         {
             PanelLoading = true;
+            BannerApp.PrintInformGX();
+            MyAppProperties.isSynchronizationComplete = false;
+            PanelMainMessage = "Informando a genesix, Espere por favor";
             logger.Info("Informando a genesix");
             informarWorker.RunWorkerAsync();
         }

@@ -11,7 +11,8 @@ namespace PDADesktop.Classes.Utils
         {
             string urlSentGX = ConfigurationManager.AppSettings.Get("API_SET_SENT_GX");
             string queryParams = "?idSincronizacion=" + synchronizationId;
-            HttpWebClientUtil.SendHttpGetRequest(urlSentGX + queryParams);
+            string response = HttpWebClientUtil.SendHttpGetRequest(urlSentGX + queryParams);
+            logger.Debug(response);
         }
 
         public static void SetReceivedDeviceState(string synchronizationId)
