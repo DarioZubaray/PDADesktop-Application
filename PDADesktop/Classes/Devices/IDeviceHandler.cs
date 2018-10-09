@@ -5,7 +5,9 @@
         string GetName();
         bool IsDeviceConnected();
 
-        ResultFileOperation CopyDeviceFileToPublicData(string sourceDirectory, string filenameAndExtension);
+        ResultFileOperation CopyDeviceFileToPublicLookUp(string filenameAndExtension);
+        ResultFileOperation CopyDeviceFileToPublicData(string filenameAndExtension);
+
         ResultFileOperation CopyPublicDataFileToDevice(string destinationDirectory, string filenameAndExtension);
         ResultFileOperation CopyPublicBinFileToDevice(string destinationDirectory, string filenameAndExtension);
         ResultFileOperation CopyPublicLookUpFileToDevice(string destinationDirectory, string filenameAndExtension);

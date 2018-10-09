@@ -465,11 +465,12 @@ namespace PDADesktop.ViewModel
 
             if(isConneted)
             {
+                PanelMainMessage = "Espere por favor...";
                 currentMessage = "Leyendo Ajustes realizados...";
                 NotifyCurrentMessage(currentMessage);
                 CreateBadgeVerAjustes();
 
-                currentMessage = "Leyendo configuración del dispositivo...";
+                currentMessage = "Leyendo la configuración del dispositivo...";
                 NotifyCurrentMessage(currentMessage);
                 CopyDeviceMainDataFileToPublic();
 
@@ -500,7 +501,7 @@ namespace PDADesktop.ViewModel
                 logger.Info("Dispositivo no detectado");
                 CreateBadgeVerAjustes();
             }
-
+            NotifyCurrentMessage("Todo listo!");
         }
 
         public void NotifyCurrentMessage(string currentMessage)
@@ -623,11 +624,9 @@ namespace PDADesktop.ViewModel
 
         private void CopyDeviceMainDataFileToPublic()
         {
-            string publicPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
-            string publicPathDataExtended = TextUtils.ExpandEnviromentVariable(publicPathData);
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
-            ResultFileOperation deviceCopyResult = deviceHandler.CopyDeviceFileToPublicData(publicPathDataExtended, filenameAndExtension);
+            ResultFileOperation deviceCopyResult = deviceHandler.CopyDeviceFileToPublicLookUp(filenameAndExtension);
             if(deviceCopyResult.Equals(ResultFileOperation.OK))
             {
                 logger.Debug("Archivo copiado con éxito.");
@@ -734,7 +733,6 @@ namespace PDADesktop.ViewModel
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_LOOKUP);
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
-            filenameAndExtension = FileUtils.WrapSlashAndDATExtension(filenameAndExtension);
             deviceHandler.CopyPublicLookUpFileToDevice(destinationDirectory, filenameAndExtension);
         }
 
@@ -846,7 +844,6 @@ namespace PDADesktop.ViewModel
             string idSucursal = MyAppProperties.idSucursal;
             string idLote = MyAppProperties.idLoteActual;
             List<Sincronizacion> sincronizaciones = HttpWebClientUtil.GetHttpWebSincronizacion(urlSincronizacion, idSucursal, idLote);
-            string sourceDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             foreach(long actividad in actividadesInformar)
             {
                 //2- mover las actividades a public
@@ -854,7 +851,7 @@ namespace PDADesktop.ViewModel
                 ArchivoActividadAttributes archivoActividadAtributos = ArchivosDATUtils.GetAAAttributes(archivoActividad);
                 string FilenameAndExtension = FileUtils.PrependSlash(archivoActividadAtributos.nombreArchivo);
                 logger.Debug("Buscando archivo : " + FilenameAndExtension);
-                ResultFileOperation copyResult = App.Instance.deviceHandler.CopyDeviceFileToPublicData(sourceDirectory, FilenameAndExtension);
+                ResultFileOperation copyResult = App.Instance.deviceHandler.CopyDeviceFileToPublicData(FilenameAndExtension);
                 if(copyResult.Equals(ResultFileOperation.OK))
                 {
                     //3- enviar los archivos por post al server

@@ -161,7 +161,7 @@
             </DataGrid>
             <Grid Grid.Column="1" Grid.Row="2" Width="Auto">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="Auto">
-                    <Label x:Name="label_version" Content="Version" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label x:Name="label_version" Content="Version Escritorio" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <Label x:Name="label_version_data" Content="{Binding label_version}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
                     <Label x:Name="label_usuario" Content="Usuario" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="100 0 0 0"/>
                     <Label x:Name="label_usuario_data" Content="{Binding label_usuario}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>

@@ -27,15 +27,45 @@ namespace PDADesktop.Classes.Devices
             return true;
         }
 
-        public ResultFileOperation CopyDeviceFileToPublicData(string sourceDirectory, string filenameAndExtension)
+        public ResultFileOperation CopyDeviceFileToPublicLookUp(string filenameAndExtension)
         {
+            string desktopFolder = ConfigurationManager.AppSettings.Get(Constants.DESKTOP_FOLDER);
+            string desktopFolderExtended = TextUtils.ExpandEnviromentVariable(desktopFolder);
+            string deviceRelPathLookup = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_LOOKUP);
+            string sourceDirectory = desktopFolderExtended + deviceRelPathLookup;
+            if (FileUtils.VerifyIfExitsFile(sourceDirectory + filenameAndExtension))
+            {
+                string clientPathLookup = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_LOOKUP);
+                string clientPathLookupExtended = TextUtils.ExpandEnviromentVariable(clientPathLookup);
+                logger.Debug("obteniendo archivo desde dispositivo: " + sourceDirectory + filenameAndExtension);
+                logger.Debug("copiando hacia la ruta public: " + clientPathLookupExtended + filenameAndExtension);
+                FileUtils.CopyFile(sourceDirectory + filenameAndExtension, clientPathLookupExtended + filenameAndExtension);
+                if (FileUtils.VerifyIfExitsFile(clientPathLookupExtended + filenameAndExtension))
+                {
+                    return ResultFileOperation.OK;
+                }
+                else
+                {
+                    return ResultFileOperation.FILE_DOWNLOAD_NOTOK;
+                }
+            }
+            return ResultFileOperation.NONEXISTENT_FILE;
+        }
+
+        public ResultFileOperation CopyDeviceFileToPublicData(string filenameAndExtension)
+        {
+            string desktopFolder = ConfigurationManager.AppSettings.Get(Constants.DESKTOP_FOLDER);
+            string desktopFolderExtended = TextUtils.ExpandEnviromentVariable(desktopFolder);
+            string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+            string sourceDirectory = desktopFolderExtended + deviceRelPathData;
             if (FileUtils.VerifyIfExitsFile(sourceDirectory + filenameAndExtension))
             {
                 string clientPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+                string clientPathDataExtended = TextUtils.ExpandEnviromentVariable(clientPathData);
                 logger.Debug("obteniendo archivo desde dispositivo: " + sourceDirectory + filenameAndExtension);
-                logger.Debug("copiando hacia la ruta public: " + clientPathData + filenameAndExtension);
-                FileUtils.CopyFile(sourceDirectory + filenameAndExtension, clientPathData + filenameAndExtension);
-                if(FileUtils.VerifyIfExitsFile(clientPathData + filenameAndExtension))
+                logger.Debug("copiando hacia la ruta public: " + clientPathDataExtended + filenameAndExtension);
+                FileUtils.CopyFile(sourceDirectory + filenameAndExtension, clientPathDataExtended + filenameAndExtension);
+                if(FileUtils.VerifyIfExitsFile(clientPathDataExtended + filenameAndExtension))
                 {
                     return ResultFileOperation.OK;
                 }
