@@ -563,7 +563,7 @@ namespace PDADesktop.ViewModel
                 listaSincronizaciones = HttpWebClientUtil.GetHttpWebSincronizacion(urlPath, _sucursal, idLoteActual.ToString());
                 if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
                 {
-                    this.sincronizaciones = SincronizacionDtoDataGrid.refreshDataGrid(listaSincronizaciones);
+                    this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(listaSincronizaciones);
                     ActualizarLoteActual(sincronizaciones);
                 }
             }
@@ -1000,7 +1000,7 @@ namespace PDADesktop.ViewModel
             if(listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
-                this.sincronizaciones = SincronizacionDtoDataGrid.refreshDataGrid(listaSincronizaciones);
+                this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(listaSincronizaciones);
                 ActualizarLoteActual(sincronizaciones);
             }
         }
@@ -1016,7 +1016,7 @@ namespace PDADesktop.ViewModel
             if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
-                this.sincronizaciones = SincronizacionDtoDataGrid.refreshDataGrid(listaSincronizaciones);
+                this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(listaSincronizaciones);
                 ActualizarLoteActual(sincronizaciones);
             }
         }
@@ -1039,7 +1039,7 @@ namespace PDADesktop.ViewModel
             if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
-                this.sincronizaciones = SincronizacionDtoDataGrid.refreshDataGrid(listaSincronizaciones);
+                this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(listaSincronizaciones);
                 ActualizarLoteActual(sincronizaciones);
             }
         }

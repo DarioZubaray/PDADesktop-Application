@@ -58,7 +58,7 @@ namespace PDADesktop.Model.Dto
             }
         }
 
-        public static List<SincronizacionDtoDataGrid> refreshDataGrid(List<Sincronizacion> sincro)
+        public static List<SincronizacionDtoDataGrid> RefreshDataGrid(List<Sincronizacion> sincro)
         {
             List<SincronizacionDtoDataGrid> dataGridRefresh = new List<SincronizacionDtoDataGrid>();
             foreach(Sincronizacion s in sincro)
