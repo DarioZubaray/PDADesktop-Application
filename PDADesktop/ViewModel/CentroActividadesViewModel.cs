@@ -648,7 +648,7 @@ namespace PDADesktop.ViewModel
             if(versionesActualizadas != null)
             {
                 VersionDispositivo ultimaVersionServidor = versionesActualizadas[0];
-                string serverVersion = ultimaVersionServidor.version;
+                string serverVersion = ultimaVersionServidor.version.ToString();
                 logger.Debug("Ultima versión en el servidor: " + serverVersion);
 
                 IDeviceHandler deviceHandler = App.Instance.deviceHandler;
@@ -658,7 +658,7 @@ namespace PDADesktop.ViewModel
                 if(!serverVersion.Equals(deviceMainVersion))
                 {
                     NotifyCurrentMessage("Descargando componentes del dispositivo...");
-                    List<VersionArchivo> versionesArchivos = (List<VersionArchivo>)ultimaVersionServidor.versionesArchivos;
+                    List<VersionArchivo> versionesArchivos = ultimaVersionServidor.versiones;
                     foreach(VersionArchivo versionArchivo in versionesArchivos)
                     {
                         string nombre = versionArchivo.nombre;
@@ -671,6 +671,8 @@ namespace PDADesktop.ViewModel
                         ResultFileOperation copyResult = deviceHandler.CopyPublicBinFileToDevice(destinationDirectory, filenameAndExtension);
                         logger.Debug("Resultado de copiar el archivo " + copyResult.ToString());
                     }
+                    logger.Info("Version obtenida del server: " + serverVersion);
+                    FileUtils.UpdateDefaultDatFileInPublic(serverVersion, DeviceMainData.POSITION_VERSION);
                 }
             }
         }
@@ -721,6 +723,11 @@ namespace PDADesktop.ViewModel
         private void UpdateDeviceMainFile(string sucursal)
         {
             FileUtils.UpdateDeviceMainFile(sucursal);
+            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
+            string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_LOOKUP);
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
+            filenameAndExtension = FileUtils.WrapSlashAndDATExtension(filenameAndExtension);
+            deviceHandler.CopyPublicLookUpFileToDevice(destinationDirectory, filenameAndExtension);
         }
 
         private void loadCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

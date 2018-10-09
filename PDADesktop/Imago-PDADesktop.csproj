@@ -182,6 +182,7 @@
     <Compile Include="Classes\MyContainerInitializer.cs" />
     <Compile Include="Classes\NotEmptyValidationRule.cs" />
     <Compile Include="Classes\PasswordBoxAssistant.cs" />
+    <Compile Include="Classes\Utils\JsonUtils.cs" />
     <Compile Include="Classes\Utils\PDAWebClient.cs">
       <SubType>Component</SubType>
     </Compile>

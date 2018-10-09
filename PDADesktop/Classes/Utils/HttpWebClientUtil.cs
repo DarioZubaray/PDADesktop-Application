@@ -239,7 +239,7 @@ namespace PDADesktop.Classes.Utils
             {
                 logger.Debug("respuesta recibida de GetInfoVersiones");
                 logger.Debug(responseInfoVersiones);
-                List<VersionDispositivo> inforVersiones = JsonUtils.GetVersionDispositivo<VersionDispositivo>(responseInfoVersiones);
+                List<VersionDispositivo> inforVersiones = JsonUtils.GetVersionDispositivo(responseInfoVersiones);
                 return new List<VersionDispositivo>(inforVersiones);
             }
             else

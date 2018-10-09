@@ -127,7 +127,7 @@ namespace PDADesktop.Classes.Utils
         private static string GetIndexContentByDefaultDatPosition(string defaultContent, int indiceDefault)
         {
             String[] defaultArray = defaultContent.Split('|');
-            if (defaultArray.Length == DeviceMainData.TOTAL_POSITION)
+            if (defaultArray.Length == DeviceMainData.TOTAL_POSITION_ONE_BASE)
             {
                 return defaultArray[indiceDefault];
             }
@@ -152,7 +152,7 @@ namespace PDADesktop.Classes.Utils
         public static string BuildDefaultContent(string previousContent, string newContent, int position)
         {
             String[] defaultArray = previousContent.Split('|');
-            if (defaultArray.Length == DeviceMainData.TOTAL_POSITION)
+            if (defaultArray.Length == DeviceMainData.TOTAL_POSITION_ONE_BASE)
             {
                 defaultArray[position] = newContent;
             }

@@ -61,6 +61,13 @@ namespace PDADesktop.Classes.Devices
             return CopyPublicFileToDevice(publicPathDataExtended, destinationDirectory, filenameAndExtension);
         }
 
+        public ResultFileOperation CopyPublicLookUpFileToDevice(string destinationDirectory, string filenameAndExtension)
+        {
+            string publicPathLookup = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_LOOKUP);
+            string publicPathLookupExtended = TextUtils.ExpandEnviromentVariable(publicPathLookup);
+            return CopyPublicFileToDevice(publicPathLookupExtended, destinationDirectory, filenameAndExtension);
+        }
+
         private ResultFileOperation CopyPublicFileToDevice(string publicPathExtended, string destinationDirectory, string filenameAndExtension)
         {
             logger.Debug("obteniendo archivo desde public: " + publicPathExtended);
@@ -135,7 +142,7 @@ namespace PDADesktop.Classes.Devices
         {
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
 
-            string userPublicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_VERSION);
+            string userPublicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_LOOKUP);
             string userPublicFolderExtended = TextUtils.ExpandEnviromentVariable(userPublicFolder);
             FileUtils.VerifyFoldersOrCreate(userPublicFolderExtended);
             logger.Debug("Leyendo el archivo: " + userPublicFolderExtended + filenameAndExtension);
@@ -166,7 +173,7 @@ namespace PDADesktop.Classes.Devices
         {
             string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             logger.Debug("Creando el archivo: " + fileDefaultDat);
-            string deviceRelPathVersion = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
+            string deviceRelPathVersion = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_LOOKUP);
             string userDesktopPdaTestFolderPath = GetUserDesktopPDATestFolderPath(deviceRelPathVersion);
             FileUtils.VerifyFoldersOrCreate(userDesktopPdaTestFolderPath);
             string pdaControl = GetNewDefaultDataContent();

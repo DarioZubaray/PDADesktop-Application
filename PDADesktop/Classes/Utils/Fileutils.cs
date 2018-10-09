@@ -64,7 +64,7 @@ namespace PDADesktop.Classes.Utils
 
         public static string UpdateDefaultDatContentFileByPositionInPublic(string positionContent, int position)
         {
-            string defaultPathPublic = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string defaultPathPublic = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_LOOKUP);
             string defaultPathPublicExtended = TextUtils.ExpandEnviromentVariable(defaultPathPublic);
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             string currentDefaultContent = ReadFile(defaultPathPublicExtended + filenameAndExtension);
@@ -75,23 +75,23 @@ namespace PDADesktop.Classes.Utils
         {
             string content = UpdateDefaultDatContentFileByPositionInPublic(positionContent, position);
 
-            string defaultPathPublic = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string defaultPathPublic = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_LOOKUP);
             string defaultPathPublicExtended = TextUtils.ExpandEnviromentVariable(defaultPathPublic);
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             string currentDefaultContent = ReadFile(defaultPathPublicExtended + filenameAndExtension);
-            WriteFile(defaultPathPublic, content);
+            WriteFile(defaultPathPublicExtended + filenameAndExtension, content);
         }
 
         public static void UpdateDeviceMainFile(string _sucursal)
         {
-            string defaultPathPublic = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string defaultPathPublic = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_LOOKUP);
             string defaultPathPublicExtended = TextUtils.ExpandEnviromentVariable(defaultPathPublic);
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
 
             string currentDefaultContent = ReadFile(defaultPathPublicExtended + filenameAndExtension);
             String[] defaultArray = currentDefaultContent.Split('|');
 
-            if (defaultArray.Length == DeviceMainData.TOTAL_POSITION)
+            if (defaultArray.Length == DeviceMainData.TOTAL_POSITION_ONE_BASE)
             {
                 defaultArray[DeviceMainData.POSITION_ESTADO_ESCUCHA] = "0";
                 defaultArray[DeviceMainData.POSITION_ESTADO_SINCRO] = "0";
@@ -100,7 +100,7 @@ namespace PDADesktop.Classes.Utils
                 defaultArray[DeviceMainData.POSITION_AUTOOFF] = "0";
             }
             string updatedDefaultContent = String.Join("|", defaultArray);
-            WriteFile(defaultPathPublic, updatedDefaultContent);
+            WriteFile(defaultPathPublicExtended + filenameAndExtension, updatedDefaultContent);
         }
     }
 }

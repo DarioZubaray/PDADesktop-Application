@@ -12,7 +12,7 @@ namespace PDADesktop.Model
         public const int POSITION_SUCURSAL = 3;
         public const int POSITION_VERSION = 4;
         public const int POSITION_AUTOOFF = 5;
-        public const int TOTAL_POSITION = 5;
+        public const int TOTAL_POSITION_ONE_BASE = 6;
         #endregion
 
         #region Attributes

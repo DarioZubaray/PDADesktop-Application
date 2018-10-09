@@ -43,6 +43,13 @@ namespace PDADesktop.Classes.Devices
             return CopyPublicFileToDevice(publicPDADataFolderExtended, relativeDestinationDirectory, filenameAndExtension);
         }
 
+        public ResultFileOperation CopyPublicLookUpFileToDevice(string relativeDestinationDirectory, string filenameAndExtension)
+        {
+            string publicPDALookUpFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_LOOKUP);
+            string publicPDALookUpFolderExtended = TextUtils.ExpandEnviromentVariable(publicPDALookUpFolder);
+            return CopyPublicFileToDevice(publicPDALookUpFolderExtended, relativeDestinationDirectory, filenameAndExtension);
+        }
+
         private ResultFileOperation CopyPublicFileToDevice(string publicPathExtended, string relativeDestinationDirectory, string filenameAndExtension)
         {
             logger.Debug("obteniendo archivo desde public: " + publicPathExtended + filenameAndExtension);
@@ -98,7 +105,7 @@ namespace PDADesktop.Classes.Devices
         {
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
 
-            string userPublicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_VERSION);
+            string userPublicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_LOOKUP);
             string userPublicFolderExtended = TextUtils.ExpandEnviromentVariable(userPublicFolder);
             FileUtils.VerifyFoldersOrCreate(userPublicFolderExtended);
             logger.Debug("Leyendo el archivo: " + userPublicFolderExtended + filenameAndExtension);
@@ -129,8 +136,8 @@ namespace PDADesktop.Classes.Devices
         {
             string fileDefaultDat = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             logger.Debug("Creando el archivo: " + fileDefaultDat);
-            string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_VERSION);
-            string userPDADocumentFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_VERSION);
+            string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_LOOKUP);
+            string userPDADocumentFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_LOOKUP);
             string userPDADocumenteFolderExtended = TextUtils.ExpandEnviromentVariable(userPDADocumentFolder);
             FileUtils.VerifyFoldersOrCreate(userPDADocumenteFolderExtended);
             string pdaControl = GetNewDefaultDataContent();

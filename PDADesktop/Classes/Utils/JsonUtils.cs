@@ -21,10 +21,9 @@ namespace PDADesktop.Classes.Utils
             return JsonConvert.DeserializeObject<List<string>>(serializedJson);
         }
 
-        public static List<T> GetVersionDispositivo<T>(string serializedJson)
+        public static List<VersionDispositivo> GetVersionDispositivo(string serializedJson)
         {
-            var scriptList = JsonConvert.DeserializeObject<List<T>>(serializedJson);
-            return scriptList;
+            return JsonConvert.DeserializeObject<List<VersionDispositivo>>(serializedJson);
         }
 
         public static List<Accion> GetListAcciones(string serializedJson)

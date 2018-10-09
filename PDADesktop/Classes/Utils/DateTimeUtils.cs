@@ -12,6 +12,10 @@ namespace PDADesktop.Classes.Utils
         public static bool IsGreatherThanToday(string synchronizationDefault)
         {
             bool isGreather = false;
+            if(synchronizationDefault != null && synchronizationDefault.Equals("00000000000000"))
+            {
+                return true;
+            }
             string synchroFormat = "yyyyMMddHHmmss";
             DateTime synchronizationDT = DateTime.ParseExact(synchronizationDefault, synchroFormat, CultureInfo.InvariantCulture);
             int numberDaySynchronizationDT = synchronizationDT.Day;
