@@ -29,9 +29,10 @@ namespace PDADesktop.Classes.Devices
             return getResult(codigoResultado);
         }
 
-        public ResultFileOperation CopyDeviceFileToPublicData(string sourceDirectory, string filenameAndExtension)
+        public ResultFileOperation CopyDeviceFileToPublicData(string filenameAndExtension)
         {
-            string fileRelPath = sourceDirectory + filenameAndExtension;
+            string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+            string fileRelPath = deviceRelPathData + filenameAndExtension;
             logger.Debug("obteniendo archivo desde dispositivo: " + fileRelPath);
             string clientPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
             string desDirExpanded = TextUtils.ExpandEnviromentVariable(clientPathData);
@@ -179,7 +180,7 @@ namespace PDADesktop.Classes.Devices
         {
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
-            ResultFileOperation copyfileResult = CopyDeviceFileToPublicData(deviceRelativePathData, filenameAndExtension);
+            ResultFileOperation copyfileResult = CopyDeviceFileToPublicData(filenameAndExtension);
             if (copyfileResult.Equals(ResultFileOperation.OK))
             {
                 string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);

@@ -480,17 +480,19 @@ namespace PDADesktop.ViewModel
 
                 currentMessage = "Verificando sucursal configurada en el dispositivo...";
                 NotifyCurrentMessage(currentMessage);
+                bool filesPreviouslyDeleted = false;
                 bool needAssociateBranchOffice = CheckBranchOfficeDevice();
                 if (needAssociateBranchOffice)
                 {
                     currentMessage = "Asociando sucursal del dispositivo al n°" + _sucursal + " ...";
                     NotifyCurrentMessage(currentMessage);
                     AssociateCurrentBranchOffice(_sucursal);
+                    filesPreviouslyDeleted = true;
                 }
 
                 currentMessage = "Borrando datos antiguos ...";
                 NotifyCurrentMessage(currentMessage);
-                CheckLastSynchronizationDateFromDefault();
+                CheckLastSynchronizationDateFromDefault(filesPreviouslyDeleted);
 
                 currentMessage = "Actualizando archivo principal de configuración del dispositivo ...";
                 NotifyCurrentMessage(currentMessage);
@@ -716,12 +718,12 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private void CheckLastSynchronizationDateFromDefault()
+        private void CheckLastSynchronizationDateFromDefault(bool filesPreviouslyDeleted)
         {
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             string synchronizationDefault = deviceHandler.ReadSynchronizationDateFromDefaultData();
             bool isGreatherThanToday = DateTimeUtils.IsGreatherThanToday(synchronizationDefault);
-            if(isGreatherThanToday)
+            if(isGreatherThanToday && !filesPreviouslyDeleted)
             {
                 DeleteAllPreviousFiles(true);
             }
