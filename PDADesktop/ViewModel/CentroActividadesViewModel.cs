@@ -695,17 +695,25 @@ namespace PDADesktop.ViewModel
             //escribir el idSucursal de la session al DEFAULT.DAT en public
             FileUtils.UpdateDefaultDatFileInPublic(sucursal, DeviceMainData.POSITION_SUCURSAL);
             //borrar todos los archivos del dispositivo y public salvo el mismo DEFAULT...
-            DeleteAllPreviousFiles();
+            DeleteAllPreviousFiles(true);
         }
 
-        private void DeleteAllPreviousFiles()
+        private void DeleteAllPreviousFiles(bool isCompletedSynchronization)
         {
+            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             List<Actividad> actividades = MyAppProperties.actividadesDisponibles;
+            if(isCompletedSynchronization)
+            {
+                deviceHandler.DeleteDeviceAndPublicDataFiles("LPEDIDOS");
+                deviceHandler.DeleteDeviceAndPublicDataFiles("APEDIDOS");
+                deviceHandler.DeleteDeviceAndPublicDataFiles("EPEDIDOS");
+                deviceHandler.DeleteDeviceAndPublicDataFiles("RPEDIDOS");
+            }
             foreach(Actividad actividad in actividades)
             {
                 long idActividadActual = actividad.idActividad;
                 string filename = ArchivosDATUtils.GetDataFileNameByIdActividad((int)idActividadActual);
-                App.Instance.deviceHandler.DeleteDeviceAndPublicDataFiles(filename);
+                deviceHandler.DeleteDeviceAndPublicDataFiles(filename);
             }
         }
 
@@ -716,7 +724,7 @@ namespace PDADesktop.ViewModel
             bool isGreatherThanToday = DateTimeUtils.IsGreatherThanToday(synchronizationDefault);
             if(isGreatherThanToday)
             {
-                DeleteAllPreviousFiles();
+                DeleteAllPreviousFiles(true);
             }
         }
 
