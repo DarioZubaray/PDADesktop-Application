@@ -43,10 +43,10 @@
         public const string UBICACIONES = "UBICACIONES";
         public const string UBICACION_ARTICULOS = "UBICACION_ARTICULOS";
         public const string PEDIDOS = "PEDIDOS";
-        public const string LPEDIDOS = "/LPEDIDOS.DAT";
-        public const string APEDIDOS = "/APEDIDOS.DAT";
-        public const string EPEDIDOS = "/EPEDIDOS.DAT";
-        public const string RPEDIDOS = "/RPEDIDOS.DAT";
+        public const string LPEDIDOS = "LPEDIDOS";
+        public const string APEDIDOS = "APEDIDOS";
+        public const string EPEDIDOS = "EPEDIDOS";
+        public const string RPEDIDOS = "RPEDIDOS";
         public const string TIPOS_ETIQUETAS = "TIPOS_ETIQUETAS";
         public const string TIPOS_AJUSTES = "TIPOS_AJUSTES";
         public const string PROVEEDORES = "PROVEED";

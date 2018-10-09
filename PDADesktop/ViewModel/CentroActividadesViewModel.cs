@@ -704,10 +704,10 @@ namespace PDADesktop.ViewModel
             List<Actividad> actividades = MyAppProperties.actividadesDisponibles;
             if(isCompletedSynchronization)
             {
-                deviceHandler.DeleteDeviceAndPublicDataFiles("LPEDIDOS");
-                deviceHandler.DeleteDeviceAndPublicDataFiles("APEDIDOS");
-                deviceHandler.DeleteDeviceAndPublicDataFiles("EPEDIDOS");
-                deviceHandler.DeleteDeviceAndPublicDataFiles("RPEDIDOS");
+                deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.LPEDIDOS);
+                deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.APEDIDOS);
+                deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.EPEDIDOS);
+                deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.RPEDIDOS);
             }
             foreach(Actividad actividad in actividades)
             {
