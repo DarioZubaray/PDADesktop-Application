@@ -781,9 +781,13 @@ namespace PDADesktop.ViewModel
 
                     currentMessage = "Informando a genesix ...";
                     NotifyCurrentMessage(currentMessage);
-                    UpdateFilesToServer(newSync);
+                    InformToGenesix(newSync);
+                    long syncId = newSync[0].idSincronizacion;
+                    ExecuteInformGenesix(syncId);
 
-
+                    currentMessage = "Borrando remante de archivos ...";
+                    NotifyCurrentMessage(currentMessage);
+                    DeleteAllPreviousFiles(false);
 
 
                     currentMessage = "Actualizando archivo principal de configuración del dispositivo ...";
@@ -879,15 +883,48 @@ namespace PDADesktop.ViewModel
             return newSync;
         }
 
-        private void UpdateFilesToServer(List<Sincronizacion> newSync)
+        private void InformToGenesix(List<Sincronizacion> newSync)
         {
-            // obtener la lista de archivos a informar
-
-            // mover esos archivos a public, si se puede
-            // subir archivo
-            // setear estado
+            foreach(Sincronizacion sync in newSync)
+            {
+                long syncId = sync.idSincronizacion;
+                int actionId = Convert.ToInt32(sync.actividad.idActividad);
+                try
+                {
+                    string slashFilenameAndExtension = ArchivosDATUtils.GetDataFileNameAndExtensionByIdActividad(actionId);
+                    IDeviceHandler deviceHandler = App.Instance.deviceHandler;
+                    ResultFileOperation resultCopy = deviceHandler.CopyDeviceFileToPublicData(slashFilenameAndExtension);
+                    if(resultCopy.Equals(ResultFileOperation.OK))
+                    {
+                        UploadFileToServer(slashFilenameAndExtension, actionId, syncId);
+                        SynchronizationStateUtil.SetReceivedDeviceState(syncId);
+                    }
+                    else
+                    {
+                        SynchronizationStateUtil.SetNoDataDeviceState(syncId);
+                    }
+                }
+                catch
+                {
+                    SynchronizationStateUtil.SetErrorDeviceState(syncId);
+                }
+            }
         }
 
+        private void UploadFileToServer(string slashFilenameAndExtension, int actionId, long syncId)
+        {
+            string filePath = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string parametros = "?idActividad={0}&idSincronizacion={1}&registros={2}";
+            var lineCount = FileUtils.CountRegistryWithinFile(filePath + slashFilenameAndExtension);
+            parametros = String.Format(parametros, actionId, syncId, lineCount);
+            string respuesta = HttpWebClientUtil.UploadFileToServer(filePath + slashFilenameAndExtension, parametros);
+            logger.Debug(respuesta);
+        }
+
+        private void ExecuteInformGenesix(long syncId)
+        {
+            HttpWebClientUtil.ExecuteInformGenesix(syncId);
+        }
 
         private void syncWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {

@@ -1,5 +1,6 @@
 ﻿using log4net;
 using System.Configuration;
+using System;
 
 namespace PDADesktop.Classes.Utils
 {
@@ -7,19 +8,36 @@ namespace PDADesktop.Classes.Utils
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void SetSentGenesixState(string synchronizationId)
+        #region Genesix State
+        internal static void SetSentGenesixState(string syncId)
         {
-            string queryParams = "?idSincronizacion=" + synchronizationId;
+            string queryParams = "?idSincronizacion=" + syncId;
             string response = HttpWebClientUtil.SetSentGenesixState(queryParams);
             logger.Debug(response);
         }
+        #endregion
 
-        public static void SetReceivedDeviceState(string synchronizationId)
+        #region DeviceState
+        internal static void SetReceivedDeviceState(long syncId)
         {
-            string queryParams = "?idSincronizacion=" + synchronizationId;
+            string queryParams = "?idSincronizacion=" + syncId;
             string response = HttpWebClientUtil.SetReceivedDeviceState(queryParams);
             logger.Debug(response);
         }
 
+        internal static void SetNoDataDeviceState(long syncId)
+        {
+            string queryParams = "?idSincronizacion=" + syncId;
+            string response = HttpWebClientUtil.setNoDataDeviceState(queryParams);
+            logger.Debug(queryParams);
+        }
+
+        internal static void SetErrorDeviceState(object syncId)
+        {
+            string queryParams = "?idSincronizacion=" + syncId;
+            string response = HttpWebClientUtil.SetErrorDeviceState(queryParams);
+            logger.Debug(queryParams);
+        }
+        #endregion
     }
 }

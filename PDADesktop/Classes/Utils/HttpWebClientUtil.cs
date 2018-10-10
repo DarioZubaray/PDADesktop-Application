@@ -310,6 +310,18 @@ namespace PDADesktop.Classes.Utils
             string urlReceivedFromDevice = ConfigurationManager.AppSettings.Get("API_SET_RECEIVED_PDA");
             return SendHttpGetRequest(urlReceivedFromDevice + queryParams);
         }
+        
+        internal static string setNoDataDeviceState(string queryParams)
+        {
+            string urlReceivedFromDevice = ConfigurationManager.AppSettings.Get("API_SET_NO_DATA_PDA");
+            return SendHttpGetRequest(urlReceivedFromDevice + queryParams);
+        }
+
+        internal static string SetErrorDeviceState(string queryParams)
+        {
+            string urlReceivedFromDevice = ConfigurationManager.AppSettings.Get("API_SET_ERROR_PDA");
+            return SendHttpGetRequest(urlReceivedFromDevice + queryParams);
+        }
 
         internal static List<Sincronizacion> CreateNewBatch(string storeId, bool isCompleted)
         {
@@ -326,6 +338,20 @@ namespace PDADesktop.Classes.Utils
             string responseCreateNewBatch = SendHttpPostRequest(urlCreateNewBatch, jsonBody);
             List<Sincronizacion> newSync = JsonUtils.GetListSinchronization(responseCreateNewBatch);
             return newSync;
+        }
+
+        internal static string UploadFileToServer(string filePath, string queryParams)
+        {
+            string url = ConfigurationManager.AppSettings.Get(Constants.API_SUBIR_ARCHIVO);
+            string response = SendFileHttpRequest(filePath, url + queryParams);
+            return response;
+        }
+
+        internal static void ExecuteInformGenesix(long syncId)
+        {
+            string urlInformGenesix = ConfigurationManager.AppSettings.Get("API_INFORMAR_GENESIX");
+            string queryParams = "?idSincronizacion=" + syncId;
+            SendHttpGetRequest(urlInformGenesix + queryParams);
         }
     }
 }

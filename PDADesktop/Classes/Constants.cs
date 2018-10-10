@@ -23,6 +23,7 @@
         public const string API_DOWNLOAD_PROGRAM_FILE = "API_DOWNLOAD_PROGRAM_FILE";
         public const string API_VERIFY_NEW_BATCH = "API_VERIFY_NEW_BATCH";
         public const string API_CREATE_NEW_BATCH = "API_CREATE_NEW_BATCH";
+        public const string API_SUBIR_ARCHIVO = "API_SUBIR_ARCHIVO";
         public const string PUBLIC_PATH_DATA = "PUBLIC_PATH_DATA";
         public const string PUBLIC_PATH_LOOKUP = "PUBLIC_PATH_LOOKUP";
         public const string PUBLIC_PATH_BIN = "PUBLIC_PATH_BIN";
