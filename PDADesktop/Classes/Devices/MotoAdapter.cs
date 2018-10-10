@@ -134,10 +134,10 @@ namespace PDADesktop.Classes.Devices
             return TextUtils.GetSynchronizationDateFromDefaultDat(contentDefault);
         }
 
-        public string ReadBranchOfficeFromDefaultData()
+        public string ReadStoreIdFromDefaultData()
         {
             string contentDefault = ReadDefaultContentFromDefaultData();
-            return TextUtils.GetBranchOfficeFromDefaultDat(contentDefault);
+            return TextUtils.GetStoreIdFromDefaultDat(contentDefault);
         }
 
         public string ReadVersionDeviceProgramFileFromDefaultData()

@@ -284,12 +284,12 @@ namespace PDADesktop.Classes.Utils
             DownloadFileFromServer(urlDownloadFile+queryParams, FileUtils.PrependSlash(name), publicPathBin);
         }
 
-        internal static ActionResultDto VerifyNewBranch(string storeId)
+        internal static ActionResultDto VerifyNewBatch(string storeId)
         {
-            string urlVerifyNewBranch = ConfigurationManager.AppSettings.Get(Constants.API_VERIFY_NEW_BATCH);
+            string urlVerifyNewBatch = ConfigurationManager.AppSettings.Get(Constants.API_VERIFY_NEW_BATCH);
             string queryParams = "?idSucursal=" + storeId;
-            string verifyNewBranchResponse = SendHttpGetRequest(urlVerifyNewBranch + queryParams);
-            ActionResultDto actionResult = JsonUtils.GetActionResult(verifyNewBranchResponse);
+            string verifyNewBatchResponse = SendHttpGetRequest(urlVerifyNewBatch + queryParams);
+            ActionResultDto actionResult = JsonUtils.GetActionResult(verifyNewBatchResponse);
             return actionResult;
         }
 

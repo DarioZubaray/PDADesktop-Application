@@ -17,7 +17,7 @@
 
         string ReadVersionDeviceProgramFileFromDefaultData();
         string ReadSynchronizationDateFromDefaultData();
-        string ReadBranchOfficeFromDefaultData();
+        string ReadStoreIdFromDefaultData();
         void CreateEmptyDefaultDataFile();
         string GetLastVersionProgramFileFromServer();
         string GetNewDefaultDataContent();

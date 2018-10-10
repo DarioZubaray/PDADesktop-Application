@@ -43,6 +43,7 @@ namespace PDADesktop
         {
             CheckApplicationRunning();
             base.OnStartup(e);
+
             string sucursalHarcodeada = "706";
             MyAppProperties.idSucursal = sucursalHarcodeada;
 

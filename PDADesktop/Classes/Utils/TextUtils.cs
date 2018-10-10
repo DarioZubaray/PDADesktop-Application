@@ -114,7 +114,7 @@ namespace PDADesktop.Classes.Utils
             return GetIndexContentByDefaultDatPosition(defaultContent, DeviceMainData.POSITION_VERSION);
         }
 
-        public static string GetBranchOfficeFromDefaultDat(string defaultContent)
+        public static string GetStoreIdFromDefaultDat(string defaultContent)
         {
             return GetIndexContentByDefaultDatPosition(defaultContent, DeviceMainData.POSITION_SUCURSAL);
         }
@@ -137,7 +137,7 @@ namespace PDADesktop.Classes.Utils
             }
         }
 
-        public static bool CompareBranchOffice(string bf1, string bf2)
+        public static bool CompareStoreId(string bf1, string bf2)
         {
             if(bf1 != null && bf2 != null)
             {
