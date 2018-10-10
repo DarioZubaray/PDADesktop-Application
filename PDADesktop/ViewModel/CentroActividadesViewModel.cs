@@ -777,7 +777,11 @@ namespace PDADesktop.ViewModel
 
                     currentMessage = "Controlando recepciones informadas ...";
                     NotifyCurrentMessage(currentMessage);
-                    CreateNewBatch();
+                    List<Sincronizacion> newSync = CreateNewBatch();
+
+                    currentMessage = "Informando a genesix ...";
+                    NotifyCurrentMessage(currentMessage);
+                    UpdateFilesToServer(newSync);
 
 
 
@@ -867,12 +871,23 @@ namespace PDADesktop.ViewModel
             return !informedReceptions;
         }
 
-        private void CreateNewBatch()
+        private List<Sincronizacion> CreateNewBatch()
         {
             string storeId = MyAppProperties.storeId;
             bool isCompleted = MyAppProperties.isSynchronizationComplete;
             List<Sincronizacion> newSync = HttpWebClientUtil.CreateNewBatch(storeId, isCompleted);
+            return newSync;
         }
+
+        private void UpdateFilesToServer(List<Sincronizacion> newSync)
+        {
+            // obtener la lista de archivos a informar
+
+            // mover esos archivos a public, si se puede
+            // subir archivo
+            // setear estado
+        }
+
 
         private void syncWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {

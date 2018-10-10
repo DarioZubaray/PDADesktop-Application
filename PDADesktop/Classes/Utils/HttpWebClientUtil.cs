@@ -314,7 +314,7 @@ namespace PDADesktop.Classes.Utils
         internal static List<Sincronizacion> CreateNewBatch(string storeId, bool isCompleted)
         {
             string urlCreateNewBatch = ConfigurationManager.AppSettings.Get(Constants.API_CREATE_NEW_BATCH);
-            string jsonBody = "{ \"idSucursal\":" + storeId + ", idAcciones: [{}]";
+            string jsonBody = "{ \"idSucursal\":" + storeId + ", \"idAcciones\": [{}]";
             if(isCompleted)
             {
                 jsonBody = String.Format(jsonBody, "1, 2");
