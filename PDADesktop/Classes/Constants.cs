@@ -21,6 +21,7 @@
         public const string API_GET_DEFAULT_FILE = "API_GET_DEFAULT_FILE_BY_SUCURSAL";
         public const string API_GET_INFO_VERSION = "API_GET_INFO_VERSION";
         public const string API_DOWNLOAD_PROGRAM_FILE = "API_DOWNLOAD_PROGRAM_FILE";
+        public const string API_VERIFY_NEW_BATCH = "API_VERIFY_NEW_BATCH";
         public const string PUBLIC_PATH_DATA = "PUBLIC_PATH_DATA";
         public const string PUBLIC_PATH_LOOKUP = "PUBLIC_PATH_LOOKUP";
         public const string PUBLIC_PATH_BIN = "PUBLIC_PATH_BIN";

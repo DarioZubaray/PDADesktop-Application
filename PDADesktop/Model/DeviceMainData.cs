@@ -13,6 +13,9 @@ namespace PDADesktop.Model
         public const int POSITION_VERSION = 4;
         public const int POSITION_AUTOOFF = 5;
         public const int TOTAL_POSITION_ONE_BASE = 6;
+
+        public const int ESTADO_SINCRO_FIN = 0;
+        public const int ESTADO_SINCRO_INICIADO = 1;
         #endregion
 
         #region Attributes

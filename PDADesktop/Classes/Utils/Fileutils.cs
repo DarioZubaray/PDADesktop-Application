@@ -62,7 +62,7 @@ namespace PDADesktop.Classes.Utils
             return filename + ".DAT";
         }
 
-        public static string UpdateDefaultDatContentFileByPositionInPublic(string positionContent, int position)
+        public static string GetDefaultDatContentByPositionInPublic(string positionContent, int position)
         {
             string defaultPathPublic = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_LOOKUP);
             string defaultPathPublicExtended = TextUtils.ExpandEnviromentVariable(defaultPathPublic);
@@ -73,7 +73,7 @@ namespace PDADesktop.Classes.Utils
 
         public static void UpdateDefaultDatFileInPublic(string positionContent, int position)
         {
-            string content = UpdateDefaultDatContentFileByPositionInPublic(positionContent, position);
+            string content = GetDefaultDatContentByPositionInPublic(positionContent, position);
 
             string defaultPathPublic = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_LOOKUP);
             string defaultPathPublicExtended = TextUtils.ExpandEnviromentVariable(defaultPathPublic);
@@ -82,7 +82,7 @@ namespace PDADesktop.Classes.Utils
             WriteFile(defaultPathPublicExtended + filenameAndExtension, content);
         }
 
-        public static void UpdateDeviceMainFile(string _sucursal)
+        public static void UpdateDeviceMainFileInPublic(string _sucursal)
         {
             string defaultPathPublic = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_LOOKUP);
             string defaultPathPublicExtended = TextUtils.ExpandEnviromentVariable(defaultPathPublic);

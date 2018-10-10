@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using PDADesktop.Model;
+using PDADesktop.Model.Dto;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -44,6 +45,11 @@ namespace PDADesktop.Classes.Utils
         public static List<Ajustes> GetListAjustes(string serializedJson)
         {
             return JsonConvert.DeserializeObject<List<Ajustes>>(serializedJson);
+        }
+
+        public static ActionResultDto GetActionResult(string serializedJson)
+        {
+            return JsonConvert.DeserializeObject<ActionResultDto>(serializedJson);
         }
     }
 }

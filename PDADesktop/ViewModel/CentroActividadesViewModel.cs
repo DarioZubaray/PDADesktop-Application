@@ -251,8 +251,7 @@ namespace PDADesktop.ViewModel
 
         #region Attributes
         private readonly BackgroundWorker loadCentroActividadesWorker = new BackgroundWorker();
-        private readonly BackgroundWorker sincronizarWorker = new BackgroundWorker();
-        private readonly BackgroundWorker informarWorker = new BackgroundWorker();
+        private readonly BackgroundWorker syncrWorker = new BackgroundWorker();
 
         private string _txt_sincronizacion;
         public string txt_sincronizacion
@@ -405,19 +404,16 @@ namespace PDADesktop.ViewModel
             AnteriorCommand = new RelayCommand(SincronizacionAnterior, param => this.canExecute);
             SiguienteCommand = new RelayCommand(SincronizacionSiguiente, param => this.canExecute);
             BuscarCommand = new RelayCommand(BuscarSincronizaciones, param => this.canExecute);
-            UltimaCommand = new RelayCommand(IrUltimaSincronizacion, param => this.canExecute);
+            UltimaCommand = new RelayCommand(GoLastSynchronization, param => this.canExecute);
             EstadoGenesixCommand = new RelayCommand(BotonEstadoGenesix, param => this.canExecute);
             EstadoPDACommand = new RelayCommand(BotonEstadoPDA, param => this.canExecute);
             EstadoGeneralCommand = new RelayCommand(BotonEstadoGeneral, param => this.canExecute);
 
-            loadCentroActividadesWorker.DoWork += loadCentroActividadesWorker_DoWork;
+            loadCentroActividadesWorker.DoWork += loadActivityCenterWorker_DoWork;
             loadCentroActividadesWorker.RunWorkerCompleted += loadCentroActividadesWorker_RunWorkerCompleted;
             
-            sincronizarWorker.DoWork += sincronizarWorker_DoWork;
-            sincronizarWorker.RunWorkerCompleted += sincronizarWorker_RunWorkerCompleted;
-
-            informarWorker.DoWork += informarWorker_DoWork;
-            informarWorker.RunWorkerCompleted += informarWorker_RunWorkerCompleted;
+            syncrWorker.DoWork += syncWorker_DoWork;
+            syncrWorker.RunWorkerCompleted += syncWorker_RunWorkerCompleted;
 
             ShowPanelCommand = new RelayCommand(MostrarPanel, param => this.canExecute);
             HidePanelCommand = new RelayCommand(OcultarPanel, param => this.canExecute);
@@ -427,32 +423,31 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region Worker Method
+        #region Workers Method
         #region Loaded Activity Center
-        private void loadCentroActividadesWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void loadActivityCenterWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            string currentMessage = "loadCentroActividades Worker ->doWork";
+            string currentMessage = "Load Activity Center Worker -> doWork";
             logger.Debug(currentMessage);
 
             currentMessage = "Verificando conexión con el servidor PDAExpress...";
             NotifyCurrentMessage(currentMessage);
             bool serverStatus = CheckServerStatus();
 
-            string _sucursal = MyAppProperties.idSucursal;
+            string storeId = MyAppProperties.idSucursal;
             if(serverStatus)
             {
                 currentMessage = "Obteniendo actividades de todas las acciones...";
                 NotifyCurrentMessage(currentMessage);
-                GetActividadesByAllAccionesAsync();
+                GetActivitiesByAllActions();
 
-
-                currentMessage = "Obteniendo el id del último lote para sucursal " + _sucursal + " ...";
+                currentMessage = "Obteniendo el id del último lote para sucursal " + storeId + " ...";
                 NotifyCurrentMessage(currentMessage);
-                int idLoteActual = HttpWebClientUtil.GetIdLoteActual(_sucursal);
+                int currentBatchId = HttpWebClientUtil.GetCurrentBatchId(storeId);
 
-                currentMessage = "Obteniendo detalles de sincronización para lote " + idLoteActual + " ...";
+                currentMessage = "Obteniendo detalles de sincronización para lote " + currentBatchId + " ...";
                 NotifyCurrentMessage(currentMessage);
-                GetUltimaSincronizacion(idLoteActual, _sucursal);
+                GetLastSync(currentBatchId, storeId);
             }
             else
             {
@@ -468,7 +463,7 @@ namespace PDADesktop.ViewModel
                 PanelMainMessage = "Espere por favor...";
                 currentMessage = "Leyendo Ajustes realizados...";
                 NotifyCurrentMessage(currentMessage);
-                CreateBadgeVerAjustes();
+                CreateBadgeSeeAdjustments();
 
                 currentMessage = "Leyendo la configuración del dispositivo...";
                 NotifyCurrentMessage(currentMessage);
@@ -481,27 +476,27 @@ namespace PDADesktop.ViewModel
                 currentMessage = "Verificando sucursal configurada en el dispositivo...";
                 NotifyCurrentMessage(currentMessage);
                 bool filesPreviouslyDeleted = false;
-                bool needAssociateBranchOffice = CheckBranchOfficeDevice();
-                if (needAssociateBranchOffice)
+                bool needAssociateStoreId = CheckStoreIdDevice();
+                if (needAssociateStoreId)
                 {
-                    currentMessage = "Asociando sucursal del dispositivo al n°" + _sucursal + " ...";
+                    currentMessage = "Asociando sucursal del dispositivo al n°" + storeId + " ...";
                     NotifyCurrentMessage(currentMessage);
-                    AssociateCurrentBranchOffice(_sucursal);
+                    AssociateCurrentStoreId(storeId);
                     filesPreviouslyDeleted = true;
                 }
 
                 currentMessage = "Borrando datos antiguos ...";
                 NotifyCurrentMessage(currentMessage);
-                CheckLastSynchronizationDateFromDefault(filesPreviouslyDeleted);
+                CheckLastSyncDateFromDefault(filesPreviouslyDeleted);
 
                 currentMessage = "Actualizando archivo principal de configuración del dispositivo ...";
                 NotifyCurrentMessage(currentMessage);
-                UpdateDeviceMainFile(_sucursal);
+                UpdateDeviceMainFile(storeId);
             }
             else
             {
                 logger.Info("Dispositivo no detectado");
-                CreateBadgeVerAjustes();
+                CreateBadgeSeeAdjustments();
             }
             NotifyCurrentMessage("Todo listo!");
         }
@@ -518,42 +513,18 @@ namespace PDADesktop.ViewModel
             return HttpWebClientUtil.GetHttpWebServerConexionStatus();
         }
 
-        public void GetActividadesByAllAccionesAsync()
+        public void GetActivitiesByAllActions()
         {
-            new Thread(() =>
+            List<Accion> acciones = HttpWebClientUtil.GetAllActions();
+            MyAppProperties.accionesDisponibles = acciones;
+            if (acciones != null)
             {
-                Thread.CurrentThread.IsBackground = true;
-
-                GetActividadesByAllAcciones();
-            }).Start();
-        }
-
-        public List<Actividad> GetActividadesByAllAcciones()
-        {
-            //TODO llevar al Utils la logica de conexion
-            string urlAcciones = ConfigurationManager.AppSettings.Get(Constants.API_GET_ALL_ACCIONES);
-            var responseAcciones = HttpWebClientUtil.SendHttpGetRequest(urlAcciones);
-            if (responseAcciones != null)
-            {
-                List<Accion> acciones = JsonUtils.GetListAcciones(responseAcciones);
-                MyAppProperties.accionesDisponibles = acciones;
-                string idAcciones = TextUtils.ParseListAccion2String(acciones);
-                string jsonBody = "{ \"idAcciones\": " + idAcciones.ToString() + "}";
-
-                var urlActividades = ConfigurationManager.AppSettings.Get(Constants.API_GET_ACTIVIDADES);
-                string responseActividades = HttpWebClientUtil.SendHttpPostRequest(urlActividades, jsonBody);
-                logger.Debug(responseActividades);
-                List<Actividad> actividades = JsonUtils.GetListActividades(responseActividades);
+                List<Actividad> actividades = HttpWebClientUtil.GetActivitiesByActionId(acciones);
                 MyAppProperties.actividadesDisponibles = actividades;
-                return actividades;
-            }
-            else
-            {
-                return new List<Actividad>();
             }
         }
 
-        public void GetUltimaSincronizacion(int idLoteActual, string _sucursal)
+        public void GetLastSync(int idLoteActual, string _sucursal)
         {
             if (idLoteActual != 0)
             {
@@ -564,7 +535,7 @@ namespace PDADesktop.ViewModel
                 if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
                 {
                     this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(listaSincronizaciones);
-                    ActualizarLoteActual(sincronizaciones);
+                    UpdateCurrentBatch(sincronizaciones);
                 }
             }
         }
@@ -576,7 +547,7 @@ namespace PDADesktop.ViewModel
             return dispositivoConectado;
         }
 
-        public void CreateBadgeVerAjustes()
+        public void CreateBadgeSeeAdjustments()
         {
             var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
@@ -678,7 +649,7 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private bool CheckBranchOfficeDevice()
+        private bool CheckStoreIdDevice()
         {
             bool needAssociate = false;
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
@@ -691,11 +662,9 @@ namespace PDADesktop.ViewModel
             return needAssociate;
         }
 
-        private void AssociateCurrentBranchOffice(string sucursal)
+        private void AssociateCurrentStoreId(string sucursal)
         {
-            //escribir el idSucursal de la session al DEFAULT.DAT en public
             FileUtils.UpdateDefaultDatFileInPublic(sucursal, DeviceMainData.POSITION_SUCURSAL);
-            //borrar todos los archivos del dispositivo y public salvo el mismo DEFAULT...
             DeleteAllPreviousFiles(true);
         }
 
@@ -718,7 +687,7 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private void CheckLastSynchronizationDateFromDefault(bool filesPreviouslyDeleted)
+        private void CheckLastSyncDateFromDefault(bool filesPreviouslyDeleted)
         {
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             string synchronizationDefault = deviceHandler.ReadSynchronizationDateFromDefaultData();
@@ -731,7 +700,7 @@ namespace PDADesktop.ViewModel
 
         private void UpdateDeviceMainFile(string sucursal)
         {
-            FileUtils.UpdateDeviceMainFile(sucursal);
+            FileUtils.UpdateDeviceMainFileInPublic(sucursal);
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_LOOKUP);
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
@@ -746,21 +715,55 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Synchonization
-        private void sincronizarWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void syncWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("sincronizar Worker ->doWork");
-            BannerApp.PrintSynchronization();
-            // buscar datos antiguos
-            /*
-             * 1-obtener el default.DAT
-             *      si no existe crearlo y construirlo
-             * 2-obtener la fecha de ultima sincronizacion
-             *      si es mayor a 1 dia, consultar descartar datos antiguos
-            */
+            string currentMessage = "sincronizar Worker ->doWork";
+            logger.Debug(currentMessage);
+            currentMessage = "Checkeando conexión con el dispositivo...";
+            NotifyCurrentMessage(currentMessage);
+            bool isConneted = CheckDeviceConnected();
+
+            if (isConneted)
+            {
+                currentMessage = "Leyendo la configuración del dispositivo...";
+                NotifyCurrentMessage(currentMessage);
+                CopyDeviceMainDataFileToPublic();
+
+                currentMessage = "Actualizando el estado de la sincronización...";
+                NotifyCurrentMessage(currentMessage);
+                ChangeSynchronizationState();
+
+                currentMessage = "Verificando conexión con el servidor PDAExpress...";
+                NotifyCurrentMessage(currentMessage);
+                bool serverStatus = CheckServerStatus();
+
+                string _sucursal = MyAppProperties.idSucursal;
+                if (serverStatus)
+                {
+                    currentMessage = "Controlando nuevo lote ...";
+                    NotifyCurrentMessage(currentMessage);
+                    bool needAskToDiscard = VerifyNewBatch();
+
+
+                    currentMessage = "Actualizando archivo principal de configuración del dispositivo ...";
+                    NotifyCurrentMessage(currentMessage);
+                    UpdateDeviceMainFile(_sucursal);
+
+                    NotifyCurrentMessage("Todo listo!");
+                }
+                else
+                {
+                    logger.Debug("Servidor no disponible");
+                }
+            }
+            else
+            {
+                logger.Debug("Dispositivo no conectado");
+            }
 
             // buscar recepciones informadas pendientes
             string idSucursal = MyAppProperties.idSucursal;
-            string idSincronizacion = HttpWebClientUtil.GetIdLoteActual(idSucursal).ToString();
+            string idSincronizacion = HttpWebClientUtil.GetCurrentBatchId(idSucursal).ToString();
             bool recepcionesInformadas = HttpWebClientUtil.CheckRecepcionesInformadas(idSincronizacion);
             logger.Info("recepciones Informadas pendientes: " + (recepcionesInformadas ? "NO" : "SI"));
             // Consultar por un SI-No si desea continuar
@@ -816,7 +819,25 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private void sincronizarWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void ChangeSynchronizationState()
+        {
+            string syncState = DeviceMainData.ESTADO_SINCRO_INICIADO.ToString();
+            int syncPosition = DeviceMainData.POSITION_ESTADO_SINCRO;
+            FileUtils.UpdateDefaultDatFileInPublic(syncState, syncPosition);
+        }
+
+        private bool VerifyNewBatch()
+        {
+            string idSucursal = MyAppProperties.idSucursal;
+            ActionResultDto actionResult = HttpWebClientUtil.VerifyNewBranch(idSucursal);
+            if(!actionResult.success)
+            {
+                string message = "Aun no se han finalizado todas las Actividades de la ultima Sincronización. Si genera una nueva Sincronización no podrá continuar con las Actividades pendientes. ¿Desesa continuar de todos modos?";
+            }
+            return true;
+        }
+
+        private void syncWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("sincronizar Worker ->runWorkedCompleted");
             var dispatcher = Application.Current.Dispatcher;
@@ -824,85 +845,8 @@ namespace PDADesktop.ViewModel
             {
                 PanelLoading = false;
             }));
-            informarWorker.RunWorkerAsync();
         }
         #endregion
-
-        private void informarWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            logger.Debug("informar Worker ->doWork");
-            BannerApp.PrintInformGX();
-            //1- Buscar las actividades de informar
-            List<Actividad> actividades = MyAppProperties.actividadesDisponibles;
-            List<long> actividadesInformar = new List<long>();
-            logger.Debug("Buscando las actividad a informar");
-            foreach(Actividad actividad in actividades)
-            {
-                long idAccion = actividad.accion.idAccion;
-                if (idAccion.Equals(Constants.INFORMAR_GENESIX))
-                {
-                    actividadesInformar.Add(actividad.idActividad);
-                }
-            }
-            string urlSincronizacion = ConfigurationManager.AppSettings.Get("API_SYNC_ACTUAL");
-            string idSucursal = MyAppProperties.idSucursal;
-            string idLote = MyAppProperties.idLoteActual;
-            List<Sincronizacion> sincronizaciones = HttpWebClientUtil.GetHttpWebSincronizacion(urlSincronizacion, idSucursal, idLote);
-            foreach(long actividad in actividadesInformar)
-            {
-                //2- mover las actividades a public
-                ArchivoActividad archivoActividad = ArchivosDATUtils.GetArchivoActividadByIdActividad(Convert.ToInt32(actividad));
-                ArchivoActividadAttributes archivoActividadAtributos = ArchivosDATUtils.GetAAAttributes(archivoActividad);
-                string FilenameAndExtension = FileUtils.PrependSlash(archivoActividadAtributos.nombreArchivo);
-                logger.Debug("Buscando archivo : " + FilenameAndExtension);
-                ResultFileOperation copyResult = App.Instance.deviceHandler.CopyDeviceFileToPublicData(FilenameAndExtension);
-                if(copyResult.Equals(ResultFileOperation.OK))
-                {
-                    //3- enviar los archivos por post al server
-                    logger.Debug("Reultado de copiar a public - OK");
-                    string filePath = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA) + FilenameAndExtension;
-                    string urlSubirArchivo = ConfigurationManager.AppSettings.Get("API_SUBIR_ARCHIVO");
-                    string sincronizacionActividad = "";
-                    foreach(Sincronizacion sincronizacion in sincronizaciones)
-                    {
-                        if(sincronizacion.actividad.idActividad.Equals(actividad))
-                        {
-                            sincronizacionActividad = sincronizacion.idSincronizacion.ToString();
-                            break;
-                        }
-                    }
-                    string parametros = "?idActividad={0}&idSincronizacion={1}&registros={2}";
-                    var lineCount = FileUtils.CountRegistryWithinFile(filePath);
-                    parametros = String.Format(parametros, actividad, sincronizacionActividad, lineCount);
-                    logger.Debug("Subiendo Archivo: " + urlSubirArchivo);
-                    string respuesta = HttpWebClientUtil.SendFileHttpRequest(filePath, urlSubirArchivo+parametros);
-                    logger.Debug(respuesta);
-
-                    //4- executar el action de informar
-                    string urlInformarGX = ConfigurationManager.AppSettings.Get("API_INFORMAR_GX");
-                    string responseInformarGX = HttpWebClientUtil.SendHttpGetRequest(urlInformarGX + "?idSucursal=" + idSucursal);
-                    logger.Debug(responseInformarGX);
-                }
-                else
-                {
-                    logger.Debug("Copia de archivo no OK: " + copyResult.ToString());
-                    logger.Debug("Skipeando actividad: " + actividad);
-                }
-            }
-
-
-        }
-
-        private void informarWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            logger.Debug("informar Worker ->runWorkedCompleted");
-            var dispatcher = Application.Current.Dispatcher;
-            dispatcher.BeginInvoke(new Action(() =>
-            {
-                PanelLoading = false;
-            }));
-        }
-
         #endregion
 
         #region Methods
@@ -933,7 +877,7 @@ namespace PDADesktop.ViewModel
             MyAppProperties.isSynchronizationComplete = true;
             PanelMainMessage = "Sincronizando todos los datos, Espere por favor";
             logger.Info("Sincronizando todos los datos");
-            sincronizarWorker.RunWorkerAsync();
+            syncrWorker.RunWorkerAsync();
         }
 
         public void InformarGenesix(object obj)
@@ -943,7 +887,7 @@ namespace PDADesktop.ViewModel
             MyAppProperties.isSynchronizationComplete = false;
             PanelMainMessage = "Informando a genesix, Espere por favor";
             logger.Info("Informando a genesix");
-            informarWorker.RunWorkerAsync();
+            syncrWorker.RunWorkerAsync();
         }
 
         public void VerAjustes(object obj)
@@ -1008,7 +952,7 @@ namespace PDADesktop.ViewModel
             {
                 logger.Debug(listaSincronizaciones);
                 this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(listaSincronizaciones);
-                ActualizarLoteActual(sincronizaciones);
+                UpdateCurrentBatch(sincronizaciones);
             }
         }
 
@@ -1024,7 +968,7 @@ namespace PDADesktop.ViewModel
             {
                 logger.Debug(listaSincronizaciones);
                 this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(listaSincronizaciones);
-                ActualizarLoteActual(sincronizaciones);
+                UpdateCurrentBatch(sincronizaciones);
             }
         }
 
@@ -1035,38 +979,38 @@ namespace PDADesktop.ViewModel
             buscarLotesView.ShowDialog();
         }
 
-        public void IrUltimaSincronizacion(object obj)
+        public void GoLastSynchronization(object obj)
         {
-            List<Sincronizacion> listaSincronizaciones = null;
+            List<Sincronizacion> synchronizationList = null;
             logger.Info("Llendo a la ultima sincronizacion");
             string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
             string _sucursal = MyAppProperties.idSucursal;
             string _idLote = MyAppProperties.idLoteActual;
-            listaSincronizaciones = HttpWebClientUtil.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
-            if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
+            synchronizationList = HttpWebClientUtil.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
+            if (synchronizationList != null && synchronizationList.Count != 0)
             {
-                logger.Debug(listaSincronizaciones);
-                this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(listaSincronizaciones);
-                ActualizarLoteActual(sincronizaciones);
+                logger.Debug(synchronizationList);
+                this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(synchronizationList);
+                UpdateCurrentBatch(sincronizaciones);
             }
         }
 
-        public void ActualizarLoteActual(List<SincronizacionDtoDataGrid> sincronizaciones)
+        public void UpdateCurrentBatch(List<SincronizacionDtoDataGrid> synchronizations)
         {
-            if(sincronizaciones != null && sincronizaciones.Count != 0)
+            if(synchronizations != null && synchronizations.Count != 0)
             {
-                var s = sincronizaciones[0] as SincronizacionDtoDataGrid;
-                string idLoteActual = s.lote;
-                MyAppProperties.idLoteActual = idLoteActual;
-                ActualizarTxt_Sincronizar(s);
+                var s = synchronizations[0] as SincronizacionDtoDataGrid;
+                string currentBatchId = s.lote;
+                MyAppProperties.idLoteActual = currentBatchId;
+                UpdateTxt_Synchronization(s);
             }
         }
 
-        public void ActualizarTxt_Sincronizar(SincronizacionDtoDataGrid sincronizacion)
+        public void UpdateTxt_Synchronization(SincronizacionDtoDataGrid synchronization)
         {
-            string lote = sincronizacion.lote;
-            string fecha = sincronizacion.fecha;
-            txt_sincronizacion = " (" + lote + ") " + fecha;
+            string currentBranch = synchronization.lote;
+            string currentDate = synchronization.fecha;
+            txt_sincronizacion = String.Format(" ({0}) {1}", currentBranch, currentDate);
         }
 
         #region Button States

@@ -8,6 +8,7 @@ using System.Configuration;
 using System.Net;
 using System.IO;
 using System.Text;
+using PDADesktop.Model.Dto;
 
 namespace PDADesktop.Classes.Utils
 {
@@ -15,8 +16,8 @@ namespace PDADesktop.Classes.Utils
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        #region Request
-        public static string SendHttpGetRequest(string urlPath)
+        #region Requests
+        private static string SendHttpGetRequest(string urlPath)
         {
             string response = null;
             string urlAuthority = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
@@ -40,7 +41,7 @@ namespace PDADesktop.Classes.Utils
             return response;
         }
 
-        public static string SendHttpPostRequest(string urlPath, string jsonBody)
+        private static string SendHttpPostRequest(string urlPath, string jsonBody)
         {
             string result = null;
             string urlAuthority = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
@@ -63,7 +64,7 @@ namespace PDADesktop.Classes.Utils
             return result;
         }
 
-        public static string SendFileHttpRequest(string filePath, string url)
+        private static string SendFileHttpRequest(string filePath, string url)
         {
             WebResponse response = null;
             try
@@ -127,7 +128,32 @@ namespace PDADesktop.Classes.Utils
             MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
-        public static bool DownloadFileFromServer(string urlPath, string filenameAndExtension, string destino)
+        internal static List<Accion> GetAllActions()
+        {
+            string urlAcciones = ConfigurationManager.AppSettings.Get(Constants.API_GET_ALL_ACCIONES);
+            var responseAcciones = SendHttpGetRequest(urlAcciones);
+            if (responseAcciones != null)
+            {
+                return JsonUtils.GetListAcciones(responseAcciones);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        internal static List<Actividad> GetActivitiesByActionId(List<Accion> actions)
+        {
+            string actionsIds = TextUtils.ParseListAccion2String(actions);
+            string jsonBody = "{ \"idAcciones\": " + actionsIds.ToString() + "}";
+
+            var urlActivities = ConfigurationManager.AppSettings.Get(Constants.API_GET_ACTIVIDADES);
+            string responseActivities = HttpWebClientUtil.SendHttpPostRequest(urlActivities, jsonBody);
+            logger.Debug(responseActivities);
+            return JsonUtils.GetListActividades(responseActivities);
+        }
+
+        internal static bool DownloadFileFromServer(string urlPath, string filenameAndExtension, string destino)
         {
             var client = new WebClient();
             string userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
@@ -150,7 +176,7 @@ namespace PDADesktop.Classes.Utils
             }
         }
 
-        public static Boolean GetHttpWebServerConexionStatus()
+        internal static Boolean GetHttpWebServerConexionStatus()
         {
             Boolean conexionStatus = false;
             string urlServerStatus = ConfigurationManager.AppSettings.Get("API_SERVER_CONEXION_STATUS");
@@ -162,7 +188,7 @@ namespace PDADesktop.Classes.Utils
             return conexionStatus;
         }
 
-        public static int GetIdLoteActual(string idSucursal)
+        internal static int GetCurrentBatchId(string idSucursal)
         {
             int idLote = 0;
             string urlPath = ConfigurationManager.AppSettings.Get("API_SYNC_ID_LOTE");
@@ -179,7 +205,7 @@ namespace PDADesktop.Classes.Utils
             return idLote;
         }
 
-        public static List<Sincronizacion> GetHttpWebSincronizacion(string urlPath, string idSucursal, string idLote)
+        internal static List<Sincronizacion> GetHttpWebSincronizacion(string urlPath, string idSucursal, string idLote)
         {
             List<Sincronizacion> sincronizaciones = null;
             string urlPath_urlQuery = String.Format("{0}?idSucursal={1}&idLote={2}", urlPath, idSucursal, idLote);
@@ -192,7 +218,7 @@ namespace PDADesktop.Classes.Utils
             return sincronizaciones;
         }
 
-        public static List<string> GetTiposDeAjustes()
+        internal static List<string> GetTiposDeAjustes()
         {
             List<string> tiposAjustes = null;
             string urlPath = ConfigurationManager.AppSettings.Get("API_GET_TIPOS_AJUSTES");
@@ -229,7 +255,7 @@ namespace PDADesktop.Classes.Utils
             return DownloadFileFromServer(urlPath_urlQuery, filenameAndExtension, destinoPublicFolder);
         }
 
-        public static List<VersionDispositivo> GetInfoVersiones(int dispositivo, Boolean habilitada)
+        internal static List<VersionDispositivo> GetInfoVersiones(int dispositivo, Boolean habilitada)
         {
             string urlGetInfoVersiones = ConfigurationManager.AppSettings.Get(Constants.API_GET_INFO_VERSION);
             string queryParams = "?dispositivo={0}&habilitada={1}";
@@ -256,6 +282,33 @@ namespace PDADesktop.Classes.Utils
             
             string destino = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_BIN);
             DownloadFileFromServer(urlDownloadFile+queryParams, FileUtils.PrependSlash(nombre), destino);
+        }
+
+        internal static ActionResultDto VerifyNewBranch(string idSucursal)
+        {
+            string urlVerifyNewBranch = ConfigurationManager.AppSettings.Get(Constants.API_VERIFY_NEW_BATCH);
+            string queryParams = "?idSucursal=" + idSucursal;
+            string verifyNewBranchResponse = SendHttpGetRequest(urlVerifyNewBranch + queryParams);
+            ActionResultDto actionResult = JsonUtils.GetActionResult(verifyNewBranchResponse);
+            return actionResult;
+        }
+
+        internal static string GetLastVersionProgramFileFromServer(string queryParams)
+        {
+            string urlLastVersion = ConfigurationManager.AppSettings.Get(Constants.API_GET_LAST_VERSION_FILE_PROGRAM);
+            return SendHttpGetRequest(urlLastVersion + queryParams);
+        }
+
+        internal static string SetSentGenesixState(string queryParams)
+        {
+            string urlSentGX = ConfigurationManager.AppSettings.Get("API_SET_SENT_GX");
+            return SendHttpGetRequest(urlSentGX + queryParams);
+        }
+
+        internal static string SetReceivedDeviceState(string queryParams)
+        {
+            string urlReceivedFromDevice = ConfigurationManager.AppSettings.Get("API_SET_RECEIVED_PDA");
+            return SendHttpGetRequest(urlReceivedFromDevice + queryParams);
         }
     }
 }
