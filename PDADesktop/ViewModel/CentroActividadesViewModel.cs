@@ -531,7 +531,7 @@ namespace PDADesktop.ViewModel
                 MyAppProperties.idLoteActual = idLoteActual.ToString();
                 List<Sincronizacion> listaSincronizaciones = null;
                 string urlPath = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
-                listaSincronizaciones = HttpWebClientUtil.GetHttpWebSincronizacion(urlPath, _sucursal, idLoteActual.ToString());
+                listaSincronizaciones = HttpWebClientUtil.GetHttpWebSynchronizations(urlPath, _sucursal, idLoteActual.ToString());
                 if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
                 {
                     this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(listaSincronizaciones);
@@ -616,7 +616,7 @@ namespace PDADesktop.ViewModel
         {
             int dispositivo = 2;
             bool habilitada = true;
-            List<VersionDispositivo> versionesActualizadas =  HttpWebClientUtil.GetInfoVersiones(dispositivo, habilitada);
+            List<VersionDispositivo> versionesActualizadas =  HttpWebClientUtil.GetInfoVersions(dispositivo, habilitada);
             if(versionesActualizadas != null)
             {
                 VersionDispositivo ultimaVersionServidor = versionesActualizadas[0];
@@ -764,7 +764,7 @@ namespace PDADesktop.ViewModel
             // buscar recepciones informadas pendientes
             string idSucursal = MyAppProperties.idSucursal;
             string idSincronizacion = HttpWebClientUtil.GetCurrentBatchId(idSucursal).ToString();
-            bool recepcionesInformadas = HttpWebClientUtil.CheckRecepcionesInformadas(idSincronizacion);
+            bool recepcionesInformadas = HttpWebClientUtil.CheckInformedReceptions(idSincronizacion);
             logger.Info("recepciones Informadas pendientes: " + (recepcionesInformadas ? "NO" : "SI"));
             // Consultar por un SI-No si desea continuar
             bool confirmaDescartarRecepciones = true;
@@ -947,7 +947,7 @@ namespace PDADesktop.ViewModel
             string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ANTERIOR);
             string _sucursal = MyAppProperties.idSucursal;
             string _idLote = MyAppProperties.idLoteActual;
-            listaSincronizaciones = HttpWebClientUtil.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
+            listaSincronizaciones = HttpWebClientUtil.GetHttpWebSynchronizations(urlSincronizacionAnterior, _sucursal, _idLote);
             if(listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
@@ -963,7 +963,7 @@ namespace PDADesktop.ViewModel
             string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_SIGUIENTE);
             string _sucursal = MyAppProperties.idSucursal;
             string _idLote = MyAppProperties.idLoteActual;
-            listaSincronizaciones = HttpWebClientUtil.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
+            listaSincronizaciones = HttpWebClientUtil.GetHttpWebSynchronizations(urlSincronizacionAnterior, _sucursal, _idLote);
             if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
@@ -986,7 +986,7 @@ namespace PDADesktop.ViewModel
             string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
             string _sucursal = MyAppProperties.idSucursal;
             string _idLote = MyAppProperties.idLoteActual;
-            synchronizationList = HttpWebClientUtil.GetHttpWebSincronizacion(urlSincronizacionAnterior, _sucursal, _idLote);
+            synchronizationList = HttpWebClientUtil.GetHttpWebSynchronizations(urlSincronizacionAnterior, _sucursal, _idLote);
             if (synchronizationList != null && synchronizationList.Count != 0)
             {
                 logger.Debug(synchronizationList);

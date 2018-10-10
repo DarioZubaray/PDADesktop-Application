@@ -188,85 +188,85 @@ namespace PDADesktop.Classes.Utils
             return conexionStatus;
         }
 
-        internal static int GetCurrentBatchId(string idSucursal)
+        internal static int GetCurrentBatchId(string storeId)
         {
-            int idLote = 0;
-            string urlPath = ConfigurationManager.AppSettings.Get("API_SYNC_ID_LOTE");
-            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPath, idSucursal);
-            string response = SendHttpGetRequest(urlPath_urlQuery);
-            if (response != null && !response.Equals("null"))
+            int batchId = 0;
+            string urlPathGetCurrentBatchId = ConfigurationManager.AppSettings.Get("API_SYNC_ID_LOTE");
+            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPathGetCurrentBatchId, storeId);
+            string responseGetCurrentBatchId = SendHttpGetRequest(urlPath_urlQuery);
+            if (responseGetCurrentBatchId != null && !responseGetCurrentBatchId.Equals("null"))
             {
-                if (response.Contains("\""))
+                if (responseGetCurrentBatchId.Contains("\""))
                 {
-                    response = response.Replace("\"", "");
+                    responseGetCurrentBatchId = responseGetCurrentBatchId.Replace("\"", "");
                 }
-                idLote = Convert.ToInt32(response);
+                batchId = Convert.ToInt32(responseGetCurrentBatchId);
             }
-            return idLote;
+            return batchId;
         }
 
-        internal static List<Sincronizacion> GetHttpWebSincronizacion(string urlPath, string idSucursal, string idLote)
+        internal static List<Sincronizacion> GetHttpWebSynchronizations(string urlPath, string storeId, string batchId)
         {
-            List<Sincronizacion> sincronizaciones = null;
-            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}&idLote={2}", urlPath, idSucursal, idLote);
+            List<Sincronizacion> syncs = null;
+            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}&idLote={2}", urlPath, storeId, batchId);
             string response = SendHttpGetRequest(urlPath_urlQuery);
             if (response != null)
             {
-                sincronizaciones = JsonUtils.GetListSinchronization(response);
+                syncs = JsonUtils.GetListSinchronization(response);
             }
 
-            return sincronizaciones;
+            return syncs;
         }
 
-        internal static List<string> GetTiposDeAjustes()
+        internal static List<string> GetAdjustmentsTypes()
         {
-            List<string> tiposAjustes = null;
-            string urlPath = ConfigurationManager.AppSettings.Get("API_GET_TIPOS_AJUSTES");
-            string response = SendHttpGetRequest(urlPath);
-            if (response != null)
+            List<string> adjustmentsTypes = null;
+            string urlPathGetAdjustmentsTypes = ConfigurationManager.AppSettings.Get("API_GET_TIPOS_AJUSTES");
+            string responseGetAdjustmentsTypes = SendHttpGetRequest(urlPathGetAdjustmentsTypes);
+            if (responseGetAdjustmentsTypes != null)
             {
-                tiposAjustes = JsonUtils.GetListStringOfAdjustment(response);
+                adjustmentsTypes = JsonUtils.GetListStringOfAdjustment(responseGetAdjustmentsTypes);
             }
-            return tiposAjustes;
+            return adjustmentsTypes;
         }
 
-        internal static bool CheckRecepcionesInformadas(string idSincronizacion)
+        internal static bool CheckInformedReceptions(string idSincronizacion)
         {
-            bool recepcionesInformadas = false;
-            string urlPath = ConfigurationManager.AppSettings.Get("API_BUSCAR_RECEPCIONES_INFORMADAS");
-            string urlPath_urlQuery = String.Format("{0}?idSincronizacion={1}", urlPath, idSincronizacion);
+            bool informedReceptions = false;
+            string urlPathInformedReceptions = ConfigurationManager.AppSettings.Get("API_BUSCAR_RECEPCIONES_INFORMADAS");
+            string urlPath_urlQuery = String.Format("{0}?idSincronizacion={1}", urlPathInformedReceptions, idSincronizacion);
             string response = SendHttpGetRequest(urlPath_urlQuery);
             if (response != null)
             {
-                recepcionesInformadas = response.Equals("\"1\"") ? true : false;
+                informedReceptions = response.Equals("\"1\"") ? true : false;
             }
-            return recepcionesInformadas;
+            return informedReceptions;
         }
 
-        internal static bool BuscarMaestrosDAT(int idActividad, string idSucursal)
+        internal static bool BuscarMaestrosDAT(int activityId, string storeId)
         {
-            string masterFile = ArchivosDATUtils.GetDataFileNameByIdActividad(idActividad);
-            string urlPath = ConfigurationManager.AppSettings.Get("API_MAESTRO_URLPATH");
-            urlPath = String.Format(urlPath, masterFile);
-            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPath, idSucursal);
-            string filenameAndExtension = String.Format("/{0}.DAT", masterFile);
-            string destinoPublicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string masterFile = ArchivosDATUtils.GetDataFileNameByIdActividad(activityId);
+            string urlPathMasterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_URLPATH");
+            urlPathMasterFile = String.Format(urlPathMasterFile, masterFile);
+            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPathMasterFile, storeId);
+            string slashFilenameAndExtension = FileUtils.WrapSlashAndDATExtension(masterFile);
+            string publicPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
 
-            return DownloadFileFromServer(urlPath_urlQuery, filenameAndExtension, destinoPublicFolder);
+            return DownloadFileFromServer(urlPath_urlQuery, slashFilenameAndExtension, publicPathData);
         }
 
-        internal static List<VersionDispositivo> GetInfoVersiones(int dispositivo, Boolean habilitada)
+        internal static List<VersionDispositivo> GetInfoVersions(int device, Boolean enabled)
         {
-            string urlGetInfoVersiones = ConfigurationManager.AppSettings.Get(Constants.API_GET_INFO_VERSION);
+            string urlGetInfoVersions = ConfigurationManager.AppSettings.Get(Constants.API_GET_INFO_VERSION);
             string queryParams = "?dispositivo={0}&habilitada={1}";
-            queryParams = String.Format(queryParams, dispositivo, habilitada);
-            var responseInfoVersiones = HttpWebClientUtil.SendHttpGetRequest(urlGetInfoVersiones + queryParams);
-            if (responseInfoVersiones != null)
+            queryParams = String.Format(queryParams, device, enabled);
+            var responseInfoVersions = HttpWebClientUtil.SendHttpGetRequest(urlGetInfoVersions + queryParams);
+            if (responseInfoVersions != null)
             {
                 logger.Debug("respuesta recibida de GetInfoVersiones");
-                logger.Debug(responseInfoVersiones);
-                List<VersionDispositivo> inforVersiones = JsonUtils.GetVersionDispositivo(responseInfoVersiones);
-                return new List<VersionDispositivo>(inforVersiones);
+                logger.Debug(responseInfoVersions);
+                List<VersionDispositivo> infoVersions = JsonUtils.GetVersionDispositivo(responseInfoVersions);
+                return new List<VersionDispositivo>(infoVersions);
             }
             else
             {
@@ -274,20 +274,20 @@ namespace PDADesktop.Classes.Utils
             }
         }
 
-        internal static void DownloadDevicePrograms(string idVersionArchivo, string nombre)
+        internal static void DownloadDevicePrograms(string versionFileId, string name)
         {
             string urlDownloadFile = ConfigurationManager.AppSettings.Get(Constants.API_DOWNLOAD_PROGRAM_FILE);
             string queryParams = "?idVersionArchivo={0}";
-            queryParams = String.Format(queryParams, idVersionArchivo);
+            queryParams = String.Format(queryParams, versionFileId);
             
-            string destino = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_BIN);
-            DownloadFileFromServer(urlDownloadFile+queryParams, FileUtils.PrependSlash(nombre), destino);
+            string publicPathBin = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_BIN);
+            DownloadFileFromServer(urlDownloadFile+queryParams, FileUtils.PrependSlash(name), publicPathBin);
         }
 
-        internal static ActionResultDto VerifyNewBranch(string idSucursal)
+        internal static ActionResultDto VerifyNewBranch(string storeId)
         {
             string urlVerifyNewBranch = ConfigurationManager.AppSettings.Get(Constants.API_VERIFY_NEW_BATCH);
-            string queryParams = "?idSucursal=" + idSucursal;
+            string queryParams = "?idSucursal=" + storeId;
             string verifyNewBranchResponse = SendHttpGetRequest(urlVerifyNewBranch + queryParams);
             ActionResultDto actionResult = JsonUtils.GetActionResult(verifyNewBranchResponse);
             return actionResult;
