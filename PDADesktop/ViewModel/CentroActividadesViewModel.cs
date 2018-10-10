@@ -369,7 +369,7 @@ namespace PDADesktop.ViewModel
             set
             {
                 selectedSynchronization = value;
-                MyAppProperties.SelectedSynchronization = selectedSynchronization;
+                MyAppProperties.SelectedSync = selectedSynchronization;
                 OnPropertyChanged();
             }
         }
@@ -434,7 +434,7 @@ namespace PDADesktop.ViewModel
             NotifyCurrentMessage(currentMessage);
             bool serverStatus = CheckServerStatus();
 
-            string storeId = MyAppProperties.idSucursal;
+            string storeId = MyAppProperties.storeId;
             if(serverStatus)
             {
                 currentMessage = "Obteniendo acciones disponibles...";
@@ -520,21 +520,21 @@ namespace PDADesktop.ViewModel
         public List<Accion> GetAllActions()
         {
             List<Accion> actionsAvailables = HttpWebClientUtil.GetAllActions();
-            MyAppProperties.accionesDisponibles = actionsAvailables;
+            MyAppProperties.actionsEnables = actionsAvailables;
             return actionsAvailables;
         }
 
         public void GetActivitiesByActions(List<Accion> actionsAvailable)
         {
             List<Actividad> activitiesAvailables = HttpWebClientUtil.GetActivitiesByActionId(actionsAvailable);
-            MyAppProperties.actividadesDisponibles = activitiesAvailables;
+            MyAppProperties.activitiesEnables = activitiesAvailables;
         }
 
         public void GetLastSync(int currentBatchId, string storeId)
         {
             if (currentBatchId != 0)
             {
-                MyAppProperties.idLoteActual = currentBatchId.ToString();
+                MyAppProperties.currentBatchId = currentBatchId.ToString();
                 List<Sincronizacion> syncList = null;
                 string urlPathLastSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
                 syncList = HttpWebClientUtil.GetHttpWebSynchronizations(urlPathLastSync, storeId, currentBatchId.ToString());
@@ -660,7 +660,7 @@ namespace PDADesktop.ViewModel
             bool needAssociate = false;
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             string storeIDFromDevice = deviceHandler.ReadStoreIdFromDefaultData();
-            string storeIdFromLogin = MyAppProperties.idSucursal;
+            string storeIdFromLogin = MyAppProperties.storeId;
             if(!TextUtils.CompareStoreId(storeIDFromDevice, storeIdFromLogin))
             {
                 needAssociate = true;
@@ -677,7 +677,7 @@ namespace PDADesktop.ViewModel
         private void DeleteAllPreviousFiles(bool isCompletedSynchronization)
         {
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
-            List<Actividad> actividades = MyAppProperties.actividadesDisponibles;
+            List<Actividad> actividades = MyAppProperties.activitiesEnables;
             if(isCompletedSynchronization)
             {
                 deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.LPEDIDOS);
@@ -743,7 +743,7 @@ namespace PDADesktop.ViewModel
                 NotifyCurrentMessage(currentMessage);
                 bool serverStatus = CheckServerStatus();
 
-                string storeId = MyAppProperties.idSucursal;
+                string storeId = MyAppProperties.storeId;
                 if (serverStatus)
                 {
                     currentMessage = "Controlando nuevo lote ...";
@@ -780,6 +780,8 @@ namespace PDADesktop.ViewModel
                     CreateNewBatch();
 
 
+
+
                     currentMessage = "Actualizando archivo principal de configuración del dispositivo ...";
                     NotifyCurrentMessage(currentMessage);
                     UpdateDeviceMainFile(storeId);
@@ -799,7 +801,7 @@ namespace PDADesktop.ViewModel
             //legacy:
             if(true)
             {
-                List<Actividad> actividades = MyAppProperties.actividadesDisponibles;
+                List<Actividad> actividades = MyAppProperties.activitiesEnables;
                 foreach(Actividad actividad in actividades)
                 {
                     if (Constants.DESCARGAR_GENESIX.Equals(actividad.accion.idAccion))
@@ -843,7 +845,7 @@ namespace PDADesktop.ViewModel
 
         private bool VerifyNewBatch()
         {
-            string idSucursal = MyAppProperties.idSucursal;
+            string idSucursal = MyAppProperties.storeId;
             ActionResultDto actionResult = HttpWebClientUtil.VerifyNewBatch(idSucursal);
             return !actionResult.success;
         }
@@ -857,7 +859,7 @@ namespace PDADesktop.ViewModel
 
         private bool CheckInformedReceptions()
         {
-            string sotreId = MyAppProperties.idSucursal;
+            string sotreId = MyAppProperties.storeId;
             string syncId = HttpWebClientUtil.GetCurrentBatchId(sotreId).ToString();
             bool informedReceptions = HttpWebClientUtil.CheckInformedReceptions(syncId);
             logger.Info("recepciones Informadas pendientes: " + (informedReceptions ? "NO" : "SI"));
@@ -867,7 +869,9 @@ namespace PDADesktop.ViewModel
 
         private void CreateNewBatch()
         {
-
+            string storeId = MyAppProperties.storeId;
+            bool isCompleted = MyAppProperties.isSynchronizationComplete;
+            List<Sincronizacion> newSync = HttpWebClientUtil.CreateNewBatch(storeId, isCompleted);
         }
 
         private void syncWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -889,7 +893,7 @@ namespace PDADesktop.ViewModel
             label_version = assembly.GetName().Version.ToString(3);
             // de donde obtenemos el usuario y sucursal (?)
             label_usuario = "Admin";
-            label_sucursal = MyAppProperties.idSucursal;
+            label_sucursal = MyAppProperties.storeId;
             logger.Debug("setInfoLabels[version: " + label_version
                 + ", usuario: " + label_usuario + ", sucursal: " + label_sucursal + "]");
         }
@@ -978,8 +982,8 @@ namespace PDADesktop.ViewModel
             List<Sincronizacion> listaSincronizaciones = null;
             logger.Info("<- Ejecutando la vista anterior a la actual de la grilla");
             string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ANTERIOR);
-            string _sucursal = MyAppProperties.idSucursal;
-            string _idLote = MyAppProperties.idLoteActual;
+            string _sucursal = MyAppProperties.storeId;
+            string _idLote = MyAppProperties.currentBatchId;
             listaSincronizaciones = HttpWebClientUtil.GetHttpWebSynchronizations(urlSincronizacionAnterior, _sucursal, _idLote);
             if(listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
@@ -994,8 +998,8 @@ namespace PDADesktop.ViewModel
             List<Sincronizacion> listaSincronizaciones = null;
             logger.Info("-> Solicitando la vista siguiente de la grilla, si es que la hay...");
             string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_SIGUIENTE);
-            string _sucursal = MyAppProperties.idSucursal;
-            string _idLote = MyAppProperties.idLoteActual;
+            string _sucursal = MyAppProperties.storeId;
+            string _idLote = MyAppProperties.currentBatchId;
             listaSincronizaciones = HttpWebClientUtil.GetHttpWebSynchronizations(urlSincronizacionAnterior, _sucursal, _idLote);
             if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
@@ -1017,8 +1021,8 @@ namespace PDADesktop.ViewModel
             List<Sincronizacion> synchronizationList = null;
             logger.Info("Llendo a la ultima sincronizacion");
             string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
-            string _sucursal = MyAppProperties.idSucursal;
-            string _idLote = MyAppProperties.idLoteActual;
+            string _sucursal = MyAppProperties.storeId;
+            string _idLote = MyAppProperties.currentBatchId;
             synchronizationList = HttpWebClientUtil.GetHttpWebSynchronizations(urlSincronizacionAnterior, _sucursal, _idLote);
             if (synchronizationList != null && synchronizationList.Count != 0)
             {
@@ -1034,7 +1038,7 @@ namespace PDADesktop.ViewModel
             {
                 var s = synchronizations[0] as SincronizacionDtoDataGrid;
                 string currentBatchId = s.lote;
-                MyAppProperties.idLoteActual = currentBatchId;
+                MyAppProperties.currentBatchId = currentBatchId;
                 UpdateTxt_Synchronization(s);
             }
         }
@@ -1050,17 +1054,17 @@ namespace PDADesktop.ViewModel
         public static void BotonEstadoGenesix(object obj)
         {
             logger.Info("Boton estado genesix: " + obj);
-            logger.Info(MyAppProperties.SelectedSynchronization.actividad);
+            logger.Info(MyAppProperties.SelectedSync.actividad);
         }
         public static void BotonEstadoPDA(object obj)
         {
             logger.Info("Boton estado pda");
-            logger.Info(MyAppProperties.SelectedSynchronization.actividad);
+            logger.Info(MyAppProperties.SelectedSync.actividad);
         }
         public static void BotonEstadoGeneral(object obj)
         {
             logger.Info("Boton estado general");
-            logger.Info(MyAppProperties.SelectedSynchronization.actividad);
+            logger.Info(MyAppProperties.SelectedSync.actividad);
         }
         #endregion
 

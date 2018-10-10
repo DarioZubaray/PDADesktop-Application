@@ -7,13 +7,13 @@ namespace PDADesktop.Classes
 {
     class MyAppProperties
     {
-        public static string idSucursal { get; set; }
-        public static string idLoteActual { get; set; }
+        public static string storeId { get; set; }
+        public static string currentBatchId { get; set; }
         public static MainWindow window { get; set; }
 
-        public static SincronizacionDtoDataGrid SelectedSynchronization { get; set; }
-        public static List<Accion> accionesDisponibles { get; set; }
-        public static List<Actividad> actividadesDisponibles { get; set; }
+        public static SincronizacionDtoDataGrid SelectedSync { get; set; }
+        public static List<Accion> actionsEnables { get; set; }
+        public static List<Actividad> activitiesEnables { get; set; }
 
         public static bool isSynchronizationComplete { get; set; }
     }

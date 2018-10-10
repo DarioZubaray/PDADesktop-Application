@@ -45,7 +45,7 @@ namespace PDADesktop
             base.OnStartup(e);
 
             string sucursalHarcodeada = "706";
-            MyAppProperties.idSucursal = sucursalHarcodeada;
+            MyAppProperties.storeId = sucursalHarcodeada;
 
             /*
              * 0- checkear que la aplicacion no este ejecutandose

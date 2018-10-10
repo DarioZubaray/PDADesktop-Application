@@ -310,5 +310,22 @@ namespace PDADesktop.Classes.Utils
             string urlReceivedFromDevice = ConfigurationManager.AppSettings.Get("API_SET_RECEIVED_PDA");
             return SendHttpGetRequest(urlReceivedFromDevice + queryParams);
         }
+
+        internal static List<Sincronizacion> CreateNewBatch(string storeId, bool isCompleted)
+        {
+            string urlCreateNewBatch = ConfigurationManager.AppSettings.Get(Constants.API_CREATE_NEW_BATCH);
+            string jsonBody = "{ \"idSucursal\":" + storeId + ", idAcciones: [{}]";
+            if(isCompleted)
+            {
+                jsonBody = String.Format(jsonBody, "1, 2");
+            }
+            else
+            {
+                jsonBody = String.Format(jsonBody, "1");
+            }
+            string responseCreateNewBatch = SendHttpPostRequest(urlCreateNewBatch, jsonBody);
+            List<Sincronizacion> newSync = JsonUtils.GetListSinchronization(responseCreateNewBatch);
+            return newSync;
+        }
     }
 }
