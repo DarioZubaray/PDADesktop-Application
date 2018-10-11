@@ -12,6 +12,13 @@ namespace PDADesktop.Classes
                         +"\n==================================");
         }
 
+        public static void PrintLogin()
+        {
+            logger.Debug("\n=================================="
+                         + "= L O G I N  P D A  D E S K T O P="
+                         + "==================================");
+        }
+
         public static void PrintActivityCenter()
         {
             logger.Debug("\n=================================="

@@ -157,6 +157,7 @@ namespace PDADesktop.ViewModel
         #region Constructor
         public LoginViewModel()
         {
+            BannerApp.PrintLogin();
             LoginButtonCommand = new RelayCommand(LoginPortalApi, param => this.canExecute);
             ShowPanelCommand = new RelayCommand(ShowPanel, param => this.canExecute);
             HidePanelCommand = new RelayCommand(HidePanel, param => this.canExecute);
