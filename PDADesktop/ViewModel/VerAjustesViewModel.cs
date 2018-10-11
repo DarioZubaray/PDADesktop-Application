@@ -149,6 +149,8 @@ namespace PDADesktop.ViewModel
         #region Constructor
         public VerAjustesViewModel()
         {
+            BannerApp.PrintSeeAdjustments();
+            MyAppProperties.isSeeAdjustmentsWindowClosed = false;
             var dispatcher = Application.Current.MainWindow.Dispatcher;
             bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
             if (deviceStatus)
@@ -158,8 +160,6 @@ namespace PDADesktop.ViewModel
                 {
                     Adjustments = JsonUtils.GetObservableCollectionAjustes(deviceReadAdjustmentDataFile);
 
-                    // Buscar los tipos de ajustes de pda express
-                    // Me preocupa el timeout y el host inalcanzable
                     AdjustmentsTypes = HttpWebClientUtil.GetAdjustmentsTypes();
                     logger.Debug(AdjustmentsTypes.ToString());
                 }
@@ -185,6 +185,7 @@ namespace PDADesktop.ViewModel
             UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentMethod);
             DiscardChangesCommand = new RelayCommand(DiscardChangesMethod);
             SaveChangesCommand = new RelayCommand(SaveChangesMethod);
+            CloseVerAjustesWindow();
         }
         #endregion
 
@@ -293,10 +294,11 @@ namespace PDADesktop.ViewModel
 
         private void CloseVerAjustesWindow()
         {
-            foreach (Window w in Application.Current.Windows)
+            foreach (Window w in App.Instance.Windows)
             {
                 if (w is VerAjustesView)
                 {
+                    MyAppProperties.isSeeAdjustmentsWindowClosed = true;
                     w.Close();
                     break;
                 }

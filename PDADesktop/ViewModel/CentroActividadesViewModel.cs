@@ -1065,6 +1065,9 @@ namespace PDADesktop.ViewModel
                     {
                         VerAjustesView newwindow = new VerAjustesView();
                         newwindow.Show();
+                        PanelLoading = true;
+                        PanelMainMessage = "Editando ajustes realizados...";
+                        PanelSubMessage = "";
                     }
                 }
                 else

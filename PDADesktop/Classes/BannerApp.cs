@@ -39,5 +39,12 @@ namespace PDADesktop.Classes
                          +"=  I n f o r m  to  G e n e s i x ="
                          +"==================================");
         }
+
+        public static void PrintSeeAdjustments()
+        {
+            logger.Debug("\n=================================="
+                         + "=      V E R   A J U S T E S     ="
+                         + "==================================");
+        }
     }
 }

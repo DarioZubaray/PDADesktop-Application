@@ -16,5 +16,7 @@ namespace PDADesktop.Classes
         public static List<Actividad> activitiesEnables { get; set; }
 
         public static bool isSynchronizationComplete { get; set; }
+
+        public static bool isSeeAdjustmentsWindowClosed { get; set; }
     }
 }
