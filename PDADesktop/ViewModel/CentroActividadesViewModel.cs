@@ -831,7 +831,7 @@ namespace PDADesktop.ViewModel
         {
             string caption = "Confirme";
             MessageBoxResult result = MessageBox.Show(message, caption, MessageBoxButton.OKCancel, MessageBoxImage.Error);
-            return result.Equals(MessageBoxResult.OK);
+            return result.Equals(MessageBoxResult.Cancel);
         }
 
         private bool CheckInformedReceptions()
@@ -899,7 +899,7 @@ namespace PDADesktop.ViewModel
             }
             catch
             {
-                SynchronizationStateUtil.SetErrorGenesixGeneral(syncId);
+                SynchronizationStateUtil.SetErrorGenesixGeneralState(syncId);
             }
         }
 
@@ -966,12 +966,12 @@ namespace PDADesktop.ViewModel
 
         private void SetReceivedFromGenesix(long syncId)
         {
-            SynchronizationStateUtil.SetReceivedFromGenesix(syncId);
+            SynchronizationStateUtil.SetReceivedFromGenesixState(syncId);
         }
 
         private void SetErrorGenesixGeneral(long syncId)
         {
-            SynchronizationStateUtil.SetErrorGenesixGeneral(syncId);
+            SynchronizationStateUtil.SetErrorGenesixGeneralState(syncId);
         }
 
         private void UpdateDataGrid(string storeId, List<Sincronizacion> newSync)

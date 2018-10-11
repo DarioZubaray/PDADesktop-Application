@@ -299,13 +299,20 @@ namespace PDADesktop.Classes.Utils
             return SendHttpGetRequest(urlLastVersion + queryParams);
         }
 
-        internal static string SetNoDataGenesixState(string queryParams)
+        #region Genesix States
+        internal static string SetNoDataGenesix(string queryParams)
         {
             string urlSentGX = ConfigurationManager.AppSettings.Get("API_SET_NO_DATA_GX");
             return SendHttpGetRequest(urlSentGX + queryParams);
         }
 
-        internal static string SetSentGenesixState(string queryParams)
+        internal static string SetPendingGenesix(string queryParams)
+        {
+            string urlPendingGX = ConfigurationManager.AppSettings.Get("API_SET_PENDING_GX");
+            return SendHttpGetRequest(urlPendingGX + queryParams);
+        }
+
+        internal static string SetSentGenesix(string queryParams)
         {
             string urlSentGX = ConfigurationManager.AppSettings.Get("API_SET_SENT_GX");
             return SendHttpGetRequest(urlSentGX + queryParams);
@@ -323,22 +330,41 @@ namespace PDADesktop.Classes.Utils
             return SendHttpGetRequest(urlReceivedGX + queryParams);
         }
 
-        internal static string SetReceivedDeviceState(string queryParams)
+        internal static string SetUnrecoverableErrorGenesix(string queryParams)
         {
-            string urlReceivedFromDevice = ConfigurationManager.AppSettings.Get("API_SET_RECEIVED_PDA");
-            return SendHttpGetRequest(urlReceivedFromDevice + queryParams);
+            string urlReceivedGX = ConfigurationManager.AppSettings.Get("API_SET_ERROR_DATA_GX");
+            return SendHttpGetRequest(urlReceivedGX + queryParams);
         }
 
+        internal static string SetWaitingGenesix(string queryParams)
+        {
+            string urlReceivedGX = ConfigurationManager.AppSettings.Get("API_SET_ERROR_DATA_GX");
+            return SendHttpGetRequest(urlReceivedGX + queryParams);
+        }
+        #endregion
+
+        #region Device States
+        internal static string setNoDataDevice(string queryParams)
+        {
+            string urlNoDataFromDevice = ConfigurationManager.AppSettings.Get("API_SET_NO_DATA_PDA");
+            return SendHttpGetRequest(urlNoDataFromDevice + queryParams);
+        }
+
+        internal static string SetPendingDevice(string queryParams)
+        {
+            string urlPendingDevice = ConfigurationManager.AppSettings.Get("API_SET_PENDING_PDA");
+            return SendHttpGetRequest(urlPendingDevice + queryParams);
+        }
         internal static string SetSentDeviceState(string queryParams)
         {
             string urlSentToDevice = ConfigurationManager.AppSettings.Get("API_SET_SENT_PDA");
             return SendHttpGetRequest(urlSentToDevice + queryParams);
         }
 
-        internal static string setNoDataDeviceState(string queryParams)
+        internal static string SetReceivedDeviceState(string queryParams)
         {
-            string urlNoDataFromDevice = ConfigurationManager.AppSettings.Get("API_SET_NO_DATA_PDA");
-            return SendHttpGetRequest(urlNoDataFromDevice + queryParams);
+            string urlReceivedFromDevice = ConfigurationManager.AppSettings.Get("API_SET_RECEIVED_PDA");
+            return SendHttpGetRequest(urlReceivedFromDevice + queryParams);
         }
 
         internal static string SetErrorDeviceState(string queryParams)
@@ -346,12 +372,57 @@ namespace PDADesktop.Classes.Utils
             string urlReceivedFromDevice = ConfigurationManager.AppSettings.Get("API_SET_ERROR_PDA");
             return SendHttpGetRequest(urlReceivedFromDevice + queryParams);
         }
+        #endregion
 
-        internal static string SetOKStateGeneral(string queryParams)
+        #region General States
+        internal static string SetPendingGeneralState(string queryParams)
+        {
+            string urlPendingGeneral = ConfigurationManager.AppSettings.Get("API_SET_PENDING_GENERAL");
+            return SendHttpGetRequest(urlPendingGeneral + queryParams);
+        }
+
+        internal static string SetOKGeneralState(string queryParams)
         {
             string urlOkGeneral = ConfigurationManager.AppSettings.Get("API_SET_OK_GENERAL");
             return SendHttpGetRequest(urlOkGeneral + queryParams);
         }
+
+        internal static string SetRetryGeneralState(string queryParams)
+        {
+            string urlRetryGeneral = ConfigurationManager.AppSettings.Get("API_SET_RETRY_GENERAL");
+            return SendHttpGetRequest(urlRetryGeneral + queryParams);
+        }
+
+        internal static string SetSeeDetailsGeneralState(string queryParams)
+        {
+            string urlSeeDetailsGeneral = ConfigurationManager.AppSettings.Get("API_SET_SEE_DETAILS_GENERAL");
+            return SendHttpGetRequest(urlSeeDetailsGeneral + queryParams);
+        }
+
+        internal static string SetModifyAdjustmentGeneralState(string queryParams)
+        {
+            string urlModifyAdjustmentGeneral = ConfigurationManager.AppSettings.Get("API_SET_SEE_DETAILS_GENERAL");
+            return SendHttpGetRequest(urlModifyAdjustmentGeneral + queryParams);
+        }
+
+        internal static string SetPrintReceptions(string queryParams)
+        {
+            string urlPrintReceptionsGeneral = ConfigurationManager.AppSettings.Get("API_SET_PRINT_GENERAL");
+            return SendHttpGetRequest(urlPrintReceptionsGeneral + queryParams);
+        }
+
+        internal static string SetErroPDA_General(string queryParams)
+        {
+            string urlErrorPDAGeneral = ConfigurationManager.AppSettings.Get("API_SET_ERROR_PDA_GENERAL");
+            return SendHttpGetRequest(urlErrorPDAGeneral + queryParams);
+        }
+
+        internal static string SetErroGenesix_General(string queryParams)
+        {
+            string urlErrorGXGeneral = ConfigurationManager.AppSettings.Get("API_SET_ERROR_GX_GENERAL");
+            return SendHttpGetRequest(urlErrorGXGeneral + queryParams);
+        }
+        #endregion
 
         internal static List<Sincronizacion> CreateNewBatch(string storeId, bool isCompleted)
         {
