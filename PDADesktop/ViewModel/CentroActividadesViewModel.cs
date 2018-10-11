@@ -790,7 +790,7 @@ namespace PDADesktop.ViewModel
 
                     currentMessage = "Descargando archivos maestros...";
                     NotifyCurrentMessage(currentMessage);
-                    DownloadMasterFile();
+                    DownloadMasterFile(newSync);
 
                     currentMessage = "Refrescando los datos de la tabla de sincronizaciones ...";
                     NotifyCurrentMessage(currentMessage);
