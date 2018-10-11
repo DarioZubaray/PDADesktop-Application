@@ -351,7 +351,8 @@ namespace PDADesktop.Classes.Utils
         {
             string urlInformGenesix = ConfigurationManager.AppSettings.Get("API_INFORMAR_GENESIX");
             string queryParams = "?idSincronizacion=" + syncId;
-            SendHttpGetRequest(urlInformGenesix + queryParams);
+            string responseExecutedInform = SendHttpGetRequest(urlInformGenesix + queryParams);
+            logger.Debug(responseExecutedInform);
         }
     }
 }
