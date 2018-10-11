@@ -873,6 +873,7 @@ namespace PDADesktop.ViewModel
                         else
                         {
                             SynchronizationStateUtil.SetNoDataDeviceState(syncId);
+                            SynchronizationStateUtil.SetNoDataGenesixState(syncId);
                         }
                     }
                     catch
@@ -885,12 +886,21 @@ namespace PDADesktop.ViewModel
 
         private void UploadFileToServer(string slashFilenameAndExtension, int actionId, long syncId)
         {
-            string filePath = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
-            string parametros = "?idActividad={0}&idSincronizacion={1}&registros={2}";
-            var lineCount = FileUtils.CountRegistryWithinFile(filePath + slashFilenameAndExtension);
-            parametros = String.Format(parametros, actionId, syncId, lineCount);
-            string respuesta = HttpWebClientUtil.UploadFileToServer(filePath + slashFilenameAndExtension, parametros);
-            logger.Debug(respuesta);
+            try
+            {
+                string filePath = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+                string parametros = "?idActividad={0}&idSincronizacion={1}&registros={2}";
+                var lineCount = FileUtils.CountRegistryWithinFile(filePath + slashFilenameAndExtension);
+                parametros = String.Format(parametros, actionId, syncId, lineCount);
+                string respuesta = HttpWebClientUtil.UploadFileToServer(filePath + slashFilenameAndExtension, parametros);
+                logger.Debug(respuesta);
+
+                SynchronizationStateUtil.SetSentGenesixState(syncId);
+            }
+            catch
+            {
+                SynchronizationStateUtil.SetErrorGenesixGeneral(syncId);
+            }
         }
 
         private void ExecuteInformGenesix(List<Sincronizacion> newSync)
@@ -911,7 +921,7 @@ namespace PDADesktop.ViewModel
             {
                 if (Constants.DESCARGAR_GENESIX.Equals(sync.actividad.accion.idAccion))
                 {
-                    string syncId = sync.idSincronizacion.ToString();
+                    long syncId = sync.idSincronizacion;
                     try
                     {
                         string storeId = MyAppProperties.storeId;
@@ -941,6 +951,7 @@ namespace PDADesktop.ViewModel
                             NotifyCurrentMessage("Moviendo al dispositivo");
 
                             SetReceivedFromGenesix(syncId);
+                            SynchronizationStateUtil.SetSentDeviceState(syncId);
                             Thread.Sleep(500);
                         }
 
@@ -952,12 +963,12 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private void SetReceivedFromGenesix(string syncId)
+        private void SetReceivedFromGenesix(long syncId)
         {
             SynchronizationStateUtil.SetReceivedFromGenesix(syncId);
         }
 
-        private void SetErrorGenesixGeneral(string syncId)
+        private void SetErrorGenesixGeneral(long syncId)
         {
             SynchronizationStateUtil.SetErrorGenesixGeneral(syncId);
         }

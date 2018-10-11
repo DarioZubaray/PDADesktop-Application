@@ -299,6 +299,12 @@ namespace PDADesktop.Classes.Utils
             return SendHttpGetRequest(urlLastVersion + queryParams);
         }
 
+        internal static string SetNoDataGenesixState(string queryParams)
+        {
+            string urlSentGX = ConfigurationManager.AppSettings.Get("API_SET_NO_DATA_GX");
+            return SendHttpGetRequest(urlSentGX + queryParams);
+        }
+
         internal static string SetSentGenesixState(string queryParams)
         {
             string urlSentGX = ConfigurationManager.AppSettings.Get("API_SET_SENT_GX");
@@ -322,17 +328,29 @@ namespace PDADesktop.Classes.Utils
             string urlReceivedFromDevice = ConfigurationManager.AppSettings.Get("API_SET_RECEIVED_PDA");
             return SendHttpGetRequest(urlReceivedFromDevice + queryParams);
         }
-        
+
+        internal static string SetSentDeviceState(string queryParams)
+        {
+            string urlSentToDevice = ConfigurationManager.AppSettings.Get("API_SET_SENT_PDA");
+            return SendHttpGetRequest(urlSentToDevice + queryParams);
+        }
+
         internal static string setNoDataDeviceState(string queryParams)
         {
-            string urlReceivedFromDevice = ConfigurationManager.AppSettings.Get("API_SET_NO_DATA_PDA");
-            return SendHttpGetRequest(urlReceivedFromDevice + queryParams);
+            string urlNoDataFromDevice = ConfigurationManager.AppSettings.Get("API_SET_NO_DATA_PDA");
+            return SendHttpGetRequest(urlNoDataFromDevice + queryParams);
         }
 
         internal static string SetErrorDeviceState(string queryParams)
         {
             string urlReceivedFromDevice = ConfigurationManager.AppSettings.Get("API_SET_ERROR_PDA");
             return SendHttpGetRequest(urlReceivedFromDevice + queryParams);
+        }
+
+        internal static string SetOKStateGeneral(string queryParams)
+        {
+            string urlOkGeneral = ConfigurationManager.AppSettings.Get("API_SET_OK_GENERAL");
+            return SendHttpGetRequest(urlOkGeneral + queryParams);
         }
 
         internal static List<Sincronizacion> CreateNewBatch(string storeId, bool isCompleted)

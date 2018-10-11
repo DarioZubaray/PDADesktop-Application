@@ -9,21 +9,28 @@ namespace PDADesktop.Classes.Utils
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Genesix State
-        internal static void SetSentGenesixState(string syncId)
+        internal static void SetNoDataGenesixState(long syncId)
+        {
+            string queryParams = "?idSincronizacion=" + syncId;
+            string response = HttpWebClientUtil.SetNoDataGenesixState(queryParams);
+            logger.Debug(response);
+        }
+
+        internal static void SetSentGenesixState(long syncId)
         {
             string queryParams = "?idSincronizacion=" + syncId;
             string response = HttpWebClientUtil.SetSentGenesixState(queryParams);
             logger.Debug(response);
         }
 
-        internal static void SetReceivedFromGenesix(string syncId)
+        internal static void SetReceivedFromGenesix(long syncId)
         {
             string queryParams = "?idSincronizacion=" + syncId;
             string response = HttpWebClientUtil.SetReceivedFromGenesix(queryParams);
             logger.Debug(response);
         }
 
-        internal static void SetErrorGenesixGeneral(string syncId)
+        internal static void SetErrorGenesixGeneral(long syncId)
         {
             string queryParams = "?idSincronizacion=" + syncId;
             string response = HttpWebClientUtil.SetErrorGenesixGeneral(queryParams);
@@ -39,6 +46,13 @@ namespace PDADesktop.Classes.Utils
             logger.Debug(response);
         }
 
+        internal static void SetSentDeviceState(long syncId)
+        {
+            string queryParams = "?idSincronizacion=" + syncId;
+            string response = HttpWebClientUtil.SetSentDeviceState(queryParams);
+            logger.Debug(response);
+        }
+
         internal static void SetNoDataDeviceState(long syncId)
         {
             string queryParams = "?idSincronizacion=" + syncId;
@@ -46,11 +60,20 @@ namespace PDADesktop.Classes.Utils
             logger.Debug(queryParams);
         }
 
-        internal static void SetErrorDeviceState(object syncId)
+        internal static void SetErrorDeviceState(long syncId)
         {
             string queryParams = "?idSincronizacion=" + syncId;
             string response = HttpWebClientUtil.SetErrorDeviceState(queryParams);
             logger.Debug(queryParams);
+        }
+        #endregion
+
+        #region General State
+        internal static void SetOKStateGeneral(long syncId)
+        {
+            string queryParams = "?idSincronizacion=" + syncId;
+            string response = HttpWebClientUtil.SetOKStateGeneral(queryParams);
+            logger.Debug(response);
         }
         #endregion
     }
