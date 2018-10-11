@@ -955,8 +955,9 @@ namespace PDADesktop.ViewModel
                             Thread.Sleep(500);
                         }
 
-                    }catch
+                    }catch (Exception e)
                     {
+                        logger.Error(e.Message);
                         SetErrorGenesixGeneral(syncId);
                     }
                 }
