@@ -540,7 +540,7 @@ namespace PDADesktop.ViewModel
                 syncList = HttpWebClientUtil.GetHttpWebSynchronizations(urlPathLastSync, storeId, currentBatchId.ToString());
                 if (syncList != null && syncList.Count != 0)
                 {
-                    this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(syncList);
+                    this.sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(syncList);
                     UpdateCurrentBatch(sincronizaciones);
                 }
             }
@@ -775,7 +775,7 @@ namespace PDADesktop.ViewModel
                         
                     }
 
-                    currentMessage = "Controlando recepciones informadas ...";
+                    currentMessage = "Creando nuevo lote de sincronización ...";
                     NotifyCurrentMessage(currentMessage);
                     List<Sincronizacion> newSync = CreateNewBatch();
 
@@ -856,26 +856,29 @@ namespace PDADesktop.ViewModel
         {
             foreach(Sincronizacion sync in newSync)
             {
-                long syncId = sync.idSincronizacion;
-                int actionId = Convert.ToInt32(sync.actividad.idActividad);
-                try
+                if (sync.actividad.accion.idAccion.Equals(Constants.INFORMAR_GENESIX))
                 {
-                    string slashFilenameAndExtension = ArchivosDATUtils.GetDataFileNameAndExtensionByIdActividad(actionId);
-                    IDeviceHandler deviceHandler = App.Instance.deviceHandler;
-                    ResultFileOperation resultCopy = deviceHandler.CopyDeviceFileToPublicData(slashFilenameAndExtension);
-                    if(resultCopy.Equals(ResultFileOperation.OK))
+                    long syncId = sync.idSincronizacion;
+                    int actionId = Convert.ToInt32(sync.actividad.idActividad);
+                    try
                     {
-                        UploadFileToServer(slashFilenameAndExtension, actionId, syncId);
-                        SynchronizationStateUtil.SetReceivedDeviceState(syncId);
+                        string slashFilenameAndExtension = ArchivosDATUtils.GetDataFileNameAndExtensionByIdActividad(actionId);
+                        IDeviceHandler deviceHandler = App.Instance.deviceHandler;
+                        ResultFileOperation resultCopy = deviceHandler.CopyDeviceFileToPublicData(slashFilenameAndExtension);
+                        if (resultCopy.Equals(ResultFileOperation.OK))
+                        {
+                            UploadFileToServer(slashFilenameAndExtension, actionId, syncId);
+                            SynchronizationStateUtil.SetReceivedDeviceState(syncId);
+                        }
+                        else
+                        {
+                            SynchronizationStateUtil.SetNoDataDeviceState(syncId);
+                        }
                     }
-                    else
+                    catch
                     {
-                        SynchronizationStateUtil.SetNoDataDeviceState(syncId);
+                        SynchronizationStateUtil.SetErrorDeviceState(syncId);
                     }
-                }
-                catch
-                {
-                    SynchronizationStateUtil.SetErrorDeviceState(syncId);
                 }
             }
         }
@@ -902,46 +905,69 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private void DownloadMasterFile()
+        private void DownloadMasterFile(List<Sincronizacion> newSync)
         {
-            List<Actividad> actividades = MyAppProperties.activitiesEnables;
-            foreach (Actividad actividad in actividades)
+            foreach (Sincronizacion sync in newSync)
             {
-                if (Constants.DESCARGAR_GENESIX.Equals(actividad.accion.idAccion))
+                if (Constants.DESCARGAR_GENESIX.Equals(sync.actividad.accion.idAccion))
                 {
-                    string storeId = MyAppProperties.storeId;
-                    bool descargaMaestroCorrecta = HttpWebClientUtil.BuscarMaestrosDAT((int)actividad.idActividad, storeId);
-                    NotifyCurrentMessage("Descargando " + actividad.descripcion.ToString());
-                    Thread.Sleep(500);
-                    if (descargaMaestroCorrecta)
+                    string syncId = sync.idSincronizacion.ToString();
+                    try
                     {
-                        if (actividad.idActividad.Equals(Constants.ubicart))
-                        {
-                            logger.Debug("Ubicart -> creando Archivos PAS");
-                            ArchivosDATUtils.crearArchivoPAS();
-                        }
-                        if (actividad.idActividad.Equals(Constants.pedidos))
-                        {
-                            logger.Debug("Pedidos -> creando Archivos Pedidos");
-                            ArchivosDATUtils.crearArchivosPedidos();
-                        }
-
-                        string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
-                        string filename = ArchivosDATUtils.GetDataFileNameByIdActividad((int)actividad.idActividad);
-                        string filenameAndExtension = FileUtils.WrapSlashAndDATExtension(filename);
-
-                        ResultFileOperation result = App.Instance.deviceHandler.CopyPublicDataFileToDevice(destinationDirectory, filenameAndExtension);
-                        logger.Debug("result: " + result);
-                        NotifyCurrentMessage("Moviendo al dispositivo");
+                        string storeId = MyAppProperties.storeId;
+                        bool descargaMaestroCorrecta = HttpWebClientUtil.BuscarMaestrosDAT((int)sync.actividad.idActividad, storeId);
+                        NotifyCurrentMessage("Descargando " + sync.actividad.descripcion.ToString());
                         Thread.Sleep(500);
+
+                        if (descargaMaestroCorrecta)
+                        {
+                            if (sync.actividad.idActividad.Equals(Constants.ubicart))
+                            {
+                                logger.Debug("Ubicart -> creando Archivos PAS");
+                                ArchivosDATUtils.crearArchivoPAS();
+                            }
+                            if (sync.actividad.idActividad.Equals(Constants.pedidos))
+                            {
+                                logger.Debug("Pedidos -> creando Archivos Pedidos");
+                                ArchivosDATUtils.crearArchivosPedidos();
+                            }
+
+                            string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+                            string filename = ArchivosDATUtils.GetDataFileNameByIdActividad((int)sync.actividad.idActividad);
+                            string filenameAndExtension = FileUtils.WrapSlashAndDATExtension(filename);
+
+                            ResultFileOperation result = App.Instance.deviceHandler.CopyPublicDataFileToDevice(destinationDirectory, filenameAndExtension);
+                            logger.Debug("result: " + result);
+                            NotifyCurrentMessage("Moviendo al dispositivo");
+
+                            SetReceivedFromGenesix(syncId);
+                            Thread.Sleep(500);
+                        }
+
+                    }catch
+                    {
+                        SetErrorGenesixGeneral(syncId);
                     }
                 }
             }
         }
 
+        private void SetReceivedFromGenesix(string syncId)
+        {
+            SynchronizationStateUtil.SetReceivedFromGenesix(syncId);
+        }
+
+        private void SetErrorGenesixGeneral(string syncId)
+        {
+            SynchronizationStateUtil.SetErrorGenesixGeneral(syncId);
+        }
+
         private void UpdateDataGrid(string storeId, List<Sincronizacion> newSync)
         {
-            this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(newSync);
+            string batchId = newSync[0].lote.idLote.ToString();
+            string urlLastSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
+            List<Sincronizacion> lastSync = HttpWebClientUtil.GetHttpWebSynchronizations(urlLastSync, storeId, batchId);
+            this.sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(lastSync);
             UpdateCurrentBatch(sincronizaciones);
         }
 
@@ -1059,7 +1085,7 @@ namespace PDADesktop.ViewModel
             if(listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
-                this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(listaSincronizaciones);
+                this.sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(listaSincronizaciones);
                 UpdateCurrentBatch(sincronizaciones);
             }
         }
@@ -1075,7 +1101,7 @@ namespace PDADesktop.ViewModel
             if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
-                this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(listaSincronizaciones);
+                this.sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(listaSincronizaciones);
                 UpdateCurrentBatch(sincronizaciones);
             }
         }
@@ -1098,7 +1124,7 @@ namespace PDADesktop.ViewModel
             if (synchronizationList != null && synchronizationList.Count != 0)
             {
                 logger.Debug(synchronizationList);
-                this.sincronizaciones = SincronizacionDtoDataGrid.RefreshDataGrid(synchronizationList);
+                this.sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(synchronizationList);
                 UpdateCurrentBatch(sincronizaciones);
             }
         }

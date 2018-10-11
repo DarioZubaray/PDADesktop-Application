@@ -175,13 +175,14 @@ namespace PDADesktop.Classes.Utils
             crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.RPEDIDOS, resultadoPartes[4]);
         }
 
-        private static void crearMoverArchivoDePEDIDOS(string rutaArchivo, string filenameAndExtension, string texto)
+        private static void crearMoverArchivoDePEDIDOS(string rutaArchivo, string filename, string texto)
         {
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             string contenido = texto.Trim();
-            logger.Debug("Guardando archivo pedidos: " + rutaArchivo + filenameAndExtension);
-            FileUtils.WriteFile(rutaArchivo + filenameAndExtension, contenido + "\r\n");
-            App.Instance.deviceHandler.CopyPublicDataFileToDevice(deviceRelativePathData, filenameAndExtension);
+            string slashFilenameAndExtension = FileUtils.WrapSlashAndDATExtension(filename);
+            logger.Debug("Guardando archivo pedidos: " + rutaArchivo + slashFilenameAndExtension);
+            FileUtils.WriteFile(rutaArchivo + slashFilenameAndExtension, contenido + "\r\n");
+            App.Instance.deviceHandler.CopyPublicDataFileToDevice(deviceRelativePathData, slashFilenameAndExtension);
         }
     }
 }

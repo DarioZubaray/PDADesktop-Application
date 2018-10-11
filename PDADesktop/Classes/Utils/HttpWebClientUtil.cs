@@ -305,6 +305,18 @@ namespace PDADesktop.Classes.Utils
             return SendHttpGetRequest(urlSentGX + queryParams);
         }
 
+        internal static string SetReceivedFromGenesix(string queryParams)
+        {
+            string urlReceivedGX = ConfigurationManager.AppSettings.Get("API_SET_RECEIVED_GX");
+            return SendHttpGetRequest(urlReceivedGX + queryParams);
+        }
+
+        internal static string SetErrorGenesixGeneral(string queryParams)
+        {
+            string urlReceivedGX = ConfigurationManager.AppSettings.Get("API_SET_ERROR_GENERAL_GX");
+            return SendHttpGetRequest(urlReceivedGX + queryParams);
+        }
+
         internal static string SetReceivedDeviceState(string queryParams)
         {
             string urlReceivedFromDevice = ConfigurationManager.AppSettings.Get("API_SET_RECEIVED_PDA");
@@ -326,15 +338,12 @@ namespace PDADesktop.Classes.Utils
         internal static List<Sincronizacion> CreateNewBatch(string storeId, bool isCompleted)
         {
             string urlCreateNewBatch = ConfigurationManager.AppSettings.Get(Constants.API_CREATE_NEW_BATCH);
-            string jsonBody = "{ \"idSucursal\":" + storeId + ", \"idAcciones\": [{}]";
+            string[] actionsId = new string[] { "1" };
             if(isCompleted)
             {
-                jsonBody = String.Format(jsonBody, "1, 2");
+                actionsId = new string[] { "1", "2" };
             }
-            else
-            {
-                jsonBody = String.Format(jsonBody, "1");
-            }
+            string jsonBody = JsonUtils.getJsonBody(storeId, actionsId);
             string responseCreateNewBatch = SendHttpPostRequest(urlCreateNewBatch, jsonBody);
             List<Sincronizacion> newSync = JsonUtils.GetListSinchronization(responseCreateNewBatch);
             return newSync;

@@ -15,6 +15,20 @@ namespace PDADesktop.Classes.Utils
             string response = HttpWebClientUtil.SetSentGenesixState(queryParams);
             logger.Debug(response);
         }
+
+        internal static void SetReceivedFromGenesix(string syncId)
+        {
+            string queryParams = "?idSincronizacion=" + syncId;
+            string response = HttpWebClientUtil.SetReceivedFromGenesix(queryParams);
+            logger.Debug(response);
+        }
+
+        internal static void SetErrorGenesixGeneral(string syncId)
+        {
+            string queryParams = "?idSincronizacion=" + syncId;
+            string response = HttpWebClientUtil.SetErrorGenesixGeneral(queryParams);
+            logger.Debug(response);
+        }
         #endregion
 
         #region DeviceState

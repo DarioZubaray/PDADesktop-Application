@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using PDADesktop.Model;
 using PDADesktop.Model.Dto;
+using PDADesktop.Model.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -50,6 +51,18 @@ namespace PDADesktop.Classes.Utils
         public static ActionResultDto GetActionResult(string serializedJson)
         {
             return JsonConvert.DeserializeObject<ActionResultDto>(serializedJson);
+        }
+
+        public static string getJsonBody(string storeId, string[] actionsId)
+        {
+            JsonBody jsonBody = new JsonBody();
+            jsonBody.idSucursal = storeId;
+            if (actionsId != null)
+            {
+                jsonBody.idAcciones = actionsId;
+            }
+            string json = JsonConvert.SerializeObject(jsonBody);
+            return json;
         }
     }
 }

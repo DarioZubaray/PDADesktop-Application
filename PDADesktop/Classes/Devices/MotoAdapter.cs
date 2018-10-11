@@ -21,7 +21,7 @@ namespace PDADesktop.Classes.Devices
         {
             string deviceLookupRelPath = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_LOOKUP);
             logger.Debug("obteniendo archivo desde dispositivo: " + deviceLookupRelPath + filenameAndExtension);
-            string publicPathLookup = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string publicPathLookup = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_LOOKUP);
             string publicPathLookupExtended = TextUtils.ExpandEnviromentVariable(publicPathLookup);
             logger.Debug("copiando hacia la ruta: " + publicPathLookupExtended + filenameAndExtension);
             FileUtils.VerifyFoldersOrCreate(publicPathLookupExtended);
