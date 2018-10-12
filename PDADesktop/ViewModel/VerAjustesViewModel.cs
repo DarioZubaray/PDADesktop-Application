@@ -1,5 +1,4 @@
 ﻿using log4net;
-using Newtonsoft.Json;
 using PDADesktop.Classes;
 using PDADesktop.Model;
 using PDADesktop.Classes.Utils;
@@ -7,7 +6,6 @@ using PDADesktop.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Configuration;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
