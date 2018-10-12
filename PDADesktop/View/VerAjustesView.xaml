@@ -56,7 +56,7 @@
                   AlternatingRowBackground="Gainsboro" AlternationCount="2"
                   AutoGenerateColumns="False" RowHeight="25"
                   SelectionUnit="FullRow" IsReadOnly="True"
-                  ItemsSource="{Binding Ajustes}"
+                  ItemsSource="{Binding Adjustments}"
                   SelectedItem="{Binding Path=SelectedAdjustment, Mode=TwoWay}">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
@@ -123,11 +123,11 @@
                           Grid.Column="1" Grid.Row="1"
                           MinWidth="72" Margin="10"
                           VerticalAlignment="Bottom"
-                          ItemsSource="{Binding TiposDeAjustes}"
-                          IsEnabled="{Binding Path=Combobox_tipoAjusteEnabled, Mode=TwoWay}"
-                          SelectedValue="{Binding TipoDeAjusteSelected}">
+                          ItemsSource="{Binding AdjustmentsTypes}"
+                          IsEnabled="{Binding Path=Combobox_adjustmentTypeEnabled, Mode=TwoWay}"
+                          SelectedValue="{Binding AdjustmentTypeSelected}">
                     <ComboBox.SelectedItem>
-                        <Binding Path="TipoDeAjusteSelected" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                        <Binding Path="AdjustmentTypeSelected" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
                                 <rules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:rules="clr-namespace:PDADesktop.Classes" />
                             </Binding.ValidationRules>
@@ -141,10 +141,10 @@
                 </ComboBox>
                 <Label Content="Cantidad" Grid.Column="0" Grid.Row="2" Margin="10"/>
                 <TextBox Grid.Column="1" Grid.Row="2" Margin="10"
-                         Text="{Binding Textbox_cantidadValue}"
-                         IsEnabled="{Binding Path=Textbox_cantidadEnabled, Mode=TwoWay}">
+                         Text="{Binding Textbox_amountValue}"
+                         IsEnabled="{Binding Path=Textbox_amountEnabled, Mode=TwoWay}">
                     <TextBox.DataContext>
-                        <Binding Path="Textbox_cantidadValue" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                        <Binding Path="Textbox_amountValue" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
                                 <rules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:rules="clr-namespace:PDADesktop.Classes" />
                             </Binding.ValidationRules>
@@ -154,22 +154,22 @@
 
                 <Border Grid.Column="1" Grid.Row="3" Margin="10">
                     <Button x:Name="button_eliminar" Style="{StaticResource MaterialDesignFlatButton}"
-                            Command="{Binding EliminarAjusteCommand}"
+                            Command="{Binding DeleteAdjustmentCommand}"
                             CommandParameter="{Binding Path=SelectedAdjustment, Mode=TwoWay}">Eliminar</Button>
                 </Border>
                 <Border Grid.Column="2" Grid.Row="3" Margin="10">
                     <Button x:Name="button_actualizar" Style="{StaticResource MaterialDesignRaisedLightButton}"
-                            Command="{Binding ActualizarAjusteCommand}">Actualizar</Button>
+                            Command="{Binding UpdateAdjustmentCommand}">Actualizar</Button>
                 </Border>
             </Grid>
             <Separator></Separator>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Stretch" Height="90">
                 <Border Margin="10">
                     <Button x:Name="button_descartar" Style="{StaticResource MaterialDesignFlatButton}"
-                            Command="{Binding DescartarCambiosCommand}">Descartar</Button>
+                            Command="{Binding DiscardChangesCommand}">Descartar</Button>
                 </Border>
                 <Border Margin="10">
-                    <Button x:Name="button_guardarCambios" Command="{Binding GuardarCambiosCommand}">Guardar cambios</Button>
+                    <Button x:Name="button_guardarCambios" Command="{Binding SaveChangesCommand}">Guardar cambios</Button>
                 </Border>
             </StackPanel>
         </StackPanel>

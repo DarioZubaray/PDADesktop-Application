@@ -185,7 +185,6 @@ namespace PDADesktop.ViewModel
             UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentMethod);
             DiscardChangesCommand = new RelayCommand(DiscardChangesMethod);
             SaveChangesCommand = new RelayCommand(SaveChangesMethod);
-            CloseVerAjustesWindow();
         }
         #endregion
 

@@ -1042,32 +1042,36 @@ namespace PDADesktop.ViewModel
             bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
             if(estadoDevice)
             {
-                string motoApiReadDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
+                string readAdjustment = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
                 //por aca sabemos si hay ajustes realizados y de continuar
 
-                List<Ajustes> ajustes = JsonUtils.GetListAjustes(motoApiReadDataFile);
-                if(ajustes != null && ajustes.Count > 0)
+                if(readAdjustment != null)
                 {
-                    logger.Debug("hay ajustes realizados");
-                    logger.Debug("Dato que sera de vital importancia: ajustes.Count es el numnero del badge");
-
-                    bool isWindowOpen = false;
-                    foreach (Window w in Application.Current.Windows)
+                    List<Ajustes> ajustes = JsonUtils.GetListAjustes(readAdjustment);
+                    if(ajustes != null && ajustes.Count > 0)
                     {
-                        if (w is VerAjustesView)
+                        logger.Debug("hay ajustes realizados");
+                        logger.Debug("Dato que sera de vital importancia: ajustes.Count es el numnero del badge");
+
+                        bool isWindowOpen = false;
+                        foreach (Window w in Application.Current.Windows)
                         {
-                            isWindowOpen = true;
-                            w.Activate();
+                            if (w is VerAjustesView)
+                            {
+                                isWindowOpen = true;
+                                w.Activate();
+                            }
                         }
-                    }
 
-                    if (!isWindowOpen)
-                    {
-                        VerAjustesView newwindow = new VerAjustesView();
-                        newwindow.Show();
-                        PanelLoading = true;
-                        PanelMainMessage = "Editando ajustes realizados...";
-                        PanelSubMessage = "";
+                        if (!isWindowOpen)
+                        {
+                            VerAjustesView newwindow = new VerAjustesView();
+                            newwindow.Show();
+
+                            PanelLoading = true;
+                            PanelMainMessage = "Editando ajustes realizados...";
+                            PanelSubMessage = "";
+                        }
                     }
                 }
                 else
@@ -1203,7 +1207,6 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        
         public void AvisoAlUsuario(string mensaje)
         {
             string message = mensaje;
