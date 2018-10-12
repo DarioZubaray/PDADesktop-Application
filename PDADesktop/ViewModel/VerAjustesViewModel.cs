@@ -151,7 +151,7 @@ namespace PDADesktop.ViewModel
         {
             BannerApp.PrintSeeAdjustments();
             MyAppProperties.isSeeAdjustmentsWindowClosed = false;
-            var dispatcher = Application.Current.MainWindow.Dispatcher;
+            var dispatcher = App.Instance.MainWindow.Dispatcher;
             bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
             if (deviceStatus)
             {
@@ -258,6 +258,15 @@ namespace PDADesktop.ViewModel
         public void UpdateAdjustmentMethod(object obj)
         {
             logger.Debug("ActualizarAjusteButton");
+            foreach(Ajustes adjustment in Adjustments)
+            {
+                if (adjustment.ean.Equals(SelectedAdjustment.ean))
+                {
+                    adjustment.motivo = SelectedAdjustment.motivo;
+                    adjustment.cantidad = SelectedAdjustment.cantidad;
+                    OnPropertyChanged();
+                }
+            }
             SelectedAdjustment = null;
         }
         public void DiscardChangesMethod(object obj)

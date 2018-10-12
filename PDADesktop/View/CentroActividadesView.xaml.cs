@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PDADesktop.ViewModel;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -13,6 +14,7 @@ namespace PDADesktop.View
         public CentroActividadesView()
         {
             InitializeComponent();
+            //this.DataContext = new VerAjustesViewModel();
         }
     }
 }
