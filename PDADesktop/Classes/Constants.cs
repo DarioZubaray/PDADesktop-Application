@@ -37,8 +37,8 @@
         public const string DEVICE_RELPATH_LOOKUP = "DEVICE_RELPATH_LOOKUP";
         public const string DEVICE_RELPATH_DATA = "DEVICE_RELPATH_DATA";
         public const string DESKTOP_FOLDER = "DESKTOP_FOLDER";
-        public const string CONTROL_PRECIOS_CON_UBICACIONES = "UBICACIONES";
-        public const string CONTROL_PRECIOS_SIN_UBICACIONES = "UBICACION_ARTICULOS";
+        public const string CONTROL_PRECIOS_CON_UBICACIONES = "CONTROL_PRECIOS_CON_UBICACIONES";
+        public const string CONTROL_PRECIOS_SIN_UBICACIONES = "CONTROL_PRECIOS_SIN_UBICACIONES";
         public const string AJUSTES = "AJUSTES";
         public const string RECEPCIONES = "RECEPCIONES";
         public const string IMPRESION_ETIQUETAS = "IMPRESION_ETIQUETAS";
