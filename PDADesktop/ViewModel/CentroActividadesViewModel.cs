@@ -896,6 +896,7 @@ namespace PDADesktop.ViewModel
             else
             {
                 logger.Debug("Dispositivo no conectado");
+                ShowPanelNoConnection();
             }
         }
 
