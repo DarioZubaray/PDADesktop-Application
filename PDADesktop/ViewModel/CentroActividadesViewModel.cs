@@ -483,9 +483,7 @@ namespace PDADesktop.ViewModel
             {
                 dispatcher.BeginInvoke(new Action(() =>
                 {
-                    PanelLoading_NC = true;
-                    PanelMainMessage_NC = "Se ha perdido la conexión con el Dispositivo " + App.Instance.deviceHandler.GetName();
-                    PanelSubMessage_NC = "Reintentando...";
+                    ShowPanelNoConnection();
                 }));
             }
             else
@@ -500,6 +498,13 @@ namespace PDADesktop.ViewModel
 
             // Forcing the CommandManager to raise the RequerySuggested event
             CommandManager.InvalidateRequerySuggested();
+        }
+
+        private void ShowPanelNoConnection()
+        {
+            PanelLoading_NC = true;
+            PanelMainMessage_NC = "Se ha perdido la conexión con el Dispositivo " + App.Instance.deviceHandler.GetName();
+            PanelSubMessage_NC = "Reintentando...";
         }
         #endregion
 
@@ -581,6 +586,7 @@ namespace PDADesktop.ViewModel
             {
                 logger.Info("Dispositivo no detectado");
                 CreateBadgeSeeAdjustments();
+                ShowPanelNoConnection();
             }
             NotifyCurrentMessage("Todo listo!");
         }
