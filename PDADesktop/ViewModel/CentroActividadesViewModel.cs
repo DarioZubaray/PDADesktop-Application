@@ -837,8 +837,8 @@ namespace PDADesktop.ViewModel
         private bool CheckInformedReceptions()
         {
             string sotreId = MyAppProperties.storeId;
-            string syncId = HttpWebClientUtil.GetCurrentBatchId(sotreId).ToString();
-            bool informedReceptions = HttpWebClientUtil.CheckInformedReceptions(syncId);
+            string batchId = HttpWebClientUtil.GetCurrentBatchId(sotreId).ToString();
+            bool informedReceptions = HttpWebClientUtil.CheckInformedReceptions(batchId);
             logger.Info("recepciones Informadas pendientes: " + (informedReceptions ? "NO" : "SI"));
 
             return !informedReceptions;

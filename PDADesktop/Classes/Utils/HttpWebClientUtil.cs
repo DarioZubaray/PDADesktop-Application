@@ -230,11 +230,11 @@ namespace PDADesktop.Classes.Utils
             return adjustmentsTypes;
         }
 
-        internal static bool CheckInformedReceptions(string idSincronizacion)
+        internal static bool CheckInformedReceptions(string batchId)
         {
             bool informedReceptions = false;
             string urlPathInformedReceptions = ConfigurationManager.AppSettings.Get("API_BUSCAR_RECEPCIONES_INFORMADAS");
-            string urlPath_urlQuery = String.Format("{0}?idSincronizacion={1}", urlPathInformedReceptions, idSincronizacion);
+            string urlPath_urlQuery = String.Format("{0}?idLoteRecepcionInformada={1}", urlPathInformedReceptions, batchId);
             string response = SendHttpGetRequest(urlPath_urlQuery);
             if (response != null)
             {
