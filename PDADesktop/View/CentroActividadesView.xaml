@@ -178,5 +178,12 @@
                               SubMessage="{Binding PanelSubMessage}" 
                               ClosePanelCommand="{Binding PanelCloseCommand}" />
         </Grid>
+        <Grid VerticalAlignment="Center">
+            <ctr:PanelNoConnection x:Name="panelNoConnection" 
+                                   IsLoading_NC="{Binding PanelLoading}"
+                                   Message_NC="{Binding PanelMainMessage}"
+                                   SubMessage_NC="{Binding PanelSubMessage}" 
+                                   ClosePanelCommand_NC ="{Binding PanelCloseCommand}"/>
+        </Grid>
     </Grid>
 </UserControl>
