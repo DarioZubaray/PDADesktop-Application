@@ -180,10 +180,10 @@
         </Grid>
         <Grid VerticalAlignment="Center">
             <ctr:PanelNoConnection x:Name="panelNoConnection" 
-                                   IsLoading_NC="{Binding PanelLoading}"
-                                   Message_NC="{Binding PanelMainMessage}"
-                                   SubMessage_NC="{Binding PanelSubMessage}" 
-                                   ClosePanelCommand_NC ="{Binding PanelCloseCommand}"/>
+                                   IsLoading_NC="{Binding PanelLoading_NC}"
+                                   Message_NC="{Binding PanelMainMessage_NC}"
+                                   SubMessage_NC="{Binding PanelSubMessage_NC}" 
+                                   ClosePanelCommand_NC ="{Binding PanelCloseCommand_NC}"/>
         </Grid>
     </Grid>
 </UserControl>

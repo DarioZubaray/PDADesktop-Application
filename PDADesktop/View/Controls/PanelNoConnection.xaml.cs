@@ -12,7 +12,7 @@ namespace PDADesktop.View.Controls
     DependencyProperty.Register("IsLoading_NC", typeof(bool), typeof(PanelNoConnection), new UIPropertyMetadata(false));
 
         public static readonly DependencyProperty MessageProperty_NC =
-            DependencyProperty.Register("Message_NC", typeof(string), typeof(PanelNoConnection), new UIPropertyMetadata("Loading..."));
+            DependencyProperty.Register("Message_NC", typeof(string), typeof(PanelNoConnection), new UIPropertyMetadata("Sin conexión..."));
 
         public static readonly DependencyProperty SubMessageProperty_NC =
             DependencyProperty.Register("SubMessage_NC", typeof(string), typeof(PanelNoConnection), new UIPropertyMetadata(string.Empty));

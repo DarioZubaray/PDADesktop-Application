@@ -1,6 +1,5 @@
 ﻿using log4net;
 using MaterialDesignThemes.Wpf;
-using Newtonsoft.Json;
 using PDADesktop.Classes;
 using PDADesktop.Classes.Devices;
 using PDADesktop.Model;
@@ -17,6 +16,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using PDADesktop.Model.Dto;
+using System.Windows.Threading;
 
 namespace PDADesktop.ViewModel
 {
@@ -304,7 +304,7 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        // Atributos del Spiner
+        #region Loading panel
         private bool _panelLoading;
         public bool PanelLoading
         {
@@ -344,6 +344,48 @@ namespace PDADesktop.ViewModel
                 OnPropertyChanged();
             }
         }
+        #endregion
+        #region Panel no connection
+        private bool _panelLoading_NC;
+        public bool PanelLoading_NC
+        {
+            get
+            {
+                return _panelLoading_NC;
+            }
+            set
+            {
+                _panelLoading_NC = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _panelMainMessage_NC;
+        public string PanelMainMessage_NC
+        {
+            get
+            {
+                return _panelMainMessage_NC;
+            }
+            set
+            {
+                _panelMainMessage_NC = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _panelSubMessage_NC;
+        public string PanelSubMessage_NC
+        {
+            get
+            {
+                return _panelSubMessage_NC;
+            }
+            set
+            {
+                _panelSubMessage_NC = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
 
         //Con ObservableCollection no se actualiza la grilla :\
         private List<SincronizacionDtoDataGrid> _sincronizaciones;
@@ -393,6 +435,8 @@ namespace PDADesktop.ViewModel
         public CentroActividadesViewModel()
         {
             BannerApp.PrintActivityCenter();
+            PanelLoading_NC = false;
+            PanelMainMessage_NC = "PDA SIN CONEXION";
             PanelLoading = true;
             PanelMainMessage = "Cargando...";
             setInfoLabels();
@@ -415,11 +459,47 @@ namespace PDADesktop.ViewModel
             syncrWorker.DoWork += syncWorker_DoWork;
             syncrWorker.RunWorkerCompleted += syncWorker_RunWorkerCompleted;
 
+            var dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 15);
+            dispatcherTimer.Start();
+
             ShowPanelCommand = new RelayCommand(MostrarPanel, param => this.canExecute);
             HidePanelCommand = new RelayCommand(OcultarPanel, param => this.canExecute);
             ChangeMainMessageCommand = new RelayCommand(CambiarMainMensage, param => this.canExecute);
             ChangeSubMessageCommand = new RelayCommand(CambiarSubMensage, param => this.canExecute);
             PanelCloseCommand = new RelayCommand(CerrarPanel, param => this.canExecute);
+        }
+        #endregion
+
+        #region dispatcherTimer
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
+            logger.Debug("disptachertimer tick => Device status: " + deviceStatus);
+
+            var dispatcher = App.Instance.Dispatcher;
+            if(!deviceStatus)
+            {
+                dispatcher.BeginInvoke(new Action(() =>
+                {
+                    PanelLoading_NC = true;
+                    PanelMainMessage_NC = "Se ha perdido la conexión con el Dispositivo " + App.Instance.deviceHandler.GetName();
+                    PanelSubMessage_NC = "Reintentando...";
+                }));
+            }
+            else
+            {
+                
+                dispatcher.BeginInvoke(new Action(() =>
+                {
+                    PanelLoading_NC = false;
+                    PanelMainMessage_NC = "La conexión ha vuelto! que bien!";
+                }));
+            }
+
+            // Forcing the CommandManager to raise the RequerySuggested event
+            CommandManager.InvalidateRequerySuggested();
         }
         #endregion
 
