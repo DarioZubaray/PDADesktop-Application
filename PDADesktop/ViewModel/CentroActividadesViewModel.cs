@@ -459,6 +459,7 @@ namespace PDADesktop.ViewModel
             syncrWorker.DoWork += syncWorker_DoWork;
             syncrWorker.RunWorkerCompleted += syncWorker_RunWorkerCompleted;
 
+            MyAppProperties.needReloadActivityCenter = false;
             var dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 15);
@@ -483,6 +484,7 @@ namespace PDADesktop.ViewModel
                 var dispatcher = App.Instance.Dispatcher;
                 if (!deviceStatus)
                 {
+                    MyAppProperties.needReloadActivityCenter = true;
                     dispatcher.BeginInvoke(new Action(() =>
                     {
                         ShowPanelNoConnection();
@@ -490,13 +492,17 @@ namespace PDADesktop.ViewModel
                 }
                 else
                 {
-                    dispatcher.BeginInvoke(new Action(() =>
+                    if (MyAppProperties.needReloadActivityCenter)
                     {
-                        PanelLoading_NC = false;
-                        PanelMainMessage_NC = "La conexión ha vuelto! que bien!";
-                        PanelLoading = true;
-                    }));
-                    loadCentroActividadesWorker.RunWorkerAsync();
+                        dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            PanelLoading_NC = false;
+                            PanelMainMessage_NC = "La conexión ha vuelto! que bien!";
+                            PanelLoading = true;
+                        }));
+                        loadCentroActividadesWorker.RunWorkerAsync();
+                        MyAppProperties.needReloadActivityCenter = false;
+                    }
                 }
 
                 // Forcing the CommandManager to raise the RequerySuggested event
