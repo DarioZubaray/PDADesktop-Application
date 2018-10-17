@@ -461,7 +461,7 @@ namespace PDADesktop.ViewModel
 
             var dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 15);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 30);
             dispatcherTimer.Start();
 
             ShowPanelCommand = new RelayCommand(MostrarPanel, param => this.canExecute);
@@ -488,12 +488,13 @@ namespace PDADesktop.ViewModel
             }
             else
             {
-                
                 dispatcher.BeginInvoke(new Action(() =>
                 {
                     PanelLoading_NC = false;
                     PanelMainMessage_NC = "La conexión ha vuelto! que bien!";
+                    PanelLoading = true;
                 }));
+                loadCentroActividadesWorker.RunWorkerAsync();
             }
 
             // Forcing the CommandManager to raise the RequerySuggested event
