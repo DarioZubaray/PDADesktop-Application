@@ -461,7 +461,7 @@ namespace PDADesktop.ViewModel
 
             var dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 30);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 15);
             dispatcherTimer.Start();
 
             ShowPanelCommand = new RelayCommand(MostrarPanel, param => this.canExecute);
@@ -475,30 +475,37 @@ namespace PDADesktop.ViewModel
         #region dispatcherTimer
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
-            logger.Debug("disptachertimer tick => Device status: " + deviceStatus);
-
-            var dispatcher = App.Instance.Dispatcher;
-            if(!deviceStatus)
+            if (!loadCentroActividadesWorker.IsBusy)
             {
-                dispatcher.BeginInvoke(new Action(() =>
+                bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
+                logger.Debug("disptachertimer tick => Device status: " + deviceStatus);
+
+                var dispatcher = App.Instance.Dispatcher;
+                if (!deviceStatus)
                 {
-                    ShowPanelNoConnection();
-                }));
+                    dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        ShowPanelNoConnection();
+                    }));
+                }
+                else
+                {
+                    dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        PanelLoading_NC = false;
+                        PanelMainMessage_NC = "La conexión ha vuelto! que bien!";
+                        PanelLoading = true;
+                    }));
+                    loadCentroActividadesWorker.RunWorkerAsync();
+                }
+
+                // Forcing the CommandManager to raise the RequerySuggested event
+                CommandManager.InvalidateRequerySuggested();
             }
             else
             {
-                dispatcher.BeginInvoke(new Action(() =>
-                {
-                    PanelLoading_NC = false;
-                    PanelMainMessage_NC = "La conexión ha vuelto! que bien!";
-                    PanelLoading = true;
-                }));
-                loadCentroActividadesWorker.RunWorkerAsync();
+                logger.Debug("se esta cargando el centro de actividades...");
             }
-
-            // Forcing the CommandManager to raise the RequerySuggested event
-            CommandManager.InvalidateRequerySuggested();
         }
 
         private void ShowPanelNoConnection()
