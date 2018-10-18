@@ -177,6 +177,7 @@
     <Compile Include="Classes\Devices\MotoAdapter.cs" />
     <Compile Include="Classes\Devices\ResultFileOperation.cs" />
     <Compile Include="Classes\Exceptions\DeviceMainDataException.cs" />
+    <Compile Include="Classes\Utils\ButtonStateUtils.cs" />
     <Compile Include="Classes\Utils\DateTimeUtils.cs" />
     <Compile Include="Classes\Utils\HttpWebClientUtil.cs" />
     <Compile Include="Classes\Devices\MotoApi.cs" />
