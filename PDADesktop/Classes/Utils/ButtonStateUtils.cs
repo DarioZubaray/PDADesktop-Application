@@ -47,37 +47,53 @@ namespace PDADesktop.Classes.Utils
 
         private static void verAjustesInformados(int idActividad, int epda, int egx, string idLote)
         {
-            throw new NotImplementedException();
+            if ( Constants.EPDA_RECIBIDO.Equals(epda) 
+                 && Constants.EGX_ENVIADO.Equals(egx)
+                 && Constants.ACTIVIDAD_AJUSTES.Equals(idActividad) )
+            {
+                //llamar a la vista ver 'AjustesView'
+            }
         }
 
         private static void Imprimir(long idSincronizacion, string idLote)
         {
-            throw new NotImplementedException();
+            //lamar a la vista 'ImprimirRecepcionView'
+            //la cual puede abrir un PDF
         }
 
         private static void verDetalles(long idSincronizacion, string idLote)
         {
-            throw new NotImplementedException();
+            //lamar a la vista 'VerDetallesRecepcionView'
         }
 
         private static void VerAjustes(long idSincronizacion, string idLote)
         {
-            throw new NotImplementedException();
+            //lamar a la vista 'VerAjustesView'
         }
 
         private static void TercerReintento(long idSincronizacion, string idLote)
         {
-            throw new NotImplementedException();
+            //applet.actualizarPedidos(idSinc, response);
+            //applet.controlBloqueoPDA(idSinc);
+            //refresca la grilla con el loteActual
         }
 
         private static void SegundoReintento(long idSincronizacion, int idAccion, int idActividad)
         {
-            throw new NotImplementedException();
+            //applet.descargarDeGX(arrStr);
+            //applet.controlBloqueoPDA(arrStr[0]);
+            //refresca la grilla con el loteActual
         }
 
         private static void PrimerReintento(long idSincronizacion, int idActividad)
         {
-            throw new NotImplementedException();
+            if (Constants.ACTIVIDAD_INFORMAR_RECEPCIONES.Equals(idActividad))
+            {
+                //Si está informando Recepciones, controlo que esté la PDA conectada
+            }
+            //applet.informarDatosGX(arrStr[0]);
+            //applet.controlBloqueoPDA(arrStr[0]);
+            //refresca la grilla con el loteActual
         }
     }
 }

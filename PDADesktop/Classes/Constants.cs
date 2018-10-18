@@ -77,5 +77,10 @@
         public const int EGRAL_IMPRIMIR_RECEPCION = 7;
         public const int EGRAL_REINTENTAR2 = 10;
         public const int EGRAL_REINTENTAR3 = 11;
+
+        public const int EPDA_RECIBIDO = 3;
+        public const int EGX_ENVIADO = 2;
+        public const int ACTIVIDAD_AJUSTES = 103;
+        public const int ACTIVIDAD_INFORMAR_RECEPCIONES = 104;
     }
 }
