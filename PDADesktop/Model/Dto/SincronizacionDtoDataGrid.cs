@@ -1,5 +1,6 @@
 ﻿using PDADesktop.Classes;
 using PDADesktop.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
@@ -8,6 +9,7 @@ namespace PDADesktop.Model.Dto
 {
     public class SincronizacionDtoDataGrid
     {
+        public long idSincronizacion { get; set; }
         public string lote { get; set; }
         public int idAccion { get; set; }
         public string accion { get; set; }
@@ -64,13 +66,19 @@ namespace PDADesktop.Model.Dto
             foreach(Sincronizacion s in sincro)
             {
                 SincronizacionDtoDataGrid sincroDTOGrid = new SincronizacionDtoDataGrid();
+                sincroDTOGrid.idSincronizacion = s.idSincronizacion;
                 sincroDTOGrid.lote = s.lote.idLote.ToString();
                 sincroDTOGrid.accion = s.actividad.accion.descripcion.Split(' ').First();
+                sincroDTOGrid.idAccion = Convert.ToInt32(s.actividad.accion.idAccion);
                 sincroDTOGrid.fecha = s.lote.fecha.ToString("dd/MM/yyyy HH:mm");
                 sincroDTOGrid.actividad = s.actividad.descripcion;
+                sincroDTOGrid.idActividad = Convert.ToInt32(s.actividad.idActividad);
                 sincroDTOGrid.genesix = s.egx.descripcion;
+                sincroDTOGrid.idEstadoGenesix = Convert.ToInt32(s.egx.idEstado);
                 sincroDTOGrid.pda = s.epda.descripcion;
+                sincroDTOGrid.idEstadoPda = Convert.ToInt32(s.epda.idEstado);
                 sincroDTOGrid.estado = s.egral.descripcion;
+                sincroDTOGrid.idEstadoGeneral = Convert.ToInt32(s.egral.idEstado);
                 sincroDTOGrid.EstadoGeneralCommand = new RelayCommand(CentroActividadesViewModel.BotonEstadoGeneral, param => true);
                 sincroDTOGrid.EstadoGenesixCommand = new RelayCommand(CentroActividadesViewModel.BotonEstadoGenesix, param => true);
                 sincroDTOGrid.EstadoPDACommand = new RelayCommand(CentroActividadesViewModel.BotonEstadoPDA, param => true);
