@@ -251,7 +251,8 @@ namespace PDADesktop.ViewModel
 
         #region Attributes
         private readonly BackgroundWorker loadCentroActividadesWorker = new BackgroundWorker();
-        private readonly BackgroundWorker syncrWorker = new BackgroundWorker();
+        private readonly BackgroundWorker syncWorker = new BackgroundWorker();
+        private DispatcherTimer dispatcherTimer { get; set; }
 
         private string _txt_sincronizacion;
         public string txt_sincronizacion
@@ -456,11 +457,11 @@ namespace PDADesktop.ViewModel
             loadCentroActividadesWorker.DoWork += loadActivityCenterWorker_DoWork;
             loadCentroActividadesWorker.RunWorkerCompleted += loadCentroActividadesWorker_RunWorkerCompleted;
             
-            syncrWorker.DoWork += syncWorker_DoWork;
-            syncrWorker.RunWorkerCompleted += syncWorker_RunWorkerCompleted;
+            syncWorker.DoWork += syncWorker_DoWork;
+            syncWorker.RunWorkerCompleted += syncWorker_RunWorkerCompleted;
 
             MyAppProperties.needReloadActivityCenter = false;
-            var dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 15);
             dispatcherTimer.Start();
@@ -476,7 +477,7 @@ namespace PDADesktop.ViewModel
         #region dispatcherTimer
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (!loadCentroActividadesWorker.IsBusy)
+            if (!loadCentroActividadesWorker.IsBusy || syncWorker.IsBusy)
             {
                 bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
                 logger.Debug("disptachertimer tick => Device status: " + deviceStatus);
@@ -528,6 +529,10 @@ namespace PDADesktop.ViewModel
         {
             string currentMessage = "Load Activity Center Worker -> doWork";
             logger.Debug(currentMessage);
+            if(dispatcherTimer != null)
+            {
+                dispatcherTimer.Stop();
+            }
 
             currentMessage = "Verificando conexión con el servidor PDAExpress...";
             NotifyCurrentMessage(currentMessage);
@@ -817,6 +822,10 @@ namespace PDADesktop.ViewModel
         {
             logger.Debug("loadCentroActividades Worker ->runWorkedCompleted");
             PanelLoading = false;
+            if (dispatcherTimer != null)
+            {
+                dispatcherTimer.Start();
+            }
         }
         #endregion
 
@@ -825,6 +834,12 @@ namespace PDADesktop.ViewModel
         {
             string currentMessage = "sincronizar Worker ->doWork";
             logger.Debug(currentMessage);
+
+            if (dispatcherTimer != null)
+            {
+                dispatcherTimer.Stop();
+            }
+
             currentMessage = "Checkeando conexión con el dispositivo...";
             NotifyCurrentMessage(currentMessage);
             bool isConneted = CheckDeviceConnected();
@@ -1092,6 +1107,10 @@ namespace PDADesktop.ViewModel
             {
                 PanelLoading = false;
             }));
+            if (dispatcherTimer != null)
+            {
+                dispatcherTimer.Start();
+            }
         }
         #endregion
         #endregion
@@ -1124,7 +1143,7 @@ namespace PDADesktop.ViewModel
             MyAppProperties.isSynchronizationComplete = true;
             PanelMainMessage = "Sincronizando todos los datos, Espere por favor";
             logger.Info("Sincronizando todos los datos");
-            syncrWorker.RunWorkerAsync();
+            syncWorker.RunWorkerAsync();
         }
 
         public void InformarGenesix(object obj)
@@ -1134,7 +1153,7 @@ namespace PDADesktop.ViewModel
             MyAppProperties.isSynchronizationComplete = false;
             PanelMainMessage = "Informando a genesix, Espere por favor";
             logger.Info("Informando a genesix");
-            syncrWorker.RunWorkerAsync();
+            syncWorker.RunWorkerAsync();
         }
 
         public void VerAjustes(object obj)
