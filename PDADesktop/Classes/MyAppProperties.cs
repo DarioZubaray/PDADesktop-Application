@@ -9,6 +9,7 @@ namespace PDADesktop.Classes
     {
         public static string storeId { get; set; }
         public static string currentBatchId { get; set; }
+        public static string currentUrlSync { get; set; }
         public static MainWindow window { get; set; }
 
         public static SincronizacionDtoDataGrid SelectedSync { get; set; }

@@ -252,6 +252,7 @@ namespace PDADesktop.ViewModel
         #region Attributes
         private readonly BackgroundWorker loadCentroActividadesWorker = new BackgroundWorker();
         private readonly BackgroundWorker syncWorker = new BackgroundWorker();
+        private readonly BackgroundWorker syncDataGridWorker = new BackgroundWorker();
         private readonly BackgroundWorker adjustmentWorker = new BackgroundWorker();
 
         private DispatcherTimer dispatcherTimer { get; set; }
@@ -461,6 +462,9 @@ namespace PDADesktop.ViewModel
             
             syncWorker.DoWork += syncWorker_DoWork;
             syncWorker.RunWorkerCompleted += syncWorker_RunWorkerCompleted;
+
+            syncDataGridWorker.DoWork += syncDataGrid_DoWork;
+            syncDataGridWorker.RunWorkerCompleted += syncDataGrid_RunWorkerCompleted;
 
             adjustmentWorker.DoWork += adjustmentWorker_DoWork;
             adjustmentWorker.RunWorkerCompleted += adjustmentWorker_RunWorkerCompleted;
@@ -1119,6 +1123,31 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
+        #region sync Worker
+        private void syncDataGrid_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Info("<- Cargando la grilla");
+            string urlSincronizacionAnterior = MyAppProperties.currentUrlSync;
+            string _sucursal = MyAppProperties.storeId;
+            string _idLote = MyAppProperties.currentBatchId;
+            List<Sincronizacion> listaSincronizaciones = null;
+            listaSincronizaciones = HttpWebClientUtil.GetHttpWebSynchronizations(urlSincronizacionAnterior, _sucursal, _idLote);
+            if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
+            {
+                logger.Debug(listaSincronizaciones);
+                this.sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(listaSincronizaciones);
+                UpdateCurrentBatch(sincronizaciones);
+            }
+        }
+        private void syncDataGrid_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            PanelLoading = false;
+            PanelMainMessage = "";
+            PanelSubMessage = "";
+        }
+        #endregion
+
+        #region Adjustment Worker
         private void adjustmentWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("AdjustmentWorker -> Do worker started");
@@ -1145,6 +1174,7 @@ namespace PDADesktop.ViewModel
         {
             logger.Debug("AdjustmentWorker -> Run worker completed");
         }
+        #endregion
 
         #endregion
 
@@ -1205,34 +1235,20 @@ namespace PDADesktop.ViewModel
 
         public void SincronizacionAnterior(object obj)
         {
-            List<Sincronizacion> listaSincronizaciones = null;
-            logger.Info("<- Ejecutando la vista anterior a la actual de la grilla");
-            string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ANTERIOR);
-            string _sucursal = MyAppProperties.storeId;
-            string _idLote = MyAppProperties.currentBatchId;
-            listaSincronizaciones = HttpWebClientUtil.GetHttpWebSynchronizations(urlSincronizacionAnterior, _sucursal, _idLote);
-            if(listaSincronizaciones != null && listaSincronizaciones.Count != 0)
-            {
-                logger.Debug(listaSincronizaciones);
-                this.sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(listaSincronizaciones);
-                UpdateCurrentBatch(sincronizaciones);
-            }
+            PanelLoading = true;
+            PanelMainMessage = "Obteniendo sincronizaciones";
+            PanelSubMessage = "Espere por favor";
+            MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ANTERIOR);
+            syncDataGridWorker.RunWorkerAsync();
         }
 
         public void SincronizacionSiguiente(object obj)
         {
-            List<Sincronizacion> listaSincronizaciones = null;
-            logger.Info("-> Solicitando la vista siguiente de la grilla, si es que la hay...");
-            string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_SIGUIENTE);
-            string _sucursal = MyAppProperties.storeId;
-            string _idLote = MyAppProperties.currentBatchId;
-            listaSincronizaciones = HttpWebClientUtil.GetHttpWebSynchronizations(urlSincronizacionAnterior, _sucursal, _idLote);
-            if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
-            {
-                logger.Debug(listaSincronizaciones);
-                this.sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(listaSincronizaciones);
-                UpdateCurrentBatch(sincronizaciones);
-            }
+            PanelLoading = true;
+            PanelMainMessage = "Obteniendo sincronizaciones";
+            PanelSubMessage = "Espere por favor";
+            MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_SIGUIENTE);
+            syncDataGridWorker.RunWorkerAsync();
         }
 
         public void BuscarSincronizaciones(object obj)
@@ -1244,18 +1260,11 @@ namespace PDADesktop.ViewModel
 
         public void GoLastSynchronization(object obj)
         {
-            List<Sincronizacion> synchronizationList = null;
-            logger.Info("Llendo a la ultima sincronizacion");
-            string urlSincronizacionAnterior = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
-            string _sucursal = MyAppProperties.storeId;
-            string _idLote = MyAppProperties.currentBatchId;
-            synchronizationList = HttpWebClientUtil.GetHttpWebSynchronizations(urlSincronizacionAnterior, _sucursal, _idLote);
-            if (synchronizationList != null && synchronizationList.Count != 0)
-            {
-                logger.Debug(synchronizationList);
-                this.sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(synchronizationList);
-                UpdateCurrentBatch(sincronizaciones);
-            }
+            PanelLoading = true;
+            PanelMainMessage = "Obteniendo sincronizaciones";
+            PanelSubMessage = "Espere por favor";
+            MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
+            syncDataGridWorker.RunWorkerAsync();
         }
 
         public void UpdateCurrentBatch(List<SincronizacionDtoDataGrid> synchronizations)
