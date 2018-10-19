@@ -114,7 +114,7 @@
                 <Label Content="Ean" Grid.Column="0" Grid.Row="0" Margin="10"/>
                 <TextBox Grid.Column="1" Grid.Row="0" Margin="10"
                          Text="{Binding SelectedAdjustment.ean}"
-                         IsEnabled="{Binding Path=Textbox_eanEnabled, Mode=TwoWay}"/>
+                         IsEnabled="{Binding Path=AdjustmentEnableEdit, Mode=TwoWay}"/>
 
                 <Label Content="Motivo" Grid.Column="0" Grid.Row="1" Margin="10"/>
                 <Border Grid.Column="1" Grid.Row="1" Margin="15">
@@ -122,7 +122,7 @@
                           MinWidth="72" 
                           VerticalAlignment="Bottom"
                           ItemsSource="{Binding AdjustmentsTypes}"
-                          IsEnabled="{Binding Path=Combobox_adjustmentTypeEnabled, Mode=TwoWay}"
+                          IsEnabled="{Binding Path=AdjustmentEnableEdit, Mode=TwoWay}"
                           SelectedValue="{Binding AdjustmentTypeSelected}">
                     <ComboBox.SelectedItem>
                         <Binding Path="AdjustmentTypeSelected" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
@@ -140,7 +140,7 @@
                 </Border>
                 <Label Content="Cantidad" Grid.Column="0" Grid.Row="2" Margin="10"/>
                 <Border Grid.Column="1" Grid.Row="2" Margin="15">
-                    <TextBox IsEnabled="{Binding Textbox_amountEnabled, Mode=TwoWay}">
+                    <TextBox IsEnabled="{Binding AdjustmentEnableEdit, Mode=TwoWay}">
                     <TextBox.Text>
                         <Binding Path="Textbox_amountValue" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
@@ -153,11 +153,13 @@
                 <Border Grid.Column="2" Grid.Row="1" Margin="10">
                     <Button x:Name="button_eliminar" Style="{StaticResource MaterialDesignFlatButton}"
                             Command="{Binding DeleteAdjustmentCommand}"
-                            CommandParameter="{Binding Path=SelectedAdjustment, Mode=TwoWay}">Eliminar</Button>
+                            CommandParameter="{Binding Path=SelectedAdjustment, Mode=TwoWay}"
+                            IsEnabled="{Binding AdjustmentEnableEdit, Mode=TwoWay}">Eliminar</Button>
                 </Border>
                 <Border Grid.Column="3" Grid.Row="1" Margin="10">
                     <Button x:Name="button_actualizar" Style="{StaticResource MaterialDesignRaisedLightButton}"
-                            Command="{Binding UpdateAdjustmentCommand}">Actualizar</Button>
+                            Command="{Binding UpdateAdjustmentCommand}"
+                            IsEnabled="{Binding AdjustmentEnableEdit, Mode=TwoWay}">Actualizar</Button>
                 </Border>
             </Grid>
             <Separator></Separator>

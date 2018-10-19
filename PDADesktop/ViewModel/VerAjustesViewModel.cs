@@ -45,43 +45,26 @@ namespace PDADesktop.ViewModel
                 {
                     AdjustmentTypeSelected = selectedAdjustment.motivo;
                     Textbox_amountValue = selectedAdjustment.cantidad.ToString();
-                    Combobox_adjustmentTypeEnabled = true;
-                    Textbox_amountEnabled = true;
+                    AdjustmentEnableEdit = true;
                 }
                 else
                 {
-                    Combobox_adjustmentTypeEnabled = false;
-                    Textbox_amountEnabled = false;
+                    AdjustmentEnableEdit = false;
                 }
                 OnPropertyChanged();
             }
         }
 
-        private bool textbox_eanEnabled;
-        public bool Textbox_eanEnabled
+        private bool adjustmentEnableEdit;
+        public bool AdjustmentEnableEdit
         {
             get
             {
-                return textbox_eanEnabled;
+                return adjustmentEnableEdit;
             }
             set
             {
-                textbox_eanEnabled = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool combobox_adjustmentTypeEnabled;
-        public bool Combobox_adjustmentTypeEnabled
-        {
-            get
-            {
-                return combobox_adjustmentTypeEnabled;
-            }
-            set
-            {
-                combobox_adjustmentTypeEnabled = value;
-                OnPropertyChanged();
+                adjustmentEnableEdit = value;
             }
         }
 
@@ -109,20 +92,6 @@ namespace PDADesktop.ViewModel
             }set
             {
                 adjustmentsTypes = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool textbox_amountEnabled;
-        public bool Textbox_amountEnabled
-        {
-            get
-            {
-                return textbox_amountEnabled;
-            }
-            set
-            {
-                textbox_amountEnabled = value;
                 OnPropertyChanged();
             }
         }
@@ -174,9 +143,7 @@ namespace PDADesktop.ViewModel
                     DispatcherPriority.ApplicationIdle);
             }
 
-            Textbox_eanEnabled = false;
-            Combobox_adjustmentTypeEnabled = false;
-            Textbox_amountEnabled = false;
+            AdjustmentEnableEdit = false;
 
             DeleteAdjustmentCommand = new RelayCommand(DeleteAdjustmentMethod);
             UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentMethod);
