@@ -7,7 +7,7 @@
         xmlns:VM="clr-namespace:PDADesktop.ViewModel"
         xmlns:local="clr-namespace:PDADesktop.View"
         mc:Ignorable="d"
-        Height="600" Width="600"
+        d:DesignHeight="730" d:DesignWidth="920"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -46,17 +46,17 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="5*" />
-            <RowDefinition Height="6*" />
+            <RowDefinition Height="3*" />
         </Grid.RowDefinitions>
         <DataGrid x:Name="dataGrid_verAjustes" Grid.Row="0"
                   BorderThickness="0" BorderBrush="Gainsboro"
-                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top"
+                  HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Top"
                   AlternatingRowBackground="Gainsboro" AlternationCount="2"
-                  AutoGenerateColumns="False" RowHeight="25"
+                  AutoGenerateColumns="False" RowHeight="25" FontSize="15"
                   SelectionUnit="FullRow" IsReadOnly="True"
                   ItemsSource="{Binding Adjustments}"
-                  SelectedItem="{Binding Path=SelectedAdjustment, Mode=TwoWay}">
+                  SelectedItem="{Binding Path=SelectedAdjustment, Mode=TwoWay}" Margin="10" Width="900">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
@@ -76,19 +76,19 @@
 
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding ean}" ClipboardContentBinding="{x:Null}"
-                                    Header="Ean" CanUserResize="False" Width="140"
+                                    Header="Ean" CanUserResize="False" Width="200"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 <DataGridTextColumn Binding="{Binding fechaAjuste}" ClipboardContentBinding="{x:Null}"
-                                    Header="Fecha" CanUserResize="False" Width="200"
+                                    Header="Fecha" CanUserResize="False" Width="250"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 <DataGridTextColumn Binding="{Binding motivo}" ClipboardContentBinding="{x:Null}"
-                                    Header="Motivo" CanUserResize="False" Width="130"
+                                    Header="Motivo" CanUserResize="False" Width="180"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 <DataGridTextColumn Binding="{Binding cantidad}" ClipboardContentBinding="{x:Null}"
-                                    Header="Cantidad Ajustada" CanUserResize="False" Width="Auto"
+                                    Header="Cantidad Ajustada" CanUserResize="False" Width="200"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
             </DataGrid.Columns>
@@ -117,10 +117,9 @@
                          IsEnabled="{Binding Path=Textbox_eanEnabled, Mode=TwoWay}"/>
 
                 <Label Content="Motivo" Grid.Column="0" Grid.Row="1" Margin="10"/>
-
+                <Border Grid.Column="1" Grid.Row="1" Margin="15">
                 <ComboBox materialDesign:HintAssist.Hint="Tipos de Ajustes"
-                          Grid.Column="1" Grid.Row="1"
-                          MinWidth="72" Margin="10"
+                          MinWidth="72" 
                           VerticalAlignment="Bottom"
                           ItemsSource="{Binding AdjustmentsTypes}"
                           IsEnabled="{Binding Path=Combobox_adjustmentTypeEnabled, Mode=TwoWay}"
@@ -138,9 +137,10 @@
                         </ItemsPanelTemplate>
                     </ComboBox.ItemsPanel>
                 </ComboBox>
+                </Border>
                 <Label Content="Cantidad" Grid.Column="0" Grid.Row="2" Margin="10"/>
-                <TextBox Grid.Column="1" Grid.Row="2" Margin="10"
-                         IsEnabled="{Binding Textbox_amountEnabled, Mode=TwoWay}">
+                <Border Grid.Column="1" Grid.Row="2" Margin="15">
+                    <TextBox IsEnabled="{Binding Textbox_amountEnabled, Mode=TwoWay}">
                     <TextBox.Text>
                         <Binding Path="Textbox_amountValue" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
@@ -149,25 +149,25 @@
                         </Binding>
                     </TextBox.Text>
                 </TextBox>
-
-                <Border Grid.Column="1" Grid.Row="3" Margin="10">
+                </Border>
+                <Border Grid.Column="2" Grid.Row="1" Margin="10">
                     <Button x:Name="button_eliminar" Style="{StaticResource MaterialDesignFlatButton}"
                             Command="{Binding DeleteAdjustmentCommand}"
                             CommandParameter="{Binding Path=SelectedAdjustment, Mode=TwoWay}">Eliminar</Button>
                 </Border>
-                <Border Grid.Column="2" Grid.Row="3" Margin="10">
+                <Border Grid.Column="3" Grid.Row="1" Margin="10">
                     <Button x:Name="button_actualizar" Style="{StaticResource MaterialDesignRaisedLightButton}"
                             Command="{Binding UpdateAdjustmentCommand}">Actualizar</Button>
                 </Border>
             </Grid>
             <Separator></Separator>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Stretch" Height="90">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="100" Margin="324,0">
                 <Border Margin="10">
                     <Button x:Name="button_descartar" Style="{StaticResource MaterialDesignFlatButton}"
-                            Command="{Binding DiscardChangesCommand}">Descartar</Button>
+                            Command="{Binding DiscardChangesCommand}" Content="Descartar"/>
                 </Border>
                 <Border Margin="10">
-                    <Button x:Name="button_guardarCambios" Command="{Binding SaveChangesCommand}">Guardar cambios</Button>
+                    <Button x:Name="button_guardarCambios" Command="{Binding SaveChangesCommand}" Content="Guardar cambios"/>
                 </Border>
             </StackPanel>
         </StackPanel>
