@@ -196,6 +196,7 @@
     <Compile Include="Model\Json\JsonBody.cs" />
     <Compile Include="Model\VersionArchivo.cs" />
     <Compile Include="Model\VersionDispositivo.cs" />
+    <Compile Include="ViewModel\ImprimirRecepcionViewModel.cs" />
     <Compile Include="View\Controls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
@@ -216,6 +217,9 @@
     </Compile>
     <Compile Include="View\Controls\PanelNoConnection.xaml.cs">
       <DependentUpon>PanelNoConnection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ImprimirRecepcionView.xaml.cs">
+      <DependentUpon>ImprimirRecepcionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\UserControl1.xaml.cs">
       <DependentUpon>UserControl1.xaml</DependentUpon>
@@ -240,6 +244,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Controls\PanelNoConnection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ImprimirRecepcionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
