@@ -65,6 +65,7 @@ namespace PDADesktop.ViewModel
             set
             {
                 adjustmentEnableEdit = value;
+                OnPropertyChanged();
             }
         }
 
@@ -78,7 +79,7 @@ namespace PDADesktop.ViewModel
             set
             {
                 adjustmentTypeSelected = value;
-                selectedAdjustment.motivo = adjustmentTypeSelected;
+                SelectedAdjustment.motivo = adjustmentTypeSelected;
                 OnPropertyChanged();
             }
         }

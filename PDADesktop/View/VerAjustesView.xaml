@@ -113,8 +113,10 @@
 
                 <Label Content="Ean" Grid.Column="0" Grid.Row="0" Margin="10"/>
                 <TextBox Grid.Column="1" Grid.Row="0" Margin="10"
-                         Text="{Binding SelectedAdjustment.ean}"
-                         IsEnabled="{Binding Path=AdjustmentEnableEdit, Mode=TwoWay}"/>
+                         IsEnabled="{Binding Path=AdjustmentEnableEdit, Mode=TwoWay}">
+                    <Binding Path="SelectedAdjustment.ean" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                </TextBox>
+
 
                 <Label Content="Motivo" Grid.Column="0" Grid.Row="1" Margin="10"/>
                 <Border Grid.Column="1" Grid.Row="1" Margin="15">
@@ -123,7 +125,7 @@
                           VerticalAlignment="Bottom"
                           ItemsSource="{Binding AdjustmentsTypes}"
                           IsEnabled="{Binding Path=AdjustmentEnableEdit, Mode=TwoWay}"
-                          SelectedValue="{Binding AdjustmentTypeSelected}">
+                          SelectedValue="{Binding SelectedAdjustment.motivo}">
                     <ComboBox.SelectedItem>
                         <Binding Path="AdjustmentTypeSelected" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
@@ -141,14 +143,14 @@
                 <Label Content="Cantidad" Grid.Column="0" Grid.Row="2" Margin="10"/>
                 <Border Grid.Column="1" Grid.Row="2" Margin="15">
                     <TextBox IsEnabled="{Binding AdjustmentEnableEdit, Mode=TwoWay}">
-                    <TextBox.Text>
-                        <Binding Path="Textbox_amountValue" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-                            <Binding.ValidationRules>
-                                <rules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:rules="clr-namespace:PDADesktop.Classes" />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
+                        <TextBox.Text>
+                            <Binding Path="SelectedAdjustment.cantidad" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <rules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:rules="clr-namespace:PDADesktop.Classes" />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </Border>
                 <Border Grid.Column="2" Grid.Row="1" Margin="10">
                     <Button x:Name="button_eliminar" Style="{StaticResource MaterialDesignFlatButton}"
