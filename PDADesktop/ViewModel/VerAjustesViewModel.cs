@@ -290,13 +290,13 @@ namespace PDADesktop.ViewModel
 
         private void CloseVerAjustesWindow()
         {
-            foreach (Window w in App.Instance.Windows)
+            foreach (Window w in Application.Current.Windows)
             {
-                if (w is VerAjustesView)
+                if (w is MainWindow)
                 {
-                    MyAppProperties.isSeeAdjustmentsWindowClosed = true;
-                    w.Close();
-                    break;
+                    var mainWindow = (MainWindow)w;
+                    Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
+                    mainWindow.frame.NavigationService.Navigate(uri);
                 }
             }
         }

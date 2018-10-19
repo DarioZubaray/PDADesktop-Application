@@ -69,6 +69,7 @@ namespace PDADesktop.Classes.Utils
         private static void VerAjustes(long idSincronizacion, string idLote)
         {
             //lamar a la vista 'VerAjustesView'
+            //que diferencia hay entre verAjustes y verAjustesRealizados y verAjustesInformados(?)
         }
 
         private static void TercerReintento(long idSincronizacion, string idLote)

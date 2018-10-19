@@ -252,6 +252,8 @@ namespace PDADesktop.ViewModel
         #region Attributes
         private readonly BackgroundWorker loadCentroActividadesWorker = new BackgroundWorker();
         private readonly BackgroundWorker syncWorker = new BackgroundWorker();
+        private readonly BackgroundWorker adjustmentWorker = new BackgroundWorker();
+
         private DispatcherTimer dispatcherTimer { get; set; }
 
         private string _txt_sincronizacion;
@@ -460,6 +462,9 @@ namespace PDADesktop.ViewModel
             syncWorker.DoWork += syncWorker_DoWork;
             syncWorker.RunWorkerCompleted += syncWorker_RunWorkerCompleted;
 
+            adjustmentWorker.DoWork += adjustmentWorker_DoWork;
+            adjustmentWorker.RunWorkerCompleted += adjustmentWorker_RunWorkerCompleted;
+
             MyAppProperties.needReloadActivityCenter = false;
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
@@ -524,7 +529,7 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Workers Method
-        #region Loaded Activity Center
+        #region Loaded Activity Center Worker
         private void loadActivityCenterWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             string currentMessage = "Load Activity Center Worker -> doWork";
@@ -829,7 +834,7 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region Synchonization
+        #region Synchonization Worker
         private void syncWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             string currentMessage = "sincronizar Worker ->doWork";
@@ -1113,6 +1118,34 @@ namespace PDADesktop.ViewModel
             }
         }
         #endregion
+
+        private void adjustmentWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Debug("AdjustmentWorker -> Do worker started");
+            bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
+            if (estadoDevice)
+            {
+                MainWindow window = MyAppProperties.window;
+                Uri uriSeeAdjustments = new Uri(Constants.VER_AJUSTES_VIEW, UriKind.Relative);
+
+                var dispatcher = Application.Current.Dispatcher;
+                dispatcher.BeginInvoke(new Action(() =>
+                {
+                    window.frame.NavigationService.Navigate(uriSeeAdjustments);
+                }));
+            }
+            else
+            {
+                PanelLoading = true;
+                AvisoAlUsuario("No se detecta conexion con la PDA");
+            }
+        }
+
+        private void adjustmentWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("AdjustmentWorker -> Run worker completed");
+        }
+
         #endregion
 
         #region Methods
@@ -1158,54 +1191,11 @@ namespace PDADesktop.ViewModel
 
         public void VerAjustes(object obj)
         {
+            PanelLoading = true;
+            PanelMainMessage = "Cargando ajustes realizados, Espere por favor";
+            PanelSubMessage = null;
             logger.Debug("Viendo ajustes realizados");
-            bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
-            if(estadoDevice)
-            {
-                string readAdjustment = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
-                //por aca sabemos si hay ajustes realizados y de continuar
-
-                if(readAdjustment != null)
-                {
-                    List<Ajustes> ajustes = JsonUtils.GetListAjustes(readAdjustment);
-                    if(ajustes != null && ajustes.Count > 0)
-                    {
-                        logger.Debug("hay ajustes realizados");
-                        logger.Debug("Dato que sera de vital importancia: ajustes.Count es el numnero del badge");
-
-                        bool isWindowOpen = false;
-                        foreach (Window w in Application.Current.Windows)
-                        {
-                            if (w is VerAjustesView)
-                            {
-                                isWindowOpen = true;
-                                w.Activate();
-                            }
-                        }
-
-                        if (!isWindowOpen)
-                        {
-                            VerAjustesView newwindow = new VerAjustesView();
-                            newwindow.Show();
-
-                            PanelLoading = true;
-                            PanelMainMessage = "Editando ajustes realizados...";
-                            PanelSubMessage = "";
-                        }
-                    }
-                }
-                else
-                {
-                    //else mostramos un mensaje que no hay datos
-                    logger.Debug("No, no hay ajustes hecho, para que habran pulsado en ver ajustes, por curiosidad?");
-                    AvisoAlUsuario("No se encontraron Ajustes Realizados");
-                }
-
-            }
-            else
-            {
-                AvisoAlUsuario("No se detecta conexion con la PDA");
-            }
+            adjustmentWorker.RunWorkerAsync();
         }
 
         public void CentroActividadesLoaded(object obj)

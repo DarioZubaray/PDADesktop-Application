@@ -11,6 +11,7 @@
         public const string SERVER_IP = "SERVER_HOST_PROTOCOL_IP_PORT";
         public const string URL_APPLICATION_UPDATE = "URL_UPDATE";
         public const string CENTRO_ACTIVIDADES_VIEW = "View/CentroActividadesView.xaml";
+        public const string VER_AJUSTES_VIEW = "View/VerAjustesView.xaml";
         public const string LOGIN_VIEW = "View/LoginView.xaml";
         public const string API_SYNC_ANTERIOR = "API_SYNC_ANTERIOR";
         public const string API_SYNC_SIGUIENTE = "API_SYNC_SIGUIENTE";

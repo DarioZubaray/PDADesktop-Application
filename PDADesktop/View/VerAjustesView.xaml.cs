@@ -1,11 +1,11 @@
-﻿using MahApps.Metro.Controls;
+﻿using System.Windows.Controls;
 
 namespace PDADesktop.View
 {
     /// <summary>
     /// Lógica de interacción para VerAjustesView.xaml
     /// </summary>
-    public partial class VerAjustesView : MetroWindow
+    public partial class VerAjustesView : UserControl
     {
         public VerAjustesView()
         {
