@@ -250,7 +250,8 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Attributes
-        private readonly BackgroundWorker loadCentroActividadesWorker = new BackgroundWorker();
+        private readonly BackgroundWorker loadOnceCentroActividadesWorker = new BackgroundWorker();
+        private readonly BackgroundWorker reloadCentroActividadesWorker = new BackgroundWorker();
         private readonly BackgroundWorker syncWorker = new BackgroundWorker();
         private readonly BackgroundWorker syncDataGridWorker = new BackgroundWorker();
         private readonly BackgroundWorker adjustmentWorker = new BackgroundWorker();
@@ -457,9 +458,12 @@ namespace PDADesktop.ViewModel
             EstadoPDACommand = new RelayCommand(BotonEstadoPDA, param => this.canExecute);
             EstadoGeneralCommand = new RelayCommand(BotonEstadoGeneral, param => this.canExecute);
 
-            loadCentroActividadesWorker.DoWork += loadActivityCenterWorker_DoWork;
-            loadCentroActividadesWorker.RunWorkerCompleted += loadCentroActividadesWorker_RunWorkerCompleted;
-            
+            loadOnceCentroActividadesWorker.DoWork += loadOnceActivityCenterWorker_DoWork;
+            loadOnceCentroActividadesWorker.RunWorkerCompleted += loadOnceCentroActividadesWorker_RunWorkerCompleted;
+
+            reloadCentroActividadesWorker.DoWork += reloadCentroActividadesWorker_DoWork;
+            reloadCentroActividadesWorker.RunWorkerCompleted += reloadCentroActividadesWorker_RunWorkerCompleted;
+
             syncWorker.DoWork += syncWorker_DoWork;
             syncWorker.RunWorkerCompleted += syncWorker_RunWorkerCompleted;
 
@@ -469,7 +473,6 @@ namespace PDADesktop.ViewModel
             adjustmentWorker.DoWork += adjustmentWorker_DoWork;
             adjustmentWorker.RunWorkerCompleted += adjustmentWorker_RunWorkerCompleted;
 
-            MyAppProperties.needReloadActivityCenter = false;
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 15);
@@ -486,7 +489,7 @@ namespace PDADesktop.ViewModel
         #region dispatcherTimer
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (!loadCentroActividadesWorker.IsBusy || syncWorker.IsBusy)
+            if (!loadOnceCentroActividadesWorker.IsBusy || syncWorker.IsBusy)
             {
                 bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
                 logger.Debug("disptachertimer tick => Device status: " + deviceStatus);
@@ -510,7 +513,7 @@ namespace PDADesktop.ViewModel
                             PanelMainMessage_NC = "La conexión ha vuelto! que bien!";
                             PanelLoading = true;
                         }));
-                        loadCentroActividadesWorker.RunWorkerAsync();
+                        loadOnceCentroActividadesWorker.RunWorkerAsync();
                         MyAppProperties.needReloadActivityCenter = false;
                     }
                 }
@@ -534,7 +537,7 @@ namespace PDADesktop.ViewModel
 
         #region Workers Method
         #region Loaded Activity Center Worker
-        private void loadActivityCenterWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void loadOnceActivityCenterWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             string currentMessage = "Load Activity Center Worker -> doWork";
             logger.Debug(currentMessage);
@@ -616,6 +619,7 @@ namespace PDADesktop.ViewModel
                 CreateBadgeSeeAdjustments();
                 ShowPanelNoConnection();
             }
+            MyAppProperties.loadOnce = false;
             NotifyCurrentMessage("Todo listo!");
         }
 
@@ -827,9 +831,54 @@ namespace PDADesktop.ViewModel
             deviceHandler.CopyPublicLookUpFileToDevice(destinationDirectory, filenameAndExtension);
         }
 
-        private void loadCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void loadOnceCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("loadCentroActividades Worker ->runWorkedCompleted");
+            logger.Debug("loadOnceCentroActividades Worker ->runWorkedCompleted");
+            PanelLoading = false;
+            if (dispatcherTimer != null)
+            {
+                dispatcherTimer.Start();
+            }
+            MyAppProperties.needReloadActivityCenter = false;
+        }
+        #endregion
+
+        #region reload Activity Center Worker
+        private void reloadCentroActividadesWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Debug("Reload Activity Center Worker -> doWork");
+            if (dispatcherTimer != null)
+            {
+                dispatcherTimer.Stop();
+            }
+            string currentMessage = "Checkeando conexión con el dispositivo...";
+            NotifyCurrentMessage(currentMessage);
+            bool isConneted = CheckDeviceConnected();
+
+            if (isConneted)
+            {
+                PanelMainMessage = "Espere por favor...";
+                currentMessage = "Leyendo Ajustes realizados...";
+                NotifyCurrentMessage(currentMessage);
+                CreateBadgeSeeAdjustments();
+            }
+
+            currentMessage = "Verificando conexión con el servidor PDAExpress...";
+            NotifyCurrentMessage(currentMessage);
+            bool serverStatus = CheckServerStatus();
+
+            string storeId = MyAppProperties.storeId;
+            string currentBatchId = MyAppProperties.currentBatchId;
+            if (serverStatus)
+            {
+                currentMessage = "Obteniendo detalles de sincronización para lote " + currentBatchId + " ...";
+                NotifyCurrentMessage(currentMessage);
+                GetLastSync(Convert.ToInt32(currentBatchId), storeId);
+            }
+        }
+        private void reloadCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("ReloadCentroActividades Worker ->runWorkedCompleted");
             PanelLoading = false;
             if (dispatcherTimer != null)
             {
@@ -1194,6 +1243,7 @@ namespace PDADesktop.ViewModel
         {
             logger.Info("exit portal api");
             //aca deberia invocar el logout al portal?
+            MyAppProperties.loadOnce = true;
             MainWindow window = (MainWindow) Application.Current.MainWindow;
             Uri uri = new Uri(Constants.LOGIN_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
@@ -1230,7 +1280,14 @@ namespace PDADesktop.ViewModel
 
         public void CentroActividadesLoaded(object obj)
         {
-            loadCentroActividadesWorker.RunWorkerAsync();
+            if (MyAppProperties.loadOnce)
+            {
+                loadOnceCentroActividadesWorker.RunWorkerAsync();
+            }
+            else
+            {
+                reloadCentroActividadesWorker.RunWorkerAsync();
+            }
         }
 
         public void SincronizacionAnterior(object obj)

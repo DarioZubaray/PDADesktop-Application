@@ -44,6 +44,7 @@ namespace PDADesktop
             CheckApplicationRunning();
             base.OnStartup(e);
 
+            MyAppProperties.loadOnce = true;
             string sucursalHarcodeada = "706";
             MyAppProperties.storeId = sucursalHarcodeada;
 
