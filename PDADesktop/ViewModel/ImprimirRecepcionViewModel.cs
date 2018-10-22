@@ -21,5 +21,12 @@ namespace PDADesktop.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        #region Constructor
+        public ImprimirRecepcionViewModel()
+        {
+
+        }
+        #endregion
     }
 }
