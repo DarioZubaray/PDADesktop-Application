@@ -1368,9 +1368,12 @@ namespace PDADesktop.ViewModel
         {
             logger.Info("Boton estado general");
             logger.Info(MyAppProperties.SelectedSync.actividad);
-            ButtonStateUtils.ResolveState();
-            MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ANTERIOR);
-            syncDataGridWorker.RunWorkerAsync();
+            bool stateNeedResolve = ButtonStateUtils.ResolveState();
+            if (stateNeedResolve)
+            {
+                MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ANTERIOR);
+                syncDataGridWorker.RunWorkerAsync();
+            }
         }
         #endregion
 

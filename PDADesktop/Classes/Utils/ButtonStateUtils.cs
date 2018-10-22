@@ -8,8 +8,9 @@ namespace PDADesktop.Classes.Utils
 {
     public class ButtonStateUtils
     {
-        public static void ResolveState()
+        public static bool ResolveState()
         {
+            bool stateNeedResolve = true;
             SincronizacionDtoDataGrid dto = MyAppProperties.SelectedSync;
             int estadoGeneral = dto.idEstadoGeneral;
             long idSincronizacion = dto.idSincronizacion;
@@ -44,8 +45,10 @@ namespace PDADesktop.Classes.Utils
                     verAjustesInformados(idActividad, epda, egx, idLote);
                     break;
                 default:
+                    stateNeedResolve = false;
                     break;
             }
+            return stateNeedResolve;
         }
 
         private static void verAjustesInformados(int idActividad, int epda, int egx, string idLote)
