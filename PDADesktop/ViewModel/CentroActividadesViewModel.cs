@@ -1324,7 +1324,7 @@ namespace PDADesktop.ViewModel
             syncDataGridWorker.RunWorkerAsync();
         }
 
-        public void AddCommandForState(List<SincronizacionDtoDataGrid> sincronizaciones)
+        public void AddCommandForButtonsState(List<SincronizacionDtoDataGrid> sincronizaciones)
         {
             foreach (SincronizacionDtoDataGrid sync in sincronizaciones)
             {
@@ -1336,7 +1336,7 @@ namespace PDADesktop.ViewModel
 
         public void UpdateCurrentBatch(List<SincronizacionDtoDataGrid> synchronizations)
         {
-            AddCommandForState(sincronizaciones);
+            AddCommandForButtonsState(sincronizaciones);
             if (synchronizations != null && synchronizations.Count != 0)
             {
                 var s = synchronizations[0] as SincronizacionDtoDataGrid;
