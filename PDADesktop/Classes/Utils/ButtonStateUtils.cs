@@ -33,7 +33,7 @@ namespace PDADesktop.Classes.Utils
                     RetryDownload(idSincronizacion, idAccion, idActividad);
                     break;
                 case Constants.EGRAL_REINTENTAR3:
-                    TercerReintento(idSincronizacion, idLote);
+                    RetryDownloadReceptions(idSincronizacion, idLote);
                     break;
                 case Constants.EGRAL_MODIFICAR_AJUSTE:
                     VerAjustes(idSincronizacion, idLote);
@@ -81,7 +81,7 @@ namespace PDADesktop.Classes.Utils
             //que diferencia hay entre verAjustes y verAjustesRealizados y verAjustesInformados(?)
         }
 
-        private static void TercerReintento(long idSincronizacion, string idLote)
+        private static void RetryDownloadReceptions(long idSincronizacion, string idLote)
         {
             //applet.actualizarPedidos(idSinc, response);
             //applet.controlBloqueoPDA(idSinc);
