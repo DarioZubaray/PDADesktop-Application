@@ -1,7 +1,7 @@
 ﻿using log4net;
 using PDADesktop.Classes;
-using PDADesktop.Model;
 using PDADesktop.Classes.Utils;
+using PDADesktop.Model;
 using PDADesktop.View;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Windows.Threading;
 
 namespace PDADesktop.ViewModel
 {
-    class VerAjustesViewModel : ViewModelBase
+    class VerAjustesInformadosViewModel : ViewModelBase
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -41,7 +41,7 @@ namespace PDADesktop.ViewModel
             set
             {
                 selectedAdjustment = value;
-                if(selectedAdjustment != null)
+                if (selectedAdjustment != null)
                 {
                     AdjustmentTypeSelected = selectedAdjustment.motivo;
                     Textbox_amountValue = selectedAdjustment.cantidad.ToString();
@@ -69,6 +69,20 @@ namespace PDADesktop.ViewModel
             }
         }
 
+        private List<string> adjustmentsTypes;
+        public List<string> AdjustmentsTypes
+        {
+            get
+            {
+                return adjustmentsTypes;
+            }
+            set
+            {
+                adjustmentsTypes = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string adjustmentTypeSelected;
         public string AdjustmentTypeSelected
         {
@@ -80,19 +94,6 @@ namespace PDADesktop.ViewModel
             {
                 adjustmentTypeSelected = value;
                 SelectedAdjustment.motivo = adjustmentTypeSelected;
-                OnPropertyChanged();
-            }
-        }
-
-        private List<string> adjustmentsTypes;
-        public List<string> AdjustmentsTypes
-        {
-            get
-            {
-                return adjustmentsTypes;
-            }set
-            {
-                adjustmentsTypes = value;
                 OnPropertyChanged();
             }
         }
@@ -111,45 +112,7 @@ namespace PDADesktop.ViewModel
                 OnPropertyChanged();
             }
         }
-        #endregion
 
-        #region Constructor
-        public VerAjustesViewModel()
-        {
-            BannerApp.PrintSeeAdjustments();
-            var dispatcher = App.Instance.MainWindow.Dispatcher;
-            bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
-            if (deviceStatus)
-            {
-                string deviceReadAdjustmentDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
-                if(deviceReadAdjustmentDataFile != null)
-                {
-                    Adjustments = JsonUtils.GetObservableCollectionAjustes(deviceReadAdjustmentDataFile);
-
-                    AdjustmentsTypes = HttpWebClientUtil.GetAdjustmentsTypes();
-                    logger.Debug(AdjustmentsTypes.ToString());
-                }
-                else
-                {
-                    dispatcher.BeginInvoke(
-                        new Action(() => UserNotify("No se encotraron ajustes!")),
-                        DispatcherPriority.ApplicationIdle);
-                }
-            }
-            else
-            {
-                dispatcher.BeginInvoke(
-                    new Action(() => UserNotify("No se detecta conexion con la PDA")),
-                    DispatcherPriority.ApplicationIdle);
-            }
-
-            AdjustmentEnableEdit = false;
-
-            DeleteAdjustmentCommand = new RelayCommand(DeleteAdjustmentMethod);
-            UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentMethod);
-            DiscardChangesCommand = new RelayCommand(DiscardChangesMethod);
-            SaveChangesCommand = new RelayCommand(SaveChangesMethod);
-        }
         #endregion
 
         #region Commands
@@ -206,19 +169,74 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
+        #region Constructor
+        public VerAjustesInformadosViewModel()
+        {
+            BannerApp.PrintSeeAdjustments();
+            var dispatcher = App.Instance.MainWindow.Dispatcher;
+            bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
+            if (deviceStatus)
+            {
+                string deviceReadAdjustmentDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
+                if (deviceReadAdjustmentDataFile != null)
+                {
+                    Adjustments = JsonUtils.GetObservableCollectionAjustes(deviceReadAdjustmentDataFile);
+
+                    AdjustmentsTypes = HttpWebClientUtil.GetAdjustmentsTypes();
+                    logger.Debug(AdjustmentsTypes.ToString());
+                }
+                else
+                {
+                    dispatcher.BeginInvoke(
+                        new Action(() => UserNotify("No se encotraron ajustes!")),
+                        DispatcherPriority.ApplicationIdle);
+                }
+            }
+            else
+            {
+                dispatcher.BeginInvoke(
+                    new Action(() => UserNotify("No se detecta conexion con la PDA")),
+                    DispatcherPriority.ApplicationIdle);
+            }
+
+            AdjustmentEnableEdit = false;
+
+            DeleteAdjustmentCommand = new RelayCommand(DeleteAdjustmentMethod);
+            UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentMethod);
+            DiscardChangesCommand = new RelayCommand(DiscardChangesMethod);
+            SaveChangesCommand = new RelayCommand(SaveChangesMethod);
+        }
+        #endregion
+
         #region Methods
+        public void UserNotify(string mensaje)
+        {
+            string message = mensaje;
+            string caption = "Aviso!";
+            MessageBoxButton messageBoxButton = MessageBoxButton.OK;
+            MessageBoxImage messageBoxImage = MessageBoxImage.Error;
+            MessageBoxResult result = MessageBox.Show(message, caption, messageBoxButton, messageBoxImage);
+            if (result == MessageBoxResult.OK)
+            {
+                logger.Debug("Informando al usuario: " + mensaje);
+            }
+        }
+        #endregion
+
+        #region RelayCommand Methods
         public void DeleteAdjustmentMethod(object obj)
         {
             logger.Debug("EliminarAjusteButton");
             Ajustes parametro = obj as Ajustes;
-            if(parametro != null)
+            if (parametro != null)
                 logger.Debug("Parametro: " + parametro.ToString());
-            if(SelectedAdjustment != null)
+            if (SelectedAdjustment != null)
                 logger.Debug("AjusteSeleccionado : " + SelectedAdjustment.ToString());
 
             Adjustments.Remove(SelectedAdjustment);
             SelectedAdjustment = null;
         }
+
         public void UpdateAdjustmentMethod(object obj)
         {
             logger.Debug("ActualizarAjusteButton");
@@ -267,20 +285,6 @@ namespace PDADesktop.ViewModel
                 }
             }
         }
-
-        public void UserNotify(string mensaje)
-        {
-            string message = mensaje;
-            string caption = "Aviso!";
-            MessageBoxButton messageBoxButton = MessageBoxButton.OK;
-            MessageBoxImage messageBoxImage = MessageBoxImage.Error;
-            MessageBoxResult result = MessageBox.Show(message, caption, messageBoxButton, messageBoxImage);
-            if(result == MessageBoxResult.OK)
-            {
-                logger.Debug("Informando al usuario: " + mensaje);
-            }
-        }
-
         public bool PreguntarAlUsuario(string pregunta)
         {
             string message = pregunta;

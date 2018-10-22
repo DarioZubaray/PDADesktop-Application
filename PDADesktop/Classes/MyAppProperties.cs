@@ -18,8 +18,6 @@ namespace PDADesktop.Classes
 
         public static bool isSynchronizationComplete { get; set; }
 
-        public static bool isSeeAdjustmentsWindowClosed { get; set; }
-
         public static bool needReloadActivityCenter { get; set; }
         public static bool loadOnce { get; set; }
     }
