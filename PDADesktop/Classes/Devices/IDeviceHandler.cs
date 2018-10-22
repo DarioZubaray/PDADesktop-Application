@@ -2,7 +2,8 @@
 {
     public interface IDeviceHandler
     {
-        string GetName();
+        string GetNameToDisplay();
+        string GetAdapterName();
         bool IsDeviceConnected();
 
         ResultFileOperation CopyDeviceFileToPublicLookUp(string filenameAndExtension);

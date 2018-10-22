@@ -1,5 +1,6 @@
 ﻿using log4net;
 using PDADesktop.Classes.Utils;
+using System;
 using System.Configuration;
 
 namespace PDADesktop.Classes.Devices
@@ -17,7 +18,12 @@ namespace PDADesktop.Classes.Devices
             return desktopDirectory;
         }
 
-        public string GetName()
+        public string GetNameToDisplay()
+        {
+            return Environment.MachineName;
+        }
+
+        public string GetAdapterName()
         {
             return Constants.DESKTOP_ADAPTER;
         }

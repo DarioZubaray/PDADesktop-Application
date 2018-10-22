@@ -4,6 +4,7 @@
     {
         public const string MOTO = "moto";
         public const string MOTO_ADAPTER = "MotoAdapter";
+        public const string MOTOROLA_MC_2100 = "PDA Motorola";
         public const string DESKTOP = "moto";
         public const string DESKTOP_ADAPTER = "DesktopAdapter";
         public const long INFORMAR_GENESIX = 1;
@@ -83,5 +84,6 @@
         public const int EGX_ENVIADO = 2;
         public const int ACTIVIDAD_AJUSTES = 103;
         public const int ACTIVIDAD_INFORMAR_RECEPCIONES = 104;
+        
     }
 }

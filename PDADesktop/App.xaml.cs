@@ -34,7 +34,7 @@ namespace PDADesktop
                 c.AddRegistry(new MyContainerInitializer());
             });
             deviceHandler = this.Container.GetInstance<IDeviceHandler>();
-            logger.Info("Adaptador: " + deviceHandler.GetName());
+            logger.Info("Adaptador: " + deviceHandler.GetAdapterName());
         }
         #endregion
 

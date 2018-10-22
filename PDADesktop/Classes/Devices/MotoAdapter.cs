@@ -7,7 +7,13 @@ namespace PDADesktop.Classes.Devices
     class MotoAdapter : IDeviceHandler
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public string GetName()
+
+        public string GetNameToDisplay()
+        {
+            return Constants.MOTOROLA_MC_2100;
+        }
+
+        public string GetAdapterName()
         {
             return Constants.MOTO_ADAPTER;
         }

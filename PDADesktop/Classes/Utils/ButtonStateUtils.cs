@@ -90,6 +90,7 @@ namespace PDADesktop.Classes.Utils
         {
             if (Constants.ACTIVIDAD_INFORMAR_RECEPCIONES.Equals(idActividad))
             {
+                // applet.controles()
                 //Si está informando Recepciones, controlo que esté la PDA conectada
             }
             //applet.informarDatosGX(arrStr[0]);

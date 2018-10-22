@@ -530,7 +530,7 @@ namespace PDADesktop.ViewModel
         private void ShowPanelNoConnection()
         {
             PanelLoading_NC = true;
-            PanelMainMessage_NC = "Se ha perdido la conexión con el Dispositivo " + App.Instance.deviceHandler.GetName();
+            PanelMainMessage_NC = "Se ha perdido la conexión con el Dispositivo " + App.Instance.deviceHandler.GetNameToDisplay();
             PanelSubMessage_NC = "Reintentando...";
         }
         #endregion
