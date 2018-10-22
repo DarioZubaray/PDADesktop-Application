@@ -452,5 +452,13 @@ namespace PDADesktop.Classes.Utils
             string responseExecutedInform = SendHttpGetRequest(urlInformGenesix + queryParams);
             logger.Debug(responseExecutedInform);
         }
+
+        internal static DesbloquearPDA ControlBloqueoPDA(long syncId, string storeId)
+        {
+            string urlControlBloqueoPDA = ConfigurationManager.AppSettings.Get(Constants.API_CONTROL_BLOQUEO_PDA);
+            string queryParams = "?idSincronizacion=" + syncId + "&idSucursal=" + storeId;
+            string responseControlBloqueoPDA = SendHttpGetRequest(urlControlBloqueoPDA + queryParams);
+            return JsonUtils.GetControlBloqueoPDA(responseControlBloqueoPDA);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using log4net;
 using PDADesktop.Classes.Utils;
+using PDADesktop.Model;
 using System;
 using System.Configuration;
 
@@ -186,6 +187,12 @@ namespace PDADesktop.Classes.Devices
             return FileUtils.ReadFile(userPublicFolderExtended + filenameAndExtension);
         }
 
+        public string ReadSynchronizationStateFromDefaultData()
+        {
+            string contentDefault = ReadDefaultContentFromDefaultData();
+            return TextUtils.GetSynchronizationStateFromDefaultDat(contentDefault);
+        }
+
         public string ReadSynchronizationDateFromDefaultData()
         {
             string contentDefault = ReadDefaultContentFromDefaultData();
@@ -230,6 +237,19 @@ namespace PDADesktop.Classes.Devices
             return "0|0|00000000000000|0|0.0.0.0|0";
         }
 
+        public DesbloquearPDA ControlBloqueoPDA(long syncId, string storeId)
+        {
+            DesbloquearPDA desbloquearPDA = HttpWebClientUtil.ControlBloqueoPDA(syncId, storeId);
+            return desbloquearPDA;
+        }
+
+        public void CambiarEstadoSincronizacion(string syncState)
+        {
+            FileUtils.UpdateDefaultDatFileInPublic(syncState, DeviceMainData.POSITION_ESTADO_SINCRO);
+            string slashFilenameAndextension = FileUtils.PrependSlash(Constants.DAT_FILE_DEFAULT);
+            CopyPublicLookUpFileToDevice(Constants.DEVICE_RELPATH_LOOKUP, slashFilenameAndextension);
+        }
+
         public string ReadAdjustmentsDataFile()
         {
             string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
@@ -263,5 +283,6 @@ namespace PDADesktop.Classes.Devices
                 return false;
             }
         }
+
     }
 }

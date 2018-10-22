@@ -190,6 +190,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\Utils\SynchronizationStateUtil.cs" />
+    <Compile Include="Model\DesbloquearPDA.cs" />
     <Compile Include="Model\DeviceMainData.cs" />
     <Compile Include="Model\Dispositivo.cs" />
     <Compile Include="Model\Dto\ActionResultDto.cs" />

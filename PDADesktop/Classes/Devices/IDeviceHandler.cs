@@ -1,4 +1,6 @@
-﻿namespace PDADesktop.Classes.Devices
+﻿using PDADesktop.Model;
+
+namespace PDADesktop.Classes.Devices
 {
     public interface IDeviceHandler
     {
@@ -16,12 +18,16 @@
         ResultFileOperation DeletePublicDataFile(string filename);
         ResultFileOperation DeleteDeviceAndPublicDataFiles(string filename);
 
-        string ReadVersionDeviceProgramFileFromDefaultData();
+        string ReadSynchronizationStateFromDefaultData();
         string ReadSynchronizationDateFromDefaultData();
         string ReadStoreIdFromDefaultData();
+        string ReadVersionDeviceProgramFileFromDefaultData();
+
         void CreateEmptyDefaultDataFile();
         string GetLastVersionProgramFileFromServer();
         string GetNewDefaultDataContent();
+        DesbloquearPDA ControlBloqueoPDA(long syncId, string storeId);
+        void CambiarEstadoSincronizacion(string syncState);
 
         string ReadAdjustmentsDataFile();
         bool OverWriteAdjustmentMade(string newContent);

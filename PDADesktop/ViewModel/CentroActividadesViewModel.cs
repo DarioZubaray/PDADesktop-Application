@@ -1357,6 +1357,8 @@ namespace PDADesktop.ViewModel
         {
             logger.Info("Boton estado general");
             logger.Info(MyAppProperties.SelectedSync.actividad);
+            ButtonStateUtils.ResolveState();
+ 
         }
         #endregion
 

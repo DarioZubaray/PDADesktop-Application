@@ -124,6 +124,11 @@ namespace PDADesktop.Classes.Utils
             return GetIndexContentByDefaultDatPosition(defaultContent, DeviceMainData.POSITION_FECHA_SINCO);
         }
 
+        public static string GetSynchronizationStateFromDefaultDat(string defaultContent)
+        {
+            return GetIndexContentByDefaultDatPosition(defaultContent, DeviceMainData.POSITION_ESTADO_SINCRO);
+        }
+
         private static string GetIndexContentByDefaultDatPosition(string defaultContent, int indiceDefault)
         {
             String[] defaultArray = defaultContent.Split('|');

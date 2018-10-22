@@ -124,9 +124,13 @@ namespace PDADesktop.Classes.Utils
                 }
             }
 
-            //applet.informarDatosGX(arrStr[0]);
-            //applet.controlBloqueoPDA(arrStr[0]);
-            //refresca la grilla con el loteActual
+            HttpWebClientUtil.ExecuteInformGenesix(idSincronizacion);
+            string storeId = MyAppProperties.storeId;
+            DesbloquearPDA desbloquearPDA = deviceHandler.ControlBloqueoPDA(idSincronizacion, storeId);
+            if (desbloquearPDA.desbloquearPDA)
+            {
+                deviceHandler.CambiarEstadoSincronizacion(Constants.ESTADO_SINCRO_FIN);
+            }
         }
     }
 }
