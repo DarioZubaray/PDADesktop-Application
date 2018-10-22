@@ -74,11 +74,11 @@
         public const long motidev = 209L;
 
         public const int EGRAL_OK = 2;
-        public const int EGRAL_REINTENTAR1 = 3;
+        public const int EGRAL_REINTENTAR_INFORMAR = 3;
         public const int EGRAL_VER_DETALLES = 4;
         public const int EGRAL_MODIFICAR_AJUSTE = 6;
         public const int EGRAL_IMPRIMIR_RECEPCION = 7;
-        public const int EGRAL_REINTENTAR2 = 10;
+        public const int EGRAL_REINTENTAR_DESCARGA = 10;
         public const int EGRAL_REINTENTAR3 = 11;
 
         public const int EPDA_RECIBIDO = 3;

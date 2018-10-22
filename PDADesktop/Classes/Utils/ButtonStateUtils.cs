@@ -26,11 +26,11 @@ namespace PDADesktop.Classes.Utils
 
             switch(estadoGeneral)
             {
-                case Constants.EGRAL_REINTENTAR1:
-                    PrimerReintento(idSincronizacion, idActividad);
+                case Constants.EGRAL_REINTENTAR_INFORMAR:
+                    RetryInform(idSincronizacion, idActividad);
                     break;
-                case Constants.EGRAL_REINTENTAR2:
-                    SegundoReintento(idSincronizacion, idAccion, idActividad);
+                case Constants.EGRAL_REINTENTAR_DESCARGA:
+                    RetryDownload(idSincronizacion, idAccion, idActividad);
                     break;
                 case Constants.EGRAL_REINTENTAR3:
                     TercerReintento(idSincronizacion, idLote);
@@ -88,7 +88,7 @@ namespace PDADesktop.Classes.Utils
             //refresca la grilla con el loteActual
         }
 
-        private static void SegundoReintento(long idSincronizacion, int idAccion, int idActividad)
+        private static void RetryDownload(long idSincronizacion, int idAccion, int idActividad)
         {
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             bool doControls = ControlStoreIdAndDatetimeSync();
@@ -105,7 +105,7 @@ namespace PDADesktop.Classes.Utils
             }
         }
 
-        private static void PrimerReintento(long idSincronizacion, int idActividad)
+        private static void RetryInform(long idSincronizacion, int idActividad)
         {
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             if (Constants.ACTIVIDAD_INFORMAR_RECEPCIONES.Equals(idActividad))
