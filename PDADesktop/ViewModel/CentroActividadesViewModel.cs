@@ -1371,7 +1371,7 @@ namespace PDADesktop.ViewModel
             bool stateNeedResolve = ButtonStateUtils.ResolveState();
             if (stateNeedResolve)
             {
-                MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ANTERIOR);
+                MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
                 syncDataGridWorker.RunWorkerAsync();
             }
         }
