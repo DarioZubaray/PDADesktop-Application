@@ -83,9 +83,19 @@ namespace PDADesktop.Classes.Utils
 
         private static void RetryDownloadReceptions(long idSincronizacion, string idLote)
         {
-            //applet.actualizarPedidos(idSinc, response);
-            //applet.controlBloqueoPDA(idSinc);
-            //refresca la grilla con el loteActual
+            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
+            bool doControls = ControlStoreIdAndDatetimeSync();
+            if (doControls)
+            {
+                string storeId = MyAppProperties.storeId;
+                DownloadFromGenesix(Constants.ACTIVIDAD_INFORMAR_RECEPCIONES, storeId, idSincronizacion);
+
+                ControlBloqueoPDA desbloquearPDA = deviceHandler.ControlDeviceLock(idSincronizacion, storeId);
+                if (desbloquearPDA.desbloquearPDA)
+                {
+                    deviceHandler.CambiarEstadoSincronizacion(Constants.ESTADO_SINCRO_FIN);
+                }
+            }
         }
 
         private static void RetryDownload(long idSincronizacion, int idAccion, int idActividad)
