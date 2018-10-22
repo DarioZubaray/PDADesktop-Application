@@ -1324,9 +1324,20 @@ namespace PDADesktop.ViewModel
             syncDataGridWorker.RunWorkerAsync();
         }
 
+        public void AddCommandForState(List<SincronizacionDtoDataGrid> sincronizaciones)
+        {
+            foreach (SincronizacionDtoDataGrid sync in sincronizaciones)
+            {
+                sync.EstadoGeneralCommand = new RelayCommand(BotonEstadoGeneral, param => true);
+                sync.EstadoGenesixCommand = new RelayCommand(BotonEstadoGenesix, param => true);
+                sync.EstadoPDACommand = new RelayCommand(BotonEstadoPDA, param => true);
+            }
+        }
+
         public void UpdateCurrentBatch(List<SincronizacionDtoDataGrid> synchronizations)
         {
-            if(synchronizations != null && synchronizations.Count != 0)
+            AddCommandForState(sincronizaciones);
+            if (synchronizations != null && synchronizations.Count != 0)
             {
                 var s = synchronizations[0] as SincronizacionDtoDataGrid;
                 string currentBatchId = s.lote;
@@ -1343,24 +1354,26 @@ namespace PDADesktop.ViewModel
         }
 
         #region Button States
-        public static void BotonEstadoGenesix(object obj)
+        public void BotonEstadoGenesix(object obj)
         {
             logger.Info("Boton estado genesix: " + obj);
             logger.Info(MyAppProperties.SelectedSync.actividad);
         }
-        public static void BotonEstadoPDA(object obj)
+        public void BotonEstadoPDA(object obj)
         {
             logger.Info("Boton estado pda");
             logger.Info(MyAppProperties.SelectedSync.actividad);
         }
-        public static void BotonEstadoGeneral(object obj)
+        public void BotonEstadoGeneral(object obj)
         {
             logger.Info("Boton estado general");
             logger.Info(MyAppProperties.SelectedSync.actividad);
             ButtonStateUtils.ResolveState();
- 
+            MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ANTERIOR);
+            syncDataGridWorker.RunWorkerAsync();
         }
         #endregion
+
 
         #region Panel Methods
         public void MostrarPanel(object obj)

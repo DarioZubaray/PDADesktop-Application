@@ -79,9 +79,6 @@ namespace PDADesktop.Model.Dto
                 sincroDTOGrid.idEstadoPda = Convert.ToInt32(s.epda.idEstado);
                 sincroDTOGrid.estado = s.egral.descripcion;
                 sincroDTOGrid.idEstadoGeneral = Convert.ToInt32(s.egral.idEstado);
-                sincroDTOGrid.EstadoGeneralCommand = new RelayCommand(CentroActividadesViewModel.BotonEstadoGeneral, param => true);
-                sincroDTOGrid.EstadoGenesixCommand = new RelayCommand(CentroActividadesViewModel.BotonEstadoGenesix, param => true);
-                sincroDTOGrid.EstadoPDACommand = new RelayCommand(CentroActividadesViewModel.BotonEstadoPDA, param => true);
                 dataGridRefresh.Add(sincroDTOGrid);
             }
             return dataGridRefresh;
