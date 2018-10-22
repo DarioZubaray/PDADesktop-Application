@@ -1,5 +1,8 @@
 ﻿using System;
 using PDADesktop.Model.Dto;
+using PDADesktop.Classes.Devices;
+using PDADesktop.Model;
+using System.Collections.Generic;
 
 namespace PDADesktop.Classes.Utils
 {
@@ -88,11 +91,39 @@ namespace PDADesktop.Classes.Utils
 
         private static void PrimerReintento(long idSincronizacion, int idActividad)
         {
+            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             if (Constants.ACTIVIDAD_INFORMAR_RECEPCIONES.Equals(idActividad))
             {
-                // applet.controles()
-                //Si está informando Recepciones, controlo que esté la PDA conectada
+                bool isConnected = deviceHandler.IsDeviceConnected();
+                if (isConnected)
+                {
+                    string storeIDFromDevice = deviceHandler.ReadStoreIdFromDefaultData();
+                    string storeIdFromLogin = MyAppProperties.storeId;
+                    if (!TextUtils.CompareStoreId(storeIDFromDevice, storeIdFromLogin))
+                    {
+                        string synchronizationDefault = deviceHandler.ReadSynchronizationDateFromDefaultData();
+                        bool isGreatherThanToday = DateTimeUtils.IsGreatherThanToday(synchronizationDefault);
+                        if (isGreatherThanToday)
+                        {
+                            //DeleteAllPreviousFiles(true);
+                            List<Actividad> actividades = MyAppProperties.activitiesEnables;
+                            
+                            deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.LPEDIDOS);
+                            deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.APEDIDOS);
+                            deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.EPEDIDOS);
+                            deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.RPEDIDOS);
+
+                            foreach (Actividad actividad in actividades)
+                            {
+                                long idActividadActual = actividad.idActividad;
+                                string filename = ArchivosDATUtils.GetDataFileNameByIdActividad((int)idActividadActual);
+                                deviceHandler.DeleteDeviceAndPublicDataFiles(filename);
+                            }
+                        }
+                    }
+                }
             }
+
             //applet.informarDatosGX(arrStr[0]);
             //applet.controlBloqueoPDA(arrStr[0]);
             //refresca la grilla con el loteActual
