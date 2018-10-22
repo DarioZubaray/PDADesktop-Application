@@ -3,11 +3,15 @@ using PDADesktop.Model.Dto;
 using PDADesktop.Classes.Devices;
 using PDADesktop.Model;
 using System.Collections.Generic;
+using log4net;
+using System.Configuration;
 
 namespace PDADesktop.Classes.Utils
 {
     public class ButtonStateUtils
     {
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public static bool ResolveState()
         {
             bool stateNeedResolve = true;
@@ -86,9 +90,19 @@ namespace PDADesktop.Classes.Utils
 
         private static void SegundoReintento(long idSincronizacion, int idAccion, int idActividad)
         {
-            //applet.descargarDeGX(arrStr);
-            //applet.controlBloqueoPDA(arrStr[0]);
-            //refresca la grilla con el loteActual
+            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
+            bool doControls = ControlStoreIdAndDatetimeSync();
+            if (doControls)
+            {
+                string storeId = MyAppProperties.storeId;
+                DownloadFromGenesix(idActividad, storeId, idSincronizacion);
+
+                ControlBloqueoPDA desbloquearPDA = deviceHandler.ControlDeviceLock(idSincronizacion, storeId);
+                if (desbloquearPDA.desbloquearPDA)
+                {
+                    deviceHandler.CambiarEstadoSincronizacion(Constants.ESTADO_SINCRO_FIN);
+                }
+            }
         }
 
         private static void PrimerReintento(long idSincronizacion, int idActividad)
@@ -96,33 +110,10 @@ namespace PDADesktop.Classes.Utils
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             if (Constants.ACTIVIDAD_INFORMAR_RECEPCIONES.Equals(idActividad))
             {
-                bool isConnected = deviceHandler.IsDeviceConnected();
-                if (isConnected)
+                bool doControls = ControlStoreIdAndDatetimeSync();
+                if (doControls)
                 {
-                    string storeIDFromDevice = deviceHandler.ReadStoreIdFromDefaultData();
-                    string storeIdFromLogin = MyAppProperties.storeId;
-                    if (!TextUtils.CompareStoreId(storeIDFromDevice, storeIdFromLogin))
-                    {
-                        string synchronizationDefault = deviceHandler.ReadSynchronizationDateFromDefaultData();
-                        bool isGreatherThanToday = DateTimeUtils.IsGreatherThanToday(synchronizationDefault);
-                        if (isGreatherThanToday)
-                        {
-                            //DeleteAllPreviousFiles(true);
-                            List<Actividad> actividades = MyAppProperties.activitiesEnables;
-                            
-                            deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.LPEDIDOS);
-                            deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.APEDIDOS);
-                            deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.EPEDIDOS);
-                            deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.RPEDIDOS);
-
-                            foreach (Actividad actividad in actividades)
-                            {
-                                long idActividadActual = actividad.idActividad;
-                                string filename = ArchivosDATUtils.GetDataFileNameByIdActividad((int)idActividadActual);
-                                deviceHandler.DeleteDeviceAndPublicDataFiles(filename);
-                            }
-                        }
-                    }
+                    DeleteAllPreviousFiles();
                 }
             }
 
@@ -134,5 +125,75 @@ namespace PDADesktop.Classes.Utils
                 deviceHandler.CambiarEstadoSincronizacion(Constants.ESTADO_SINCRO_FIN);
             }
         }
+
+        public static bool ControlStoreIdAndDatetimeSync()
+        {
+            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
+            bool isConnected = deviceHandler.IsDeviceConnected();
+            if (isConnected)
+            {
+                string storeIDFromDevice = deviceHandler.ReadStoreIdFromDefaultData();
+                string storeIdFromLogin = MyAppProperties.storeId;
+                bool areEqualsStoresIds = TextUtils.CompareStoreId(storeIDFromDevice, storeIdFromLogin);
+                if (!areEqualsStoresIds)
+                {
+                    string synchronizationDefault = deviceHandler.ReadSynchronizationDateFromDefaultData();
+                    bool isGreatherThanToday = DateTimeUtils.IsGreatherThanToday(synchronizationDefault);
+                    if (isGreatherThanToday)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public static void DeleteAllPreviousFiles()
+        {
+            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
+            List<Actividad> actividades = MyAppProperties.activitiesEnables;
+
+            deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.LPEDIDOS);
+            deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.APEDIDOS);
+            deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.EPEDIDOS);
+            deviceHandler.DeleteDeviceAndPublicDataFiles(Constants.RPEDIDOS);
+
+            foreach (Actividad actividad in actividades)
+            {
+                long idActividadActual = actividad.idActividad;
+                string filename = ArchivosDATUtils.GetDataFileNameByIdActividad((int)idActividadActual);
+                deviceHandler.DeleteDeviceAndPublicDataFiles(filename);
+            }
+        }
+
+        public static void DownloadFromGenesix(int idActividad, string storeId, long syncId)
+        {
+            bool descargaMaestroCorrecta = HttpWebClientUtil.BuscarMaestrosDAT(idActividad, storeId);
+
+            if (descargaMaestroCorrecta)
+            {
+                if (idActividad.Equals(Constants.ubicart))
+                {
+                    logger.Debug("Ubicart -> creando Archivos PAS");
+                    ArchivosDATUtils.crearArchivoPAS();
+                }
+                if (idActividad.Equals(Constants.pedidos))
+                {
+                    logger.Debug("Pedidos -> creando Archivos Pedidos");
+                    ArchivosDATUtils.crearArchivosPedidos();
+                }
+
+                string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+                string filename = ArchivosDATUtils.GetDataFileNameByIdActividad(idActividad);
+                string filenameAndExtension = FileUtils.WrapSlashAndDATExtension(filename);
+
+                ResultFileOperation result = App.Instance.deviceHandler.CopyPublicDataFileToDevice(destinationDirectory, filenameAndExtension);
+                logger.Debug("result: " + result);
+
+                SynchronizationStateUtil.SetReceivedFromGenesixState(syncId);
+                SynchronizationStateUtil.SetSentDeviceState(syncId);
+            }
+        }
+
     }
 }
