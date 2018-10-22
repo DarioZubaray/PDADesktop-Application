@@ -15,7 +15,6 @@ namespace PDADesktop.Classes.Utils
             int estadoGeneral = dto.idEstadoGeneral;
             long idSincronizacion = dto.idSincronizacion;
             string idLote = dto.lote;
-            string accion = dto.accion;
             int idActividad = dto.idActividad;
             int idAccion = dto.idAccion;
             int egx = dto.idEstadoGenesix;
@@ -129,7 +128,7 @@ namespace PDADesktop.Classes.Utils
 
             HttpWebClientUtil.ExecuteInformGenesix(idSincronizacion);
             string storeId = MyAppProperties.storeId;
-            DesbloquearPDA desbloquearPDA = deviceHandler.ControlBloqueoPDA(idSincronizacion, storeId);
+            ControlBloqueoPDA desbloquearPDA = deviceHandler.ControlDeviceLock(idSincronizacion, storeId);
             if (desbloquearPDA.desbloquearPDA)
             {
                 deviceHandler.CambiarEstadoSincronizacion(Constants.ESTADO_SINCRO_FIN);

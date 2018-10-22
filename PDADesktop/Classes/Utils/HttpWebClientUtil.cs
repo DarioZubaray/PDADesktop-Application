@@ -453,7 +453,7 @@ namespace PDADesktop.Classes.Utils
             logger.Debug(responseExecutedInform);
         }
 
-        internal static DesbloquearPDA ControlBloqueoPDA(long syncId, string storeId)
+        internal static ControlBloqueoPDA ControlDeviceLock(long syncId, string storeId)
         {
             string urlControlBloqueoPDA = ConfigurationManager.AppSettings.Get(Constants.API_CONTROL_BLOQUEO_PDA);
             string queryParams = "?idSincronizacion=" + syncId + "&idSucursal=" + storeId;

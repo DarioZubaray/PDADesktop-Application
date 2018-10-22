@@ -1,6 +1,6 @@
 ﻿namespace PDADesktop.Model
 {
-    public struct DesbloquearPDA
+    public struct ControlBloqueoPDA
     {
         public bool desbloquearPDA { get; set; }
     }

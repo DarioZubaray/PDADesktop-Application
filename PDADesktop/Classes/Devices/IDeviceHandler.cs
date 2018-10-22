@@ -26,7 +26,7 @@ namespace PDADesktop.Classes.Devices
         void CreateEmptyDefaultDataFile();
         string GetLastVersionProgramFileFromServer();
         string GetNewDefaultDataContent();
-        DesbloquearPDA ControlBloqueoPDA(long syncId, string storeId);
+        ControlBloqueoPDA ControlDeviceLock(long syncId, string storeId);
         void CambiarEstadoSincronizacion(string syncState);
 
         string ReadAdjustmentsDataFile();

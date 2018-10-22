@@ -237,9 +237,9 @@ namespace PDADesktop.Classes.Devices
             return "0|0|00000000000000|0|0.0.0.0|0";
         }
 
-        public DesbloquearPDA ControlBloqueoPDA(long syncId, string storeId)
+        public ControlBloqueoPDA ControlDeviceLock(long syncId, string storeId)
         {
-            DesbloquearPDA desbloquearPDA = HttpWebClientUtil.ControlBloqueoPDA(syncId, storeId);
+            ControlBloqueoPDA desbloquearPDA = HttpWebClientUtil.ControlDeviceLock(syncId, storeId);
             return desbloquearPDA;
         }
 

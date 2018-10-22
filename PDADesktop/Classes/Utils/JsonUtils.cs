@@ -65,9 +65,9 @@ namespace PDADesktop.Classes.Utils
             return json;
         }
 
-        public static DesbloquearPDA GetControlBloqueoPDA(string serializedJson)
+        public static ControlBloqueoPDA GetControlBloqueoPDA(string serializedJson)
         {
-            return JsonConvert.DeserializeObject<DesbloquearPDA>(serializedJson);
+            return JsonConvert.DeserializeObject<ControlBloqueoPDA>(serializedJson);
         }
     }
 }
