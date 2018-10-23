@@ -13,7 +13,7 @@ namespace PDADesktop.Model.Dto
 
         public static ObservableCollection<Ajustes> ParserDataGrid(AjustesDTO ajustesDto)
         {
-            ObservableCollection<Ajustes> ajustes = new List<Ajustes>();
+            ObservableCollection<Ajustes> ajustes = new ObservableCollection<Ajustes>();
             Row[] rows = ajustesDto.row;
             foreach(Row row in rows)
             {
