@@ -22,28 +22,42 @@ namespace PDADesktop.Classes
         public static void PrintActivityCenter()
         {
             logger.Debug("\n=================================="
-                         + "=  A c t i v i t y  C e n t e r  ="
+                         + "=  A C T I V I T Y  C E N T E R  ="
                          + "==================================");
         }
 
         public static void PrintSynchronization()
         {
             logger.Debug("\n=================================="
-                          +"=  S y n c h r o n i z a t i o n ="
+                          +"=  S Y N C H R O N I Z A T I O N ="
                           +"==================================");
         }
 
         public static void PrintInformGX()
         {
             logger.Debug("\n=================================="
-                         +"=  I n f o r m  to  G e n e s i x ="
+                         +"=  I N F O R M  TO  G E N E S I X ="
                          +"==================================");
         }
 
-        public static void PrintSeeAdjustments()
+        public static void PrintSeeAdjustmentsRealized()
         {
             logger.Debug("\n=================================="
-                         + "=      V E R   A J U S T E S     ="
+                         + "=   VER   AJUSTES   REALIZADOS   ="
+                         + "==================================");
+        }
+
+        public static void PrintSeeAdjustmentsInformed()
+        {
+            logger.Debug("\n=================================="
+                         + "=   VER   AJUSTES   INFORMADOS   ="
+                         + "==================================");
+        }
+
+        public static void PrintSeeAdjustmentsModify()
+        {
+            logger.Debug("\n=================================="
+                         + "=   VER   AJUSTES   MODIFICAR   ="
                          + "==================================");
         }
     }

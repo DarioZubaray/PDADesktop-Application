@@ -172,7 +172,7 @@ namespace PDADesktop.ViewModel
         #region Constructor
         public VerAjustesInformadosViewModel()
         {
-            BannerApp.PrintSeeAdjustments();
+            BannerApp.PrintSeeAdjustmentsInformed();
             var dispatcher = App.Instance.MainWindow.Dispatcher;
             bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
             if (deviceStatus)

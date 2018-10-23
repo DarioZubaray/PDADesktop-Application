@@ -117,7 +117,7 @@ namespace PDADesktop.ViewModel
         #region Constructor
         public VerAjustesModificarViewModel()
         {
-            BannerApp.PrintSeeAdjustments();
+            BannerApp.PrintSeeAdjustmentsModify();
             var dispatcher = App.Instance.MainWindow.Dispatcher;
             bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
             if (deviceStatus)
