@@ -41,7 +41,7 @@ namespace PDADesktop.Classes.Utils
                     ModifyAdjusments(idSincronizacion, idLote);
                     break;
                 case Constants.EGRAL_VER_DETALLES:
-                    seDetailsGeneral(idSincronizacion, idLote);
+                    seeReceptionsDetails(idSincronizacion, idLote);
                     break;
                 case Constants.EGRAL_IMPRIMIR_RECEPCION:
                     PrintReceptions(idSincronizacion, idLote);
@@ -58,7 +58,7 @@ namespace PDADesktop.Classes.Utils
 
         private static void SeeAdjustmentsInforms(int idActividad, int epda, int egx, string idLote)
         {
-            if ( Constants.EPDA_RECIBIDO.Equals(epda) 
+            if ( Constants.EPDA_RECIBIDO.Equals(epda)
                  && Constants.EGX_ENVIADO.Equals(egx)
                  && Constants.ACTIVIDAD_AJUSTES.Equals(idActividad) )
             {
@@ -74,15 +74,16 @@ namespace PDADesktop.Classes.Utils
             //la cual puede abrir un PDF
         }
 
-        private static void seDetailsGeneral(long idSincronizacion, string idLote)
+        private static void seeReceptionsDetails(long idSincronizacion, string idLote)
         {
             //lamar a la vista 'VerDetallesRecepcionView'
         }
 
         private static void ModifyAdjusments(long idSincronizacion, string idLote)
         {
-            //lamar a la vista 'VerAjustesInformadosView' (tmb?)
-            //que diferencia hay entre verAjustes y verAjustesRealizados y verAjustesInformados(?)
+            MainWindow window = (MainWindow)Application.Current.MainWindow;
+            Uri uri = new Uri(Constants.VER_AJUSTES_MODIFICAR_VIEW, UriKind.Relative);
+            window.frame.NavigationService.Navigate(uri);
         }
 
         private static void RetryDownloadReceptionsFromGenesix(long idSincronizacion, string idLote)
