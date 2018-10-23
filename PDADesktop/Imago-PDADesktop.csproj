@@ -202,6 +202,7 @@
     <Compile Include="ViewModel\ImprimirRecepcionViewModel.cs" />
     <Compile Include="ViewModel\VerAjustesInformadosViewModel.cs" />
     <Compile Include="ViewModel\VerAjustesModificarViewModel.cs" />
+    <Compile Include="ViewModel\VerDetallesRecepcionViewModel.cs" />
     <Compile Include="View\Controls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
@@ -237,6 +238,9 @@
     </Compile>
     <Compile Include="View\VerAjustesRealizadosView.xaml.cs">
       <DependentUpon>VerAjustesRealizadosView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\VerDetallesRecepcionView.xaml.cs">
+      <DependentUpon>VerDetallesRecepcionView.xaml</DependentUpon>
     </Compile>
     <Page Include="View\Controls\CircularProgressBar.xaml">
       <SubType>Designer</SubType>
@@ -310,6 +314,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\VerAjustesRealizadosView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\VerDetallesRecepcionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
