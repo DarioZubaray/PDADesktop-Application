@@ -12,7 +12,7 @@ using System.Windows.Threading;
 
 namespace PDADesktop.ViewModel
 {
-    class VerAjustesViewModel : ViewModelBase
+    class VerAjustesRealizadosViewModel : ViewModelBase
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -114,7 +114,7 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Constructor
-        public VerAjustesViewModel()
+        public VerAjustesRealizadosViewModel()
         {
             BannerApp.PrintSeeAdjustments();
             var dispatcher = App.Instance.MainWindow.Dispatcher;
@@ -230,7 +230,7 @@ namespace PDADesktop.ViewModel
             string pregunta = "¿Desea descartar los cambios?";
             if (PreguntarAlUsuario(pregunta))
             {
-                CloseVerAjustesWindow();
+                CloseVerAjustesRealizadosWindow();
             }
             else
             {
@@ -247,7 +247,7 @@ namespace PDADesktop.ViewModel
 
             if (App.Instance.deviceHandler.OverWriteAdjustmentMade(newAdjustmentContent))
             {
-                CloseVerAjustesWindow();
+                CloseVerAjustesRealizadosWindow();
             }
             else
             {
@@ -255,7 +255,7 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private void CloseVerAjustesWindow()
+        private void CloseVerAjustesRealizadosWindow()
         {
             foreach (Window w in Application.Current.Windows)
             {

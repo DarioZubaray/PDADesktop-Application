@@ -36,7 +36,7 @@ namespace PDADesktop.Classes.Utils
                     RetryDownloadReceptions(idSincronizacion, idLote);
                     break;
                 case Constants.EGRAL_MODIFICAR_AJUSTE:
-                    VerAjustes(idSincronizacion, idLote);
+                    VerAjustesInformados(idSincronizacion, idLote);
                     break;
                 case Constants.EGRAL_VER_DETALLES:
                     verDetalles(idSincronizacion, idLote);
@@ -60,7 +60,7 @@ namespace PDADesktop.Classes.Utils
                  && Constants.EGX_ENVIADO.Equals(egx)
                  && Constants.ACTIVIDAD_AJUSTES.Equals(idActividad) )
             {
-                //llamar a la vista ver 'AjustesView'
+                //llamar a la vista ver 'verAjustesInformadosView'
             }
         }
 
@@ -75,9 +75,9 @@ namespace PDADesktop.Classes.Utils
             //lamar a la vista 'VerDetallesRecepcionView'
         }
 
-        private static void VerAjustes(long idSincronizacion, string idLote)
+        private static void VerAjustesInformados(long idSincronizacion, string idLote)
         {
-            //lamar a la vista 'VerAjustesView'
+            //lamar a la vista 'VerAjustesInformadosView' (tmb?)
             //que diferencia hay entre verAjustes y verAjustesRealizados y verAjustesInformados(?)
         }
 

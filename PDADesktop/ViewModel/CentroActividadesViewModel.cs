@@ -64,16 +64,16 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private ICommand verAjustesCommand;
-        public ICommand VerAjustesCommand
+        private ICommand verAjustesRealizadosCommand;
+        public ICommand VerAjustesRealizadosCommand
         {
             get
             {
-                return verAjustesCommand;
+                return verAjustesRealizadosCommand;
             }
             set
             {
-                verAjustesCommand = value;
+                verAjustesRealizadosCommand = value;
             }
         }
 
@@ -421,16 +421,16 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private Badged badge_verAjustes;
-        public Badged Badge_verAjustes
+        private Badged badge_verAjustesRealizados;
+        public Badged Badge_verAjustesRealizados
         {
             get
             {
-                return badge_verAjustes;
+                return badge_verAjustesRealizados;
             }
             set
             {
-                badge_verAjustes = value;
+                badge_verAjustesRealizados = value;
                 OnPropertyChanged();
             }
         }
@@ -448,7 +448,7 @@ namespace PDADesktop.ViewModel
             ExitButtonCommand = new RelayCommand(ExitPortalApi, param => this.canExecute);
             SincronizarCommand = new RelayCommand(SincronizarTodosLosDatos, param => this.canExecute);
             InformarCommand = new RelayCommand(InformarGenesix, param => this.canExecute);
-            VerAjustesCommand = new RelayCommand(VerAjustes, param => this.canExecute);
+            VerAjustesRealizadosCommand = new RelayCommand(VerAjustesRealizados, param => this.canExecute);
             CentroActividadesLoadedCommand = new RelayCommand(CentroActividadesLoaded, param => this.canExecute);
             AnteriorCommand = new RelayCommand(SincronizacionAnterior, param => this.canExecute);
             SiguienteCommand = new RelayCommand(SincronizacionSiguiente, param => this.canExecute);
@@ -682,7 +682,7 @@ namespace PDADesktop.ViewModel
                 buttonSeeAdjustment.HorizontalAlignment = HorizontalAlignment.Left;
                 buttonSeeAdjustment.VerticalAlignment = VerticalAlignment.Top;
                 buttonSeeAdjustment.ToolTip = "Ver los ajustes realizados.";
-                buttonSeeAdjustment.Command = this.VerAjustesCommand;
+                buttonSeeAdjustment.Command = this.VerAjustesRealizadosCommand;
 
                 Badged badge = new Badged();
                 bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
@@ -715,7 +715,7 @@ namespace PDADesktop.ViewModel
                     buttonSeeAdjustment.IsEnabled = false;
                 }
                 badge.Content = buttonSeeAdjustment;
-                Badge_verAjustes = badge;
+                Badge_verAjustesRealizados = badge;
             }));
         }
 
@@ -1204,7 +1204,7 @@ namespace PDADesktop.ViewModel
             if (estadoDevice)
             {
                 MainWindow window = MyAppProperties.window;
-                Uri uriSeeAdjustments = new Uri(Constants.VER_AJUSTES_VIEW, UriKind.Relative);
+                Uri uriSeeAdjustments = new Uri(Constants.VER_AJUSTES_REALIZADOS_VIEW, UriKind.Relative);
 
                 var dispatcher = Application.Current.Dispatcher;
                 dispatcher.BeginInvoke(new Action(() =>
@@ -1269,7 +1269,7 @@ namespace PDADesktop.ViewModel
             syncWorker.RunWorkerAsync();
         }
 
-        public void VerAjustes(object obj)
+        public void VerAjustesRealizados(object obj)
         {
             PanelLoading = true;
             PanelMainMessage = "Cargando ajustes realizados, Espere por favor";

@@ -14,7 +14,6 @@ namespace PDADesktop.View
         public CentroActividadesView()
         {
             InitializeComponent();
-            //this.DataContext = new VerAjustesViewModel();
         }
     }
 }

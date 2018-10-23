@@ -248,7 +248,7 @@ namespace PDADesktop.ViewModel
             string pregunta = "¿Desea descartar los cambios?";
             if (PreguntarAlUsuario(pregunta))
             {
-                CloseVerAjustesWindow();
+                CloseVerAjustesRealizadosWindow();
             }
             else
             {
@@ -265,7 +265,7 @@ namespace PDADesktop.ViewModel
 
             if (App.Instance.deviceHandler.OverWriteAdjustmentMade(newAdjustmentContent))
             {
-                CloseVerAjustesWindow();
+                CloseVerAjustesRealizadosWindow();
             }
             else
             {
@@ -273,7 +273,7 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private void CloseVerAjustesWindow()
+        private void CloseVerAjustesRealizadosWindow()
         {
             foreach (Window w in Application.Current.Windows)
             {

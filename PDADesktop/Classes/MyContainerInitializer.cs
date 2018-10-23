@@ -21,7 +21,8 @@ namespace PDADesktop.Classes
             ForConcreteType<BuscarLotesViewModel>().Configure.Singleton();
             ForConcreteType<CentroActividadesViewModel>().Configure.Singleton();
             ForConcreteType<LoginViewModel>().Configure.Singleton();
-            ForConcreteType<VerAjustesViewModel>().Configure.Singleton();
+            ForConcreteType<VerAjustesRealizadosViewModel>().Configure.Singleton();
+            ForConcreteType<VerAjustesInformadosViewModel>().Configure.Singleton();
 
             string deviceHandler = ConfigurationManager.AppSettings.Get("DEVICE_HANDLER");
             if (deviceHandler.Equals(Constants.DESKTOP_ADAPTER, StringComparison.InvariantCultureIgnoreCase))
