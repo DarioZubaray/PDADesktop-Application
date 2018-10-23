@@ -71,12 +71,18 @@ namespace PDADesktop.Classes.Utils
         private static void PrintReceptions(long idSincronizacion, string idLote)
         {
             //lamar a la vista 'ImprimirRecepcionView'
+            MainWindow window = (MainWindow)Application.Current.MainWindow;
+            Uri uri = new Uri(Constants.IMPRIMIR_RECEPCION_VIEW, UriKind.Relative);
+            window.frame.NavigationService.Navigate(uri);
             //la cual puede abrir un PDF
         }
 
         private static void seeReceptionsDetails(long idSincronizacion, string idLote)
         {
             //lamar a la vista 'VerDetallesRecepcionView'
+            MainWindow window = (MainWindow)Application.Current.MainWindow;
+            Uri uri = new Uri(Constants.VER_DETALLES_RECEPCION_VIEW, UriKind.Relative);
+            window.frame.NavigationService.Navigate(uri);
         }
 
         private static void ModifyAdjusments(long idSincronizacion, string idLote)
