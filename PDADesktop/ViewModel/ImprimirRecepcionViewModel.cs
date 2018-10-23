@@ -1,4 +1,5 @@
 ﻿using log4net;
+using PDADesktop.Classes;
 using PDADesktop.Model;
 using System.Collections.ObjectModel;
 
@@ -25,7 +26,7 @@ namespace PDADesktop.ViewModel
         #region Constructor
         public ImprimirRecepcionViewModel()
         {
-
+            BannerApp.PrintPrintReception();
         }
         #endregion
     }

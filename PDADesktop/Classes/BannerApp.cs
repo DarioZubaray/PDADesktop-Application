@@ -60,5 +60,19 @@ namespace PDADesktop.Classes
                          + "=   VER   AJUSTES   MODIFICAR   ="
                          + "==================================");
         }
+
+        public static void PrintPrintReception()
+        {
+            logger.Debug("\n=================================="
+                         + "=    IMPRIMIR    RECEPCIONES    ="
+                         + "==================================");
+        }
+
+        public static void PrintSeeDetailsReception()
+        {
+            logger.Debug("\n=================================="
+                         + "=    VER DETALLES RECEPCIONES    ="
+                         + "==================================");
+        }
     }
 }
