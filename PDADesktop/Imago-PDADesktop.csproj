@@ -194,6 +194,8 @@
     <Compile Include="Model\DeviceMainData.cs" />
     <Compile Include="Model\Dispositivo.cs" />
     <Compile Include="Model\Dto\ActionResultDto.cs" />
+    <Compile Include="Model\Dto\AjustesDTO.cs" />
+    <Compile Include="Model\Dto\Row.cs" />
     <Compile Include="Model\EstadoRecepcion.cs" />
     <Compile Include="Model\Json\JsonBody.cs" />
     <Compile Include="Model\Recepcion.cs" />

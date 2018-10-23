@@ -7,10 +7,12 @@
         public const string MOTOROLA_MC_2100 = "PDA Motorola";
         public const string DESKTOP = "moto";
         public const string DESKTOP_ADAPTER = "DesktopAdapter";
+
         public const long INFORMAR_GENESIX = 1;
         public const long DESCARGAR_GENESIX = 2;
         public const string SERVER_IP = "SERVER_HOST_PROTOCOL_IP_PORT";
         public const string URL_APPLICATION_UPDATE = "URL_UPDATE";
+
         public const string CENTRO_ACTIVIDADES_VIEW = "View/CentroActividadesView.xaml";
         public const string IMPRIMIR_RECEPCION_VIEW = "View/ImprimirRecepcionView.xaml";
         public const string VER_AJUSTES_REALIZADOS_VIEW = "View/VerAjustesView.xaml";
@@ -18,6 +20,7 @@
         public const string VER_AJUSTES_MODIFICAR_VIEW = "View/VerAjustesModificarView.xaml";
         public const string VER_DETALLES_RECEPCION_VIEW = "View/VerDetalllesRecepcionView.xaml";
         public const string LOGIN_VIEW = "View/LoginView.xaml";
+
         public const string API_SYNC_ANTERIOR = "API_SYNC_ANTERIOR";
         public const string API_SYNC_SIGUIENTE = "API_SYNC_SIGUIENTE";
         public const string API_SYNC_ULTIMA = "API_SYNC_ULTIMA";
@@ -31,19 +34,23 @@
         public const string API_CREATE_NEW_BATCH = "API_CREATE_NEW_BATCH";
         public const string API_SUBIR_ARCHIVO = "API_SUBIR_ARCHIVO";
         public const string API_CONTROL_BLOQUEO_PDA = "API_CONTROL_BLOQUEO_PDA";
+        public const string API_MODIFICAR_CARGAR_GRILLA_AJUSTES = "API_MODIFICAR_CARGAR_GRILLA_AJUSTES";
+
         public const string PUBLIC_PATH_DATA = "PUBLIC_PATH_DATA";
         public const string PUBLIC_PATH_LOOKUP = "PUBLIC_PATH_LOOKUP";
         public const string PUBLIC_PATH_BIN = "PUBLIC_PATH_BIN";
+        public const string DEVICE_RELPATH_BIN = "DEVICE_RELPATH_BIN";
+        public const string DEVICE_RELPATH_LOOKUP = "DEVICE_RELPATH_LOOKUP";
+        public const string DEVICE_RELPATH_DATA = "DEVICE_RELPATH_DATA";
+        public const string DESKTOP_FOLDER = "DESKTOP_FOLDER";
+
         public const string DAT_FILE_AJUSTES = "DAT_FILE_AJUSTES";
         public const string DAT_FILE_DEFAULT = "DAT_FILE_DEFAULT";
         public const string DAT_FILE_LPEDIDOS = "DAT_FILE_LPEDIDOS";
         public const string DAT_FILE_APEDIDOS = "DAT_FILE_APEDIDOS";
         public const string DAT_FILE_EPEDIDOS = "DAT_FILE_EPEDIDOS";
         public const string DAT_FILE_RPEDIDOS = "DAT_FILE_RPEDIDOS";
-        public const string DEVICE_RELPATH_BIN = "DEVICE_RELPATH_BIN";
-        public const string DEVICE_RELPATH_LOOKUP = "DEVICE_RELPATH_LOOKUP";
-        public const string DEVICE_RELPATH_DATA = "DEVICE_RELPATH_DATA";
-        public const string DESKTOP_FOLDER = "DESKTOP_FOLDER";
+        
         public const string CONTROL_PRECIOS_CON_UBICACIONES = "CONTROL_PRECIOS_CON_UBICACIONES";
         public const string CONTROL_PRECIOS_SIN_UBICACIONES = "CONTROL_PRECIOS_SIN_UBICACIONES";
         public const string AJUSTES = "AJUSTES";
@@ -62,6 +69,7 @@
         public const string PROVEEDORES = "PROVEED";
         public const string PROVEEDOR_ARTICULOS = "PROVART";
         public const string MOTIVO_DEVOLUCION = "MOTIDEV";
+
         public const long ctrubic = 101L;
         public const long ctrsubic = 102L;
         public const long ajustes = 103L;

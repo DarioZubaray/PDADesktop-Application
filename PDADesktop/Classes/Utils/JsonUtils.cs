@@ -5,14 +5,12 @@ using PDADesktop.Model.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PDADesktop.Classes.Utils
 {
     public class JsonUtils
     {
+
         public static List<Sincronizacion> GetListSinchronization(string serializedJson)
         {
             return JsonConvert.DeserializeObject<List<Sincronizacion>>(serializedJson);
@@ -68,6 +66,11 @@ namespace PDADesktop.Classes.Utils
         public static ControlBloqueoPDA GetControlBloqueoPDA(string serializedJson)
         {
             return JsonConvert.DeserializeObject<ControlBloqueoPDA>(serializedJson);
+        }
+
+        internal static AjustesDTO GetAjustesDTO(string serializedJson)
+        {
+            return JsonConvert.DeserializeObject<AjustesDTO>(serializedJson);
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using PDADesktop.Model.Dto;
 
 namespace PDADesktop.ViewModel
 {
@@ -118,31 +119,8 @@ namespace PDADesktop.ViewModel
         public VerAjustesModificarViewModel()
         {
             BannerApp.PrintSeeAdjustmentsModify();
-            var dispatcher = App.Instance.MainWindow.Dispatcher;
-            bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
-            if (deviceStatus)
-            {
-                string deviceReadAdjustmentDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
-                if (deviceReadAdjustmentDataFile != null)
-                {
-                    Adjustments = JsonUtils.GetObservableCollectionAjustes(deviceReadAdjustmentDataFile);
-
-                    AdjustmentsTypes = HttpWebClientUtil.GetAdjustmentsTypes();
-                    logger.Debug(AdjustmentsTypes.ToString());
-                }
-                else
-                {
-                    dispatcher.BeginInvoke(
-                        new Action(() => UserNotify("No se encotraron ajustes!")),
-                        DispatcherPriority.ApplicationIdle);
-                }
-            }
-            else
-            {
-                dispatcher.BeginInvoke(
-                    new Action(() => UserNotify("No se detecta conexion con la PDA")),
-                    DispatcherPriority.ApplicationIdle);
-            }
+            AjustesDTO ajustes = HttpWebClientUtil.LoadAdjustmentsGrid();
+            adjustments = AjustesDTO.ParserDataGrid(ajustes);
 
             AdjustmentEnableEdit = false;
 

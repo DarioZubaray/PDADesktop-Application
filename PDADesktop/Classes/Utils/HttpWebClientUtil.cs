@@ -118,6 +118,7 @@ namespace PDADesktop.Classes.Utils
                     response.Close();
             }
         }
+
         #endregion
 
         public static void ShowErrorMessage(Exception e)
@@ -458,6 +459,14 @@ namespace PDADesktop.Classes.Utils
             string queryParams = "?idSincronizacion=" + syncId + "&idSucursal=" + storeId;
             string responseControlBloqueoPDA = SendHttpGetRequest(urlControlBloqueoPDA + queryParams);
             return JsonUtils.GetControlBloqueoPDA(responseControlBloqueoPDA);
+        }
+
+        internal static AjustesDTO LoadAdjustmentsGrid()
+        {
+            string urlModifyLoadAdjustmentsGrid = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_CARGAR_GRILLA_AJUSTES);
+            string queryParams = "?lote=111152&idSincronizacion=121578&page=1&rows=2147483647";
+            string responseModifyLoadAdjustmentsGrid = SendHttpGetRequest(urlModifyLoadAdjustmentsGrid + queryParams);
+            return JsonUtils.GetAjustesDTO(responseModifyLoadAdjustmentsGrid);
         }
     }
 }
