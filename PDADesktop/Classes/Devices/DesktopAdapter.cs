@@ -243,7 +243,7 @@ namespace PDADesktop.Classes.Devices
             return desbloquearPDA;
         }
 
-        public void CambiarEstadoSincronizacion(string syncState)
+        public void ChangeSynchronizationState(string syncState)
         {
             FileUtils.UpdateDefaultDatFileInPublic(syncState, DeviceMainData.POSITION_ESTADO_SINCRO);
             string slashFilenameAndextension = FileUtils.PrependSlash(Constants.DAT_FILE_DEFAULT);

@@ -242,13 +242,14 @@ namespace PDADesktop.ViewModel
             logger.Debug("ActualizarAjusteButton");
             SelectedAdjustment = null;
         }
+
         public void DiscardChangesMethod(object obj)
         {
             logger.Debug("DescartarCambiosButton");
             string pregunta = "¿Desea descartar los cambios?";
             if (PreguntarAlUsuario(pregunta))
             {
-                CloseVerAjustesRealizadosWindow();
+                RedirectToActivityCenterView();
             }
             else
             {
@@ -265,7 +266,7 @@ namespace PDADesktop.ViewModel
 
             if (App.Instance.deviceHandler.OverWriteAdjustmentMade(newAdjustmentContent))
             {
-                CloseVerAjustesRealizadosWindow();
+                RedirectToActivityCenterView();
             }
             else
             {
@@ -273,18 +274,13 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private void CloseVerAjustesRealizadosWindow()
+        private void RedirectToActivityCenterView()
         {
-            foreach (Window w in Application.Current.Windows)
-            {
-                if (w is MainWindow)
-                {
-                    var mainWindow = (MainWindow)w;
-                    Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
-                    mainWindow.frame.NavigationService.Navigate(uri);
-                }
-            }
+            MainWindow window = (MainWindow)Application.Current.MainWindow;
+            Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
+            window.frame.NavigationService.Navigate(uri);
         }
+
         public bool PreguntarAlUsuario(string pregunta)
         {
             string message = pregunta;

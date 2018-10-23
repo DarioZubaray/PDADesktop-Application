@@ -214,7 +214,7 @@
     <Compile Include="Classes\Utils\ArchivosDATUtils.cs" />
     <Compile Include="Classes\Utils\TextUtils.cs" />
     <Compile Include="ViewModel\BuscarLotesViewModel.cs" />
-    <Compile Include="ViewModel\VerAjustesViewModel.cs" />
+    <Compile Include="ViewModel\VerAjustesRealizadosViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\BuscarLotesView.xaml.cs">
       <DependentUpon>BuscarLotesView.xaml</DependentUpon>
@@ -231,8 +231,8 @@
     <Compile Include="View\VerAjustesInformadosView.xaml.cs">
       <DependentUpon>VerAjustesInformadosView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\VerAjustesView.xaml.cs">
-      <DependentUpon>VerAjustesView.xaml</DependentUpon>
+    <Compile Include="View\VerAjustesRealizadosView.xaml.cs">
+      <DependentUpon>VerAjustesRealizadosView.xaml</DependentUpon>
     </Compile>
     <Page Include="View\Controls\CircularProgressBar.xaml">
       <SubType>Designer</SubType>
@@ -301,7 +301,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\VerAjustesView.xaml">
+    <Page Include="View\VerAjustesRealizadosView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

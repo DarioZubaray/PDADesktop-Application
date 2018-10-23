@@ -677,7 +677,7 @@ namespace PDADesktop.ViewModel
             dispatcher.BeginInvoke(new Action(() =>
             {
                 Button buttonSeeAdjustment = new Button();
-                buttonSeeAdjustment.Name = "button_verAjustes";
+                buttonSeeAdjustment.Name = "button_verAjustesRealizados";
                 buttonSeeAdjustment.Content = "Ver Ajustes";
                 buttonSeeAdjustment.HorizontalAlignment = HorizontalAlignment.Left;
                 buttonSeeAdjustment.VerticalAlignment = VerticalAlignment.Top;
@@ -1099,7 +1099,7 @@ namespace PDADesktop.ViewModel
                     try
                     {
                         string storeId = MyAppProperties.storeId;
-                        bool descargaMaestroCorrecta = HttpWebClientUtil.BuscarMaestrosDAT((int)sync.actividad.idActividad, storeId);
+                        bool descargaMaestroCorrecta = HttpWebClientUtil.SearchDATsMasterFile((int)sync.actividad.idActividad, storeId);
                         NotifyCurrentMessage("Descargando " + sync.actividad.descripcion.ToString());
                         Thread.Sleep(500);
 

@@ -5,6 +5,8 @@ using PDADesktop.Model;
 using System.Collections.Generic;
 using log4net;
 using System.Configuration;
+using PDADesktop.View;
+using System.Windows;
 
 namespace PDADesktop.Classes.Utils
 {
@@ -27,25 +29,25 @@ namespace PDADesktop.Classes.Utils
             switch(estadoGeneral)
             {
                 case Constants.EGRAL_REINTENTAR_INFORMAR:
-                    RetryInform(idSincronizacion, idActividad);
+                    RetryInformToGenesix(idSincronizacion, idActividad);
                     break;
                 case Constants.EGRAL_REINTENTAR_DESCARGA:
-                    RetryDownload(idSincronizacion, idAccion, idActividad);
+                    RetryDownloadFromGenesix(idSincronizacion, idAccion, idActividad);
                     break;
                 case Constants.EGRAL_REINTENTAR3:
-                    RetryDownloadReceptions(idSincronizacion, idLote);
+                    RetryDownloadReceptionsFromGenesix(idSincronizacion, idLote);
                     break;
                 case Constants.EGRAL_MODIFICAR_AJUSTE:
-                    VerAjustesInformados(idSincronizacion, idLote);
+                    ModifyAdjusments(idSincronizacion, idLote);
                     break;
                 case Constants.EGRAL_VER_DETALLES:
-                    verDetalles(idSincronizacion, idLote);
+                    seDetailsGeneral(idSincronizacion, idLote);
                     break;
                 case Constants.EGRAL_IMPRIMIR_RECEPCION:
-                    Imprimir(idSincronizacion, idLote);
+                    PrintReceptions(idSincronizacion, idLote);
                     break;
                 case Constants.EGRAL_OK:
-                    verAjustesInformados(idActividad, epda, egx, idLote);
+                    SeeAdjustmentsInforms(idActividad, epda, egx, idLote);
                     break;
                 default:
                     stateNeedResolve = false;
@@ -54,34 +56,36 @@ namespace PDADesktop.Classes.Utils
             return stateNeedResolve;
         }
 
-        private static void verAjustesInformados(int idActividad, int epda, int egx, string idLote)
+        private static void SeeAdjustmentsInforms(int idActividad, int epda, int egx, string idLote)
         {
             if ( Constants.EPDA_RECIBIDO.Equals(epda) 
                  && Constants.EGX_ENVIADO.Equals(egx)
                  && Constants.ACTIVIDAD_AJUSTES.Equals(idActividad) )
             {
-                //llamar a la vista ver 'verAjustesInformadosView'
+                MainWindow window = (MainWindow)Application.Current.MainWindow;
+                Uri uri = new Uri(Constants.VER_AJUSTES_INFORMADOS_VIEW, UriKind.Relative);
+                window.frame.NavigationService.Navigate(uri);
             }
         }
 
-        private static void Imprimir(long idSincronizacion, string idLote)
+        private static void PrintReceptions(long idSincronizacion, string idLote)
         {
             //lamar a la vista 'ImprimirRecepcionView'
             //la cual puede abrir un PDF
         }
 
-        private static void verDetalles(long idSincronizacion, string idLote)
+        private static void seDetailsGeneral(long idSincronizacion, string idLote)
         {
             //lamar a la vista 'VerDetallesRecepcionView'
         }
 
-        private static void VerAjustesInformados(long idSincronizacion, string idLote)
+        private static void ModifyAdjusments(long idSincronizacion, string idLote)
         {
             //lamar a la vista 'VerAjustesInformadosView' (tmb?)
             //que diferencia hay entre verAjustes y verAjustesRealizados y verAjustesInformados(?)
         }
 
-        private static void RetryDownloadReceptions(long idSincronizacion, string idLote)
+        private static void RetryDownloadReceptionsFromGenesix(long idSincronizacion, string idLote)
         {
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             bool doControls = ControlStoreIdAndDatetimeSync();
@@ -93,12 +97,12 @@ namespace PDADesktop.Classes.Utils
                 ControlBloqueoPDA desbloquearPDA = deviceHandler.ControlDeviceLock(idSincronizacion, storeId);
                 if (desbloquearPDA.desbloquearPDA)
                 {
-                    deviceHandler.CambiarEstadoSincronizacion(Constants.ESTADO_SINCRO_FIN);
+                    deviceHandler.ChangeSynchronizationState(Constants.ESTADO_SINCRO_FIN);
                 }
             }
         }
 
-        private static void RetryDownload(long idSincronizacion, int idAccion, int idActividad)
+        private static void RetryDownloadFromGenesix(long idSincronizacion, int idAccion, int idActividad)
         {
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             bool doControls = ControlStoreIdAndDatetimeSync();
@@ -110,12 +114,12 @@ namespace PDADesktop.Classes.Utils
                 ControlBloqueoPDA desbloquearPDA = deviceHandler.ControlDeviceLock(idSincronizacion, storeId);
                 if (desbloquearPDA.desbloquearPDA)
                 {
-                    deviceHandler.CambiarEstadoSincronizacion(Constants.ESTADO_SINCRO_FIN);
+                    deviceHandler.ChangeSynchronizationState(Constants.ESTADO_SINCRO_FIN);
                 }
             }
         }
 
-        private static void RetryInform(long idSincronizacion, int idActividad)
+        private static void RetryInformToGenesix(long idSincronizacion, int idActividad)
         {
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             if (Constants.ACTIVIDAD_INFORMAR_RECEPCIONES.Equals(idActividad))
@@ -129,10 +133,10 @@ namespace PDADesktop.Classes.Utils
 
             HttpWebClientUtil.ExecuteInformGenesix(idSincronizacion);
             string storeId = MyAppProperties.storeId;
-            ControlBloqueoPDA desbloquearPDA = deviceHandler.ControlDeviceLock(idSincronizacion, storeId);
-            if (desbloquearPDA.desbloquearPDA)
+            ControlBloqueoPDA unlockDevice = deviceHandler.ControlDeviceLock(idSincronizacion, storeId);
+            if (unlockDevice.desbloquearPDA)
             {
-                deviceHandler.CambiarEstadoSincronizacion(Constants.ESTADO_SINCRO_FIN);
+                deviceHandler.ChangeSynchronizationState(Constants.ESTADO_SINCRO_FIN);
             }
         }
 
@@ -178,7 +182,7 @@ namespace PDADesktop.Classes.Utils
 
         public static void DownloadFromGenesix(int idActividad, string storeId, long syncId)
         {
-            bool descargaMaestroCorrecta = HttpWebClientUtil.BuscarMaestrosDAT(idActividad, storeId);
+            bool descargaMaestroCorrecta = HttpWebClientUtil.SearchDATsMasterFile(idActividad, storeId);
 
             if (descargaMaestroCorrecta)
             {

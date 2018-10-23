@@ -1,6 +1,5 @@
 ﻿using log4net;
 using PDADesktop.Model;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -243,7 +242,7 @@ namespace PDADesktop.Classes.Utils
             return informedReceptions;
         }
 
-        internal static bool BuscarMaestrosDAT(int activityId, string storeId)
+        internal static bool SearchDATsMasterFile(int activityId, string storeId)
         {
             string masterFile = ArchivosDATUtils.GetDataFileNameByIdActividad(activityId);
             string urlPathMasterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_URLPATH");
