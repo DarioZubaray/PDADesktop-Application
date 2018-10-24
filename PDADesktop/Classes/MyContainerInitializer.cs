@@ -24,7 +24,7 @@ namespace PDADesktop.Classes
             ForConcreteType<VerAjustesRealizadosViewModel>().Configure.Singleton();
             ForConcreteType<VerAjustesInformadosViewModel>().Configure.Singleton();
 
-            string deviceHandler = ConfigurationManager.AppSettings.Get("DEVICE_HANDLER");
+            string deviceHandler = ConfigurationManager.AppSettings.Get(Constants.DEVICE_HANDLER);
             if (deviceHandler.Equals(Constants.DESKTOP_ADAPTER, StringComparison.InvariantCultureIgnoreCase))
             {
                 this.For<IDeviceHandler>().Use<DesktopAdapter>().Named("desktopAdapter");

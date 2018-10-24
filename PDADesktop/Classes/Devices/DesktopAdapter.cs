@@ -227,7 +227,7 @@ namespace PDADesktop.Classes.Devices
 
         public string GetLastVersionProgramFileFromServer()
         {
-            string programFilename = ConfigurationManager.AppSettings.Get("DEVICE_RELPATH_FILENAME");
+            string programFilename = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_FILENAME);
             string queryParams = "?nombreDispositivo=" + Constants.DESKTOP + "&nombreArchivoPrograma=" + programFilename;
             return HttpWebClientUtil.GetLastVersionProgramFileFromServer(queryParams);
         }

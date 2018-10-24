@@ -19,7 +19,7 @@ namespace PDADesktop.Classes.Utils
         private static string SendHttpGetRequest(string urlPath)
         {
             string response = null;
-            string urlAuthority = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
+            string urlAuthority = ConfigurationManager.AppSettings.Get(Constant.SERVER_HOST_PROTOCOL_IP_PORT);
             try
             {
                 logger.Debug("Enviando petición a " + urlAuthority + urlPath);
@@ -43,7 +43,7 @@ namespace PDADesktop.Classes.Utils
         private static string SendHttpPostRequest(string urlPath, string jsonBody)
         {
             string result = null;
-            string urlAuthority = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
+            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(urlAuthority + urlPath);
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
@@ -69,7 +69,7 @@ namespace PDADesktop.Classes.Utils
             try
             {
                 filePath = TextUtils.ExpandEnviromentVariable(filePath);
-                string urlAuthority = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
+                string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
                 string sWebAddress = urlAuthority + url;
 
                 string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
@@ -153,12 +153,19 @@ namespace PDADesktop.Classes.Utils
             return JsonUtils.GetListActividades(responseActivities);
         }
 
+        internal static void DeleteAdjustment(long adjustmentId, string batchId, long syncId)
+        {
+            string urlDeleteAdjustmentModify = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_ELIMINAR_AJUTE);
+            string queryParams = "?idAjustes={0}&lote={1}&idSincronizacion={2}";
+            queryParams = String.Format(queryParams, adjustmentId, batchId, syncId);
+        }
+
         internal static bool DownloadFileFromServer(string urlPath, string filenameAndExtension, string destino)
         {
             var client = new WebClient();
             string userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
             client.Headers.Add("user-agent", userAgent);
-            string urlAuthority = ConfigurationManager.AppSettings.Get("SERVER_HOST_PROTOCOL_IP_PORT");
+            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
             try
             {
                 logger.Debug("Enviando petición a " + urlAuthority + urlPath);
@@ -179,7 +186,7 @@ namespace PDADesktop.Classes.Utils
         internal static Boolean GetHttpWebServerConexionStatus()
         {
             Boolean conexionStatus = false;
-            string urlServerStatus = ConfigurationManager.AppSettings.Get("API_SERVER_CONEXION_STATUS");
+            string urlServerStatus = ConfigurationManager.AppSettings.Get(Constants.API_SERVER_CONEXION_STATUS);
             string response = SendHttpGetRequest(urlServerStatus);
             if (response != null)
             {
@@ -191,7 +198,7 @@ namespace PDADesktop.Classes.Utils
         internal static int GetCurrentBatchId(string storeId)
         {
             int batchId = 0;
-            string urlPathGetCurrentBatchId = ConfigurationManager.AppSettings.Get("API_SYNC_ID_LOTE");
+            string urlPathGetCurrentBatchId = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ID_LOTE);
             string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPathGetCurrentBatchId, storeId);
             string responseGetCurrentBatchId = SendHttpGetRequest(urlPath_urlQuery);
             if (responseGetCurrentBatchId != null && !responseGetCurrentBatchId.Equals("null"))
@@ -221,7 +228,7 @@ namespace PDADesktop.Classes.Utils
         internal static List<string> GetAdjustmentsTypes()
         {
             List<string> adjustmentsTypes = null;
-            string urlPathGetAdjustmentsTypes = ConfigurationManager.AppSettings.Get("API_GET_TIPOS_AJUSTES");
+            string urlPathGetAdjustmentsTypes = ConfigurationManager.AppSettings.Get(Constants.API_GET_TIPOS_AJUSTES);
             string responseGetAdjustmentsTypes = SendHttpGetRequest(urlPathGetAdjustmentsTypes);
             if (responseGetAdjustmentsTypes != null)
             {
@@ -233,7 +240,7 @@ namespace PDADesktop.Classes.Utils
         internal static bool CheckInformedReceptions(string batchId)
         {
             bool informedReceptions = false;
-            string urlPathInformedReceptions = ConfigurationManager.AppSettings.Get("API_BUSCAR_RECEPCIONES_INFORMADAS");
+            string urlPathInformedReceptions = ConfigurationManager.AppSettings.Get(Constants.API_BUSCAR_RECEPCIONES_INFORMADAS);
             string urlPath_urlQuery = String.Format("{0}?idLoteRecepcionInformada={1}", urlPathInformedReceptions, batchId);
             string response = SendHttpGetRequest(urlPath_urlQuery);
             if (response != null)
@@ -246,7 +253,7 @@ namespace PDADesktop.Classes.Utils
         internal static bool SearchDATsMasterFile(int activityId, string storeId)
         {
             string masterFile = ArchivosDATUtils.GetDataFileNameByIdActividad(activityId);
-            string urlPathMasterFile = ConfigurationManager.AppSettings.Get("API_MAESTRO_URLPATH");
+            string urlPathMasterFile = ConfigurationManager.AppSettings.Get(Constants.API_MAESTRO_URLPATH);
             urlPathMasterFile = String.Format(urlPathMasterFile, masterFile);
             string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPathMasterFile, storeId);
             string slashFilenameAndExtension = FileUtils.WrapSlashAndDATExtension(masterFile);
@@ -447,7 +454,7 @@ namespace PDADesktop.Classes.Utils
 
         internal static void ExecuteInformGenesix(long syncId)
         {
-            string urlInformGenesix = ConfigurationManager.AppSettings.Get("API_INFORMAR_GENESIX");
+            string urlInformGenesix = ConfigurationManager.AppSettings.Get(Constants.API_INFORMAR_GENESIX);
             string queryParams = "?idSincronizacion=" + syncId;
             string responseExecutedInform = SendHttpGetRequest(urlInformGenesix + queryParams);
             logger.Debug(responseExecutedInform);

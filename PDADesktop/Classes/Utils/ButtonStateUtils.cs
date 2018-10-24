@@ -88,6 +88,8 @@ namespace PDADesktop.Classes.Utils
 
         private static void ModifyAdjusments(long syncId, string batchId)
         {
+            MyAppProperties.SeeAdjustmentModify_syncId = syncId;
+            MyAppProperties.SeeAdjustmentModify_batchId = batchId;
             MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uriSeeAdjustmentsModify = new Uri(Constants.VER_AJUSTES_MODIFICAR_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uriSeeAdjustmentsModify);

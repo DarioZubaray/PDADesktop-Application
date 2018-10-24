@@ -42,6 +42,8 @@
         public const string DEVICE_RELPATH_BIN = "DEVICE_RELPATH_BIN";
         public const string DEVICE_RELPATH_LOOKUP = "DEVICE_RELPATH_LOOKUP";
         public const string DEVICE_RELPATH_DATA = "DEVICE_RELPATH_DATA";
+        public const string DEVICE_RELPATH_FILENAME = "DEVICE_RELPATH_FILENAME";
+        public const string DEVICE_HANDLER = "DEVICE_HANDLER";
         public const string DESKTOP_FOLDER = "DESKTOP_FOLDER";
 
         public const string DAT_FILE_AJUSTES = "DAT_FILE_AJUSTES";
@@ -100,5 +102,14 @@
 
         public const string ESTADO_SINCRO_INICIADO = "1";
         public const string ESTADO_SINCRO_FIN = "0";
+
+        public const string API_INFORMAR_GENESIX = "API_INFORMAR_GENESIX";
+        public const string API_MAESTRO_URLPATH = "API_MAESTRO_URLPATH";
+        public const string API_BUSCAR_RECEPCIONES_INFORMADAS = "API_BUSCAR_RECEPCIONES_INFORMADAS";
+        public const string API_GET_TIPOS_AJUSTES = "API_GET_TIPOS_AJUSTES";
+        public const string API_SYNC_ID_LOTE = "API_SYNC_ID_LOTE";
+        public const string API_SERVER_CONEXION_STATUS = "API_SERVER_CONEXION_STATUS";
+        public const string SERVER_HOST_PROTOCOL_IP_PORT = "SERVER_HOST_PROTOCOL_IP_PORT";
+        public const string API_MODIFICAR_ELIMINAR_AJUTE = "API_MODIFICAR_ELIMINAR_AJUTE";
     }
 }
