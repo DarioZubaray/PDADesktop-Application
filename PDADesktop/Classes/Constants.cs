@@ -35,6 +35,14 @@
         public const string API_SUBIR_ARCHIVO = "API_SUBIR_ARCHIVO";
         public const string API_CONTROL_BLOQUEO_PDA = "API_CONTROL_BLOQUEO_PDA";
         public const string API_MODIFICAR_CARGAR_GRILLA_AJUSTES = "API_MODIFICAR_CARGAR_GRILLA_AJUSTES";
+        public const string API_INFORMAR_GENESIX = "API_INFORMAR_GENESIX";
+        public const string API_MAESTRO_URLPATH = "API_MAESTRO_URLPATH";
+        public const string API_BUSCAR_RECEPCIONES_INFORMADAS = "API_BUSCAR_RECEPCIONES_INFORMADAS";
+        public const string API_GET_TIPOS_AJUSTES = "API_GET_TIPOS_AJUSTES";
+        public const string API_SYNC_ID_LOTE = "API_SYNC_ID_LOTE";
+        public const string API_SERVER_CONEXION_STATUS = "API_SERVER_CONEXION_STATUS";
+        public const string SERVER_HOST_PROTOCOL_IP_PORT = "SERVER_HOST_PROTOCOL_IP_PORT";
+        public const string API_MODIFICAR_ELIMINAR_AJUTE = "API_MODIFICAR_ELIMINAR_AJUTE";
 
         public const string PUBLIC_PATH_DATA = "PUBLIC_PATH_DATA";
         public const string PUBLIC_PATH_LOOKUP = "PUBLIC_PATH_LOOKUP";
@@ -103,13 +111,5 @@
         public const string ESTADO_SINCRO_INICIADO = "1";
         public const string ESTADO_SINCRO_FIN = "0";
 
-        public const string API_INFORMAR_GENESIX = "API_INFORMAR_GENESIX";
-        public const string API_MAESTRO_URLPATH = "API_MAESTRO_URLPATH";
-        public const string API_BUSCAR_RECEPCIONES_INFORMADAS = "API_BUSCAR_RECEPCIONES_INFORMADAS";
-        public const string API_GET_TIPOS_AJUSTES = "API_GET_TIPOS_AJUSTES";
-        public const string API_SYNC_ID_LOTE = "API_SYNC_ID_LOTE";
-        public const string API_SERVER_CONEXION_STATUS = "API_SERVER_CONEXION_STATUS";
-        public const string SERVER_HOST_PROTOCOL_IP_PORT = "SERVER_HOST_PROTOCOL_IP_PORT";
-        public const string API_MODIFICAR_ELIMINAR_AJUTE = "API_MODIFICAR_ELIMINAR_AJUTE";
     }
 }

@@ -19,7 +19,7 @@ namespace PDADesktop.Classes.Utils
         private static string SendHttpGetRequest(string urlPath)
         {
             string response = null;
-            string urlAuthority = ConfigurationManager.AppSettings.Get(Constant.SERVER_HOST_PROTOCOL_IP_PORT);
+            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
             try
             {
                 logger.Debug("Enviando petición a " + urlAuthority + urlPath);
@@ -151,13 +151,6 @@ namespace PDADesktop.Classes.Utils
             string responseActivities = HttpWebClientUtil.SendHttpPostRequest(urlActivities, jsonBody);
             logger.Debug(responseActivities);
             return JsonUtils.GetListActividades(responseActivities);
-        }
-
-        internal static void DeleteAdjustment(long adjustmentId, string batchId, long syncId)
-        {
-            string urlDeleteAdjustmentModify = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_ELIMINAR_AJUTE);
-            string queryParams = "?idAjustes={0}&lote={1}&idSincronizacion={2}";
-            queryParams = String.Format(queryParams, adjustmentId, batchId, syncId);
         }
 
         internal static bool DownloadFileFromServer(string urlPath, string filenameAndExtension, string destino)
@@ -474,6 +467,15 @@ namespace PDADesktop.Classes.Utils
             string queryParams = "?lote=111152&idSincronizacion=121578&page=1&rows=2147483647";
             string responseModifyLoadAdjustmentsGrid = SendHttpGetRequest(urlModifyLoadAdjustmentsGrid + queryParams);
             return JsonUtils.GetAjustesDTO(responseModifyLoadAdjustmentsGrid);
+        }
+
+        internal static ActionResultDto DeleteAdjustment(long adjustmentId, string batchId, long syncId)
+        {
+            string urlDeleteAdjustmentModify = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_ELIMINAR_AJUTE);
+            string queryParams = "?idAjustes={0}&lote={1}&idSincronizacion={2}";
+            queryParams = String.Format(queryParams, adjustmentId, batchId, syncId);
+            string responseDeleteAdjustment = SendHttpGetRequest(urlDeleteAdjustmentModify + queryParams);
+            return JsonUtils.GetActionResult(responseDeleteAdjustment);
         }
     }
 }
