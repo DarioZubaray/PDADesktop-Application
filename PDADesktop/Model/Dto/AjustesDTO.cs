@@ -8,13 +8,13 @@ namespace PDADesktop.Model.Dto
     {
         public int page { get; set; }
         public int records { get; set; }
-        public Row[] row { get; set; }
+        public Row[] rows { get; set; }
         public int total { get; set; }
 
         public static ObservableCollection<Ajustes> ParserDataGrid(AjustesDTO ajustesDto)
         {
             ObservableCollection<Ajustes> ajustes = new ObservableCollection<Ajustes>();
-            Row[] rows = ajustesDto.row;
+            Row[] rows = ajustesDto.rows;
             foreach(Row row in rows)
             {
                 long ean = Convert.ToInt64(row.cell[2]);
