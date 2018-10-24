@@ -70,20 +70,20 @@
         public const string PROVEEDOR_ARTICULOS = "PROVART";
         public const string MOTIVO_DEVOLUCION = "MOTIDEV";
 
-        public const long ctrubic = 101L;
-        public const long ctrsubic = 102L;
-        public const long ajustes = 103L;
-        public const long recep = 104L;
-        public const long impetiq = 105L;
-        public const long art = 201L;
-        public const long ubic = 202L;
-        public const long ubicart = 203L;
-        public const long pedidos = 204L;
-        public const long tetiq = 205L;
-        public const long tajus = 206L;
-        public const long proveed = 207L;
-        public const long proart = 208L;
-        public const long motidev = 209L;
+        public const long CTRUBIC_CODE = 101L;
+        public const long _CODE = 102L;
+        public const long AJUSTES_CODE = 103L;
+        public const long RECEP_CODE = 104L;
+        public const long IMPETIQ_CODE = 105L;
+        public const long ART_CODE = 201L;
+        public const long UBIC_CODE = 202L;
+        public const long UBICART_CODE = 203L;
+        public const long PEDIDOS_CODE = 204L;
+        public const long TETIQ_CODE = 205L;
+        public const long TAJUS_CODE = 206L;
+        public const long PROVEED_CODE = 207L;
+        public const long PROART_CODE = 208L;
+        public const long MOTIDEV_CODE = 209L;
 
         public const int EGRAL_OK = 2;
         public const int EGRAL_REINTENTAR_INFORMAR = 3;
