@@ -120,7 +120,7 @@ namespace PDADesktop.Classes.Utils
             return dataFileName;
         }
 
-        public static void crearArchivoPAS()
+        public static void createPASFile()
         {
             string separador = "*eof*";
             string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
@@ -151,7 +151,7 @@ namespace PDADesktop.Classes.Utils
             }
         }
 
-        public static void crearArchivosPedidos()
+        public static void createOrdersFiles()
         {
             string separador = "*eof*";
             string publicPedidos = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);

@@ -193,15 +193,15 @@ namespace PDADesktop.Classes.Utils
 
             if (descargaMaestroCorrecta)
             {
-                if (idActividad.Equals(Constants.ubicart))
+                if (idActividad.Equals(Constants.UBICART_CODE))
                 {
                     logger.Debug("Ubicart -> creando Archivos PAS");
-                    ArchivosDATUtils.crearArchivoPAS();
+                    ArchivosDATUtils.createPASFile();
                 }
-                if (idActividad.Equals(Constants.pedidos))
+                if (idActividad.Equals(Constants.PEDIDOS_CODE))
                 {
                     logger.Debug("Pedidos -> creando Archivos Pedidos");
-                    ArchivosDATUtils.crearArchivosPedidos();
+                    ArchivosDATUtils.createOrdersFiles();
                 }
 
                 string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
