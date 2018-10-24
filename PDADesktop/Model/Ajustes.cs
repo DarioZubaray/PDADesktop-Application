@@ -2,6 +2,7 @@
 {
     public class Ajustes
     {
+        public long id { get; set; }
         public long ean { get; set; }
         public string fechaAjuste { get; set; }
         public string motivo { get; set; }
@@ -16,6 +17,9 @@
             this.motivo = motivo;
             this.cantidad = cantidad;
         }
+
+        public Ajustes() { }
+
 
         public override string ToString()
         {

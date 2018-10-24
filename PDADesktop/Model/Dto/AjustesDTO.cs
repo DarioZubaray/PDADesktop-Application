@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace PDADesktop.Model.Dto
@@ -17,11 +16,11 @@ namespace PDADesktop.Model.Dto
             Row[] rows = ajustesDto.rows;
             foreach(Row row in rows)
             {
-                long ean = Convert.ToInt64(row.cell[2]);
-                string fecha = row.cell[1];
-                string motivo = "-";
-                long cantidad = Convert.ToInt64(row.cell[3]);
-                Ajustes ajuste = new Ajustes(ean, fecha, motivo, cantidad);
+                Ajustes ajuste = new Ajustes();
+                ajuste.id = Convert.ToInt64(row.cell[2]);
+                ajuste.fechaAjuste = row.cell[1];
+                ajuste.motivo = "-";
+                ajuste.cantidad = Convert.ToInt64(row.cell[3]);
                 ajustes.Add(ajuste);
             }
             return ajustes;
