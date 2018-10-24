@@ -129,6 +129,12 @@ namespace PDADesktop.ViewModel
             DiscardChangesCommand = new RelayCommand(DiscardChangesMethod);
             SaveChangesCommand = new RelayCommand(SaveChangesMethod);
         }
+
+        ~VerAjustesModificarViewModel()
+        {
+            MyAppProperties.SeeAdjustmentModify_syncId = 0L;
+            MyAppProperties.SeeAdjustmentModify_batchId = null;
+        }
         #endregion
 
         #region Commands
@@ -189,25 +195,36 @@ namespace PDADesktop.ViewModel
         public void DeleteAdjustmentMethod(object obj)
         {
             logger.Debug("EliminarAjusteButton");
-            Ajustes parametro = obj as Ajustes;
-            if (parametro != null)
-                logger.Debug("Parametro: " + parametro.ToString());
-            if (SelectedAdjustment != null)
-                logger.Debug("AjusteSeleccionado : " + SelectedAdjustment.ToString());
+            string question = "¿Está seguro que desea eliminar el ajuste? Esta acción no se puede deshacer";
+            if (AskToUser(question))
+            {
+                Ajustes parametro = obj as Ajustes;
+                if (parametro != null)
+                    logger.Debug("Parametro: " + parametro.ToString());
+                if (SelectedAdjustment != null)
+                    logger.Debug("AjusteSeleccionado : " + SelectedAdjustment.ToString());
 
-            Adjustments.Remove(SelectedAdjustment);
-            SelectedAdjustment = null;
+                Adjustments.Remove(SelectedAdjustment);
+                long adjustmentId = SelectedAdjustment.id;
+                string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
+                long syncId = MyAppProperties.SeeAdjustmentModify_syncId;
+
+                HttpWebClientUtil.DeleteAdjustment(adjustmentId, batchId, syncId);
+                SelectedAdjustment = null;
+            }
         }
+
         public void UpdateAdjustmentMethod(object obj)
         {
             logger.Debug("ActualizarAjusteButton");
             SelectedAdjustment = null;
         }
+
         public void DiscardChangesMethod(object obj)
         {
             logger.Debug("DescartarCambiosButton");
             string pregunta = "¿Desea descartar los cambios?";
-            if (PreguntarAlUsuario(pregunta))
+            if (AskToUser(pregunta))
             {
                 RedirectToActivityCenterView();
             }
@@ -241,27 +258,26 @@ namespace PDADesktop.ViewModel
             window.frame.NavigationService.Navigate(uri);
         }
 
-        public void UserNotify(string mensaje)
+        public void UserNotify(string message)
         {
-            string message = mensaje;
             string caption = "Aviso!";
             MessageBoxButton messageBoxButton = MessageBoxButton.OK;
             MessageBoxImage messageBoxImage = MessageBoxImage.Error;
             MessageBoxResult result = MessageBox.Show(message, caption, messageBoxButton, messageBoxImage);
             if (result == MessageBoxResult.OK)
             {
-                logger.Debug("Informando al usuario: " + mensaje);
+                logger.Debug("Informando al usuario: " + message);
             }
         }
 
-        public bool PreguntarAlUsuario(string pregunta)
+        public bool AskToUser(string question)
         {
-            string message = pregunta;
+            string message = question;
             string caption = "Aviso!";
             MessageBoxButton messageBoxButton = MessageBoxButton.OKCancel;
             MessageBoxImage messageBoxImage = MessageBoxImage.Question;
             MessageBoxResult result = MessageBox.Show(message, caption, messageBoxButton, messageBoxImage);
-            logger.Debug("Preguntando al usuario: " + pregunta);
+            logger.Debug("Preguntando al usuario: " + question);
             if (result == MessageBoxResult.OK)
             {
                 return true;
