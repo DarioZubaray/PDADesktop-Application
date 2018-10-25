@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:VM="clr-namespace:PDADesktop.ViewModel"
+        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+        Dialog:DialogParticipation.Register="{Binding}"
         xmlns:local="clr-namespace:PDADesktop.View"
         mc:Ignorable="d"
         d:DesignHeight="730" d:DesignWidth="920"
@@ -16,10 +17,6 @@
         TextOptions.TextRenderingMode="Auto"
         Background="WhiteSmoke"
         FontFamily="{DynamicResource MaterialDesignFont}">
-
-    <UserControl.DataContext>
-        <VM:VerAjustesModificarViewModel />
-    </UserControl.DataContext>
 
     <UserControl.Resources>
         <Style x:Key="DataGridContentCellCentering" TargetType="{x:Type DataGridCell}">

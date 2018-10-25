@@ -10,6 +10,8 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using PDADesktop.Model.Dto;
+using MahApps.Metro.Controls.Dialogs;
+using System.Threading.Tasks;
 
 namespace PDADesktop.ViewModel
 {
@@ -113,12 +115,16 @@ namespace PDADesktop.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        private IDialogCoordinator dialogCoordinator;
+
         #endregion
 
         #region Constructor
-        public VerAjustesModificarViewModel()
+        public VerAjustesModificarViewModel(IDialogCoordinator instance)
         {
             BannerApp.PrintSeeAdjustmentsModify();
+            dialogCoordinator = instance;
             AjustesDTO ajustes = HttpWebClientUtil.LoadAdjustmentsGrid();
             adjustments = AjustesDTO.ParserDataGrid(ajustes);
 
@@ -220,18 +226,15 @@ namespace PDADesktop.ViewModel
             SelectedAdjustment = null;
         }
 
-        public void DiscardChangesMethod(object obj)
+        public async void DiscardChangesMethod(object obj)
         {
             logger.Debug("DescartarCambiosButton");
-            string pregunta = "¿Desea descartar los cambios?";
-            if (AskToUser(pregunta))
+            string message = "¿Desea descartar los cambios?";
+            bool userAnswer = await AskToUsetMahappDialog(message);
+
+            if (userAnswer)
             {
                 RedirectToActivityCenterView();
-            }
-            else
-            {
-                // revertir el estado del archivo?
-                // cual es esta de la lista?
             }
 
         }
@@ -268,6 +271,17 @@ namespace PDADesktop.ViewModel
             {
                 logger.Debug("Informando al usuario: " + message);
             }
+        }
+
+        private async Task<bool> AskToUsetMahappDialog(string message, string title = "Aviso")
+        {
+            MetroDialogSettings settings = new MetroDialogSettings();
+            settings.AffirmativeButtonText = "Aceptar";
+            settings.NegativeButtonText = "Cancelar";
+            Task<MessageDialogResult> showMessageAsync = dialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative, settings);
+            MessageDialogResult messsageDialogResult = await showMessageAsync;
+            bool resultAffirmative = messsageDialogResult.Equals(MessageDialogResult.Affirmative);
+            return resultAffirmative;
         }
 
         public bool AskToUser(string question)

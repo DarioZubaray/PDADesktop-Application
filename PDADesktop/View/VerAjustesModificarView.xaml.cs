@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MahApps.Metro.Controls.Dialogs;
+using PDADesktop.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +22,11 @@ namespace PDADesktop.View
     /// </summary>
     public partial class VerAjustesModificarView : UserControl
     {
+        VerAjustesModificarViewModel verAjustesModificadosViewModel = new VerAjustesModificarViewModel(DialogCoordinator.Instance);
         public VerAjustesModificarView()
         {
             InitializeComponent();
+            this.DataContext = verAjustesModificadosViewModel;
         }
     }
 }
