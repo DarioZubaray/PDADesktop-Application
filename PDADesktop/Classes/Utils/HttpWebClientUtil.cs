@@ -8,6 +8,7 @@ using System.Net;
 using System.IO;
 using System.Text;
 using PDADesktop.Model.Dto;
+using System.Collections.ObjectModel;
 
 namespace PDADesktop.Classes.Utils
 {
@@ -432,8 +433,8 @@ namespace PDADesktop.Classes.Utils
             {
                 actionsId = new string[] { "1", "2" };
             }
-            string jsonBody = JsonUtils.getJsonBody(storeId, actionsId);
-            string responseCreateNewBatch = SendHttpPostRequest(urlCreateNewBatch, jsonBody);
+            string jsonBodyCreateNewBatch = JsonUtils.GetJsonBodyCreateNewBatch(storeId, actionsId);
+            string responseCreateNewBatch = SendHttpPostRequest(urlCreateNewBatch, jsonBodyCreateNewBatch);
             List<Sincronizacion> newSync = JsonUtils.GetListSinchronization(responseCreateNewBatch);
             return newSync;
         }
@@ -477,5 +478,15 @@ namespace PDADesktop.Classes.Utils
             string responseDeleteAdjustment = SendHttpGetRequest(urlDeleteAdjustmentModify + queryParams);
             return JsonUtils.GetActionResult(responseDeleteAdjustment);
         }
+
+
+        internal static string UpdateModifiedAdjustments(ObservableCollection<Ajustes> adjustments, long syncId)
+        {
+            string urlUpdateModifiedAdjustments = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_ACTUALIZAR_AJUSTES);
+            string jsonBodyModifieddjustments = JsonUtils.GetJsonBodyModifyAdjustments(adjustments, syncId);
+            string responseUpdateModifyAdjustments = SendHttpPostRequest(urlUpdateModifiedAdjustments, jsonBodyModifieddjustments);
+            return responseUpdateModifyAdjustments;
+        }
+
     }
 }

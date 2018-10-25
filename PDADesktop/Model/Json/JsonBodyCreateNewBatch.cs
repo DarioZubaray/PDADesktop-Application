@@ -1,6 +1,6 @@
 ﻿namespace PDADesktop.Model.Json
 {
-    public class JsonBody
+    public struct JsonBodyCreateNewBatch
     {
         public string idSucursal { get; set; }
         public string[] idAcciones { get; set; }

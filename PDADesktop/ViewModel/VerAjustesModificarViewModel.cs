@@ -198,11 +198,13 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Methods
-        public void DeleteAdjustmentMethod(object obj)
+        public async void DeleteAdjustmentMethod(object obj)
         {
             logger.Debug("EliminarAjusteButton");
-            string question = "¿Está seguro que desea eliminar el ajuste? Esta acción no se puede deshacer";
-            if (AskToUser(question))
+            string message = "¿Está seguro que desea eliminar el ajuste? Esta acción no se puede deshacer";
+            bool userAnswer = await AskToUserMahappDialog(message);
+
+            if (userAnswer)
             {
                 Ajustes parametro = obj as Ajustes;
                 if (parametro != null)
@@ -236,22 +238,18 @@ namespace PDADesktop.ViewModel
             {
                 RedirectToActivityCenterView();
             }
-
         }
-        public void SaveChangesMethod(object obj)
+
+        public async void SaveChangesMethod(object obj)
         {
             logger.Debug("GuardarCambiosButton");
-            string newAdjustmentContent = TextUtils.ParseCollectionToAdjustmentDAT(Adjustments);
-            logger.Debug("Nuevos ajustes: " + newAdjustmentContent);
 
-            if (App.Instance.deviceHandler.OverWriteAdjustmentMade(newAdjustmentContent))
-            {
-                RedirectToActivityCenterView();
-            }
-            else
-            {
-                UserNotify("ERROR");
-            }
+            string title = "Actualizando cantidades de ajustes";
+            string message = "Espere por favor mientras se informan los ajustes modificados.";
+            await UpdateModifiedAdjustmentsInMahappDialogProgress(message, title);
+            RedirectToActivityCenterView();
+            
+            //UserNotify("ERROR");
         }
 
         private void RedirectToActivityCenterView()
@@ -259,18 +257,6 @@ namespace PDADesktop.ViewModel
             MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
-        }
-
-        public void UserNotify(string message)
-        {
-            string caption = "Aviso!";
-            MessageBoxButton messageBoxButton = MessageBoxButton.OK;
-            MessageBoxImage messageBoxImage = MessageBoxImage.Error;
-            MessageBoxResult result = MessageBox.Show(message, caption, messageBoxButton, messageBoxImage);
-            if (result == MessageBoxResult.OK)
-            {
-                logger.Debug("Informando al usuario: " + message);
-            }
         }
 
         private async Task<bool> AskToUserMahappDialog(string message, string title = "Aviso")
@@ -282,6 +268,22 @@ namespace PDADesktop.ViewModel
             MessageDialogResult messsageDialogResult = await showMessageAsync;
             bool resultAffirmative = messsageDialogResult.Equals(MessageDialogResult.Affirmative);
             return resultAffirmative;
+        }
+
+        private async Task<bool> UpdateModifiedAdjustmentsInMahappDialogProgress(string message, string title = "Aviso")
+        {
+            // Show...
+            ProgressDialogController controller = await dialogCoordinator.ShowProgressAsync(this, title, message);
+            controller.SetIndeterminate();
+
+            // Do your work...
+            long syncId = MyAppProperties.SeeAdjustmentModify_syncId;
+            string responseUpdateModifyAdjustments = HttpWebClientUtil.UpdateModifiedAdjustments(Adjustments, syncId);
+            
+
+            // Close...
+            await controller.CloseAsync();
+            return true;
         }
 
         public bool AskToUser(string question)

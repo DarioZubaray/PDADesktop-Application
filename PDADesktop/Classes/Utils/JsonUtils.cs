@@ -51,14 +51,23 @@ namespace PDADesktop.Classes.Utils
             return JsonConvert.DeserializeObject<ActionResultDto>(serializedJson);
         }
 
-        public static string getJsonBody(string storeId, string[] actionsId)
+        public static string GetJsonBodyCreateNewBatch(string storeId, string[] actionsId)
         {
-            JsonBody jsonBody = new JsonBody();
+            JsonBodyCreateNewBatch jsonBody = new JsonBodyCreateNewBatch();
             jsonBody.idSucursal = storeId;
             if (actionsId != null)
             {
                 jsonBody.idAcciones = actionsId;
             }
+            string json = JsonConvert.SerializeObject(jsonBody);
+            return json;
+        }
+
+        public static string GetJsonBodyModifyAdjustments(ObservableCollection<Ajustes> adjustments, long syncId)
+        {
+            JsonBodyModifyAdjustments jsonBody = new JsonBodyModifyAdjustments();
+            jsonBody.idSincronizacion = syncId;
+            jsonBody.modificarAjustes = adjustments;
             string json = JsonConvert.SerializeObject(jsonBody);
             return json;
         }
