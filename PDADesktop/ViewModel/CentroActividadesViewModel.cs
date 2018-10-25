@@ -181,58 +181,6 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private ICommand showPanelCommand;
-        public ICommand ShowPanelCommand
-        {
-            get
-            {
-                return showPanelCommand;
-            }
-            set
-            {
-                showPanelCommand = value;
-            }
-        }
-
-        private ICommand hidePanelCommand;
-        public ICommand HidePanelCommand
-        {
-            get
-            {
-                return hidePanelCommand;
-            }
-            set
-            {
-                hidePanelCommand = value;
-            }
-        }
-
-        private ICommand changeMainMessageCommand;
-        public ICommand ChangeMainMessageCommand
-        {
-            get
-            {
-                return changeMainMessageCommand;
-            }
-            set
-            {
-                changeMainMessageCommand = value;
-            }
-        }
-
-        private ICommand changeSubMessageCommand;
-        public ICommand ChangeSubMessageCommand
-        {
-            get
-            {
-                return changeSubMessageCommand;
-            }
-            set
-            {
-                changeSubMessageCommand = value;
-            }
-        }
-
         private ICommand panelCloseCommand;
         public ICommand PanelCloseCommand
         {
@@ -478,10 +426,6 @@ namespace PDADesktop.ViewModel
             dispatcherTimer.Interval = new TimeSpan(0, 0, 15);
             dispatcherTimer.Start();
 
-            ShowPanelCommand = new RelayCommand(MostrarPanel, param => this.canExecute);
-            HidePanelCommand = new RelayCommand(OcultarPanel, param => this.canExecute);
-            ChangeMainMessageCommand = new RelayCommand(CambiarMainMensage, param => this.canExecute);
-            ChangeSubMessageCommand = new RelayCommand(CambiarSubMensage, param => this.canExecute);
             PanelCloseCommand = new RelayCommand(CerrarPanel, param => this.canExecute);
         }
         #endregion
@@ -1367,10 +1311,12 @@ namespace PDADesktop.ViewModel
         public void BotonEstadoGeneral(object obj)
         {
             logger.Info("Boton estado general");
+            DisplayWaitingPanel("Espere por favor");
             logger.Info(MyAppProperties.SelectedSync.actividad);
             bool stateNeedResolve = ButtonStateUtils.ResolveState();
             if (stateNeedResolve)
             {
+                logger.Debug("Resolucion de estado positiva..");
                 MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
                 syncDataGridWorker.RunWorkerAsync();
             }
@@ -1379,22 +1325,19 @@ namespace PDADesktop.ViewModel
 
 
         #region Panel Methods
-        public void MostrarPanel(object obj)
+        public void DisplayWaitingPanel(string mainMessage, string subMessage = "")
         {
             PanelLoading = true;
+            PanelMainMessage = mainMessage;
+            PanelSubMessage = subMessage;
         }
-        public void OcultarPanel(object obj)
+        public void HidingWaitingPanel()
         {
             PanelLoading = false;
-        }
-        public void CambiarMainMensage(object obj)
-        {
-            PanelMainMessage = "Espere por favor";
-        }
-        public void CambiarSubMensage(object obj)
-        {
+            PanelMainMessage = "";
             PanelSubMessage = "";
         }
+
         public void CerrarPanel(object obj)
         {
             PanelLoading = false;
