@@ -230,7 +230,7 @@ namespace PDADesktop.ViewModel
         {
             logger.Debug("DescartarCambiosButton");
             string message = "¿Desea descartar los cambios?";
-            bool userAnswer = await AskToUsetMahappDialog(message);
+            bool userAnswer = await AskToUserMahappDialog(message);
 
             if (userAnswer)
             {
@@ -273,7 +273,7 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private async Task<bool> AskToUsetMahappDialog(string message, string title = "Aviso")
+        private async Task<bool> AskToUserMahappDialog(string message, string title = "Aviso")
         {
             MetroDialogSettings settings = new MetroDialogSettings();
             settings.AffirmativeButtonText = "Aceptar";
