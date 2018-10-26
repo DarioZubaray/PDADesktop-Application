@@ -302,12 +302,12 @@ namespace PDADesktop.ViewModel
                 if (SelectedAdjustment != null)
                     logger.Debug("AjusteSeleccionado : " + SelectedAdjustment.ToString());
 
-                Adjustments.Remove(SelectedAdjustment);
                 long adjustmentId = SelectedAdjustment.id;
                 string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
                 long syncId = MyAppProperties.SeeAdjustmentModify_syncId;
                 ActionResultDto responseDeleteAdjustment = HttpWebClientUtil.DeleteAdjustment(adjustmentId, batchId, syncId);
                 logger.Debug("resultado de borrar ajuste: " + responseDeleteAdjustment.success);
+                Adjustments.Remove(SelectedAdjustment);
                 SelectedAdjustment = null;
             }
         }
