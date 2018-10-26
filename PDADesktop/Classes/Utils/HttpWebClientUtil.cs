@@ -462,7 +462,7 @@ namespace PDADesktop.Classes.Utils
             return JsonUtils.GetControlBloqueoPDA(responseControlBloqueoPDA);
         }
 
-        internal static AjustesListView LoadAdjustmentsGrid()
+        internal static ListView LoadAdjustmentsGrid()
         {
             string urlModifyLoadAdjustmentsGrid = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_CARGAR_GRILLA_AJUSTES);
             string queryParams = "?lote=111152&idSincronizacion=121578&page=1&rows=2147483647";

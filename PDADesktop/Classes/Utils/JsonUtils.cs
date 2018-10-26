@@ -77,9 +77,9 @@ namespace PDADesktop.Classes.Utils
             return JsonConvert.DeserializeObject<ControlBloqueoPDA>(serializedJson);
         }
 
-        internal static AjustesListView GetAjustesDTO(string serializedJson)
+        internal static ListView GetAjustesDTO(string serializedJson)
         {
-            return JsonConvert.DeserializeObject<AjustesListView>(serializedJson);
+            return JsonConvert.DeserializeObject<ListView>(serializedJson);
         }
     }
 }

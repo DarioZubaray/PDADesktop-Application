@@ -173,8 +173,8 @@ namespace PDADesktop.ViewModel
             dialogCoordinator = instance;
             DisplayWaitingPanel("Cargando...");
 
-            AjustesListView ajustes = HttpWebClientUtil.LoadAdjustmentsGrid();
-            adjustments = AjustesListView.ParserDataGrid(ajustes);
+            ListView ajustes = HttpWebClientUtil.LoadAdjustmentsGrid();
+            adjustments = ListView.ParserAjustesDataGrid(ajustes);
 
             AdjustmentEnableEdit = false;
 
