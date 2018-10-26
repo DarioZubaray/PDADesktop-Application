@@ -391,8 +391,7 @@ namespace PDADesktop.ViewModel
             BannerApp.PrintActivityCenter();
             PanelLoading_NC = false;
             PanelMainMessage_NC = "PDA SIN CONEXION";
-            PanelLoading = true;
-            PanelMainMessage = "Cargando...";
+            DisplayWaitingPanel("Cargando...");
             setInfoLabels();
             ExitButtonCommand = new RelayCommand(ExitPortalApi, param => this.canExecute);
             SincronizarCommand = new RelayCommand(SincronizarTodosLosDatos, param => this.canExecute);
@@ -782,7 +781,7 @@ namespace PDADesktop.ViewModel
         private void loadOnceCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("loadOnceCentroActividades Worker ->runWorkedCompleted");
-            PanelLoading = false;
+            HidingWaitingPanel();
             if (dispatcherTimer != null)
             {
                 dispatcherTimer.Start();

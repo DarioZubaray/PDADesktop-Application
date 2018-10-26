@@ -118,6 +118,48 @@ namespace PDADesktop.ViewModel
 
         private IDialogCoordinator dialogCoordinator;
 
+        #region Loading panel
+        private bool _panelLoading;
+        public bool PanelLoading
+        {
+            get
+            {
+                return _panelLoading;
+            }
+            set
+            {
+                _panelLoading = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _panelMainMessage;
+        public string PanelMainMessage
+        {
+            get
+            {
+                return _panelMainMessage;
+            }
+            set
+            {
+                _panelMainMessage = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _panelSubMessage;
+        public string PanelSubMessage
+        {
+            get
+            {
+                return _panelSubMessage;
+            }
+            set
+            {
+                _panelSubMessage = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Constructor
@@ -125,6 +167,8 @@ namespace PDADesktop.ViewModel
         {
             BannerApp.PrintSeeAdjustmentsModify();
             dialogCoordinator = instance;
+            DisplayWaitingPanel("Cargando...");
+
             AjustesListView ajustes = HttpWebClientUtil.LoadAdjustmentsGrid();
             adjustments = AjustesListView.ParserDataGrid(ajustes);
 
@@ -134,6 +178,9 @@ namespace PDADesktop.ViewModel
             UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentMethod);
             DiscardChangesCommand = new RelayCommand(DiscardChangesMethod);
             SaveChangesCommand = new RelayCommand(SaveChangesMethod);
+
+            PanelCloseCommand = new RelayCommand(CerrarPanel);
+            HidingWaitingPanel();
         }
 
         ~VerAjustesModificarViewModel()
@@ -193,6 +240,19 @@ namespace PDADesktop.ViewModel
             set
             {
                 saveChangesCommand = value;
+            }
+        }
+
+        private ICommand panelCloseCommand;
+        public ICommand PanelCloseCommand
+        {
+            get
+            {
+                return panelCloseCommand;
+            }
+            set
+            {
+                panelCloseCommand = value;
             }
         }
         #endregion
@@ -305,6 +365,27 @@ namespace PDADesktop.ViewModel
                 return false;
             }
         }
+
+        #region Panel Methods
+        public void DisplayWaitingPanel(string mainMessage, string subMessage = "")
+        {
+            PanelLoading = true;
+            PanelMainMessage = mainMessage;
+            PanelSubMessage = subMessage;
+        }
+        public void HidingWaitingPanel()
+        {
+            PanelLoading = false;
+            PanelMainMessage = "";
+            PanelSubMessage = "";
+        }
+
+        public void CerrarPanel(object obj)
+        {
+            PanelLoading = false;
+        }
+        #endregion
+
         #endregion
     }
 }

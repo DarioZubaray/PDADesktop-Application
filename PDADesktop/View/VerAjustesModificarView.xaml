@@ -6,6 +6,7 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         Dialog:DialogParticipation.Register="{Binding}"
+        xmlns:ctr="clr-namespace:PDADesktop.View.Controls"
         xmlns:local="clr-namespace:PDADesktop.View"
         mc:Ignorable="d"
         d:DesignHeight="730" d:DesignWidth="920"
@@ -174,5 +175,12 @@
                 </Border>
             </StackPanel>
         </StackPanel>
+        <Grid VerticalAlignment="Center">
+            <ctr:LoadingPanel x:Name="loadingPanel"
+                              IsLoading="{Binding PanelLoading}"
+                              Message="{Binding PanelMainMessage}"
+                              SubMessage="{Binding PanelSubMessage}" 
+                              ClosePanelCommand="{Binding PanelCloseCommand}" />
+        </Grid>
     </Grid>
 </UserControl>
