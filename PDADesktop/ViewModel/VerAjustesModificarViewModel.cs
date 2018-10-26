@@ -330,14 +330,20 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        public void SaveChangesMethod(object obj)
+        public async void SaveChangesMethod(object obj)
         {
             logger.Debug("GuardarCambiosButton");
-            string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
-            string title = "Actualizando cantidades de ajustes";
-            string message = "Espere por favor mientras se informan los ajustes modificados.";
-            DisplayWaitingPanel(title, message);
-            updateAdjustementWorker.RunWorkerAsync();
+            string messageToAskToUser = "¿Está seguro que desea continuar, confirmando la modificación del ajuste?";
+            bool userAnswer = await AskToUserMahappDialog(messageToAskToUser);
+
+            if (userAnswer)
+            {
+                string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
+                string title = "Actualizando cantidades de ajustes";
+                string messageToDisplayWaitingPanel = "Espere por favor mientras se informan los ajustes modificados.";
+                DisplayWaitingPanel(title, messageToDisplayWaitingPanel);
+                updateAdjustementWorker.RunWorkerAsync();
+            }
         }
 
         private void RedirectToActivityCenterView()
