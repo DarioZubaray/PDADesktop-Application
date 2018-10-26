@@ -63,11 +63,11 @@ namespace PDADesktop.Classes.Utils
             return json;
         }
 
-        public static string GetJsonBodyModifyAdjustments(ObservableCollection<Ajustes> adjustments, long syncId)
+        public static string GetJsonBodyModifyAdjustments(ObservableCollection<Ajustes> adjustments, long syncId, string batchId)
         {
             JsonBodyModifyAdjustments jsonBody = new JsonBodyModifyAdjustments();
             jsonBody.idSincronizacion = syncId;
-            jsonBody.modificarAjustes = adjustments;
+            jsonBody.modificarAjustes = AjusteDto.ParseObservableCollectionToAjusteDto(adjustments, batchId);
             string json = JsonConvert.SerializeObject(jsonBody);
             return json;
         }
@@ -77,9 +77,9 @@ namespace PDADesktop.Classes.Utils
             return JsonConvert.DeserializeObject<ControlBloqueoPDA>(serializedJson);
         }
 
-        internal static AjustesDTO GetAjustesDTO(string serializedJson)
+        internal static AjustesListView GetAjustesDTO(string serializedJson)
         {
-            return JsonConvert.DeserializeObject<AjustesDTO>(serializedJson);
+            return JsonConvert.DeserializeObject<AjustesListView>(serializedJson);
         }
     }
 }

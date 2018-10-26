@@ -125,8 +125,8 @@ namespace PDADesktop.ViewModel
         {
             BannerApp.PrintSeeAdjustmentsModify();
             dialogCoordinator = instance;
-            AjustesDTO ajustes = HttpWebClientUtil.LoadAdjustmentsGrid();
-            adjustments = AjustesDTO.ParserDataGrid(ajustes);
+            AjustesListView ajustes = HttpWebClientUtil.LoadAdjustmentsGrid();
+            adjustments = AjustesListView.ParserDataGrid(ajustes);
 
             AdjustmentEnableEdit = false;
 
@@ -243,10 +243,10 @@ namespace PDADesktop.ViewModel
         public async void SaveChangesMethod(object obj)
         {
             logger.Debug("GuardarCambiosButton");
-
+            string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
             string title = "Actualizando cantidades de ajustes";
             string message = "Espere por favor mientras se informan los ajustes modificados.";
-            await UpdateModifiedAdjustmentsInMahappDialogProgress(message, title);
+            await UpdateModifiedAdjustmentsInMahappDialogProgress(batchId, message, title);
             RedirectToActivityCenterView();
             
             //UserNotify("ERROR");
@@ -270,16 +270,18 @@ namespace PDADesktop.ViewModel
             return resultAffirmative;
         }
 
-        private async Task<bool> UpdateModifiedAdjustmentsInMahappDialogProgress(string message, string title = "Aviso")
+        private async Task<bool> UpdateModifiedAdjustmentsInMahappDialogProgress(string batchId, string message, string title = "Aviso")
         {
+            logger.Debug("UpdateModifiedAdjustmentsInMahappDialogProgress");
             // Show...
             ProgressDialogController controller = await dialogCoordinator.ShowProgressAsync(this, title, message);
             controller.SetIndeterminate();
 
             // Do your work...
             long syncId = MyAppProperties.SeeAdjustmentModify_syncId;
-            string responseUpdateModifyAdjustments = HttpWebClientUtil.UpdateModifiedAdjustments(Adjustments, syncId);
-            
+            logger.Debug("syncId: " + syncId);
+            logger.Debug("Ajustes: " + adjustments);
+            string responseUpdateModifyAdjustments = HttpWebClientUtil.UpdateModifiedAdjustments(batchId, Adjustments, syncId);
 
             // Close...
             await controller.CloseAsync();

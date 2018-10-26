@@ -462,7 +462,7 @@ namespace PDADesktop.Classes.Utils
             return JsonUtils.GetControlBloqueoPDA(responseControlBloqueoPDA);
         }
 
-        internal static AjustesDTO LoadAdjustmentsGrid()
+        internal static AjustesListView LoadAdjustmentsGrid()
         {
             string urlModifyLoadAdjustmentsGrid = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_CARGAR_GRILLA_AJUSTES);
             string queryParams = "?lote=111152&idSincronizacion=121578&page=1&rows=2147483647";
@@ -479,12 +479,13 @@ namespace PDADesktop.Classes.Utils
             return JsonUtils.GetActionResult(responseDeleteAdjustment);
         }
 
-
-        internal static string UpdateModifiedAdjustments(ObservableCollection<Ajustes> adjustments, long syncId)
+        internal static string UpdateModifiedAdjustments(string batchId, ObservableCollection<Ajustes> adjustments, long syncId)
         {
             string urlUpdateModifiedAdjustments = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_ACTUALIZAR_AJUSTES);
-            string jsonBodyModifieddjustments = JsonUtils.GetJsonBodyModifyAdjustments(adjustments, syncId);
-            string responseUpdateModifyAdjustments = SendHttpPostRequest(urlUpdateModifiedAdjustments, jsonBodyModifieddjustments);
+            string jsonBodyModifiedAdjustments = JsonUtils.GetJsonBodyModifyAdjustments(adjustments, syncId, batchId);
+            logger.Debug("UpdateModifiedAdjustments");
+            logger.Debug("cuerpo del delito: " + jsonBodyModifiedAdjustments);
+            string responseUpdateModifyAdjustments = SendHttpPostRequest(urlUpdateModifiedAdjustments, jsonBodyModifiedAdjustments);
             return responseUpdateModifyAdjustments;
         }
 

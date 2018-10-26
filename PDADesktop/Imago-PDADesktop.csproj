@@ -194,10 +194,12 @@
     <Compile Include="Model\DeviceMainData.cs" />
     <Compile Include="Model\Dispositivo.cs" />
     <Compile Include="Model\Dto\ActionResultDto.cs" />
-    <Compile Include="Model\Dto\AjustesDTO.cs" />
+    <Compile Include="Model\Dto\AjusteDto.cs" />
+    <Compile Include="Model\Dto\AjustesListView.cs" />
     <Compile Include="Model\Dto\Row.cs" />
     <Compile Include="Model\EstadoRecepcion.cs" />
-    <Compile Include="Model\Json\JsonBody.cs" />
+    <Compile Include="Model\Json\JsonBodyCreateNewBatch.cs" />
+    <Compile Include="Model\Json\JsonBodyModifyAdjustments.cs" />
     <Compile Include="Model\Recepcion.cs" />
     <Compile Include="Model\VersionArchivo.cs" />
     <Compile Include="Model\VersionDispositivo.cs" />

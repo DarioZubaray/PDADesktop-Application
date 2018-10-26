@@ -80,10 +80,12 @@
                                     Header="Fecha" CanUserResize="False" Width="250"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
+                <!--
                 <DataGridTextColumn Binding="{Binding motivo}" ClipboardContentBinding="{x:Null}"
                                     Header="Motivo" CanUserResize="False" Width="180"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
+                -->
                 <DataGridTextColumn Binding="{Binding cantidad}" ClipboardContentBinding="{x:Null}"
                                     Header="Cantidad Ajustada" CanUserResize="False" Width="200"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
