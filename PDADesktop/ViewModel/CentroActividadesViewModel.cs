@@ -203,6 +203,7 @@ namespace PDADesktop.ViewModel
         private readonly BackgroundWorker syncWorker = new BackgroundWorker();
         private readonly BackgroundWorker syncDataGridWorker = new BackgroundWorker();
         private readonly BackgroundWorker adjustmentWorker = new BackgroundWorker();
+        private readonly BackgroundWorker redirectWorker = new BackgroundWorker();
 
         private DispatcherTimer dispatcherTimer { get; set; }
 
@@ -420,6 +421,9 @@ namespace PDADesktop.ViewModel
 
             adjustmentWorker.DoWork += adjustmentWorker_DoWork;
             adjustmentWorker.RunWorkerCompleted += adjustmentWorker_RunWorkerCompleted;
+
+            redirectWorker.DoWork += redirectWorker_DoWork;
+            redirectWorker.RunWorkerCompleted += redirectWorker_RunwWorkerCompleted;
 
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
@@ -1169,6 +1173,26 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
+        #region Redirect Worker
+        private void redirectWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Debug("RedirectWorker -> Do worker started");
+
+            bool stateNeedResolve = ButtonStateUtils.ResolveState();
+            if (stateNeedResolve)
+            {
+                logger.Debug("Resolucion de estado positiva..");
+                MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
+                syncDataGridWorker.RunWorkerAsync();
+            }
+        }
+        
+        private void redirectWorker_RunwWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("AdjustmentWorker -> Run worker completed");
+        }
+        #endregion
+
         #endregion
 
         #region Methods
@@ -1313,13 +1337,8 @@ namespace PDADesktop.ViewModel
             logger.Info("Boton estado general");
             DisplayWaitingPanel("Espere por favor");
             logger.Info(MyAppProperties.SelectedSync.actividad);
-            bool stateNeedResolve = ButtonStateUtils.ResolveState();
-            if (stateNeedResolve)
-            {
-                logger.Debug("Resolucion de estado positiva..");
-                MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
-                syncDataGridWorker.RunWorkerAsync();
-            }
+
+            redirectWorker.RunWorkerAsync();
         }
         #endregion
 

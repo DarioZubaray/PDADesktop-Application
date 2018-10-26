@@ -62,9 +62,13 @@ namespace PDADesktop.Classes.Utils
                  && Constants.EGX_ENVIADO.Equals(genesixState)
                  && Constants.ACTIVIDAD_AJUSTES.Equals(activityId) )
             {
-                MainWindow window = (MainWindow)Application.Current.MainWindow;
                 Uri uriSeeAdjustmentsInform = new Uri(Constants.VER_AJUSTES_INFORMADOS_VIEW, UriKind.Relative);
-                window.frame.NavigationService.Navigate(uriSeeAdjustmentsInform);
+                var dispatcher = Application.Current.Dispatcher;
+                dispatcher.BeginInvoke(new Action(() =>
+                {
+                    MainWindow window = (MainWindow)Application.Current.MainWindow;
+                    window.frame.NavigationService.Navigate(uriSeeAdjustmentsInform);
+                }));
             }
         }
 
@@ -73,26 +77,38 @@ namespace PDADesktop.Classes.Utils
             // Cambia estado de sincro a OK y refresca
             SynchronizationStateUtil.SetSentGenesixState(syncId);
             //lamar a la vista 'ImprimirRecepcionView'
-            MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uriPrintReceptions = new Uri(Constants.IMPRIMIR_RECEPCION_VIEW, UriKind.Relative);
-            window.frame.NavigationService.Navigate(uriPrintReceptions);
+            var dispatcher = Application.Current.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                MainWindow window = (MainWindow)Application.Current.MainWindow;
+                window.frame.NavigationService.Navigate(uriPrintReceptions);
+            }));
         }
 
         private static void seeReceptionsDetails(long syncId, string batchId)
         {
             //lamar a la vista 'VerDetallesRecepcionView'
-            MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uriSeeReceptionsDetails = new Uri(Constants.VER_DETALLES_RECEPCION_VIEW, UriKind.Relative);
-            window.frame.NavigationService.Navigate(uriSeeReceptionsDetails);
+            var dispatcher = Application.Current.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                MainWindow window = (MainWindow)Application.Current.MainWindow;
+                window.frame.NavigationService.Navigate(uriSeeReceptionsDetails);
+            }));
         }
 
         private static void ModifyAdjusments(long syncId, string batchId)
         {
             MyAppProperties.SeeAdjustmentModify_syncId = syncId;
             MyAppProperties.SeeAdjustmentModify_batchId = batchId;
-            MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uriSeeAdjustmentsModify = new Uri(Constants.VER_AJUSTES_MODIFICAR_VIEW, UriKind.Relative);
-            window.frame.NavigationService.Navigate(uriSeeAdjustmentsModify);
+            var dispatcher = Application.Current.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                MainWindow window = (MainWindow)Application.Current.MainWindow;
+                window.frame.NavigationService.Navigate(uriSeeAdjustmentsModify);
+            }));
         }
 
         private static void RetryDownloadReceptionsFromGenesix(long syncId, string batchId)

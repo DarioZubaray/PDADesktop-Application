@@ -53,7 +53,7 @@
                   AutoGenerateColumns="False" RowHeight="25" FontSize="15"
                   SelectionUnit="FullRow" IsReadOnly="True"
                   ItemsSource="{Binding Adjustments}"
-                  SelectedItem="{Binding Path=SelectedAdjustment, Mode=TwoWay}" Margin="10" Width="900">
+                  SelectedItem="{Binding Path=SelectedAdjustment, Mode=TwoWay}" Margin="30" Width="900">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
@@ -73,11 +73,11 @@
 
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding ean}" ClipboardContentBinding="{x:Null}"
-                                    Header="Ean" CanUserResize="False" Width="200"
+                                    Header="Ean" CanUserResize="False" Width="300"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 <DataGridTextColumn Binding="{Binding fechaAjuste}" ClipboardContentBinding="{x:Null}"
-                                    Header="Fecha" CanUserResize="False" Width="250"
+                                    Header="Fecha" CanUserResize="False" Width="300"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 <!--
@@ -87,7 +87,7 @@
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
                 -->
                 <DataGridTextColumn Binding="{Binding cantidad}" ClipboardContentBinding="{x:Null}"
-                                    Header="Cantidad Ajustada" CanUserResize="False" Width="200"
+                                    Header="Cantidad Ajustada" CanUserResize="False" Width="300"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
             </DataGrid.Columns>
