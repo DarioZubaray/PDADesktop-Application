@@ -8,10 +8,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using PDADesktop.Model.Dto;
 using MahApps.Metro.Controls.Dialogs;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace PDADesktop.ViewModel
 {
@@ -162,6 +162,10 @@ namespace PDADesktop.ViewModel
 
         #endregion
 
+        #region BackgroundWorkers
+        private readonly BackgroundWorker updateAdjustementWorker = new BackgroundWorker();
+        #endregion
+
         #region Constructor
         public VerAjustesModificarViewModel(IDialogCoordinator instance)
         {
@@ -173,6 +177,9 @@ namespace PDADesktop.ViewModel
             adjustments = AjustesListView.ParserDataGrid(ajustes);
 
             AdjustmentEnableEdit = false;
+
+            updateAdjustementWorker.DoWork += UpdateAdjustementWorker_DoWork;
+            updateAdjustementWorker.RunWorkerCompleted += UpdateAdjustmentWorker_RunWorkerCompleted;
 
             DeleteAdjustmentCommand = new RelayCommand(DeleteAdjustmentMethod);
             UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentMethod);
@@ -187,6 +194,29 @@ namespace PDADesktop.ViewModel
         {
             MyAppProperties.SeeAdjustmentModify_syncId = 0L;
             MyAppProperties.SeeAdjustmentModify_batchId = null;
+        }
+        #endregion
+
+        #region Update Adjustment Worker
+        private void UpdateAdjustementWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Debug("Update Adjustment Worker -> doWork");
+            long syncId = MyAppProperties.SeeAdjustmentModify_syncId;
+            logger.Debug("syncId: " + syncId);
+            logger.Debug("Ajustes: " + adjustments);
+            string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
+            string responseUpdateModifyAdjustments = HttpWebClientUtil.UpdateModifiedAdjustments(batchId, Adjustments, syncId);
+            logger.Debug(responseUpdateModifyAdjustments);
+        }
+
+        private void UpdateAdjustmentWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("Update Adjustment Worker -> runWorker Completed");
+            var dispatcher = App.Current.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                RedirectToActivityCenterView();
+            }));
         }
         #endregion
 
@@ -300,16 +330,14 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        public async void SaveChangesMethod(object obj)
+        public void SaveChangesMethod(object obj)
         {
             logger.Debug("GuardarCambiosButton");
             string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
             string title = "Actualizando cantidades de ajustes";
             string message = "Espere por favor mientras se informan los ajustes modificados.";
-            await UpdateModifiedAdjustmentsInMahappDialogProgress(batchId, message, title);
-            RedirectToActivityCenterView();
-            
-            //UserNotify("ERROR");
+            DisplayWaitingPanel(title, message);
+            updateAdjustementWorker.RunWorkerAsync();
         }
 
         private void RedirectToActivityCenterView()
@@ -328,42 +356,6 @@ namespace PDADesktop.ViewModel
             MessageDialogResult messsageDialogResult = await showMessageAsync;
             bool resultAffirmative = messsageDialogResult.Equals(MessageDialogResult.Affirmative);
             return resultAffirmative;
-        }
-
-        private async Task<bool> UpdateModifiedAdjustmentsInMahappDialogProgress(string batchId, string message, string title = "Aviso")
-        {
-            logger.Debug("UpdateModifiedAdjustmentsInMahappDialogProgress");
-            // Show...
-            ProgressDialogController controller = await dialogCoordinator.ShowProgressAsync(this, title, message);
-            controller.SetIndeterminate();
-
-            // Do your work...
-            long syncId = MyAppProperties.SeeAdjustmentModify_syncId;
-            logger.Debug("syncId: " + syncId);
-            logger.Debug("Ajustes: " + adjustments);
-            string responseUpdateModifyAdjustments = HttpWebClientUtil.UpdateModifiedAdjustments(batchId, Adjustments, syncId);
-
-            // Close...
-            await controller.CloseAsync();
-            return true;
-        }
-
-        public bool AskToUser(string question)
-        {
-            string message = question;
-            string caption = "Aviso!";
-            MessageBoxButton messageBoxButton = MessageBoxButton.OKCancel;
-            MessageBoxImage messageBoxImage = MessageBoxImage.Question;
-            MessageBoxResult result = MessageBox.Show(message, caption, messageBoxButton, messageBoxImage);
-            logger.Debug("Preguntando al usuario: " + question);
-            if (result == MessageBoxResult.OK)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
 
         #region Panel Methods
