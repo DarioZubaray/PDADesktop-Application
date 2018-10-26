@@ -470,6 +470,15 @@ namespace PDADesktop.Classes.Utils
             return JsonUtils.GetAjustesDTO(responseModifyLoadAdjustmentsGrid);
         }
 
+
+        internal static ListView LoadReceptionsGrid(long lote = 111152, bool informedReceptions = false)
+        {
+            string urlSeeDetailsReceptionsGrid = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_CARGAR_GRILLA_RECEPCIONES);
+            string queryParams = "?recepcionesInformadas=" + informedReceptions + "&Lote=" + lote.ToString();
+            string responseModifyLoadAdjustmentsGrid = SendHttpGetRequest(urlSeeDetailsReceptionsGrid + queryParams);
+            return JsonUtils.GetRecepciones(responseModifyLoadAdjustmentsGrid);
+        }
+
         internal static ActionResultDto DeleteAdjustment(long adjustmentId, string batchId, long syncId)
         {
             string urlDeleteAdjustmentModify = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_ELIMINAR_AJUTE);

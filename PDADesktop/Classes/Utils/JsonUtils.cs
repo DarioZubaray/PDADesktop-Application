@@ -81,5 +81,10 @@ namespace PDADesktop.Classes.Utils
         {
             return JsonConvert.DeserializeObject<ListView>(serializedJson);
         }
+
+        internal static ListView GetRecepciones(string serializedJson)
+        {
+            return JsonConvert.DeserializeObject<ListView>(serializedJson);
+        }
     }
 }

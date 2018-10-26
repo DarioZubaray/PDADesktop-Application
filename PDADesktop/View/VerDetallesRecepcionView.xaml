@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:VM="clr-namespace:PDADesktop.ViewModel"
              xmlns:local="clr-namespace:PDADesktop.View"
+             xmlns:ctr="clr-namespace:PDADesktop.View.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="730" d:DesignWidth="920"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -15,10 +16,6 @@
              TextOptions.TextRenderingMode="Auto"
              Background="WhiteSmoke"
              FontFamily="{DynamicResource MaterialDesignFont}">
-
-    <UserControl.DataContext>
-        <VM:VerDetallesRecepcionViewModel />
-    </UserControl.DataContext>
 
     <UserControl.Resources>
         <Style x:Key="DataGridContentCellCentering" TargetType="{x:Type DataGridCell}">
@@ -44,6 +41,102 @@
     </UserControl.Resources>
 
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="7*" />
+            <RowDefinition Height="2*" />
+        </Grid.RowDefinitions>
+        <DataGrid x:Name="dataGrid_verDetallesRecepcion" Grid.Row="0"
+                  BorderThickness="0" BorderBrush="Gainsboro"
+                  HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Top"
+                  AlternatingRowBackground="Gainsboro" AlternationCount="2"
+                  AutoGenerateColumns="False" RowHeight="25" FontSize="15"
+                  SelectionUnit="FullRow" IsReadOnly="True"
+                  ItemsSource="{Binding Receptions}"
+                  SelectedItem="{Binding Path=SelectedAdjustment, Mode=TwoWay}" Margin="30" Width="900">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#FFBF00" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <!-- Update from comments. Remove the focus indication for the selected cell -->
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding fecha}" ClipboardContentBinding="{x:Null}"
+                                    Header="Fecha" CanUserResize="False" Width="225"
+                                    HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                    CellStyle="{StaticResource DataGridContentCellCentering}"/>
+                <DataGridTextColumn Binding="{Binding numeroRemito}" ClipboardContentBinding="{x:Null}"
+                                    Header="Numero Recepcion Informado" CanUserResize="False" Width="225"
+                                    HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                    CellStyle="{StaticResource DataGridContentCellCentering}"/>
+                <DataGridTextColumn Binding="{Binding numeroProveedor}" ClipboardContentBinding="{x:Null}"
+                                    Header="Proveedor" CanUserResize="False" Width="225"
+                                    HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                    CellStyle="{StaticResource DataGridContentCellCentering}"/>
+                <DataGridTextColumn Binding="{Binding estadoRecepcion.descripcion}" ClipboardContentBinding="{x:Null}"
+                                    Header="Estado" CanUserResize="False" Width="225"
+                                    HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                    CellStyle="{StaticResource DataGridContentCellCentering}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="1">
+            <Grid VerticalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Nuevo numero: " Grid.Column="0" Grid.Row="0" Margin="10"/>
+                <TextBox Grid.Column="1" Grid.Row="0" Margin="10"
+                         IsEnabled="{Binding Path=AdjustmentEnableEdit, Mode=TwoWay}">
+                    <Binding Path="SelectedReception.numeroRecepcion" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                </TextBox>
+
+            </Grid>
+            <Separator></Separator>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="100" Margin="0,0">
+                <Border Margin="10">
+                    <Button x:Name="button_reintentar" Style="{StaticResource MaterialDesignFlatButton}"
+                            Command="{Binding RetryCommand}" Content="Reintentar"/>
+                </Border>
+                <Border Margin="10">
+                    <Button x:Name="button_cancelar" Style="{StaticResource MaterialDesignRaisedLightButton}"
+                            Command="{Binding CancelCommand}" Content="Cancelar"/>
+                </Border>
+                <Border Margin="10">
+                    <Button x:Name="button_descartarTodas" 
+                            Command="{Binding DiscardAllCommand}" Content="Descartar todas"/>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+
+        <Grid VerticalAlignment="Center">
+            <ctr:LoadingPanel x:Name="loadingPanel"
+                              IsLoading="{Binding PanelLoading}"
+                              Message="{Binding PanelMainMessage}"
+                              SubMessage="{Binding PanelSubMessage}" 
+                              ClosePanelCommand="{Binding PanelCloseCommand}" />
+        </Grid>
     </Grid>
 </UserControl>
