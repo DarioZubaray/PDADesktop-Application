@@ -2,7 +2,7 @@
 {
     public class EstadoRecepcion
     {
-        internal long idEstado { get; set; }
-        internal string descripcion { get; set; }
+        public long idEstado { get; set; }
+        public string descripcion { get; set; }
     }
 }

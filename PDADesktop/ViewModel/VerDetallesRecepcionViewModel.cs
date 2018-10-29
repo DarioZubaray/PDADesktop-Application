@@ -143,7 +143,7 @@ namespace PDADesktop.ViewModel
             }
         }
         private ICommand retryCommand;
-        private ICommand RetryCommand
+        public ICommand RetryCommand
         {
             get
             {
@@ -152,6 +152,18 @@ namespace PDADesktop.ViewModel
             set
             {
                 retryCommand = value;
+            }
+        }
+        private ICommand panelCloseCommand;
+        public ICommand PanelCloseCommand
+        {
+            get
+            {
+                return panelCloseCommand;
+            }
+            set
+            {
+                panelCloseCommand = value;
             }
         }
         #endregion
@@ -170,6 +182,7 @@ namespace PDADesktop.ViewModel
             DiscardAllCommand = new RelayCommand(DiscardAllMethod);
             CancelCommand = new RelayCommand(CancelMethod);
             RetryCommand = new RelayCommand(RetryMethod);
+            PanelCloseCommand = new RelayCommand(PanelCloseMethod);
 
             loadSeeDetailsWorker.RunWorkerAsync();
         }
@@ -187,6 +200,12 @@ namespace PDADesktop.ViewModel
         private void loadSeeDetailsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("Load See Details Receptions -> Run Work Completed");
+            var dispatcher = Application.Current.Dispatcher;
+            dispatcher.BeginInvoke(new Action( () =>
+            {
+                HidingWaitingPanel();
+            }));
+
         }
         #endregion
 
@@ -204,6 +223,11 @@ namespace PDADesktop.ViewModel
         private void RetryMethod(object sender)
         {
 
+        }
+
+        private void PanelCloseMethod(object sender)
+        {
+            HidingWaitingPanel();
         }
         #endregion
 
@@ -230,10 +254,6 @@ namespace PDADesktop.ViewModel
             PanelSubMessage = "";
         }
 
-        public void CerrarPanel(object obj)
-        {
-            PanelLoading = false;
-        }
         #endregion
     }
 }

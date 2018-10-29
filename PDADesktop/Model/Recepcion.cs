@@ -4,18 +4,19 @@ namespace PDADesktop.Model
 {
     public class Recepcion
     {
-        internal long idRecepcion { get; set; }
-        internal Lote lote { get; set; }
-        internal DateTime fechaRecepcion { get; set; }
-        internal long numeroRemito { get; set; }
-        internal DateTime FechaRemito { get; set; }
-        internal string letra { get; set; }
-        internal long sucursalRemito { get; set; }
-        internal long centroEmisor { get; set; }
-        internal long numeroPedido { get; set; }
-        internal long numeroProveedor { get; set; }
-        internal string descripcionProveedor { get; set; }
-        internal long numeroRecepcion { get; set; }
-        internal EstadoRecepcion estado { get; set; }
+        public long idRecepcion { get; set; }
+        public Lote lote { get; set; }
+        public DateTime fechaRecepcion { get; set; }
+        public long numeroRemito { get; set; }
+        public string remitoCompleto { get; set; }
+        public DateTime FechaRemito { get; set; }
+        public string letra { get; set; }
+        public long sucursalRemito { get; set; }
+        public long centroEmisor { get; set; }
+        public long numeroPedido { get; set; }
+        public long numeroProveedor { get; set; }
+        public string descripcionProveedor { get; set; }
+        public long numeroRecepcion { get; set; }
+        public EstadoRecepcion estado { get; set; }
     }
 }

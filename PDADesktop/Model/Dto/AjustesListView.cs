@@ -36,7 +36,7 @@ namespace PDADesktop.Model.Dto
                 Recepcion recepcion = new Model.Recepcion();
                 recepcion.idRecepcion = Convert.ToInt64(row.cell[0]);
                 recepcion.fechaRecepcion = DateTime.ParseExact(row.cell[1], "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                recepcion.numeroRemito = Convert.ToInt64(row.cell[2]);
+                recepcion.remitoCompleto = row.cell[2];
                 recepcion.numeroProveedor = Convert.ToInt64(row.cell[3]);
                 EstadoRecepcion estadoRecepcion = new EstadoRecepcion();
                 estadoRecepcion.idEstado = Convert.ToInt64(row.cell[4]);
