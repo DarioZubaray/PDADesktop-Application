@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -214,20 +215,26 @@ namespace PDADesktop.ViewModel
             }));
         }
 
-        private void discardReceptionsWorker_DoWork(object sender, DoWorkEventArgs e)
+        private async void discardReceptionsWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("Discard Receptions -> Do Work");
-            string syncId = "";
-            string batchId = "";
-            Dictionary<string, string> responseDiscard = HttpWebClientUtil.DiscardReceptions(batchId, syncId);
-            if(responseDiscard.ContainsKey("descargarPedidos"))
+            string messageToAskToUser = "Se descartarán todas las Recepciones pendientes de informar. ¿Desea continuar?";
+            bool userAnswer = await AskToUserMahappDialog(messageToAskToUser);
+
+            if (userAnswer)
             {
-                var descargarPedidos = responseDiscard["descargarPedidos"];
-                if (descargarPedidos.Equals("true"))
+                string syncId = "";
+                string batchId = "";
+                Dictionary<string, string> responseDiscard = HttpWebClientUtil.DiscardReceptions(batchId, syncId);
+                if(responseDiscard.ContainsKey("descargarPedidos"))
                 {
-                    bool thereAreInformed = responseDiscard["hayInformadas"].Equals("true");
-                    var syncIdResponse = responseDiscard["idSincronizacion"] as string;
-                    UpdateOrder(syncIdResponse, thereAreInformed);
+                    var descargarPedidos = responseDiscard["descargarPedidos"];
+                    if (descargarPedidos.Equals("true"))
+                    {
+                        bool thereAreInformed = responseDiscard["hayInformadas"].Equals("true");
+                        var syncIdResponse = responseDiscard["idSincronizacion"] as string;
+                        UpdateOrder(syncIdResponse, thereAreInformed);
+                    }
                 }
             }
         }
@@ -311,6 +318,17 @@ namespace PDADesktop.ViewModel
             MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
+        }
+
+        private async Task<bool> AskToUserMahappDialog(string message, string title = "Aviso")
+        {
+            MetroDialogSettings settings = new MetroDialogSettings();
+            settings.AffirmativeButtonText = "Aceptar";
+            settings.NegativeButtonText = "Cancelar";
+            Task<MessageDialogResult> showMessageAsync = dialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative, settings);
+            MessageDialogResult messsageDialogResult = await showMessageAsync;
+            bool resultAffirmative = messsageDialogResult.Equals(MessageDialogResult.Affirmative);
+            return resultAffirmative;
         }
         #endregion
 
