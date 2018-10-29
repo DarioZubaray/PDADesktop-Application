@@ -215,34 +215,28 @@ namespace PDADesktop.ViewModel
             }));
         }
 
-        private async void discardReceptionsWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void discardReceptionsWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("Discard Receptions -> Do Work");
-            string messageToAskToUser = "Se descartarán todas las Recepciones pendientes de informar. ¿Desea continuar?";
-            bool userAnswer = await AskToUserMahappDialog(messageToAskToUser);
-
             long syncId = MyAppProperties.SeeDetailsRecepcion_syncId;
-            if (userAnswer)
+            string batchId = "";
+            Dictionary<string, string> responseDiscard = HttpWebClientUtil.DiscardReceptions(batchId, syncId.ToString());
+            if(responseDiscard.ContainsKey("descargarPedidos"))
             {
-                string batchId = "";
-                Dictionary<string, string> responseDiscard = HttpWebClientUtil.DiscardReceptions(batchId, syncId.ToString());
-                if(responseDiscard.ContainsKey("descargarPedidos"))
+                var descargarPedidos = responseDiscard["descargarPedidos"];
+                if (descargarPedidos.Equals("true"))
                 {
-                    var descargarPedidos = responseDiscard["descargarPedidos"];
-                    if (descargarPedidos.Equals("true"))
-                    {
-                        bool thereAreInformed = responseDiscard["hayInformadas"].Equals("true");
-                        var syncIdResponse = responseDiscard["idSincronizacion"] as string;
-                        UpdateOrder(syncIdResponse, thereAreInformed);
-                    }
+                    bool thereAreInformed = responseDiscard["hayInformadas"].Equals("true");
+                    var syncIdResponse = responseDiscard["idSincronizacion"] as string;
+                    UpdateOrder(syncIdResponse, thereAreInformed);
                 }
-                var deviceHandler = App.Instance.deviceHandler;
-                string storeId = MyAppProperties.storeId;
-                ControlBloqueoPDA unlockDevice = deviceHandler.ControlDeviceLock(syncId, storeId);
-                if (unlockDevice.desbloquearPDA)
-                {
-                    deviceHandler.ChangeSynchronizationState(Constants.ESTADO_SINCRO_FIN);
-                }
+            }
+            var deviceHandler = App.Instance.deviceHandler;
+            string storeId = MyAppProperties.storeId;
+            ControlBloqueoPDA unlockDevice = deviceHandler.ControlDeviceLock(syncId, storeId);
+            if (unlockDevice.desbloquearPDA)
+            {
+                deviceHandler.ChangeSynchronizationState(Constants.ESTADO_SINCRO_FIN);
             }
         }
 
@@ -303,9 +297,15 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Command Methods
-        private void DiscardAllMethod(object sender)
+        private async void DiscardAllMethod(object sender)
         {
-            discardReceptionsWorker.RunWorkerAsync();
+            string messageToAskToUser = "Se descartarán todas las Recepciones pendientes de informar. ¿Desea continuar?";
+            bool userAnswer = await AskToUserMahappDialog(messageToAskToUser);
+
+            if (userAnswer)
+            {
+                discardReceptionsWorker.RunWorkerAsync();
+            }
         }
         private void CancelMethod(object sender)
         {
