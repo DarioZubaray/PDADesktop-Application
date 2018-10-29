@@ -6,6 +6,7 @@ using PDADesktop.Model;
 using PDADesktop.Model.Dto;
 using PDADesktop.View;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
@@ -115,6 +116,8 @@ namespace PDADesktop.ViewModel
 
         #region Worker
         private readonly BackgroundWorker loadSeeDetailsWorker = new BackgroundWorker();
+        private readonly BackgroundWorker discardReceptionsWorker = new BackgroundWorker();
+        private readonly BackgroundWorker retryInformWorker = new BackgroundWorker();
         #endregion
 
         #region Commands
@@ -178,6 +181,10 @@ namespace PDADesktop.ViewModel
 
             loadSeeDetailsWorker.DoWork += loadSeeDetailsWorker_DoWork;
             loadSeeDetailsWorker.RunWorkerCompleted += loadSeeDetailsWorker_RunWorkerCompleted;
+            discardReceptionsWorker.DoWork += discardReceptionsWorker_DoWork;
+            discardReceptionsWorker.RunWorkerCompleted += discardReceptionsWorker_RunWorkerCompleted;
+            retryInformWorker.DoWork += retryInformWorker_DoWork;
+            retryInformWorker.RunWorkerCompleted += retryInformWorker_RunWorkerCompleted;
 
             DiscardAllCommand = new RelayCommand(DiscardAllMethod);
             CancelCommand = new RelayCommand(CancelMethod);
@@ -205,7 +212,74 @@ namespace PDADesktop.ViewModel
             {
                 HidingWaitingPanel();
             }));
+        }
 
+        private void discardReceptionsWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Debug("Discard Receptions -> Do Work");
+            string syncId = "";
+            string batchId = "";
+            Dictionary<string, string> responseDiscard = HttpWebClientUtil.DiscardReceptions(batchId, syncId);
+            if(responseDiscard.ContainsKey("descargarPedidos"))
+            {
+                var descargarPedidos = responseDiscard["descargarPedidos"];
+                if (descargarPedidos.Equals("true"))
+                {
+                    bool thereAreInformed = responseDiscard["hayInformadas"].Equals("true");
+                    var syncIdResponse = responseDiscard["idSincronizacion"] as string;
+                    UpdateOrder(syncIdResponse, thereAreInformed);
+                }
+            }
+        }
+
+        private void UpdateOrder(string syncId, bool thereAreInformed)
+        {
+            try
+            {
+                string storeId = MyAppProperties.storeId;
+                bool downloadOrders = HttpWebClientUtil.SearchDATsMasterFile(Convert.ToInt32(Constants.PEDIDOS_CODE), storeId);
+                if (downloadOrders)
+                {
+                    ArchivosDATUtils.createOrdersFiles();
+                }
+
+                if (thereAreInformed)
+                {
+                    SynchronizationStateUtil.SetPrintReceptions(Convert.ToInt64(syncId));
+                }
+                else
+                {
+                    SynchronizationStateUtil.SetSentGenesixState(Convert.ToInt64(syncId));
+                }
+            }
+            catch
+            {
+                SynchronizationStateUtil.SetRetry3GeneralState(Convert.ToInt64(syncId));
+            }
+        }
+
+        private void discardReceptionsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("Discard Receptions -> Run Work Completed");
+            var dispatcher = Application.Current.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                HidingWaitingPanel();
+            }));
+        }
+
+        private void retryInformWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Debug("Retry Inform Receptions -> Do Work");
+        }
+        private void retryInformWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("Retry Inform Receptions -> Run Work Completed");
+            var dispatcher = Application.Current.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                HidingWaitingPanel();
+            }));
         }
         #endregion
 
@@ -214,7 +288,7 @@ namespace PDADesktop.ViewModel
         #region Command Methods
         private void DiscardAllMethod(object sender)
         {
-
+            discardReceptionsWorker.RunWorkerAsync();
         }
         private void CancelMethod(object sender)
         {
@@ -222,7 +296,7 @@ namespace PDADesktop.ViewModel
         }
         private void RetryMethod(object sender)
         {
-
+            retryInformWorker.RunWorkerAsync();
         }
 
         private void PanelCloseMethod(object sender)

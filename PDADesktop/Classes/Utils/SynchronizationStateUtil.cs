@@ -118,6 +118,13 @@ namespace PDADesktop.Classes.Utils
             logger.Debug(response);
         }
 
+        internal static void SetRetry3GeneralState(long syncId)
+        {
+            string queryParams = "?idSincronizacion=" + syncId;
+            string response = HttpWebClientUtil.SetRetry3GeneralState(queryParams);
+            logger.Debug(response);
+        }
+
         internal static void SetSeeDetailsGeneralState(long syncId)
         {
             string queryParams = "?idSincronizacion=" + syncId;

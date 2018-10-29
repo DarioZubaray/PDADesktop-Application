@@ -394,6 +394,12 @@ namespace PDADesktop.Classes.Utils
             return SendHttpGetRequest(urlRetryGeneral + queryParams);
         }
 
+        internal static string SetRetry3GeneralState(string queryParams)
+        {
+            string urlRetry3General = ConfigurationManager.AppSettings.Get("API_SET_RETRY3_GENERAL");
+            return SendHttpGetRequest(urlRetry3General + queryParams);
+        }
+
         internal static string SetSeeDetailsGeneralState(string queryParams)
         {
             string urlSeeDetailsGeneral = ConfigurationManager.AppSettings.Get("API_SET_SEE_DETAILS_GENERAL");
@@ -498,5 +504,14 @@ namespace PDADesktop.Classes.Utils
             return responseUpdateModifyAdjustments;
         }
 
+
+        internal static Dictionary<string, string> DiscardReceptions(string batchId, string syncId)
+        {
+            string urlDiscardReceptions = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_DESCARTAR_RECEPCIONES);
+            string queryParams = "?idLote=" + batchId + "idSincronizacion=" + syncId;
+            string responseDiscardReceptions = SendHttpGetRequest(urlDiscardReceptions + queryParams);
+            Dictionary<string, string> discardReceptionDictionary = JsonUtils.GetDiscardReception(responseDiscardReceptions);
+            return discardReceptionDictionary;
+        }
     }
 }
