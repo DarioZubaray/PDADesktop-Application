@@ -221,11 +221,11 @@ namespace PDADesktop.ViewModel
             string messageToAskToUser = "Se descartarán todas las Recepciones pendientes de informar. ¿Desea continuar?";
             bool userAnswer = await AskToUserMahappDialog(messageToAskToUser);
 
+            long syncId = MyAppProperties.SeeDetailsRecepcion_syncId;
             if (userAnswer)
             {
-                string syncId = "";
                 string batchId = "";
-                Dictionary<string, string> responseDiscard = HttpWebClientUtil.DiscardReceptions(batchId, syncId);
+                Dictionary<string, string> responseDiscard = HttpWebClientUtil.DiscardReceptions(batchId, syncId.ToString());
                 if(responseDiscard.ContainsKey("descargarPedidos"))
                 {
                     var descargarPedidos = responseDiscard["descargarPedidos"];
@@ -235,6 +235,13 @@ namespace PDADesktop.ViewModel
                         var syncIdResponse = responseDiscard["idSincronizacion"] as string;
                         UpdateOrder(syncIdResponse, thereAreInformed);
                     }
+                }
+                var deviceHandler = App.Instance.deviceHandler;
+                string storeId = MyAppProperties.storeId;
+                ControlBloqueoPDA unlockDevice = deviceHandler.ControlDeviceLock(syncId, storeId);
+                if (unlockDevice.desbloquearPDA)
+                {
+                    deviceHandler.ChangeSynchronizationState(Constants.ESTADO_SINCRO_FIN);
                 }
             }
         }
@@ -278,6 +285,9 @@ namespace PDADesktop.ViewModel
         private void retryInformWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("Retry Inform Receptions -> Do Work");
+            long syncId = MyAppProperties.SeeDetailsRecepcion_syncId;
+            int activityId = Convert.ToInt32(Constants.RECEP_CODE);
+            ButtonStateUtils.RetryInformToGenesix(syncId, activityId);
         }
         private void retryInformWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {

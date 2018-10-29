@@ -145,8 +145,9 @@ namespace PDADesktop.Classes.Utils
             }
         }
 
-        private static void RetryInformToGenesix(long syncId, int activityId)
+        internal static void RetryInformToGenesix(long syncId, int activityId)
         {
+            MyAppProperties.SeeDetailsRecepcion_syncId = syncId;
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             if (Constants.ACTIVIDAD_INFORMAR_RECEPCIONES.Equals(activityId))
             {
