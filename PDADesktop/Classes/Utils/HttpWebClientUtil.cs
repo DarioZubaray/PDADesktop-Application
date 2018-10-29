@@ -455,7 +455,7 @@ namespace PDADesktop.Classes.Utils
         internal static void ExecuteInformGenesix(long syncId)
         {
             string urlInformGenesix = ConfigurationManager.AppSettings.Get(Constants.API_INFORMAR_GENESIX);
-            string queryParams = "?idSincronizacion=" + syncId;
+            string queryParams = "?idSincronizacion="+ new Random().Next() + "_" + syncId;
             string responseExecutedInform = SendHttpGetRequest(urlInformGenesix + queryParams);
             logger.Debug(responseExecutedInform);
         }
@@ -508,7 +508,7 @@ namespace PDADesktop.Classes.Utils
         internal static Dictionary<string, string> DiscardReceptions(string batchId, string syncId)
         {
             string urlDiscardReceptions = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_DESCARTAR_RECEPCIONES);
-            string queryParams = "?idLote=" + batchId + "idSincronizacion=" + syncId;
+            string queryParams = "?lote=" + batchId + "&idSincronizacion=" + syncId;
             string responseDiscardReceptions = SendHttpGetRequest(urlDiscardReceptions + queryParams);
             Dictionary<string, string> discardReceptionDictionary = JsonUtils.GetDiscardReception(responseDiscardReceptions);
             return discardReceptionDictionary;

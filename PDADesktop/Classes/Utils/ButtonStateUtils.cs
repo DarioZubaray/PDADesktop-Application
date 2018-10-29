@@ -88,7 +88,8 @@ namespace PDADesktop.Classes.Utils
 
         private static void seeReceptionsDetails(long syncId, string batchId)
         {
-            //lamar a la vista 'VerDetallesRecepcionView'
+            MyAppProperties.SeeDetailsReception_syncId = Convert.ToInt32(syncId);
+            MyAppProperties.SeeDetailsReception_batchId = Convert.ToInt64(batchId);
             Uri uriSeeReceptionsDetails = new Uri(Constants.VER_DETALLES_RECEPCION_VIEW, UriKind.Relative);
             var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
@@ -147,7 +148,7 @@ namespace PDADesktop.Classes.Utils
 
         internal static void RetryInformToGenesix(long syncId, int activityId)
         {
-            MyAppProperties.SeeDetailsRecepcion_syncId = syncId;
+            MyAppProperties.SeeDetailsReception_syncId = syncId;
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             if (Constants.ACTIVIDAD_INFORMAR_RECEPCIONES.Equals(activityId))
             {

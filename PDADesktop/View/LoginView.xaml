@@ -156,7 +156,7 @@
                                 <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
                                     <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}"
                                                   ToolTip="MaterialDesignActionLightToggleButton"
-                                                  IsChecked="{Binding RecuerdameCheck, Mode=TwoWay}">
+                                                  IsChecked="{Binding RemembermeCheck, Mode=TwoWay}">
                                         <ToggleButton.Content>
                                             <materialDesign:PackIcon Kind="EmoticonHappy" />
                                         </ToggleButton.Content>

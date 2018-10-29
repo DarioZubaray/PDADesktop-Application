@@ -214,13 +214,15 @@ namespace PDADesktop.ViewModel
                 HidingWaitingPanel();
             }));
         }
+        #endregion
 
+        #region Discard Reception Worker
         private void discardReceptionsWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("Discard Receptions -> Do Work");
-            long syncId = MyAppProperties.SeeDetailsRecepcion_syncId;
-            string batchId = "";
-            Dictionary<string, string> responseDiscard = HttpWebClientUtil.DiscardReceptions(batchId, syncId.ToString());
+            long syncId = MyAppProperties.SeeDetailsReception_syncId;
+            long batchId = MyAppProperties.SeeDetailsReception_batchId;
+            Dictionary<string, string> responseDiscard = HttpWebClientUtil.DiscardReceptions(batchId.ToString(), syncId.ToString());
             if(responseDiscard.ContainsKey("descargarPedidos"))
             {
                 var descargarPedidos = responseDiscard["descargarPedidos"];
@@ -273,13 +275,16 @@ namespace PDADesktop.ViewModel
             dispatcher.BeginInvoke(new Action(() =>
             {
                 HidingWaitingPanel();
+                RedirectToActivityCenterView();
             }));
         }
+        #endregion
 
+        #region Retry Inform Worker
         private void retryInformWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("Retry Inform Receptions -> Do Work");
-            long syncId = MyAppProperties.SeeDetailsRecepcion_syncId;
+            long syncId = MyAppProperties.SeeDetailsReception_syncId;
             int activityId = Convert.ToInt32(Constants.RECEP_CODE);
             ButtonStateUtils.RetryInformToGenesix(syncId, activityId);
         }
@@ -290,6 +295,7 @@ namespace PDADesktop.ViewModel
             dispatcher.BeginInvoke(new Action(() =>
             {
                 HidingWaitingPanel();
+                RedirectToActivityCenterView();
             }));
         }
         #endregion
@@ -304,15 +310,18 @@ namespace PDADesktop.ViewModel
 
             if (userAnswer)
             {
+                DisplayWaitingPanel("Espere por favor", "Descartando recepciones");
                 discardReceptionsWorker.RunWorkerAsync();
             }
         }
         private void CancelMethod(object sender)
         {
+            DisplayWaitingPanel("Espere por favor");
             RedirectToActivityCenterView();
         }
         private void RetryMethod(object sender)
         {
+            DisplayWaitingPanel("Espere por favor", "Reintentando informar recepciones");
             retryInformWorker.RunWorkerAsync();
         }
 
