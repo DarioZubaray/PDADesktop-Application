@@ -203,7 +203,7 @@ namespace PDADesktop.ViewModel
         {
             logger.Debug("Load See Details Receptions -> Do Work");
             ListView listView = HttpWebClientUtil.LoadReceptionsGrid();
-            Receptions = ListView.ParserRecepcionDataGrid(listView);
+            Receptions = ListViewUtils.ParserRecepcionDataGrid(listView);
         }
         private void loadSeeDetailsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {

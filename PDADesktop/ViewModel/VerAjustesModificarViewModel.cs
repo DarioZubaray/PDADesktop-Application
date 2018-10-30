@@ -174,7 +174,7 @@ namespace PDADesktop.ViewModel
             DisplayWaitingPanel("Cargando...");
 
             ListView ajustes = HttpWebClientUtil.LoadAdjustmentsGrid();
-            adjustments = ListView.ParserAjustesDataGrid(ajustes);
+            adjustments = ListViewUtils.ParserAjustesDataGrid(ajustes);
 
             AdjustmentEnableEdit = false;
 
