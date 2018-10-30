@@ -107,7 +107,7 @@
             </Border>
 
             <DataGrid x:Name="dataGrid" Grid.Row="1" RowHeight="40" FontSize="15.5"
-                      BorderThickness="0" BorderBrush="Gainsboro"
+                      BorderThickness="1" BorderBrush="Gainsboro"
                       HorizontalAlignment="Center" VerticalAlignment="Top"
                       Height="Auto" Width="920"
                       AutoGenerateColumns="False"

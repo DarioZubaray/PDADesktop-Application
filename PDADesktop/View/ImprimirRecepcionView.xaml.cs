@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MahApps.Metro.Controls.Dialogs;
+using PDADesktop.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +22,12 @@ namespace PDADesktop.View
     /// </summary>
     public partial class ImprimirRecepcionView : UserControl
     {
+        ImprimirRecepcionViewModel imprimirRecepcionViewModel = new ImprimirRecepcionViewModel(DialogCoordinator.Instance);
+
         public ImprimirRecepcionView()
         {
             InitializeComponent();
+            this.DataContext = imprimirRecepcionViewModel;
         }
     }
 }

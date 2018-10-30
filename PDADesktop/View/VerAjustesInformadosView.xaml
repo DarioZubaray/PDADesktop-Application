@@ -50,7 +50,7 @@
             <RowDefinition Height="3*" />
         </Grid.RowDefinitions>
         <DataGrid x:Name="dataGrid_verAjustesInformados" Grid.Row="0"
-                  BorderThickness="0" BorderBrush="Gainsboro"
+                  BorderThickness="1" BorderBrush="Gainsboro"
                   HorizontalAlignment="Center" VerticalAlignment="Stretch"
                   HorizontalContentAlignment="Center" VerticalContentAlignment="Top"
                   AlternatingRowBackground="Gainsboro" AlternationCount="2"

@@ -1,10 +1,14 @@
 ﻿<UserControl x:Class="PDADesktop.View.ImprimirRecepcionView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:VM="clr-namespace:PDADesktop.ViewModel"
              xmlns:local="clr-namespace:PDADesktop.View"
+             xmlns:ctr="clr-namespace:PDADesktop.View.Controls"
+             xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+             Dialog:DialogParticipation.Register="{Binding}"
              mc:Ignorable="d" 
              d:DesignHeight="730" d:DesignWidth="920"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -15,10 +19,6 @@
              TextOptions.TextRenderingMode="Auto"
              Background="WhiteSmoke"
              FontFamily="{DynamicResource MaterialDesignFont}">
-
-    <UserControl.DataContext>
-        <VM:ImprimirRecepcionViewModel />
-    </UserControl.DataContext>
 
     <UserControl.Resources>
         <Style x:Key="DataGridContentCellCentering" TargetType="{x:Type DataGridCell}">
@@ -45,7 +45,7 @@
 
     <Grid>
         <DataGrid x:Name="dataGrid_imprimirRecepciones" Grid.Row="0"
-                  BorderThickness="0" BorderBrush="Gainsboro"
+                  BorderThickness="1" BorderBrush="Gainsboro"
                   HorizontalAlignment="Center" VerticalAlignment="Stretch"
                   HorizontalContentAlignment="Center" VerticalContentAlignment="Top"
                   AlternatingRowBackground="Gainsboro" AlternationCount="2"
@@ -53,6 +53,7 @@
                   SelectionUnit="FullRow" IsReadOnly="True"
                   ItemsSource="{Binding Receptions}"
                   SelectedItem="{Binding Path=SelectedReception, Mode=TwoWay}" Margin="10" Width="900">
+
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
@@ -87,7 +88,7 @@
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
 
                 <DataGridTextColumn Binding="{Binding numeroPedido}" ClipboardContentBinding="{x:Null}"
-                                    Header="N° Pedido" CanUserResize="False" Width="200"
+                                    Header="Pedido Completo" CanUserResize="False" Width="200"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
 
@@ -95,6 +96,19 @@
                                     Header="N° Recepción Genesix" CanUserResize="False" Width="200"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Imprimir">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDoubleClick">
+                                        <i:InvokeCommandAction Command="{Binding Path=PrintCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
 
         </DataGrid>

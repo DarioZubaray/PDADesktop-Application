@@ -28,7 +28,7 @@
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
             <DataGrid x:Name="dataGrid_buscarLotes"
-                      BorderThickness="0" BorderBrush="Gainsboro"
+                      BorderThickness="1" BorderBrush="Gainsboro"
                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                       HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top"
                       AlternatingRowBackground="Gainsboro" AlternationCount="2"
