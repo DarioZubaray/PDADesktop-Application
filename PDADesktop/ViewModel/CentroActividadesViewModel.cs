@@ -1324,12 +1324,18 @@ namespace PDADesktop.ViewModel
         public void BotonEstadoGenesix(object obj)
         {
             logger.Info("Boton estado genesix: " + obj);
+            DisplayWaitingPanel("Espere por favor");
             logger.Info(MyAppProperties.SelectedSync.actividad);
+
+            redirectWorker.RunWorkerAsync();
         }
         public void BotonEstadoPDA(object obj)
         {
             logger.Info("Boton estado pda");
+            DisplayWaitingPanel("Espere por favor");
             logger.Info(MyAppProperties.SelectedSync.actividad);
+
+            redirectWorker.RunWorkerAsync();
         }
         public void BotonEstadoGeneral(object obj)
         {
