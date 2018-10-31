@@ -64,46 +64,24 @@ namespace PDADesktop.Classes.Utils
             return recepciones;
         }
 
-        public static ObservableCollection<Recepcion> ParserImprimirRecepcionDataGrid(ListView recepcionListView)
+        public static ObservableCollection<ImprimirRecepcionesDtoDataGrid> ParserImprimirRecepcionDataGrid(ListView recepcionListView)
         {
-            ObservableCollection<Recepcion> recepciones = new ObservableCollection<Recepcion>();
+            ObservableCollection<ImprimirRecepcionesDtoDataGrid> listaImprimirRecepciones = new ObservableCollection<ImprimirRecepcionesDtoDataGrid>();
             Row[] rows = recepcionListView.rows;
             foreach (Row row in rows)
             {
-                Recepcion recepcion = new Model.Recepcion();
-                recepcion.idRecepcion = Convert.ToInt64(row.cell[0]);
-
-                DateTime datetime;
-                if (DateTime.TryParse(row.cell[1], out datetime))
-                {
-                    recepcion.fechaRecepcion = datetime;
-                }
-                recepcion.remitoCompleto = row.cell[2];
-
-                long providerNumber = 0;
-                if (Int64.TryParse(row.cell[3], out providerNumber))
-                {
-                    recepcion.numeroProveedor = providerNumber;
-                }
-
-                recepcion.descripcionProveedor = row.cell[4];
-
-                long transmitterCenter = 0;
-                if(Int64.TryParse(row.cell[5].Substring(0,3), out transmitterCenter))
-                {
-                    recepcion.centroEmisor = transmitterCenter;
-                }
-
-                long orderNumber = 0;
-                if(Int64.TryParse(row.cell[5].Substring(3), out orderNumber))
-                {
-                    recepcion.numeroPedido = orderNumber;
-                }
-
-                recepcion.numeroRecepcion = Convert.ToInt64(row.cell[6]);
-                recepciones.Add(recepcion);
+                ImprimirRecepcionesDtoDataGrid imprimirRecepcionDataGrid = new ImprimirRecepcionesDtoDataGrid();
+                imprimirRecepcionDataGrid.idRecepcion = row.cell[0];
+                imprimirRecepcionDataGrid.fechaRecepcion = row.cell[1];
+                imprimirRecepcionDataGrid.remitoCompleto = row.cell[2];
+                imprimirRecepcionDataGrid.numeroProveedor = row.cell[3];
+                imprimirRecepcionDataGrid.descripcionProveedor = row.cell[4];
+                imprimirRecepcionDataGrid.centroPedido = row.cell[5];
+                imprimirRecepcionDataGrid.numeroRecepcion = row.cell[6];
+                imprimirRecepcionDataGrid.botonImprimir = row.cell[7];
+                listaImprimirRecepciones.Add(imprimirRecepcionDataGrid);
             }
-            return recepciones;
+            return listaImprimirRecepciones;
         }
     }
 }

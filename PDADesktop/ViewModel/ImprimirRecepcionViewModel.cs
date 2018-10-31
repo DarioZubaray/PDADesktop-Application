@@ -4,9 +4,13 @@ using PDADesktop.Classes;
 using PDADesktop.Classes.Utils;
 using PDADesktop.Model;
 using PDADesktop.Model.Dto;
+using PDADesktop.View;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading;
+using System.Windows;
 using System.Windows.Input;
 
 namespace PDADesktop.ViewModel
@@ -20,16 +24,72 @@ namespace PDADesktop.ViewModel
 
         private readonly BackgroundWorker loadPrintReceptionWorker = new BackgroundWorker();
 
-        private ObservableCollection<Recepcion> receptions;
-        public ObservableCollection<Recepcion> Receptions
+        private ObservableCollection<ImprimirRecepcionesDtoDataGrid> printReceptions;
+        public ObservableCollection<ImprimirRecepcionesDtoDataGrid> PrintReceptions
         {
             get
             {
-                return receptions;
+                return printReceptions;
             }
             set
             {
-                receptions = value;
+                printReceptions = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ImprimirRecepcionesDtoDataGrid selectedReception;
+        public ImprimirRecepcionesDtoDataGrid SelectedReception
+        {
+            get
+            {
+                return selectedReception;
+            }
+            set
+            {
+                selectedReception = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region Loading panel
+        private bool _panelLoading;
+        public bool PanelLoading
+        {
+            get
+            {
+                return _panelLoading;
+            }
+            set
+            {
+                _panelLoading = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _panelMainMessage;
+        public string PanelMainMessage
+        {
+            get
+            {
+                return _panelMainMessage;
+            }
+            set
+            {
+                _panelMainMessage = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _panelSubMessage;
+        public string PanelSubMessage
+        {
+            get
+            {
+                return _panelSubMessage;
+            }
+            set
+            {
+                _panelSubMessage = value;
                 OnPropertyChanged();
             }
         }
@@ -48,18 +108,47 @@ namespace PDADesktop.ViewModel
                 printCommand = value;
             }
         }
+
+        private ICommand returnCommand;
+        public ICommand ReturnCommand
+        {
+            get
+            {
+                return returnCommand;
+            }
+            set
+            {
+                returnCommand = value;
+            }
+        }
+
+        private ICommand panelCloseCommand;
+        public ICommand PanelCloseCommand
+        {
+            get
+            {
+                return panelCloseCommand;
+            }
+            set
+            {
+                panelCloseCommand = value;
+            }
+        }
         #endregion
 
         #region Constructor
         public ImprimirRecepcionViewModel(IDialogCoordinator instance)
         {
+            DisplayWaitingPanel("Espere por favor");
             BannerApp.PrintPrintReception();
             dialogCoordinator = instance;
 
             loadPrintReceptionWorker.DoWork += loadPrintReceptionWorker_DoWork;
             loadPrintReceptionWorker.RunWorkerCompleted += loadPrintReceptionWorker_RunWorkerCompleted;
 
-            PrintCommand = new RelayCommand(PrintMethod);
+            ReturnCommand = new RelayCommand(ReturnMethod);
+            PanelCloseCommand = new RelayCommand(PanelCloseMethod);
+
             loadPrintReceptionWorker.RunWorkerAsync();
         }
         #endregion
@@ -74,7 +163,9 @@ namespace PDADesktop.ViewModel
             var dispatcher = App.Instance.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
-                Receptions = ListViewUtils.ParserImprimirRecepcionDataGrid(listView);
+                PrintReceptions = ListViewUtils.ParserImprimirRecepcionDataGrid(listView);
+                AddPrintCommand(PrintReceptions);
+                HidingWaitingPanel();
             }));
 
         }
@@ -90,11 +181,58 @@ namespace PDADesktop.ViewModel
         private void PrintMethod(object sender)
         {
             logger.Debug("Print Method");
-            if(sender is Recepcion)
+            DisplayWaitingPanel("Imprimiendo...");
+            if (sender is ImprimirRecepcionesDtoDataGrid)
             {
                 logger.Debug("Recepcion " + sender.ToString());
             }
+            logger.Debug(SelectedReception);
+            HidingWaitingPanel();
         }
+
+        private void ReturnMethod(object sender)
+        {
+            DisplayWaitingPanel("Volviendo...");
+            logger.Debug("return Method");
+            RedirectToActivityCenterView();
+            HidingWaitingPanel();
+        }
+
+        private void PanelCloseMethod(object sender)
+        {
+            HidingWaitingPanel();
+        }
+        #endregion
+
+       #region Methods
+        public void AddPrintCommand(ObservableCollection<ImprimirRecepcionesDtoDataGrid> imprimirRecepciones)
+        {
+            foreach(ImprimirRecepcionesDtoDataGrid imprimirRecepcion in imprimirRecepciones)
+            {
+                imprimirRecepcion.PrintCommand = new RelayCommand(PrintMethod, param => true);
+            }
+        }
+
+        public void DisplayWaitingPanel(string mainMessage, string subMessage = "")
+        {
+            PanelLoading = true;
+            PanelMainMessage = mainMessage;
+            PanelSubMessage = subMessage;
+        }
+        public void HidingWaitingPanel()
+        {
+            PanelLoading = false;
+            PanelMainMessage = "";
+            PanelSubMessage = "";
+        }
+
+        private void RedirectToActivityCenterView()
+        {
+            MainWindow window = (MainWindow)Application.Current.MainWindow;
+            Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
+            window.frame.NavigationService.Navigate(uri);
+        }
+
         #endregion
     }
 }

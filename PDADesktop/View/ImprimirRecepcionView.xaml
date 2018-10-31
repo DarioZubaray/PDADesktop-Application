@@ -51,8 +51,8 @@
                   AlternatingRowBackground="Gainsboro" AlternationCount="2"
                   AutoGenerateColumns="False" RowHeight="35" FontSize="15"
                   SelectionUnit="FullRow" IsReadOnly="True"
-                  ItemsSource="{Binding Receptions}"
-                  SelectedItem="{Binding Path=SelectedReception, Mode=TwoWay}" Margin="10, 25" Width="900">
+                  ItemsSource="{Binding PrintReceptions}"
+                  SelectedItem="{Binding Path=SelectedReception, Mode=TwoWay}" Margin="10,25,10,55" Width="900">
 
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
@@ -73,7 +73,7 @@
 
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding fechaRecepcion}" ClipboardContentBinding="{x:Null}"
-                                    Header="Fecha" CanUserResize="False" Width="80"
+                                    Header="Fecha" CanUserResize="False" Width="100"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
 
@@ -87,8 +87,8 @@
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
 
-                <DataGridTextColumn Binding="{Binding numeroPedido}" ClipboardContentBinding="{x:Null}"
-                                    Header="Pedido Completo" CanUserResize="False" Width="200"
+                <DataGridTextColumn Binding="{Binding centroPedido}" ClipboardContentBinding="{x:Null}"
+                                    Header="Pedido Completo" CanUserResize="False" Width="180"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
 
@@ -102,8 +102,8 @@
                         <DataTemplate>
                             <Button Content="Imprimir">
                                 <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="MouseDoubleClick">
-                                        <i:InvokeCommandAction Command="{Binding VM:PrintCommand}"/>
+                                    <i:EventTrigger EventName="Click">
+                                        <i:InvokeCommandAction Command="{Binding PrintCommand}"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </Button>
@@ -111,7 +111,22 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
-
         </DataGrid>
+
+        <StackPanel Margin="0,680,0,0">
+            <Button Style="{StaticResource MaterialDesignFlatButton}" 
+                    ToolTip="Volver al centro de actividades"
+                    Command="{Binding ReturnCommand}">
+                Volver
+            </Button>
+        </StackPanel>
+
+        <Grid VerticalAlignment="Center">
+            <ctr:LoadingPanel x:Name="loadingPanel"
+                              IsLoading="{Binding PanelLoading}"
+                              Message="{Binding PanelMainMessage}"
+                              SubMessage="{Binding PanelSubMessage}" 
+                              ClosePanelCommand="{Binding PanelCloseCommand}" />
+        </Grid>
     </Grid>
 </UserControl>
