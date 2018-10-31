@@ -37,11 +37,26 @@ namespace PDADesktop.Classes.Utils
             {
                 Recepcion recepcion = new Model.Recepcion();
                 recepcion.idRecepcion = Convert.ToInt64(row.cell[0]);
-                recepcion.fechaRecepcion = DateTime.ParseExact(row.cell[1], "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+
+                DateTime datetime;
+                if(DateTime.TryParse(row.cell[1], out datetime))
+                {
+                    recepcion.fechaRecepcion = datetime;
+                }
                 recepcion.remitoCompleto = row.cell[2];
-                recepcion.numeroProveedor = Convert.ToInt64(row.cell[3]);
+
+                long providerNumber = 0;
+                if(Int64.TryParse(row.cell[3], out providerNumber))
+                {
+                    recepcion.numeroProveedor = providerNumber;
+                }
+
                 EstadoRecepcion estadoRecepcion = new EstadoRecepcion();
-                estadoRecepcion.idEstado = Convert.ToInt64(row.cell[4]);
+                long stateId = 0;
+                if(Int64.TryParse(row.cell[4], out stateId))
+                {
+                    estadoRecepcion.idEstado = stateId;
+                }
                 estadoRecepcion.descripcion = row.cell[5];
                 recepcion.estado = estadoRecepcion;
                 recepciones.Add(recepcion);
@@ -49,5 +64,46 @@ namespace PDADesktop.Classes.Utils
             return recepciones;
         }
 
+        public static ObservableCollection<Recepcion> ParserImprimirRecepcionDataGrid(ListView recepcionListView)
+        {
+            ObservableCollection<Recepcion> recepciones = new ObservableCollection<Recepcion>();
+            Row[] rows = recepcionListView.rows;
+            foreach (Row row in rows)
+            {
+                Recepcion recepcion = new Model.Recepcion();
+                recepcion.idRecepcion = Convert.ToInt64(row.cell[0]);
+
+                DateTime datetime;
+                if (DateTime.TryParse(row.cell[1], out datetime))
+                {
+                    recepcion.fechaRecepcion = datetime;
+                }
+                recepcion.remitoCompleto = row.cell[2];
+
+                long providerNumber = 0;
+                if (Int64.TryParse(row.cell[3], out providerNumber))
+                {
+                    recepcion.numeroProveedor = providerNumber;
+                }
+
+                recepcion.descripcionProveedor = row.cell[4];
+
+                long transmitterCenter = 0;
+                if(Int64.TryParse(row.cell[5].Substring(0,3), out transmitterCenter))
+                {
+                    recepcion.centroEmisor = transmitterCenter;
+                }
+
+                long orderNumber = 0;
+                if(Int64.TryParse(row.cell[5].Substring(3), out orderNumber))
+                {
+                    recepcion.numeroPedido = orderNumber;
+                }
+
+                recepcion.numeroRecepcion = Convert.ToInt64(row.cell[6]);
+                recepciones.Add(recepcion);
+            }
+            return recepciones;
+        }
     }
 }
