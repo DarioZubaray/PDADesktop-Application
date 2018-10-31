@@ -31,8 +31,8 @@
         </LinearGradientBrush>
     </UserControl.Background>
 
-    <Grid>
-        <StackPanel KeyboardNavigation.TabNavigation="None">
+    <Grid KeyboardNavigation.TabNavigation="None">
+        <StackPanel>
             <materialDesign:Card Padding="32">
                 <StackPanel>
                     <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}" TextAlignment="Center">Imagosur - Integración Portal de Aplicaciones</TextBlock>
@@ -91,8 +91,8 @@
                                              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                              Width="180">
                                         <TextBox.InputBindings>
-                                            <KeyBinding Command="{x:Static materialDesign:Flipper.FlipCommand}" Key="Tab" />
-                                            <KeyBinding Command="{x:Static materialDesign:Flipper.FlipCommand}" Key="Enter" />
+                                            <KeyBinding Command="{Binding FlipLoginCommand}" Key="Tab" />
+                                            <KeyBinding Command="{Binding FlipLoginCommand}" Key="Enter" />
                                         </TextBox.InputBindings>
                                     </TextBox>
                                 </Grid>
@@ -100,7 +100,7 @@
                                         Content="Siguiente"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         Margin="0 10 0 0"
-                                        Command="{x:Static materialDesign:Flipper.FlipCommand}">
+                                        Command="{Binding FlipLoginCommand}">
                                 </Button>
                             </StackPanel>
                         </Grid>

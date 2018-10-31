@@ -1,4 +1,5 @@
 ﻿using log4net;
+using MaterialDesignThemes.Wpf;
 using PDADesktop.Classes;
 using PDADesktop.View;
 using System;
@@ -150,6 +151,18 @@ namespace PDADesktop.ViewModel
                 panelCloseCommand = value;
             }
         }
+        private ICommand flipLoginCommand;
+        public ICommand FlipLoginCommand
+        {
+            get
+            {
+                return flipLoginCommand;
+            }
+            set
+            {
+                flipLoginCommand = value;
+            }
+        }
 
         private bool canExecute = true;
         #endregion
@@ -158,12 +171,14 @@ namespace PDADesktop.ViewModel
         public LoginViewModel()
         {
             BannerApp.PrintLogin();
+            MyAppProperties.window = (MainWindow)Application.Current.MainWindow;
             LoginButtonCommand = new RelayCommand(LoginPortalApi, param => this.canExecute);
             ShowPanelCommand = new RelayCommand(ShowPanel, param => this.canExecute);
             HidePanelCommand = new RelayCommand(HidePanel, param => this.canExecute);
             ChangeMainMessageCommand = new RelayCommand(ChangeMainMensage, param => this.canExecute);
             ChangeSubMessageCommand = new RelayCommand(ChangeSubMensage, param => this.canExecute);
             PanelCloseCommand = new RelayCommand(ClosePanel, param => this.canExecute);
+            FlipLoginCommand = new RelayCommand(FlipLoginMethod);
             loginWorker.DoWork += worker_DoWork;
             loginWorker.RunWorkerCompleted += worker_RunWorkerCompleted;
             RemembermeCheck = true;
@@ -213,7 +228,7 @@ namespace PDADesktop.ViewModel
                     LoginView loginview = (LoginView)window.frame.Content;
                     loginview.msgbar.Clear();
                     loginview.msgbar.SetDangerAlert("usuario y/o contraseña incorrectos", 3);
-                    loginview.usernameText.Text = "";
+                    loginview.usernameText.Text = String.Empty;
                     loginview.FloatingPasswordBox.Clear();
                     loginview.usernameText.Focus();
                     PanelLoading = false;
@@ -239,7 +254,6 @@ namespace PDADesktop.ViewModel
             logger.Info("login portal api");
             logger.Debug("Usuario: " + usernameText);
             logger.Debug("Constraseña: " + FloatingPasswordBox + ", para fines de desarrollo");
-            MyAppProperties.window = (MainWindow) Application.Current.MainWindow;
             PanelMainMessage = "Espere por favor ...";
             loginWorker.RunWorkerAsync();
         }
@@ -270,6 +284,29 @@ namespace PDADesktop.ViewModel
         public void ClosePanel(object obj)
         {
             PanelLoading = false;
+        }
+
+        public void FlipLoginMethod(object obj)
+        {
+            logger.Debug("Invocando a flip command");
+            MainWindow window = MyAppProperties.window;
+            if ( usernameText?.Length > 3)
+            {
+                Flipper.FlipCommand.Execute(null, null);
+                LoginView loginview = (LoginView)window.frame.Content;
+                loginview.FloatingPasswordBox.Focus();
+            }
+            else
+            {
+                LoginView loginview = (LoginView)window.frame.Content;
+                loginview.msgbar.Clear();
+                loginview.msgbar.SetWarningAlert("Especifique un usuario de por lo menos 4 caracteres", 3);
+                loginview.usernameText.Text = String.Empty;
+                loginview.FloatingPasswordBox.Clear();
+                loginview.usernameText.Focus();
+            }
+            var nose = FocusManager.FocusedElementProperty;
+            logger.Debug(nose);
         }
         #endregion
     }
