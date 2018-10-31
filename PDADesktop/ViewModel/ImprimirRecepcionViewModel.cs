@@ -2,14 +2,11 @@
 using MahApps.Metro.Controls.Dialogs;
 using PDADesktop.Classes;
 using PDADesktop.Classes.Utils;
-using PDADesktop.Model;
 using PDADesktop.Model.Dto;
 using PDADesktop.View;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 
@@ -23,6 +20,7 @@ namespace PDADesktop.ViewModel
         private IDialogCoordinator dialogCoordinator;
 
         private readonly BackgroundWorker loadPrintReceptionWorker = new BackgroundWorker();
+        private readonly BackgroundWorker printerReceptionsWorker = new BackgroundWorker();
 
         private ObservableCollection<ImprimirRecepcionesDtoDataGrid> printReceptions;
         public ObservableCollection<ImprimirRecepcionesDtoDataGrid> PrintReceptions
@@ -146,6 +144,9 @@ namespace PDADesktop.ViewModel
             loadPrintReceptionWorker.DoWork += loadPrintReceptionWorker_DoWork;
             loadPrintReceptionWorker.RunWorkerCompleted += loadPrintReceptionWorker_RunWorkerCompleted;
 
+            printerReceptionsWorker.DoWork += printerReceptionsWorker_DoWork;
+            printerReceptionsWorker.RunWorkerCompleted += printerReceptionsWorker_RunWorkerCompleted;
+
             ReturnCommand = new RelayCommand(ReturnMethod);
             PanelCloseCommand = new RelayCommand(PanelCloseMethod);
 
@@ -175,6 +176,40 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
+        #region Printer Reception Worker
+        private void printerReceptionsWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Debug("Printer Receptions => Do Worker");
+            logger.Debug(this.SelectedReception);
+
+            logger.Debug("Numero de recepcion: " + SelectedReception.numeroRecepcion);
+            logger.Debug("Codigo de Tienda: " + MyAppProperties.storeId);
+
+            string temp = HttpWebClientUtil.PrintReception(SelectedReception.numeroRecepcion, MyAppProperties.storeId);
+
+            try
+            {
+                if(FileUtils.VerifyIfExitsFile(temp))
+                {
+                    System.Diagnostics.Process.Start(temp);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Error al abrir el archivo temporal: " + ex.Message);
+            }
+            //borrar los temporales (?)
+        }
+
+        private void printerReceptionsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("Printer Receptions => Run Work Completed");
+            var dispatcher = App.Instance.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() => {
+                HidingWaitingPanel();
+            }));
+        }
+        #endregion
         #endregion
 
         #region Command Methods
@@ -182,12 +217,8 @@ namespace PDADesktop.ViewModel
         {
             logger.Debug("Print Method");
             DisplayWaitingPanel("Imprimiendo...");
-            if (sender is ImprimirRecepcionesDtoDataGrid)
-            {
-                logger.Debug("Recepcion " + sender.ToString());
-            }
-            logger.Debug(SelectedReception);
-            HidingWaitingPanel();
+
+            printerReceptionsWorker.RunWorkerAsync();
         }
 
         private void ReturnMethod(object sender)

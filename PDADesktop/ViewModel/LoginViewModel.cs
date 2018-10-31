@@ -290,23 +290,21 @@ namespace PDADesktop.ViewModel
         {
             logger.Debug("Invocando a flip command");
             MainWindow window = MyAppProperties.window;
-            if ( usernameText?.Length > 3)
-            {
+            //if ( usernameText?.Length > 3)
+            //{
                 Flipper.FlipCommand.Execute(null, null);
                 LoginView loginview = (LoginView)window.frame.Content;
                 loginview.FloatingPasswordBox.Focus();
-            }
-            else
-            {
-                LoginView loginview = (LoginView)window.frame.Content;
-                loginview.msgbar.Clear();
-                loginview.msgbar.SetWarningAlert("Especifique un usuario de por lo menos 4 caracteres", 3);
-                loginview.usernameText.Text = String.Empty;
-                loginview.FloatingPasswordBox.Clear();
-                loginview.usernameText.Focus();
-            }
-            var nose = FocusManager.FocusedElementProperty;
-            logger.Debug(nose);
+            //}
+            //else
+            //{
+            //    LoginView loginview = (LoginView)window.frame.Content;
+            //    loginview.msgbar.Clear();
+            //    loginview.msgbar.SetWarningAlert("Especifique un usuario de por lo menos 4 caracteres", 3);
+            //    loginview.usernameText.Text = String.Empty;
+            //    loginview.FloatingPasswordBox.Clear();
+            //    loginview.usernameText.Focus();
+            //}
         }
         #endregion
     }

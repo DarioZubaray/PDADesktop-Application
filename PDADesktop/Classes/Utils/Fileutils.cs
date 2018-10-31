@@ -102,5 +102,13 @@ namespace PDADesktop.Classes.Utils
             string updatedDefaultContent = String.Join("|", defaultArray);
             WriteFile(defaultPathPublicExtended + filenameAndExtension, updatedDefaultContent);
         }
+
+        public static string GetTempFileName(string pattern)
+        {
+            DateTime unixTime = new DateTime(1970, 1, 1);
+            DateTime datetimeNow = DateTime.UtcNow;
+            Int32 unixTimestamp = (Int32)(datetimeNow.Subtract(unixTime)).TotalSeconds;
+            return String.Format(pattern, unixTimestamp);
+        }
     }
 }

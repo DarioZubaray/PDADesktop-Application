@@ -476,7 +476,6 @@ namespace PDADesktop.Classes.Utils
             return JsonUtils.GetAjustesDTO(responseModifyLoadAdjustmentsGrid);
         }
 
-
         internal static ListView LoadReceptionsGrid(long lote = 111152, bool informedReceptions = false)
         {
             string urlSeeDetailsReceptionsGrid = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_CARGAR_GRILLA_RECEPCIONES);
@@ -523,6 +522,20 @@ namespace PDADesktop.Classes.Utils
                 + "&page=" + page  +"&rows=" + rows + "&sidx=" + sidx + "&sord=" + sord;
             string responseReceptionGrid = SendHttpGetRequest(urlReceptionGrid + queryParams);
             return JsonUtils.GetListView(responseReceptionGrid);
+        }
+
+        internal static string PrintReception(string receptionNumber, string storeId)
+        {
+            string urlPath = ConfigurationManager.AppSettings.Get(Constants.API_INFORMES_REMITO_PDF);
+            string tempFileRemito = ConfigurationManager.AppSettings.Get(Constants.TEMP_FILE_REMITO);
+            string queryParams = "?numeroRecepcion=" + receptionNumber + "&codigoTienda=" + storeId;
+            string slashFilenameAndExtension = FileUtils.GetTempFileName(tempFileRemito);
+            string destiny = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_TEMP);
+            string destinyExtended = TextUtils.ExpandEnviromentVariable(destiny);
+            FileUtils.VerifyFoldersOrCreate(destinyExtended);
+            DownloadFileFromServer(urlPath + queryParams, slashFilenameAndExtension, destinyExtended);
+
+            return destinyExtended + slashFilenameAndExtension;
         }
     }
 }

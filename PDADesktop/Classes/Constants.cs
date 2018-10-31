@@ -47,10 +47,12 @@
         public const string API_MODIFICAR_CARGAR_GRILLA_RECEPCIONES = "API_MODIFICAR_CARGAR_GRILLA_RECEPCIONES";
         public const string API_MODIFICAR_DESCARTAR_RECEPCIONES = "API_MODIFICAR_DESCARTAR_RECEPCIONES";
         public const string API_IMPRIMIR_CARGAR_GRILLA_RECEPCIONES = "API_IMPRIMIR_CARGAR_GRILLA_RECEPCIONES";
+        public const string API_INFORMES_REMITO_PDF = "API_INFORMES_REMITO_PDF";
 
         public const string PUBLIC_PATH_DATA = "PUBLIC_PATH_DATA";
         public const string PUBLIC_PATH_LOOKUP = "PUBLIC_PATH_LOOKUP";
         public const string PUBLIC_PATH_BIN = "PUBLIC_PATH_BIN";
+        public const string PUBLIC_PATH_TEMP = "PUBLIC_PATH_TEMP";
         public const string DEVICE_RELPATH_BIN = "DEVICE_RELPATH_BIN";
         public const string DEVICE_RELPATH_LOOKUP = "DEVICE_RELPATH_LOOKUP";
         public const string DEVICE_RELPATH_DATA = "DEVICE_RELPATH_DATA";
@@ -64,6 +66,7 @@
         public const string DAT_FILE_APEDIDOS = "DAT_FILE_APEDIDOS";
         public const string DAT_FILE_EPEDIDOS = "DAT_FILE_EPEDIDOS";
         public const string DAT_FILE_RPEDIDOS = "DAT_FILE_RPEDIDOS";
+        public const string TEMP_FILE_REMITO = "TEMP_FILE_REMITO";
         
         public const string CONTROL_PRECIOS_CON_UBICACIONES = "CONTROL_PRECIOS_CON_UBICACIONES";
         public const string CONTROL_PRECIOS_SIN_UBICACIONES = "CONTROL_PRECIOS_SIN_UBICACIONES";
