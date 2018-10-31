@@ -186,6 +186,7 @@
     <Compile Include="Classes\NotEmptyValidationRule.cs" />
     <Compile Include="Classes\PasswordBoxAssistant.cs" />
     <Compile Include="Classes\Utils\JsonUtils.cs" />
+    <Compile Include="Classes\Utils\ListViewUtils.cs" />
     <Compile Include="Classes\Utils\PDAWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
