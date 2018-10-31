@@ -91,5 +91,10 @@ namespace PDADesktop.Classes.Utils
         {
             return JsonConvert.DeserializeObject<Dictionary<String, String>>(responseDiscardReceptions);
         }
+
+        internal static ListView GetListView(string responseReceptionGrid)
+        {
+            return JsonConvert.DeserializeObject<ListView>(responseReceptionGrid);
+        }
     }
 }

@@ -513,5 +513,16 @@ namespace PDADesktop.Classes.Utils
             Dictionary<string, string> discardReceptionDictionary = JsonUtils.GetDiscardReception(responseDiscardReceptions);
             return discardReceptionDictionary;
         }
+
+
+        internal static ListView GetGrillaRECEP(string batchId = "141147", string informedState = "false",
+            string page = "1", string rows = "10", string sidx = "id", string sord = "asc")
+        {
+            string urlReceptionGrid = ConfigurationManager.AppSettings.Get(Constants.API_IMPRIMIR_CARGAR_GRILLA_RECEPCIONES);
+            string queryParams = "?idLote=" + batchId + "&estadoInformado=" + informedState 
+                + "&page=" + page  +"&rows=" + rows + "&sidx=" + sidx + "&sord=" + sord;
+            string responseReceptionGrid = SendHttpGetRequest(urlReceptionGrid + queryParams);
+            return JsonUtils.GetListView(responseReceptionGrid);
+        }
     }
 }

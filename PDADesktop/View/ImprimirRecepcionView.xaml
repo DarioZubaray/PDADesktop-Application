@@ -49,10 +49,10 @@
                   HorizontalAlignment="Center" VerticalAlignment="Stretch"
                   HorizontalContentAlignment="Center" VerticalContentAlignment="Top"
                   AlternatingRowBackground="Gainsboro" AlternationCount="2"
-                  AutoGenerateColumns="False" RowHeight="25" FontSize="15"
+                  AutoGenerateColumns="False" RowHeight="35" FontSize="15"
                   SelectionUnit="FullRow" IsReadOnly="True"
                   ItemsSource="{Binding Receptions}"
-                  SelectedItem="{Binding Path=SelectedReception, Mode=TwoWay}" Margin="10" Width="900">
+                  SelectedItem="{Binding Path=SelectedReception, Mode=TwoWay}" Margin="10, 25" Width="900">
 
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
@@ -73,17 +73,17 @@
 
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding fechaRecepcion}" ClipboardContentBinding="{x:Null}"
-                                    Header="Fecha" CanUserResize="False" Width="100"
+                                    Header="Fecha" CanUserResize="False" Width="80"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
 
                 <DataGridTextColumn Binding="{Binding numeroProveedor}" ClipboardContentBinding="{x:Null}"
-                                    Header="N° Proveedor" CanUserResize="False" Width="150"
+                                    Header="N° Proveedor" CanUserResize="False" Width="140"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
 
                 <DataGridTextColumn Binding="{Binding descripcionProveedor}" ClipboardContentBinding="{x:Null}"
-                                    Header="Descripción Proveedor" CanUserResize="False" Width="200"
+                                    Header="Descripción Proveedor" CanUserResize="False" Width="180"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
 
@@ -93,16 +93,17 @@
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
 
                 <DataGridTextColumn Binding="{Binding numeroRecepcion}" ClipboardContentBinding="{x:Null}"
-                                    Header="N° Recepción Genesix" CanUserResize="False" Width="200"
+                                    Header="N° Recepción Genesix" CanUserResize="False" Width="180"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
-                <DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Imprimir" Width="100"
+                                        HeaderStyle="{StaticResource DataGridColumnHeaderCentering}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Content="Imprimir">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="MouseDoubleClick">
-                                        <i:InvokeCommandAction Command="{Binding Path=PrintCommand}"/>
+                                        <i:InvokeCommandAction Command="{Binding VM:PrintCommand}"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </Button>
