@@ -14,6 +14,9 @@ namespace PDADesktop.Classes
         public static string SeeAdjustmentModify_batchId { get; set; }
         public static long SeeDetailsReception_syncId { get; set; }
         public static long SeeDetailsReception_batchId { get; set; }
+        public static string buttonState_batchId { get; set; }
+        public static string buttonState_syncId { get; set; }
+        public static string buttonState_storeId { get; set; }
         public static MainWindow window { get; set; }
 
         public static SincronizacionDtoDataGrid SelectedSync { get; set; }

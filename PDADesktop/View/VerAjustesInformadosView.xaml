@@ -6,6 +6,7 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:VM="clr-namespace:PDADesktop.ViewModel"
         xmlns:local="clr-namespace:PDADesktop.View"
+        xmlns:ctr="clr-namespace:PDADesktop.View.Controls"
         mc:Ignorable="d"
         d:DesignHeight="730" d:DesignWidth="920"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -45,10 +46,6 @@
     </UserControl.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="5*" />
-            <RowDefinition Height="3*" />
-        </Grid.RowDefinitions>
         <DataGrid x:Name="dataGrid_verAjustesInformados" Grid.Row="0"
                   BorderThickness="1" BorderBrush="Gainsboro"
                   HorizontalAlignment="Center" VerticalAlignment="Stretch"
@@ -56,8 +53,8 @@
                   AlternatingRowBackground="Gainsboro" AlternationCount="2"
                   AutoGenerateColumns="False" RowHeight="25" FontSize="15"
                   SelectionUnit="FullRow" IsReadOnly="True"
-                  ItemsSource="{Binding Adjustments}"
-                  SelectedItem="{Binding Path=SelectedAdjustment, Mode=TwoWay}" Margin="10" Width="900">
+                  ItemsSource="{Binding AdjustmentsInformed}"
+                  SelectedItem="{Binding Path=SelectedAdjustment, Mode=TwoWay}" Margin="10,25,10,55" Width="900">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
@@ -95,86 +92,21 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <StackPanel Grid.Row="1">
-            <Grid VerticalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <Label Content="Ean" Grid.Column="0" Grid.Row="0" Margin="10"/>
-                <TextBox Grid.Column="1" Grid.Row="0" Margin="10"
-                         IsEnabled="{Binding Path=AdjustmentEnableEdit, Mode=TwoWay}">
-                    <Binding Path="SelectedAdjustment.ean" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
-                </TextBox>
-
-                <Label Content="Motivo" Grid.Column="0" Grid.Row="1" Margin="10"/>
-                <Border Grid.Column="1" Grid.Row="1" Margin="15">
-                    <ComboBox materialDesign:HintAssist.Hint="Tipos de Ajustes"
-                          MinWidth="72" 
-                          VerticalAlignment="Bottom"
-                          ItemsSource="{Binding AdjustmentsTypes}"
-                          IsEnabled="{Binding Path=AdjustmentEnableEdit, Mode=TwoWay}"
-                          SelectedValue="{Binding SelectedAdjustment.motivo}">
-                        <ComboBox.SelectedItem>
-                            <Binding Path="AdjustmentTypeSelected" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-                                <Binding.ValidationRules>
-                                    <rules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:rules="clr-namespace:PDADesktop.Classes" />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </ComboBox.SelectedItem>
-                        <ComboBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel />
-                            </ItemsPanelTemplate>
-                        </ComboBox.ItemsPanel>
-                    </ComboBox>
-                </Border>
-                <Label Content="Cantidad" Grid.Column="0" Grid.Row="2" Margin="10"/>
-                <Border Grid.Column="1" Grid.Row="2" Margin="15">
-                    <TextBox IsEnabled="{Binding AdjustmentEnableEdit, Mode=TwoWay}">
-                        <TextBox.Text>
-                            <Binding Path="SelectedAdjustment.cantidad" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-                                <Binding.ValidationRules>
-                                    <rules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:rules="clr-namespace:PDADesktop.Classes" />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                </Border>
-                <Border Grid.Column="2" Grid.Row="1" Margin="10">
-                    <Button x:Name="button_eliminar" Style="{StaticResource MaterialDesignFlatButton}"
-                            Command="{Binding DeleteAdjustmentCommand}"
-                            CommandParameter="{Binding Path=SelectedAdjustment, Mode=TwoWay}"
-                            IsEnabled="{Binding AdjustmentEnableEdit, Mode=TwoWay}">Eliminar</Button>
-                </Border>
-                <Border Grid.Column="3" Grid.Row="1" Margin="10">
-                    <Button x:Name="button_actualizar" Style="{StaticResource MaterialDesignRaisedLightButton}"
-                            Command="{Binding UpdateAdjustmentCommand}"
-                            IsEnabled="{Binding AdjustmentEnableEdit, Mode=TwoWay}">Actualizar</Button>
-                </Border>
-            </Grid>
-            <Separator></Separator>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="100" Margin="324,0">
-                <Border Margin="10">
-                    <Button x:Name="button_descartar" Style="{StaticResource MaterialDesignFlatButton}"
-                            Command="{Binding DiscardChangesCommand}" Content="Descartar"/>
-                </Border>
-                <Border Margin="10">
-                    <Button x:Name="button_guardarCambios" Command="{Binding SaveChangesCommand}" Content="Guardar cambios"/>
-                </Border>
-            </StackPanel>
+        <StackPanel Margin="0,680,0,0">
+            <Button Style="{StaticResource MaterialDesignFlatButton}" 
+                    ToolTip="Volver al centro de actividades"
+                    Command="{Binding ReturnCommand}">
+                Volver
+            </Button>
         </StackPanel>
+
+        <Grid VerticalAlignment="Center">
+            <ctr:LoadingPanel x:Name="loadingPanel"
+                              IsLoading="{Binding PanelLoading}"
+                              Message="{Binding PanelMainMessage}"
+                              SubMessage="{Binding PanelSubMessage}" 
+                              ClosePanelCommand="{Binding PanelCloseCommand}" />
+        </Grid>
 
     </Grid>
 </UserControl>

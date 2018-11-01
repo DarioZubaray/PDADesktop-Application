@@ -20,7 +20,10 @@ namespace PDADesktop.Classes.Utils
             SincronizacionDtoDataGrid dto = MyAppProperties.SelectedSync;
             int generalState = dto.idEstadoGeneral;
             long synchronizationId = dto.idSincronizacion;
+            MyAppProperties.buttonState_syncId = synchronizationId.ToString();
             string batchId = dto.lote;
+            MyAppProperties.buttonState_batchId = batchId;
+            MyAppProperties.storeId = MyAppProperties.storeId;
             int activityId = dto.idActividad;
             int actionId = dto.idAccion;
             int genesixState = dto.idEstadoGenesix;

@@ -119,7 +119,6 @@ namespace PDADesktop.Classes.Utils
                     response.Close();
             }
         }
-
         #endregion
 
         public static void ShowErrorMessage(Exception e)
@@ -536,6 +535,16 @@ namespace PDADesktop.Classes.Utils
             DownloadFileFromServer(urlPath + queryParams, slashFilenameAndExtension, destinyExtended);
 
             return destinyExtended + slashFilenameAndExtension;
+        }
+
+        internal static ListView GetAdjustmentsByBatchId(string batchId, string rows = "10", string page = "1")
+        {
+            string urlGetAdjustmentsByBatchId = ConfigurationManager.AppSettings.Get(Constants.API_GET_ADJUSTMENTS_BY_BATCH_ID);
+            Int32 nd = DateTimeUtils.GetUnixTimeFromUTCNow();
+            string queryParams = "?idLote="+ batchId + "&_search=false"
+                +"&nd="+nd+"&rows="+rows+"&page="+page+"&sidx=idAjuste&sord=asc";
+            string responseGetAdjustmentsByBatchId = SendHttpGetRequest(urlGetAdjustmentsByBatchId + queryParams);
+            return JsonUtils.GetListView(responseGetAdjustmentsByBatchId);
         }
     }
 }

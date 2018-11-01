@@ -105,9 +105,7 @@ namespace PDADesktop.Classes.Utils
 
         public static string GetTempFileName(string pattern)
         {
-            DateTime unixTime = new DateTime(1970, 1, 1);
-            DateTime datetimeNow = DateTime.UtcNow;
-            Int32 unixTimestamp = (Int32)(datetimeNow.Subtract(unixTime)).TotalSeconds;
+            Int32 unixTimestamp = DateTimeUtils.GetUnixTimeFromUTCNow();
             return String.Format(pattern, unixTimestamp);
         }
     }

@@ -2,10 +2,12 @@
 using PDADesktop.Classes;
 using PDADesktop.Classes.Utils;
 using PDADesktop.Model;
+using PDADesktop.Model.Dto;
 using PDADesktop.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -17,16 +19,18 @@ namespace PDADesktop.ViewModel
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Attributes
-        private ObservableCollection<Ajustes> adjustments;
-        public ObservableCollection<Ajustes> Adjustments
+        private readonly BackgroundWorker loadAdjustmentInformed = new BackgroundWorker();
+
+        private ObservableCollection<Ajustes> adjustmentsInformed;
+        public ObservableCollection<Ajustes> AdjustmentsInformed
         {
             get
             {
-                return adjustments;
+                return adjustmentsInformed;
             }
             set
             {
-                adjustments = value;
+                adjustmentsInformed = value;
                 OnPropertyChanged();
             }
         }
@@ -41,130 +45,65 @@ namespace PDADesktop.ViewModel
             set
             {
                 selectedAdjustment = value;
-                if (selectedAdjustment != null)
-                {
-                    AdjustmentTypeSelected = selectedAdjustment.motivo;
-                    Textbox_amountValue = selectedAdjustment.cantidad.ToString();
-                    AdjustmentEnableEdit = true;
-                }
-                else
-                {
-                    AdjustmentEnableEdit = false;
-                }
-                OnPropertyChanged();
-            }
-        }
-
-        private bool adjustmentEnableEdit;
-        public bool AdjustmentEnableEdit
-        {
-            get
-            {
-                return adjustmentEnableEdit;
-            }
-            set
-            {
-                adjustmentEnableEdit = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private List<string> adjustmentsTypes;
-        public List<string> AdjustmentsTypes
-        {
-            get
-            {
-                return adjustmentsTypes;
-            }
-            set
-            {
-                adjustmentsTypes = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string adjustmentTypeSelected;
-        public string AdjustmentTypeSelected
-        {
-            get
-            {
-                return adjustmentTypeSelected;
-            }
-            set
-            {
-                adjustmentTypeSelected = value;
-                SelectedAdjustment.motivo = adjustmentTypeSelected;
-                OnPropertyChanged();
-            }
-        }
-
-        private string textbox_amountValue;
-        public string Textbox_amountValue
-        {
-            get
-            {
-                return textbox_amountValue;
-            }
-            set
-            {
-                textbox_amountValue = value;
-                SelectedAdjustment.cantidad = Convert.ToInt64(textbox_amountValue);
                 OnPropertyChanged();
             }
         }
 
         #endregion
 
+        #region Loading panel
+        private bool _panelLoading;
+        public bool PanelLoading
+        {
+            get
+            {
+                return _panelLoading;
+            }
+            set
+            {
+                _panelLoading = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _panelMainMessage;
+        public string PanelMainMessage
+        {
+            get
+            {
+                return _panelMainMessage;
+            }
+            set
+            {
+                _panelMainMessage = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _panelSubMessage;
+        public string PanelSubMessage
+        {
+            get
+            {
+                return _panelSubMessage;
+            }
+            set
+            {
+                _panelSubMessage = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
         #region Commands
-        private ICommand deleteAdjustmentCommand;
-        public ICommand DeleteAdjustmentCommand
+        private ICommand returnCommand;
+        public ICommand ReturnCommand
         {
             get
             {
-                return deleteAdjustmentCommand;
+                return returnCommand;
             }
             set
             {
-                deleteAdjustmentCommand = value;
-            }
-        }
-
-        private ICommand updateAdjustmentCommand;
-        public ICommand UpdateAdjustmentCommand
-        {
-            get
-            {
-                return updateAdjustmentCommand;
-            }
-            set
-            {
-                updateAdjustmentCommand = value;
-            }
-        }
-
-        private ICommand discardChangesCommand;
-        public ICommand DiscardChangesCommand
-        {
-            get
-            {
-                return discardChangesCommand;
-            }
-            set
-            {
-                discardChangesCommand = value;
-            }
-        }
-
-        private ICommand saveChangesCommand;
-        public ICommand SaveChangesCommand
-        {
-            get
-            {
-                return saveChangesCommand;
-            }
-            set
-            {
-                saveChangesCommand = value;
+                returnCommand = value;
             }
         }
         #endregion
@@ -173,130 +112,64 @@ namespace PDADesktop.ViewModel
         public VerAjustesInformadosViewModel()
         {
             BannerApp.PrintSeeAdjustmentsInformed();
+            DisplayWaitingPanel("Cargando...");
             var dispatcher = App.Instance.MainWindow.Dispatcher;
-            bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
-            if (deviceStatus)
-            {
-                string deviceReadAdjustmentDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
-                if (deviceReadAdjustmentDataFile != null)
-                {
-                    Adjustments = JsonUtils.GetObservableCollectionAjustes(deviceReadAdjustmentDataFile);
 
-                    AdjustmentsTypes = HttpWebClientUtil.GetAdjustmentsTypes();
-                    logger.Debug(AdjustmentsTypes.ToString());
-                }
-                else
-                {
-                    dispatcher.BeginInvoke(
-                        new Action(() => UserNotify("No se encotraron ajustes!")),
-                        DispatcherPriority.ApplicationIdle);
-                }
-            }
-            else
-            {
-                dispatcher.BeginInvoke(
-                    new Action(() => UserNotify("No se detecta conexion con la PDA")),
-                    DispatcherPriority.ApplicationIdle);
-            }
+            loadAdjustmentInformed.DoWork += loadAdjustmentInformed_DoWork;
+            loadAdjustmentInformed.RunWorkerCompleted += loadAdjustmentInformed_RunWorkerCompleted;
+            ReturnCommand = new RelayCommand(ReturnActivitycenterMethod);
 
-            AdjustmentEnableEdit = false;
-
-            DeleteAdjustmentCommand = new RelayCommand(DeleteAdjustmentMethod);
-            UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentMethod);
-            DiscardChangesCommand = new RelayCommand(DiscardChangesMethod);
-            SaveChangesCommand = new RelayCommand(SaveChangesMethod);
+            loadAdjustmentInformed.RunWorkerAsync();
         }
         #endregion
 
-        #region Methods
-        public void UserNotify(string mensaje)
+        #region Worker
+        private void loadAdjustmentInformed_DoWork(object sender, DoWorkEventArgs e)
         {
-            string message = mensaje;
-            string caption = "Aviso!";
-            MessageBoxButton messageBoxButton = MessageBoxButton.OK;
-            MessageBoxImage messageBoxImage = MessageBoxImage.Error;
-            MessageBoxResult result = MessageBox.Show(message, caption, messageBoxButton, messageBoxImage);
-            if (result == MessageBoxResult.OK)
-            {
-                logger.Debug("Informando al usuario: " + mensaje);
-            }
+            logger.Debug("Load adjustments informed => Do Work");
+            string batchId = MyAppProperties.buttonState_batchId;
+            ListView responseGetAdjustments = HttpWebClientUtil.GetAdjustmentsByBatchId(batchId);
+
+            var dispatcher = App.Instance.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() =>
+           {
+               AdjustmentsInformed = ListViewUtils.ParserAjustesInformadosDataGrid(responseGetAdjustments);
+           }));
+        }
+
+        private void loadAdjustmentInformed_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("Load adjustments informed => Run Worker Completed");
+            var dispatcher = App.Instance.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() =>
+          {
+              HidingWaitingPanel();
+          }));
         }
         #endregion
 
         #region RelayCommand Methods
-        public void DeleteAdjustmentMethod(object obj)
-        {
-            logger.Debug("EliminarAjusteButton");
-            Ajustes parametro = obj as Ajustes;
-            if (parametro != null)
-                logger.Debug("Parametro: " + parametro.ToString());
-            if (SelectedAdjustment != null)
-                logger.Debug("AjusteSeleccionado : " + SelectedAdjustment.ToString());
-
-            Adjustments.Remove(SelectedAdjustment);
-            SelectedAdjustment = null;
-        }
-
-        public void UpdateAdjustmentMethod(object obj)
-        {
-            logger.Debug("ActualizarAjusteButton");
-            SelectedAdjustment = null;
-        }
-
-        public void DiscardChangesMethod(object obj)
-        {
-            logger.Debug("DescartarCambiosButton");
-            string pregunta = "¿Desea descartar los cambios?";
-            if (PreguntarAlUsuario(pregunta))
-            {
-                RedirectToActivityCenterView();
-            }
-            else
-            {
-                // revertir el estado del archivo?
-                // cual es esta de la lista?
-            }
-
-        }
-        public void SaveChangesMethod(object obj)
-        {
-            logger.Debug("GuardarCambiosButton");
-            string newAdjustmentContent = TextUtils.ParseCollectionToAdjustmentDAT(Adjustments);
-            logger.Debug("Nuevos ajustes: " + newAdjustmentContent);
-
-            if (App.Instance.deviceHandler.OverWriteAdjustmentMade(newAdjustmentContent))
-            {
-                RedirectToActivityCenterView();
-            }
-            else
-            {
-                UserNotify("ERROR");
-            }
-        }
-
-        private void RedirectToActivityCenterView()
+        public void ReturnActivitycenterMethod(object obj)
         {
             MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
         }
 
-        public bool PreguntarAlUsuario(string pregunta)
+        #endregion
+
+        #region Panel Methods
+        public void DisplayWaitingPanel(string mainMessage, string subMessage = "")
         {
-            string message = pregunta;
-            string caption = "Aviso!";
-            MessageBoxButton messageBoxButton = MessageBoxButton.OKCancel;
-            MessageBoxImage messageBoxImage = MessageBoxImage.Question;
-            MessageBoxResult result = MessageBox.Show(message, caption, messageBoxButton, messageBoxImage);
-            logger.Debug("Preguntando al usuario: " + pregunta);
-            if (result == MessageBoxResult.OK)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            PanelLoading = true;
+            PanelMainMessage = mainMessage;
+            PanelSubMessage = subMessage;
+        }
+        public void HidingWaitingPanel()
+        {
+            PanelLoading = false;
+            PanelMainMessage = "";
+            PanelSubMessage = "";
         }
         #endregion
     }

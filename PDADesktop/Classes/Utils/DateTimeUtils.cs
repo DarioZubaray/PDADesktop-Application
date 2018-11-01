@@ -30,5 +30,13 @@ namespace PDADesktop.Classes.Utils
             }
             return isGreather;
         }
+
+        public static Int32 GetUnixTimeFromUTCNow()
+        {
+            DateTime unixTime = new DateTime(1970, 1, 1);
+            DateTime datetimeNow = DateTime.UtcNow;
+            Int32 unixTimestamp = (Int32)(datetimeNow.Subtract(unixTime)).TotalSeconds;
+            return unixTimestamp;
+        }
     }
 }

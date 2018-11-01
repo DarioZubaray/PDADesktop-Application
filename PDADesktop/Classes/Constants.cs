@@ -16,8 +16,8 @@
         public const string CENTRO_ACTIVIDADES_VIEW = "View/CentroActividadesView.xaml";
         public const string IMPRIMIR_RECEPCION_VIEW = "View/ImprimirRecepcionView.xaml";
         public const string VER_AJUSTES_REALIZADOS_VIEW = "View/VerAjustesView.xaml";
-        public const string VER_AJUSTES_INFORMADOS_VIEW = "View/VerAjustesInformadosView.xaml";
         public const string VER_AJUSTES_MODIFICAR_VIEW = "View/VerAjustesModificarView.xaml";
+        public const string VER_AJUSTES_INFORMADOS_VIEW = "View/VerAjustesInformadosView.xaml";
         public const string VER_DETALLES_RECEPCION_VIEW = "View/VerDetallesRecepcionView.xaml";
         public const string LOGIN_VIEW = "View/LoginView.xaml";
 
@@ -48,6 +48,7 @@
         public const string API_MODIFICAR_DESCARTAR_RECEPCIONES = "API_MODIFICAR_DESCARTAR_RECEPCIONES";
         public const string API_IMPRIMIR_CARGAR_GRILLA_RECEPCIONES = "API_IMPRIMIR_CARGAR_GRILLA_RECEPCIONES";
         public const string API_INFORMES_REMITO_PDF = "API_INFORMES_REMITO_PDF";
+        public const string API_GET_ADJUSTMENTS_BY_BATCH_ID = "API_GET_ADJUSTMENTS_BY_BATCH_ID";
 
         public const string PUBLIC_PATH_DATA = "PUBLIC_PATH_DATA";
         public const string PUBLIC_PATH_LOOKUP = "PUBLIC_PATH_LOOKUP";

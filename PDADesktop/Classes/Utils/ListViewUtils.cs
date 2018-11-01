@@ -29,6 +29,22 @@ namespace PDADesktop.Classes.Utils
             return ajustes;
         }
 
+        public static ObservableCollection<Ajustes> ParserAjustesInformadosDataGrid(ListView ajustesListView)
+        {
+            ObservableCollection<Ajustes> ajustes = new ObservableCollection<Ajustes>();
+            Row[] rows = ajustesListView.rows;
+            foreach (Row row in rows)
+            {
+                Ajustes ajuste = new Ajustes();
+                ajuste.ean = Convert.ToInt64(row.cell[0]);
+                ajuste.fechaAjuste = row.cell[1];
+                ajuste.motivo = row.cell[2];
+                ajuste.cantidad = Convert.ToInt64(row.cell[3]);
+                ajustes.Add(ajuste);
+            }
+            return ajustes;
+        }
+
         public static ObservableCollection<Recepcion> ParserRecepcionDataGrid(ListView recepcionListView)
         {
             ObservableCollection<Recepcion> recepciones = new ObservableCollection<Recepcion>();
