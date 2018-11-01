@@ -14,8 +14,8 @@
         public const string URL_APPLICATION_UPDATE = "URL_UPDATE";
 
         public const string CENTRO_ACTIVIDADES_VIEW = "View/CentroActividadesView.xaml";
-        public const string IMPRIMIR_RECEPCION_VIEW = "View/ImprimirRecepcionView.xaml";
-        public const string VER_AJUSTES_REALIZADOS_VIEW = "View/VerAjustesView.xaml";
+        public const string VER_IMPRIMIR_RECEPCION_VIEW = "View/ImprimirRecepcionView.xaml";
+        public const string VER_AJUSTES_REALIZADOS_VIEW = "View/VerAjustesRealizadosView.xaml";
         public const string VER_AJUSTES_MODIFICAR_VIEW = "View/VerAjustesModificarView.xaml";
         public const string VER_AJUSTES_INFORMADOS_VIEW = "View/VerAjustesInformadosView.xaml";
         public const string VER_DETALLES_RECEPCION_VIEW = "View/VerDetallesRecepcionView.xaml";
@@ -105,11 +105,11 @@
 
         public const int EGRAL_OK = 2;
         public const int EGRAL_REINTENTAR_INFORMAR = 3;
-        public const int EGRAL_VER_DETALLES = 4;
-        public const int EGRAL_MODIFICAR_AJUSTE = 6;
-        public const int EGRAL_IMPRIMIR_RECEPCION = 7;
-        public const int EGRAL_REINTENTAR_DESCARGA = 10;
-        public const int EGRAL_REINTENTAR3 = 11;
+        public const int EGRAL_VER_DETALLES_RECEPCIONES = 4;
+        public const int EGRAL_MODIFICAR_AJUSTES = 6;
+        public const int EGRAL_IMPRIMIR_RECEPCIONES = 7;
+        public const int EGRAL_REINTENTAR_DESCARGAR = 10;
+        public const int EGRAL_REINTENTAR_DESCARGAR_RECEPCIONES = 11;
 
         public const int EPDA_RECIBIDO = 3;
         public const int EGX_ENVIADO = 2;
