@@ -34,19 +34,19 @@ namespace PDADesktop.Classes.Utils
                 case Constants.EGRAL_REINTENTAR_INFORMAR:
                     RetryInformToGenesix(synchronizationId, activityId);
                     break;
-                case Constants.EGRAL_REINTENTAR_DESCARGA:
+                case Constants.EGRAL_REINTENTAR_DESCARGAR:
                     RetryDownloadFromGenesix(synchronizationId, actionId, activityId);
                     break;
-                case Constants.EGRAL_REINTENTAR3:
+                case Constants.EGRAL_REINTENTAR_DESCARGAR_RECEPCIONES:
                     RetryDownloadReceptionsFromGenesix(synchronizationId, batchId);
                     break;
-                case Constants.EGRAL_MODIFICAR_AJUSTE:
+                case Constants.EGRAL_MODIFICAR_AJUSTES:
                     ModifyAdjusments(synchronizationId, batchId);
                     break;
-                case Constants.EGRAL_VER_DETALLES:
+                case Constants.EGRAL_VER_DETALLES_RECEPCIONES:
                     seeReceptionsDetails(synchronizationId, batchId);
                     break;
-                case Constants.EGRAL_IMPRIMIR_RECEPCION:
+                case Constants.EGRAL_IMPRIMIR_RECEPCIONES:
                     PrintReceptions(synchronizationId, batchId);
                     break;
                 case Constants.EGRAL_OK:
@@ -80,7 +80,7 @@ namespace PDADesktop.Classes.Utils
             // Cambia estado de sincro a OK y refresca
             SynchronizationStateUtil.SetSentGenesixState(syncId);
             //lamar a la vista 'ImprimirRecepcionView'
-            Uri uriPrintReceptions = new Uri(Constants.IMPRIMIR_RECEPCION_VIEW, UriKind.Relative);
+            Uri uriPrintReceptions = new Uri(Constants.VER_IMPRIMIR_RECEPCION_VIEW, UriKind.Relative);
             var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
