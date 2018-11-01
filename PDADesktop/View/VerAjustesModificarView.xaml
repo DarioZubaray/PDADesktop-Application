@@ -43,7 +43,7 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="5*" />
+            <RowDefinition Height="8*" />
             <RowDefinition Height="3*" />
         </Grid.RowDefinitions>
         <DataGrid x:Name="dataGrid_verAjustesRealizados" Grid.Row="0"
@@ -54,7 +54,7 @@
                   AutoGenerateColumns="False" RowHeight="25" FontSize="15"
                   SelectionUnit="FullRow" IsReadOnly="True"
                   ItemsSource="{Binding Adjustments}"
-                  SelectedItem="{Binding Path=SelectedAdjustment, Mode=TwoWay}" Margin="30" Width="900">
+                  SelectedItem="{Binding Path=SelectedAdjustment, Mode=TwoWay}" Margin="10,25,10,10" Width="900">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
@@ -81,12 +81,6 @@
                                     Header="Fecha" CanUserResize="False" Width="300"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
-                <!--
-                <DataGridTextColumn Binding="{Binding motivo}" ClipboardContentBinding="{x:Null}"
-                                    Header="Motivo" CanUserResize="False" Width="180"
-                                    HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                    CellStyle="{StaticResource DataGridContentCellCentering}"/>
-                -->
                 <DataGridTextColumn Binding="{Binding cantidad}" ClipboardContentBinding="{x:Null}"
                                     Header="Cantidad Ajustada" CanUserResize="False" Width="300"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
@@ -105,10 +99,6 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <Label Content="Ean" Grid.Column="0" Grid.Row="0" Margin="10"/>
@@ -117,30 +107,6 @@
                     <Binding Path="SelectedAdjustment.ean" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
                 </TextBox>
 
-                <!--
-                <Label Content="Motivo" Grid.Column="0" Grid.Row="1" Margin="10"/>
-                <Border Grid.Column="1" Grid.Row="1" Margin="15">
-                    <ComboBox materialDesign:HintAssist.Hint="Tipos de Ajustes"
-                          MinWidth="72" 
-                          VerticalAlignment="Bottom"
-                          ItemsSource="{Binding AdjustmentsTypes}"
-                          IsEnabled="{Binding Path=AdjustmentEnableEdit, Mode=TwoWay}"
-                          SelectedValue="{Binding SelectedAdjustment.motivo}">
-                        <ComboBox.SelectedItem>
-                            <Binding Path="AdjustmentTypeSelected" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-                                <Binding.ValidationRules>
-                                    <rules:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:rules="clr-namespace:PDADesktop.Classes" />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </ComboBox.SelectedItem>
-                        <ComboBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel />
-                            </ItemsPanelTemplate>
-                        </ComboBox.ItemsPanel>
-                    </ComboBox>
-                </Border>
-                -->
                 <Label Content="Cantidad" Grid.Column="0" Grid.Row="1" Margin="10"/>
                 <Border Grid.Column="1" Grid.Row="1" Margin="15">
                     <TextBox IsEnabled="{Binding AdjustmentEnableEdit, Mode=TwoWay}">
@@ -166,7 +132,7 @@
                 </Border>
             </Grid>
             <Separator></Separator>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="155" Margin="324,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="80" Margin="324,0">
                 <Border Margin="10">
                     <Button x:Name="button_descartar" Style="{StaticResource MaterialDesignFlatButton}"
                             Command="{Binding DiscardChangesCommand}" Content="Descartar"/>
@@ -176,6 +142,7 @@
                 </Border>
             </StackPanel>
         </StackPanel>
+        
         <Grid VerticalAlignment="Center">
             <ctr:LoadingPanel x:Name="loadingPanel"
                               IsLoading="{Binding PanelLoading}"

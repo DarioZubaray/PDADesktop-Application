@@ -55,7 +55,7 @@
                   AutoGenerateColumns="False" RowHeight="25" FontSize="15"
                   SelectionUnit="FullRow" IsReadOnly="True"
                   ItemsSource="{Binding Receptions}"
-                  SelectedItem="{Binding Path=SelectedReception, Mode=TwoWay}" Margin="30" Width="900">
+                  SelectedItem="{Binding Path=SelectedReception, Mode=TwoWay}" Margin="10,25,10,10" Width="900">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
