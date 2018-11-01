@@ -132,15 +132,7 @@
                       AlternatingRowBackground="Gainsboro" AlternationCount="2"
                       ItemsSource="{Binding sincronizaciones}" Grid.ColumnSpan="3"
                       SelectedItem="{Binding Path=SelectedSynchronization, Mode=TwoWay}">
-                <DataGrid.RowStyle>
-                    <Style TargetType="DataGridRow">
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FFBF00" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.RowStyle>
+
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell">
                         <Setter Property="BorderThickness" Value="0"/>
@@ -153,7 +145,7 @@
                     <DataGridTextColumn Binding="{Binding lote}" ClipboardContentBinding="{x:Null}" Header="Lote" CanUserResize="False" Width="Auto"/>
                     <DataGridTextColumn Binding="{Binding accion}" ClipboardContentBinding="{x:Null}" Header="Accion" CanUserResize="False" Width="Auto"/>
                     <DataGridTextColumn Binding="{Binding fecha}" ClipboardContentBinding="{x:Null}" Header="Fecha" CanUserResize="False" Width="Auto"/>
-                    <DataGridTextColumn Binding="{Binding actividad}" ClipboardContentBinding="{x:Null}" Header="Actividad" CanUserResize="False" Width="Auto"/>
+                    <DataGridTextColumn Binding="{Binding actividad}" ClipboardContentBinding="{x:Null}" Header="Actividad" CanUserResize="False" Width="*"/>
                     <DataGridTemplateColumn Header="Genesix" ClipboardContentBinding="{x:Null}" CanUserResize="False" Width="Auto">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
