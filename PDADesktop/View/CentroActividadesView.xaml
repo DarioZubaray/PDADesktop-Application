@@ -28,6 +28,29 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
+    <UserControl.Resources>
+        <Style x:Key="DataGridContentCellCentering" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="DataGridColumnHeaderCentering" TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -105,10 +128,27 @@
                       BorderThickness="1" BorderBrush="Gainsboro"
                       HorizontalAlignment="Center" VerticalAlignment="Top"
                       Height="Auto" Width="920"
-                      AutoGenerateColumns="False"
+                      AutoGenerateColumns="False" 
                       AlternatingRowBackground="Gainsboro" AlternationCount="2"
                       ItemsSource="{Binding sincronizaciones}" Grid.ColumnSpan="3"
                       SelectedItem="{Binding Path=SelectedSynchronization, Mode=TwoWay}">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFBF00" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <!-- Update from comments. Remove the focus indication for the selected cell -->
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                    </Style>
+                </DataGrid.CellStyle>
+
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding lote}" ClipboardContentBinding="{x:Null}" Header="Lote" CanUserResize="False" Width="Auto"/>
                     <DataGridTextColumn Binding="{Binding accion}" ClipboardContentBinding="{x:Null}" Header="Accion" CanUserResize="False" Width="Auto"/>
