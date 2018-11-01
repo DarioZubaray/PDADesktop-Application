@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using MahApps.Metro.Controls.Dialogs;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace PDADesktop.ViewModel
 {
@@ -117,36 +118,16 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
+        private readonly BackgroundWorker loadVerAjustesRealizadosWorker = new BackgroundWorker();
+
         #region Constructor
         public VerAjustesRealizadosViewModel(IDialogCoordinator instance)
         {
             BannerApp.PrintSeeAdjustmentsRealized();
             dialogCoordinator = instance;
-            var dispatcher = App.Instance.MainWindow.Dispatcher;
-            bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
-            if (deviceStatus)
-            {
-                string deviceReadAdjustmentDataFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
-                if(deviceReadAdjustmentDataFile != null)
-                {
-                    Adjustments = JsonUtils.GetObservableCollectionAjustes(deviceReadAdjustmentDataFile);
 
-                    AdjustmentsTypes = HttpWebClientUtil.GetAdjustmentsTypes();
-                    logger.Debug(AdjustmentsTypes.ToString());
-                }
-                else
-                {
-                    dispatcher.BeginInvoke(
-                        new Action(() => UserNotify("No se encotraron ajustes!")),
-                        DispatcherPriority.ApplicationIdle);
-                }
-            }
-            else
-            {
-                dispatcher.BeginInvoke(
-                    new Action(() => UserNotify("No se detecta conexion con la PDA")),
-                    DispatcherPriority.ApplicationIdle);
-            }
+            loadVerAjustesRealizadosWorker.DoWork += loadVerAjustesRealizadosWorker_DoWork;
+            loadVerAjustesRealizadosWorker.RunWorkerCompleted += loadVerAjustesRealizadosWorker_RunWorkerCompleted;
 
             AdjustmentEnableEdit = false;
 
@@ -154,6 +135,46 @@ namespace PDADesktop.ViewModel
             UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentMethod);
             DiscardChangesCommand = new RelayCommand(DiscardChangesMethod);
             SaveChangesCommand = new RelayCommand(SaveChangesMethod);
+
+            loadVerAjustesRealizadosWorker.RunWorkerAsync();
+        }
+        #endregion
+
+        #region Workers
+        private async void loadVerAjustesRealizadosWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Debug("Load ver ajustes realizados => Do Work");
+            var deviceHandler = App.Instance.deviceHandler;
+            bool deviceStatus = deviceHandler.IsDeviceConnected();
+            if (deviceStatus)
+            {
+                string deviceReadAdjustmentDataFile = deviceHandler.ReadAdjustmentsDataFile();
+                if (deviceReadAdjustmentDataFile != null)
+                {
+                    UpdateAjustesGrid(deviceReadAdjustmentDataFile);
+                }
+                else
+                {
+                    await NotifyToUserMahappDialog("No se encotraron ajustes!");
+                }
+            }
+            else
+            {
+                await NotifyToUserMahappDialog("No se detecta conexion con la PDA");
+            }
+        }
+
+        private void UpdateAjustesGrid(string deviceReadAdjustmentDataFile)
+        {
+            Adjustments = JsonUtils.GetObservableCollectionAjustes(deviceReadAdjustmentDataFile);
+
+            AdjustmentsTypes = HttpWebClientUtil.GetAdjustmentsTypes();
+            logger.Debug(AdjustmentsTypes.ToString());
+        }
+
+        private void loadVerAjustesRealizadosWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("Load ver ajustes reliazados => Run Worker Completed");
         }
         #endregion
 
@@ -229,22 +250,18 @@ namespace PDADesktop.ViewModel
             logger.Debug("ActualizarAjusteButton");
             SelectedAdjustment = null;
         }
-        public void DiscardChangesMethod(object obj)
+        public async void DiscardChangesMethod(object obj)
         {
             logger.Debug("DescartarCambiosButton");
             string pregunta = "¿Desea descartar los cambios?";
-            if (PreguntarAlUsuario(pregunta))
+            bool discardChanges = await AskToUserMahappDialog(pregunta);
+            if (discardChanges)
             {
                 RedirectToActivityCenterView();
             }
-            else
-            {
-                // revertir el estado del archivo?
-                // cual es esta de la lista?
-            }
-
         }
-        public void SaveChangesMethod(object obj)
+
+        public async void SaveChangesMethod(object obj)
         {
             logger.Debug("GuardarCambiosButton");
             string newAdjustmentContent = TextUtils.ParseCollectionToAdjustmentDAT(Adjustments);
@@ -256,7 +273,7 @@ namespace PDADesktop.ViewModel
             }
             else
             {
-                UserNotify("ERROR");
+                await NotifyToUserMahappDialog("No se ha podido sobreescribir el ajuste deseado.");
             }
         }
 
@@ -278,35 +295,14 @@ namespace PDADesktop.ViewModel
             return resultAffirmative;
         }
 
-        public void UserNotify(string mensaje)
+        private async Task<bool> NotifyToUserMahappDialog(string message, string title = "Aviso")
         {
-            string message = mensaje;
-            string caption = "Aviso!";
-            MessageBoxButton messageBoxButton = MessageBoxButton.OK;
-            MessageBoxImage messageBoxImage = MessageBoxImage.Error;
-            MessageBoxResult result = MessageBox.Show(message, caption, messageBoxButton, messageBoxImage);
-            if(result == MessageBoxResult.OK)
-            {
-                logger.Debug("Informando al usuario: " + mensaje);
-            }
-        }
-
-        public bool PreguntarAlUsuario(string pregunta)
-        {
-            string message = pregunta;
-            string caption = "Aviso!";
-            MessageBoxButton messageBoxButton = MessageBoxButton.OKCancel;
-            MessageBoxImage messageBoxImage = MessageBoxImage.Question;
-            MessageBoxResult result = MessageBox.Show(message, caption, messageBoxButton, messageBoxImage);
-            logger.Debug("Preguntando al usuario: " + pregunta);
-            if (result == MessageBoxResult.OK)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            MetroDialogSettings settings = new MetroDialogSettings();
+            settings.AffirmativeButtonText = "Aceptar";
+            Task<MessageDialogResult> showMessageAsync = dialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative, settings);
+            MessageDialogResult messsageDialogResult = await showMessageAsync;
+            bool resultAffirmative = messsageDialogResult.Equals(MessageDialogResult.Affirmative);
+            return resultAffirmative;
         }
         #endregion
     }
