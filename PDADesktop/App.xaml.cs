@@ -54,8 +54,7 @@ namespace PDADesktop
              * 2- checkear conexion PDAExpress server
              * 3- checkear conexion PDAMoto
              * 4- verificar datos guardados
-             * 5- iniciar ventana
-             * 6- Version PDAMoto
+             * 5- iniciar ventana (Login - centroActividades)
             */
 
             logger.Debug("Verificando en segundo plano actualizaciones con squirrel.window");

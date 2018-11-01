@@ -30,8 +30,9 @@ namespace PDADesktop.ViewModel
                 remembermeCheck = value;
             }
         }
+        #endregion
 
-        // Atributos del Spiner
+        #region Panel Loading Attributes
         private bool _panelLoading;
         public bool PanelLoading
         {
@@ -151,6 +152,7 @@ namespace PDADesktop.ViewModel
                 panelCloseCommand = value;
             }
         }
+
         private ICommand flipLoginCommand;
         public ICommand FlipLoginCommand
         {
@@ -220,7 +222,6 @@ namespace PDADesktop.ViewModel
             }
             else
             {
-                //marcar como usuario y/o contraseña incorrectos
                 logger.Info("usuario y/o contraseña incorrectos");
                 var dispatcher = Application.Current.Dispatcher;
                 dispatcher.BeginInvoke(new Action(() =>
@@ -238,7 +239,6 @@ namespace PDADesktop.ViewModel
 
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            //update ui once worker complete his work
             logger.Debug("login Worker ->runWorkedCompleted");
             var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>

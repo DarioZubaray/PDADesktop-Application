@@ -514,9 +514,6 @@ namespace PDADesktop.ViewModel
             if(isConneted)
             {
                 PanelMainMessage = "Espere por favor...";
-                currentMessage = "Leyendo Ajustes realizados...";
-                NotifyCurrentMessage(currentMessage);
-                CreateBadgeSeeAdjustments();
 
                 currentMessage = "Leyendo la configuración del dispositivo...";
                 NotifyCurrentMessage(currentMessage);
@@ -545,6 +542,10 @@ namespace PDADesktop.ViewModel
                 currentMessage = "Actualizando archivo principal de configuración del dispositivo ...";
                 NotifyCurrentMessage(currentMessage);
                 UpdateDeviceMainFile(storeId);
+
+                currentMessage = "Leyendo Ajustes realizados...";
+                NotifyCurrentMessage(currentMessage);
+                CreateBadgeSeeAdjustments();
             }
             else
             {
@@ -553,6 +554,7 @@ namespace PDADesktop.ViewModel
                 ShowPanelNoConnection();
             }
             MyAppProperties.loadOnce = false;
+            DeleteTempFiles();
             NotifyCurrentMessage("Todo listo!");
         }
 
@@ -762,6 +764,11 @@ namespace PDADesktop.ViewModel
             string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_LOOKUP);
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             deviceHandler.CopyPublicLookUpFileToDevice(destinationDirectory, filenameAndExtension);
+        }
+
+        private void DeleteTempFiles()
+        {
+            FileUtils.DeleteTempFiles();
         }
 
         private void loadOnceCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

@@ -108,5 +108,19 @@ namespace PDADesktop.Classes.Utils
             Int32 unixTimestamp = DateTimeUtils.GetUnixTimeFromUTCNow();
             return String.Format(pattern, unixTimestamp);
         }
+
+        internal static void DeleteTempFiles()
+        {
+            string tempFilePath = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_TEMP);
+            string tempFilePathExtended = TextUtils.ExpandEnviromentVariable(tempFilePath);
+            try
+            {
+                Directory.Delete(@tempFilePathExtended, true);
+            }
+            catch (IOException ex)
+            {
+               logger.Error(ex.Message);
+            }
+        }
     }
 }
