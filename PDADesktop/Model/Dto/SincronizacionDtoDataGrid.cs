@@ -77,11 +77,56 @@ namespace PDADesktop.Model.Dto
                 sincroDTOGrid.idEstadoGenesix = Convert.ToInt32(s.egx.idEstado);
                 sincroDTOGrid.pda = s.epda.descripcion;
                 sincroDTOGrid.idEstadoPda = Convert.ToInt32(s.epda.idEstado);
-                sincroDTOGrid.estado = s.egral.descripcion;
+                sincroDTOGrid.estado = GetButtonStateName(s, s.egral.descripcion);
                 sincroDTOGrid.idEstadoGeneral = Convert.ToInt32(s.egral.idEstado);
                 dataGridRefresh.Add(sincroDTOGrid);
             }
             return dataGridRefresh;
+        }
+
+        private static string GetButtonStateName(Sincronizacion sync, string defaultName)
+        {
+            string buttonStateName = defaultName;
+            long stateGeneralId = sync.egral.idEstado;
+            switch (stateGeneralId)
+            {
+                case Constants.EGRAL_REINTENTAR_INFORMAR:
+                    buttonStateName = "Informar";
+                    break;
+                case Constants.EGRAL_REINTENTAR_DESCARGAR:
+                    buttonStateName = "Descargar";
+                    break;
+                case Constants.EGRAL_REINTENTAR_DESCARGAR_RECEPCIONES:
+                    buttonStateName = "Descargar Recep";
+                    break;
+                case Constants.EGRAL_MODIFICAR_AJUSTES:
+                    buttonStateName = "Modificar Ajustes";
+                    break;
+                case Constants.EGRAL_VER_DETALLES_RECEPCIONES:
+                    buttonStateName = "Ver Detalles";
+                    break;
+                case Constants.EGRAL_IMPRIMIR_RECEPCIONES:
+                    buttonStateName = "Imprimir";
+                    break;
+                case Constants.EGRAL_OK:
+                    if(Constants.AJUSTES_CODE.Equals(sync.actividad.idActividad))
+                    {
+                        int epdaReceived = Convert.ToInt32(sync.epda.idEstado);
+                        int egx = Convert.ToInt32(sync.egx.idEstado);
+                        if(Constants.EPDA_RECIBIDO.Equals(epdaReceived) && 
+                            Constants.EGX_ENVIADO.Equals(egx))
+                        {
+                            buttonStateName = "Ver Ajustes";
+                        }
+                    }
+                    break;
+                default:
+                    buttonStateName = defaultName;
+                    break;
+            }
+
+
+            return buttonStateName;
         }
 
     }
