@@ -220,10 +220,14 @@
     <Compile Include="Model\Recepcion.cs" />
     <Compile Include="Model\VersionArchivo.cs" />
     <Compile Include="Model\VersionDispositivo.cs" />
+    <Compile Include="ViewModel\BuscarLotesViewModel.cs" />
     <Compile Include="ViewModel\ImprimirRecepcionViewModel.cs" />
     <Compile Include="ViewModel\VerAjustesInformadosViewModel.cs" />
     <Compile Include="ViewModel\VerAjustesModificarViewModel.cs" />
     <Compile Include="ViewModel\VerDetallesRecepcionViewModel.cs" />
+    <Compile Include="View\BuscarLotesView.xaml.cs">
+      <DependentUpon>BuscarLotesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Controls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
@@ -256,6 +260,10 @@
     <Compile Include="View\VerDetallesRecepcionView.xaml.cs">
       <DependentUpon>VerDetallesRecepcionView.xaml</DependentUpon>
     </Compile>
+    <Page Include="View\BuscarLotesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Controls\CircularProgressBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

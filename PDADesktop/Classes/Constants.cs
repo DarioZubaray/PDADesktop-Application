@@ -20,6 +20,7 @@
         public const string VER_AJUSTES_INFORMADOS_VIEW = "View/VerAjustesInformadosView.xaml";
         public const string VER_DETALLES_RECEPCION_VIEW = "View/VerDetallesRecepcionView.xaml";
         public const string LOGIN_VIEW = "View/LoginView.xaml";
+        public const string BUSCAR_LOTES_VIEW = "View/BuscarLotesView.xaml";
 
         public const string API_SYNC_ANTERIOR = "API_SYNC_ANTERIOR";
         public const string API_SYNC_SIGUIENTE = "API_SYNC_SIGUIENTE";

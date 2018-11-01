@@ -117,6 +117,9 @@
                             <materialDesign:PackIcon Kind="ArrowRightBoldCircleOutline" />
                         </Button>
 
+                        <Button Content="{materialDesign:PackIcon Magnify}" ToolTip="Icon" Margin="10"
+                                Command="{Binding BuscarLoteCommand}"/>
+
                         <Button x:Name="btn_ultimaSincronizacion" Content="Ir a la última Sincronización" Margin="10" FontSize="11.5"
                                 Command="{Binding UltimaCommand}"/>
 

@@ -129,6 +129,19 @@ namespace PDADesktop.ViewModel
             }
         }
 
+        private ICommand buscarLoteCommand;
+        public ICommand BuscarLoteCommand
+        {
+            get
+            {
+                return buscarLoteCommand;
+            }
+            set
+            {
+                buscarLoteCommand = value;
+            }
+        }
+
         private ICommand estadoGenesixCommand;
         public ICommand EstadoGenesixCommand
         {
@@ -388,6 +401,7 @@ namespace PDADesktop.ViewModel
             AnteriorCommand = new RelayCommand(SincronizacionAnterior, param => this.canExecute);
             SiguienteCommand = new RelayCommand(SincronizacionSiguiente, param => this.canExecute);
             UltimaCommand = new RelayCommand(GoLastSynchronization, param => this.canExecute);
+            BuscarLoteCommand = new RelayCommand(BuscarLoteMethod);
             EstadoGenesixCommand = new RelayCommand(BotonEstadoGenesix, param => this.canExecute);
             EstadoPDACommand = new RelayCommand(BotonEstadoPDA, param => this.canExecute);
             EstadoGeneralCommand = new RelayCommand(BotonEstadoGeneral, param => this.canExecute);
@@ -1231,9 +1245,7 @@ namespace PDADesktop.ViewModel
 
         public void VerAjustesRealizados(object obj)
         {
-            PanelLoading = true;
-            PanelMainMessage = "Cargando ajustes realizados, Espere por favor";
-            PanelSubMessage = null;
+            DisplayWaitingPanel("Cargando ajustes realizados", "Espere por favor");
             logger.Debug("Viendo ajustes realizados");
             adjustmentWorker.RunWorkerAsync();
         }
@@ -1275,6 +1287,14 @@ namespace PDADesktop.ViewModel
             PanelSubMessage = "Espere por favor";
             MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
             syncDataGridWorker.RunWorkerAsync();
+        }
+
+        public void BuscarLoteMethod(object obj)
+        {
+            DisplayWaitingPanel("");
+            MainWindow window = (MainWindow)Application.Current.MainWindow;
+            Uri uri = new Uri(Constants.BUSCAR_LOTES_VIEW, UriKind.Relative);
+            window.frame.NavigationService.Navigate(uri);
         }
 
         public void AddCommandForButtonsState(List<SincronizacionDtoDataGrid> sincronizaciones)
