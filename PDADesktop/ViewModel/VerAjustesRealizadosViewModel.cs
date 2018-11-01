@@ -9,6 +9,8 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using MahApps.Metro.Controls.Dialogs;
+using System.Threading.Tasks;
 
 namespace PDADesktop.ViewModel
 {
@@ -17,6 +19,8 @@ namespace PDADesktop.ViewModel
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Attributes
+        private IDialogCoordinator dialogCoordinator;
+
         private ObservableCollection<Ajustes> adjustments;
         public ObservableCollection<Ajustes> Adjustments
         {
@@ -114,9 +118,10 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Constructor
-        public VerAjustesRealizadosViewModel()
+        public VerAjustesRealizadosViewModel(IDialogCoordinator instance)
         {
             BannerApp.PrintSeeAdjustmentsRealized();
+            dialogCoordinator = instance;
             var dispatcher = App.Instance.MainWindow.Dispatcher;
             bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
             if (deviceStatus)
@@ -260,6 +265,17 @@ namespace PDADesktop.ViewModel
             MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
+        }
+
+        private async Task<bool> AskToUserMahappDialog(string message, string title = "Aviso")
+        {
+            MetroDialogSettings settings = new MetroDialogSettings();
+            settings.AffirmativeButtonText = "Aceptar";
+            settings.NegativeButtonText = "Cancelar";
+            Task<MessageDialogResult> showMessageAsync = dialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative, settings);
+            MessageDialogResult messsageDialogResult = await showMessageAsync;
+            bool resultAffirmative = messsageDialogResult.Equals(MessageDialogResult.Affirmative);
+            return resultAffirmative;
         }
 
         public void UserNotify(string mensaje)
