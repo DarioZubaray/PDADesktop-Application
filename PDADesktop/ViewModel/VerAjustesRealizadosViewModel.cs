@@ -118,63 +118,45 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        private readonly BackgroundWorker loadVerAjustesRealizadosWorker = new BackgroundWorker();
-
-        #region Constructor
-        public VerAjustesRealizadosViewModel(IDialogCoordinator instance)
+        #region Loading panel
+        private bool _panelLoading;
+        public bool PanelLoading
         {
-            BannerApp.PrintSeeAdjustmentsRealized();
-            dialogCoordinator = instance;
-
-            loadVerAjustesRealizadosWorker.DoWork += loadVerAjustesRealizadosWorker_DoWork;
-            loadVerAjustesRealizadosWorker.RunWorkerCompleted += loadVerAjustesRealizadosWorker_RunWorkerCompleted;
-
-            AdjustmentEnableEdit = false;
-
-            DeleteAdjustmentCommand = new RelayCommand(DeleteAdjustmentMethod);
-            UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentMethod);
-            DiscardChangesCommand = new RelayCommand(DiscardChangesMethod);
-            SaveChangesCommand = new RelayCommand(SaveChangesMethod);
-
-            loadVerAjustesRealizadosWorker.RunWorkerAsync();
-        }
-        #endregion
-
-        #region Workers
-        private async void loadVerAjustesRealizadosWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            logger.Debug("Load ver ajustes realizados => Do Work");
-            var deviceHandler = App.Instance.deviceHandler;
-            bool deviceStatus = deviceHandler.IsDeviceConnected();
-            if (deviceStatus)
+            get
             {
-                string deviceReadAdjustmentDataFile = deviceHandler.ReadAdjustmentsDataFile();
-                if (deviceReadAdjustmentDataFile != null)
-                {
-                    UpdateAjustesGrid(deviceReadAdjustmentDataFile);
-                }
-                else
-                {
-                    await NotifyToUserMahappDialog("No se encotraron ajustes!");
-                }
+                return _panelLoading;
             }
-            else
+            set
             {
-                await NotifyToUserMahappDialog("No se detecta conexion con la PDA");
+                _panelLoading = value;
+                OnPropertyChanged();
             }
         }
-
-        private void UpdateAjustesGrid(string deviceReadAdjustmentDataFile)
+        private string _panelMainMessage;
+        public string PanelMainMessage
         {
-            Adjustments = JsonUtils.GetObservableCollectionAjustes(deviceReadAdjustmentDataFile);
-
-            AdjustmentsTypes = HttpWebClientUtil.GetAdjustmentsTypes();
-            logger.Debug(AdjustmentsTypes.ToString());
+            get
+            {
+                return _panelMainMessage;
+            }
+            set
+            {
+                _panelMainMessage = value;
+                OnPropertyChanged();
+            }
         }
-
-        private void loadVerAjustesRealizadosWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private string _panelSubMessage;
+        public string PanelSubMessage
         {
-            logger.Debug("Load ver ajustes reliazados => Run Worker Completed");
+            get
+            {
+                return _panelSubMessage;
+            }
+            set
+            {
+                _panelSubMessage = value;
+                OnPropertyChanged();
+            }
         }
         #endregion
 
@@ -230,6 +212,82 @@ namespace PDADesktop.ViewModel
                 saveChangesCommand = value;
             }
         }
+
+        private ICommand panelCloseCommand;
+        public ICommand PanelCloseCommand
+        {
+            get
+            {
+                return panelCloseCommand;
+            }
+            set
+            {
+                panelCloseCommand = value;
+            }
+        }
+        #endregion
+
+        private readonly BackgroundWorker loadVerAjustesRealizadosWorker = new BackgroundWorker();
+
+        #region Constructor
+        public VerAjustesRealizadosViewModel(IDialogCoordinator instance)
+        {
+            BannerApp.PrintSeeAdjustmentsRealized();
+            dialogCoordinator = instance;
+            DisplayWaitingPanel("Cargando", "Espere por favor...");
+
+            loadVerAjustesRealizadosWorker.DoWork += loadVerAjustesRealizadosWorker_DoWork;
+            loadVerAjustesRealizadosWorker.RunWorkerCompleted += loadVerAjustesRealizadosWorker_RunWorkerCompleted;
+
+            AdjustmentEnableEdit = false;
+
+            DeleteAdjustmentCommand = new RelayCommand(DeleteAdjustmentMethod);
+            UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentMethod);
+            DiscardChangesCommand = new RelayCommand(DiscardChangesMethod);
+            SaveChangesCommand = new RelayCommand(SaveChangesMethod);
+            PanelCloseCommand = new RelayCommand(PanelCloseMethod);
+
+            loadVerAjustesRealizadosWorker.RunWorkerAsync();
+        }
+        #endregion
+
+        #region Workers
+        private async void loadVerAjustesRealizadosWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Debug("Load ver ajustes realizados => Do Work");
+            var deviceHandler = App.Instance.deviceHandler;
+            bool deviceStatus = deviceHandler.IsDeviceConnected();
+            if (deviceStatus)
+            {
+                string deviceReadAdjustmentDataFile = deviceHandler.ReadAdjustmentsDataFile();
+                if (deviceReadAdjustmentDataFile != null)
+                {
+                    UpdateAjustesGrid(deviceReadAdjustmentDataFile);
+                }
+                else
+                {
+                    await NotifyToUserMahappDialog("No se encotraron ajustes!");
+                }
+            }
+            else
+            {
+                await NotifyToUserMahappDialog("No se detecta conexion con la PDA");
+            }
+        }
+
+        private void UpdateAjustesGrid(string deviceReadAdjustmentDataFile)
+        {
+            Adjustments = JsonUtils.GetObservableCollectionAjustes(deviceReadAdjustmentDataFile);
+
+            AdjustmentsTypes = HttpWebClientUtil.GetAdjustmentsTypes();
+            logger.Debug(AdjustmentsTypes.ToString());
+        }
+
+        private void loadVerAjustesRealizadosWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("Load ver ajustes reliazados => Run Worker Completed");
+            HidingWaitingPanel();
+        }
         #endregion
 
         #region Methods
@@ -275,6 +333,24 @@ namespace PDADesktop.ViewModel
             {
                 await NotifyToUserMahappDialog("No se ha podido sobreescribir el ajuste deseado.");
             }
+        }
+
+        private void PanelCloseMethod(object sender)
+        {
+            HidingWaitingPanel();
+        }
+
+        public void DisplayWaitingPanel(string mainMessage, string subMessage = "")
+        {
+            PanelLoading = true;
+            PanelMainMessage = mainMessage;
+            PanelSubMessage = subMessage;
+        }
+        public void HidingWaitingPanel()
+        {
+            PanelLoading = false;
+            PanelMainMessage = "";
+            PanelSubMessage = "";
         }
 
         private void RedirectToActivityCenterView()
