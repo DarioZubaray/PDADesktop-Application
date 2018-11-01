@@ -115,7 +115,10 @@ namespace PDADesktop.Classes.Utils
             string tempFilePathExtended = TextUtils.ExpandEnviromentVariable(tempFilePath);
             try
             {
-                Directory.Delete(@tempFilePathExtended, true);
+                if (Directory.Exists(@tempFilePathExtended))
+                {
+                    Directory.Delete(@tempFilePathExtended, true);
+                }
             }
             catch (IOException ex)
             {
