@@ -18,7 +18,6 @@ namespace PDADesktop.Classes
 
             ForConcreteType<MainWindowViewModel>().Configure.Singleton();
 
-            ForConcreteType<BuscarLotesViewModel>().Configure.Singleton();
             ForConcreteType<CentroActividadesViewModel>().Configure.Singleton();
             ForConcreteType<LoginViewModel>().Configure.Singleton();
             ForConcreteType<VerAjustesRealizadosViewModel>().Configure.Singleton();

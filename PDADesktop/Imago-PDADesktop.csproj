@@ -236,20 +236,13 @@
     <Compile Include="Classes\Utils\FileUtils.cs" />
     <Compile Include="Classes\Utils\ArchivosDATUtils.cs" />
     <Compile Include="Classes\Utils\TextUtils.cs" />
-    <Compile Include="ViewModel\BuscarLotesViewModel.cs" />
     <Compile Include="ViewModel\VerAjustesRealizadosViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
-    <Compile Include="View\BuscarLotesView.xaml.cs">
-      <DependentUpon>BuscarLotesView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Controls\PanelNoConnection.xaml.cs">
       <DependentUpon>PanelNoConnection.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ImprimirRecepcionView.xaml.cs">
       <DependentUpon>ImprimirRecepcionView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\UserControl1.xaml.cs">
-      <DependentUpon>UserControl1.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\VerAjustesInformadosView.xaml.cs">
       <DependentUpon>VerAjustesInformadosView.xaml</DependentUpon>
@@ -268,10 +261,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Controls\LoadingPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\BuscarLotesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -322,10 +311,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\UserControl1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\VerAjustesInformadosView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

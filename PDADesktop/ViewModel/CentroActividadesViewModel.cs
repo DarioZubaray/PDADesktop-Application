@@ -116,19 +116,6 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private ICommand buscarCommand;
-        public ICommand BuscarCommand
-        {
-            get
-            {
-                return buscarCommand;
-            }
-            set
-            {
-                buscarCommand = value;
-            }
-        }
-
         private ICommand ultimaCommand;
         public ICommand UltimaCommand
         {
@@ -400,7 +387,6 @@ namespace PDADesktop.ViewModel
             CentroActividadesLoadedCommand = new RelayCommand(CentroActividadesLoaded, param => this.canExecute);
             AnteriorCommand = new RelayCommand(SincronizacionAnterior, param => this.canExecute);
             SiguienteCommand = new RelayCommand(SincronizacionSiguiente, param => this.canExecute);
-            BuscarCommand = new RelayCommand(BuscarSincronizaciones, param => this.canExecute);
             UltimaCommand = new RelayCommand(GoLastSynchronization, param => this.canExecute);
             EstadoGenesixCommand = new RelayCommand(BotonEstadoGenesix, param => this.canExecute);
             EstadoPDACommand = new RelayCommand(BotonEstadoPDA, param => this.canExecute);
@@ -1273,13 +1259,6 @@ namespace PDADesktop.ViewModel
             PanelSubMessage = "Espere por favor";
             MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_SIGUIENTE);
             syncDataGridWorker.RunWorkerAsync();
-        }
-
-        public void BuscarSincronizaciones(object obj)
-        {
-            logger.Info("Buscando sincronizaciones");
-            BuscarLotesView buscarLotesView = new BuscarLotesView();
-            buscarLotesView.ShowDialog();
         }
 
         public void GoLastSynchronization(object obj)

@@ -93,12 +93,7 @@
                         <Button x:Name="btn_sincro_adelante" Margin="10" Command="{Binding SiguienteCommand}">
                             <materialDesign:PackIcon Kind="ArrowRightBoldCircleOutline" />
                         </Button>
-                        <!--
-                        <Label x:Name="label" Content="Buscar" FontSize="15" Margin="10"/>
-                        <Button x:Name="btn_buscar" Margin="10" Command="{Binding BuscarCommand}">
-                            <materialDesign:PackIcon Kind="Magnify" />
-                        </Button>
-                        -->
+
                         <Button x:Name="btn_ultimaSincronizacion" Content="Ir a la última Sincronización" Margin="10" FontSize="11.5"
                                 Command="{Binding UltimaCommand}"/>
 
