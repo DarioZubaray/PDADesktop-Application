@@ -47,7 +47,7 @@
                   HorizontalContentAlignment="Center" VerticalContentAlignment="Top"
                   AlternatingRowBackground="Gainsboro" AlternationCount="2"
                   AutoGenerateColumns="False" RowHeight="25" FontSize="15"
-                  SelectionUnit="FullRow" IsReadOnly="True"
+                  SelectionUnit="FullRow" IsReadOnly="True" SelectionMode="Single"
                   ItemsSource="{Binding SearchBatch}"
                   SelectedItem="{Binding Path=SelectedBatch, Mode=TwoWay}" Margin="10,25,10,150" Width="900">
 
@@ -77,9 +77,6 @@
                                     Header="Fecha" CanUserResize="False" Width="*"
                                     HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
-                <DataGridCheckBoxColumn Header="Seleccionar" Binding="{Binding loteSeleccionado}"  Width="*"
-                                        HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                        CellStyle="{StaticResource DataGridContentCellCentering}"/>
             </DataGrid.Columns>
         </DataGrid>
 
@@ -120,7 +117,7 @@
 
             <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
                        VerticalAlignment="Center" Grid.Column="6" Margin="10, 0">Mostrar</TextBlock>
-            <ComboBox MinWidth="40" Margin="5, 5, 5, 18" Grid.Column="7"
+            <ComboBox x:Name="listComboBox" MinWidth="40" Margin="5, 5, 5, 18" Grid.Column="7"
                       VerticalAlignment="Bottom" ItemsSource="{Binding LongListResultToDisplay}"
                       SelectedValue="{Binding SelectedValueOne}">
                 <i:Interaction.Triggers>

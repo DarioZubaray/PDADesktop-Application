@@ -23,6 +23,7 @@
         public const string BUSCAR_LOTES_VIEW = "View/BuscarLotesView.xaml";
 
         public const string API_SYNC_ANTERIOR = "API_SYNC_ANTERIOR";
+        public const string API_SYNC_ACTUAL = "API_SYNC_ACTUAL";
         public const string API_SYNC_SIGUIENTE = "API_SYNC_SIGUIENTE";
         public const string API_SYNC_ULTIMA = "API_SYNC_ULTIMA";
         public const string API_GET_ALL_ACCIONES = "API_GET_ALL_ACCIONES";

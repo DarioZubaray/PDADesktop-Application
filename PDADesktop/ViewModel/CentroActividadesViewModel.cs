@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using PDADesktop.Model.Dto;
 using System.Windows.Threading;
+using System.Windows.Navigation;
 
 namespace PDADesktop.ViewModel
 {
@@ -640,6 +641,22 @@ namespace PDADesktop.ViewModel
             }
         }
 
+        public void GetActualSync(int currentBatchId, string storeId)
+        {
+            if (currentBatchId != 0)
+            {
+                MyAppProperties.currentBatchId = currentBatchId.ToString();
+                List<Sincronizacion> syncList = null;
+                string urlPathLastSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ACTUAL);
+                syncList = HttpWebClientUtil.GetHttpWebSynchronizations(urlPathLastSync, storeId, currentBatchId.ToString());
+                if (syncList != null && syncList.Count != 0)
+                {
+                    this.sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(syncList);
+                    UpdateCurrentBatch(sincronizaciones);
+                }
+            }
+        }
+
         private bool CheckDeviceConnected()
         {
             bool isDeviceConnected = App.Instance.deviceHandler.IsDeviceConnected();
@@ -854,7 +871,7 @@ namespace PDADesktop.ViewModel
             {
                 currentMessage = "Obteniendo detalles de sincronización para lote " + currentBatchId + " ...";
                 NotifyCurrentMessage(currentMessage);
-                GetLastSync(Convert.ToInt32(currentBatchId), storeId);
+                GetActualSync(Convert.ToInt32(currentBatchId), storeId);
             }
         }
         private void reloadCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

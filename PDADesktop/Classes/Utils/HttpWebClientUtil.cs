@@ -547,11 +547,12 @@ namespace PDADesktop.Classes.Utils
             return JsonUtils.GetListView(responseGetAdjustmentsByBatchId);
         }
 
-        internal static string SearchBatches(int page = 1, long rows = 20)
+        internal static string SearchBatches(string idSucursal, int page = 1, long rows = 20)
         {
             string urlSearchBatches = ConfigurationManager.AppSettings.Get(Constants.API_IMPRIMIR_CARGAR_GRILLA_LOTES);
             Int32 nd = DateTimeUtils.GetUnixTimeFromUTCNow();
-            string queryParams = "?_search=false&nd="+nd+ "&rows=" + rows + "&page=" + page + "&sidx=idLote&sord=desc";
+            string queryParams = "?idSucursal="+ idSucursal + "&_search=false&nd="+ nd 
+                + "&rows=" + rows + "&page=" + page + "&sidx=idLote&sord=desc";
             string responseSearchBatches = SendHttpGetRequest(urlSearchBatches + queryParams);
             return responseSearchBatches;
         }

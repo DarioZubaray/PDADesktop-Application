@@ -272,6 +272,7 @@ namespace PDADesktop.ViewModel
         #region RelayCommand Methods
         public void ReturnActivityCenterMethod(object obj)
         {
+            MyAppProperties.currentBatchId = obj.ToString();
             MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
@@ -280,6 +281,11 @@ namespace PDADesktop.ViewModel
         public void AcceptMethod(object obj)
         {
             logger.Debug("Accept Method");
+            if(this.SelectedBatch != null)
+            {
+                logger.Debug("SelectedBatch: " + this.SelectedBatch.idLote);
+                ReturnActivityCenterMethod(this.SelectedBatch.idLote);
+            }
         }
 
         public void PanelCloseMethod(object obj)
@@ -323,13 +329,14 @@ namespace PDADesktop.ViewModel
 
         #endregion
 
-            #region Worker
+        #region Worker
         private void loadSearchBatches_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("Load Search Batchs => Do Work");
             System.Threading.Thread.Sleep(1000);
             int page = (int)e.Argument;
-            string responseSearchBatch = HttpWebClientUtil.SearchBatches(page, SelectedValueOne);
+            string storeId = MyAppProperties.storeId;
+            string responseSearchBatch = HttpWebClientUtil.SearchBatches(storeId, page, SelectedValueOne);
             listView = JsonUtils.GetListView(responseSearchBatch);
             var dispatcher = App.Instance.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
