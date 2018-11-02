@@ -61,6 +61,34 @@ namespace PDADesktop.ViewModel
             }
         }
 
+        private long[] longListResultToDisplay;
+        public long[] LongListResultToDisplay
+        {
+            get
+            {
+                return longListResultToDisplay;
+            }
+            set
+            {
+                longListResultToDisplay = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private long selectedValueOne;
+        public long SelectedValueOne
+        {
+            get
+            {
+                return selectedValueOne;
+            }
+            set
+            {
+                selectedValueOne = value;
+                OnPropertyChanged();
+            }
+        }
+
         private ListView listView;
         #endregion
 
@@ -217,6 +245,8 @@ namespace PDADesktop.ViewModel
             NextCommand = new RelayCommand(GoNextPage);
             LastCommand = new RelayCommand(GoLastPage);
 
+            LongListResultToDisplay = new long[] { 5, 10, 15, 20 };
+            SelectedValueOne = 20;
             int initialPage = 1;
             loadSearchBatches.RunWorkerAsync(argument: initialPage);
         }
@@ -279,7 +309,7 @@ namespace PDADesktop.ViewModel
         {
             logger.Debug("Load Search Batchs => Do Work");
             int page = (int)e.Argument;
-            string responseSearchBatch = HttpWebClientUtil.SearchBatches(page);
+            string responseSearchBatch = HttpWebClientUtil.SearchBatches(page, SelectedValueOne);
             listView = JsonUtils.GetListView(responseSearchBatch);
             var dispatcher = App.Instance.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>

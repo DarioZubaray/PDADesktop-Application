@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:local="clr-namespace:PDADesktop.View"
              xmlns:ctr="clr-namespace:PDADesktop.View.Controls"
              mc:Ignorable="d" 
@@ -100,6 +101,24 @@
             <Button Command="{Binding LastCommand}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Margin="5">
                 <materialDesign:PackIcon Kind="ChevronDoubleRight" Height="24" Width="24" />
             </Button>
+
+            <ComboBox MinWidth="40" Margin="5, 5, 5, 18"
+                      VerticalAlignment="Bottom" ItemsSource="{Binding LongListResultToDisplay}"
+                      SelectedValue="{Binding SelectedValueOne}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding FirstCommand}" CommandParameter="{Binding ElementName=listComboBox, Path=SelectedValue}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ComboBox.SelectedItem>
+                    <Binding Path="SelectedValueOne" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                </ComboBox.SelectedItem>
+                <ComboBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ComboBox.ItemsPanel>
+            </ComboBox>
         </StackPanel>
         <StackPanel Margin="0,650,0, 10" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Style="{StaticResource MaterialDesignFlatButton}" 

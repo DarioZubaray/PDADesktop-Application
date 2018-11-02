@@ -547,7 +547,7 @@ namespace PDADesktop.Classes.Utils
             return JsonUtils.GetListView(responseGetAdjustmentsByBatchId);
         }
 
-        internal static string SearchBatches(int page = 1, int rows = 20)
+        internal static string SearchBatches(int page = 1, long rows = 20)
         {
             string urlSearchBatches = ConfigurationManager.AppSettings.Get(Constants.API_IMPRIMIR_CARGAR_GRILLA_LOTES);
             Int32 nd = DateTimeUtils.GetUnixTimeFromUTCNow();
