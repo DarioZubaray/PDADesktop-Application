@@ -74,5 +74,12 @@ namespace PDADesktop.Classes
                          + "=    VER DETALLES RECEPCIONES    ="
                          + "==================================");
         }
+
+        public static void SearchBatches()
+        {
+            logger.Debug("\n=================================="
+                         + "=    B U S C A R   L O T E S    ="
+                         + "==================================");
+        }
     }
 }

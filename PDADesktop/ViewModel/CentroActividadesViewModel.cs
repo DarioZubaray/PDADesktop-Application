@@ -181,6 +181,19 @@ namespace PDADesktop.ViewModel
             }
         }
 
+        private ICommand showPanelCommand;
+        public ICommand ShowPanelCommand
+        {
+            get
+            {
+                return showPanelCommand;
+            }
+            set
+            {
+                showPanelCommand = value;
+            }
+        }
+
         private ICommand panelCloseCommand;
         public ICommand PanelCloseCommand
         {
@@ -339,6 +352,18 @@ namespace PDADesktop.ViewModel
                 OnPropertyChanged();
             }
         }
+        private ICommand panelCloseCommand_NC;
+        public ICommand PanelCloseCommand_NC
+        {
+            get
+            {
+                return panelCloseCommand_NC;
+            }
+            set
+            {
+                panelCloseCommand_NC = value;
+            }
+        }
         #endregion
 
         //Con ObservableCollection no se actualiza la grilla :\
@@ -429,7 +454,9 @@ namespace PDADesktop.ViewModel
             dispatcherTimer.Interval = new TimeSpan(0, 0, 15);
             dispatcherTimer.Start();
 
+            ShowPanelCommand = new RelayCommand(MostrarPanel);
             PanelCloseCommand = new RelayCommand(CerrarPanel, param => this.canExecute);
+            PanelCloseCommand_NC = new RelayCommand(CerrarPanelNoConnection);
         }
         #endregion
 
@@ -1368,9 +1395,19 @@ namespace PDADesktop.ViewModel
             PanelSubMessage = "";
         }
 
+        public void MostrarPanel(object obj)
+        {
+            PanelLoading = true;
+        }
+
         public void CerrarPanel(object obj)
         {
             PanelLoading = false;
+        }
+
+        public void CerrarPanelNoConnection(object obj)
+        {
+            PanelLoading_NC = false;
         }
         #endregion
 

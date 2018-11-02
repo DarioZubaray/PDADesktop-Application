@@ -1,6 +1,8 @@
 ﻿using log4net;
 using PDADesktop.Classes;
+using PDADesktop.Classes.Utils;
 using PDADesktop.Model;
+using PDADesktop.Model.Dto;
 using PDADesktop.View;
 using System;
 using System.Collections.ObjectModel;
@@ -15,7 +17,7 @@ namespace PDADesktop.ViewModel
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Attributes
-        private readonly BackgroundWorker loadSearchBatch = new BackgroundWorker();
+        private readonly BackgroundWorker loadSearchBatches = new BackgroundWorker();
 
         private ObservableCollection<Lote> searchBatch;
         public ObservableCollection<Lote> SearchBatch
@@ -45,6 +47,21 @@ namespace PDADesktop.ViewModel
             }
         }
 
+        private string pagerLegend;
+        public string PagerLegend
+        {
+            get
+            {
+                return pagerLegend;
+            }
+            set
+            {
+                pagerLegend = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ListView listView;
         #endregion
 
         #region Loading panel
@@ -115,18 +132,93 @@ namespace PDADesktop.ViewModel
                 acceptCommand = value;
             }
         }
+
+        private ICommand panelCloseCommand;
+        public ICommand PanelCloseCommand
+        {
+            get
+            {
+                return panelCloseCommand;
+            }
+            set
+            {
+                panelCloseCommand = value;
+            }
+        }
+
+        private ICommand firstCommand;
+        public ICommand FirstCommand
+        {
+            get
+            {
+                return firstCommand;
+            }
+            set
+            {
+                firstCommand = value;
+            }
+        }
+
+        private ICommand previousCommand;
+        public ICommand PreviousCommand
+        {
+            get
+            {
+                return previousCommand;
+            }
+            set
+            {
+                previousCommand = value;
+            }
+        }
+
+        private ICommand nextCommand;
+        public ICommand NextCommand
+        {
+            get
+            {
+                return nextCommand;
+            }
+            set
+            {
+                nextCommand = value;
+            }
+        }
+
+        private ICommand lastCommand;
+        public ICommand LastCommand
+        {
+            get
+            {
+                return lastCommand;
+            }
+            set
+            {
+                lastCommand = value;
+            }
+        }
+
         #endregion
 
         #region Constructor
         public BuscarLotesViewModel()
         {
+            BannerApp.SearchBatches();
             DisplayWaitingPanel("Cargando...");
-            loadSearchBatch.DoWork += loadloadSearchBatch_DoWork;
-            loadSearchBatch.RunWorkerCompleted += loadloadSearchBatch_RunWorkerCompleted;
+            PagerLegend = "Buscar Lotes View Model";
+            loadSearchBatches.DoWork += loadSearchBatches_DoWork;
+            loadSearchBatches.RunWorkerCompleted += loadSearchBatches_RunWorkerCompleted;
             ReturnCommand = new RelayCommand(ReturnActivityCenterMethod);
             AcceptCommand = new RelayCommand(AcceptMethod);
+            PanelCloseCommand = new RelayCommand(PanelCloseMethod);
 
-            loadSearchBatch.RunWorkerAsync();
+            FirstCommand = new RelayCommand(GoFirstPage);
+            PreviousCommand = new RelayCommand(GoPreviousPage);
+            NextCommand = new RelayCommand(GoNextPage);
+            LastCommand = new RelayCommand(GoLastPage);
+
+            int initialPage = 1;
+            loadSearchBatches.RunWorkerAsync(argument: initialPage);
         }
         #endregion
 
@@ -142,20 +234,62 @@ namespace PDADesktop.ViewModel
         {
             logger.Debug("Accept Method");
         }
+
+        public void PanelCloseMethod(object obj)
+        {
+            HidingWaitingPanel();
+        }
+
+        public void GoFirstPage(object obj)
+        {
+            DisplayWaitingPanel("");
+            logger.Debug("Pagina: " + this.listView.page);
+            this.listView.page = 1;
+            loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
+        }
+
+        public void GoPreviousPage(object obj)
+        {
+            DisplayWaitingPanel("");
+            logger.Debug("Pagina: " + this.listView.page);
+            this.listView.page -= 1;
+            loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
+        }
+
+        public void GoNextPage(object obj)
+        {
+            DisplayWaitingPanel("");
+            logger.Debug("Pagina: " + this.listView.page);
+            this.listView.page += 1;
+            loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
+        }
+
+        public void GoLastPage(object obj)
+        {
+            DisplayWaitingPanel("");
+            logger.Debug("Pagina: " + this.listView.page);
+            this.listView.page = this.listView.total;
+            loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
+        }
+
         #endregion
 
         #region Worker
-        private void loadloadSearchBatch_DoWork(object sender, DoWorkEventArgs e)
+        private void loadSearchBatches_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("Load Search Batchs => Do Work");
-            SearchBatch = new ObservableCollection<Lote>();
-            Lote l1 = new Lote(1, DateTime.Now, 706);
-            Lote l2 = new Lote(2, DateTime.Now, 706);
-            SearchBatch.Add(l1);
-            SearchBatch.Add(l2);
+            int page = (int)e.Argument;
+            string responseSearchBatch = HttpWebClientUtil.SearchBatches(page);
+            listView = JsonUtils.GetListView(responseSearchBatch);
+            var dispatcher = App.Instance.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                SearchBatch = ListViewUtils.ParserSearchBatchesDataGrid(listView);
+                PagerLegend = "Página " + listView.page + " de " + listView.total;
+            }));
         }
 
-        private void loadloadSearchBatch_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void loadSearchBatches_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("Load Search Batchs => Run Worker Completed");
             var dispatcher = App.Instance.Dispatcher;

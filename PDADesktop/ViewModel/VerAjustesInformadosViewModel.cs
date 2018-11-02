@@ -5,7 +5,6 @@ using PDADesktop.Model;
 using PDADesktop.Model.Dto;
 using PDADesktop.View;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
@@ -49,6 +48,19 @@ namespace PDADesktop.ViewModel
             }
         }
 
+        private string pagerLegend;
+        public string PagerLegend
+        {
+            get
+            {
+                return pagerLegend;
+            }
+            set
+            {
+                pagerLegend = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region Loading panel
@@ -106,6 +118,8 @@ namespace PDADesktop.ViewModel
                 returnCommand = value;
             }
         }
+
+        
         #endregion
 
         #region Constructor

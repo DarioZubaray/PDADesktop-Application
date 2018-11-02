@@ -1,16 +1,25 @@
 ﻿using PDADesktop.Model;
 using PDADesktop.Model.Dto;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PDADesktop.Classes.Utils
 {
     public class ListViewUtils
     {
+        public static ObservableCollection<Lote> ParserSearchBatchesDataGrid(ListView loteListView)
+        {
+            ObservableCollection<Lote> lotes = new ObservableCollection<Lote>();
+            Row[] rows = loteListView.rows;
+            foreach (Row row in rows)
+            {
+                Lote lote = new Model.Lote();
+                lote.idLote = Convert.ToInt64(row.cell[0]);
+                lote.fecha = DateTime.Parse(row.cell[1]);
+                lotes.Add(lote);
+            }
+            return lotes;
+        }
 
         public static ObservableCollection<Ajustes> ParserAjustesDataGrid(ListView ajustesListView)
         {

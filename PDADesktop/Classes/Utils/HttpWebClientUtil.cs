@@ -546,5 +546,14 @@ namespace PDADesktop.Classes.Utils
             string responseGetAdjustmentsByBatchId = SendHttpGetRequest(urlGetAdjustmentsByBatchId + queryParams);
             return JsonUtils.GetListView(responseGetAdjustmentsByBatchId);
         }
+
+        internal static string SearchBatches(int page = 1, int rows = 20)
+        {
+            string urlSearchBatches = ConfigurationManager.AppSettings.Get(Constants.API_IMPRIMIR_CARGAR_GRILLA_LOTES);
+            Int32 nd = DateTimeUtils.GetUnixTimeFromUTCNow();
+            string queryParams = "?_search=false&nd="+nd+ "&rows=" + rows + "&page=" + page + "&sidx=idLote&sord=desc";
+            string responseSearchBatches = SendHttpGetRequest(urlSearchBatches + queryParams);
+            return responseSearchBatches;
+        }
     }
 }
