@@ -61,6 +61,20 @@ namespace PDADesktop.ViewModel
             }
         }
 
+        private string pagerResultLegend;
+        public string PagerResultLegend
+        {
+            get
+            {
+                return pagerResultLegend;
+            }
+            set
+            {
+                pagerResultLegend = value;
+                OnPropertyChanged();
+            }
+        }
+
         private long[] longListResultToDisplay;
         public long[] LongListResultToDisplay
         {
@@ -234,6 +248,7 @@ namespace PDADesktop.ViewModel
             BannerApp.SearchBatches();
             DisplayWaitingPanel("Cargando...");
             PagerLegend = "Buscar Lotes View Model";
+            PagerResultLegend = "Mostrando 1 - 10 de 10 resultados";
             loadSearchBatches.DoWork += loadSearchBatches_DoWork;
             loadSearchBatches.RunWorkerCompleted += loadSearchBatches_RunWorkerCompleted;
             ReturnCommand = new RelayCommand(ReturnActivityCenterMethod);
@@ -308,6 +323,7 @@ namespace PDADesktop.ViewModel
         private void loadSearchBatches_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("Load Search Batchs => Do Work");
+            System.Threading.Thread.Sleep(1000);
             int page = (int)e.Argument;
             string responseSearchBatch = HttpWebClientUtil.SearchBatches(page, SelectedValueOne);
             listView = JsonUtils.GetListView(responseSearchBatch);
@@ -316,6 +332,10 @@ namespace PDADesktop.ViewModel
             {
                 SearchBatch = ListViewUtils.ParserSearchBatchesDataGrid(listView);
                 PagerLegend = "Página " + listView.page + " de " + listView.total;
+                long inicio = (listView.page * SelectedValueOne) - (SelectedValueOne - 1);
+                long fin = inicio + (SelectedValueOne - 1);
+                int totalRecords = listView.records;
+                PagerResultLegend = String.Format("Mostrando {0} - {1} de {2} resultados.", inicio, fin, totalRecords);
             }));
         }
 
