@@ -8,6 +8,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace PDADesktop.ViewModel
@@ -103,7 +104,8 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private ListView listView;
+
+        private Model.Dto.ListView listView;
         #endregion
 
         #region Loading panel
@@ -285,6 +287,7 @@ namespace PDADesktop.ViewModel
             HidingWaitingPanel();
         }
 
+        #region Paginator
         public void GoFirstPage(object obj)
         {
             DisplayWaitingPanel("");
@@ -316,10 +319,11 @@ namespace PDADesktop.ViewModel
             this.listView.page = this.listView.total;
             loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
         }
+        #endregion
 
         #endregion
 
-        #region Worker
+            #region Worker
         private void loadSearchBatches_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("Load Search Batchs => Do Work");
