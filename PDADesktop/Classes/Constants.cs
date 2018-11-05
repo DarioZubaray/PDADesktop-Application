@@ -106,16 +106,32 @@
         public const long PROART_CODE = 208L;
         public const long MOTIDEV_CODE = 209L;
 
+        public const int EGRAL_PENDIENTE = 1;
         public const int EGRAL_OK = 2;
         public const int EGRAL_REINTENTAR_INFORMAR = 3;
         public const int EGRAL_VER_DETALLES_RECEPCIONES = 4;
         public const int EGRAL_MODIFICAR_AJUSTES = 6;
         public const int EGRAL_IMPRIMIR_RECEPCIONES = 7;
+        public const int EGRAL_ERROR_PDA = 8;
+        public const int EGRAL_ERROR_GX = 9;
         public const int EGRAL_REINTENTAR_DESCARGAR = 10;
+        public const int EGRAL_REINTENTAR_DESCARGAR_PEDIDOS = 11;
         public const int EGRAL_REINTENTAR_DESCARGAR_RECEPCIONES = 11;
 
-        public const int EPDA_RECIBIDO = 3;
+        public const int EGX_SIN_DATOS = 0;
+        public const int EGX_PENDIENTE = 1;
         public const int EGX_ENVIADO = 2;
+        public const int EGX_RECIBIDO = 3;
+        public const int EGX_ERROR_CONEXION = 4;
+        public const int EGX_ERROR_IRRECUPERABLE = 5;
+
+        public const int EPDA_SIN_DATOS = 0;
+        public const int EPDA_PENDIENTE = 1;
+        public const int EPDA_ENVIADO = 2;
+        public const int EPDA_RECIBIDO = 3;
+        public const int EPDA_ERROR_DESCARGA = 4;
+        public const int EPDA_ERROR_ENVIO_DB_LOCAL = 5;
+
         public const int ACTIVIDAD_AJUSTES = 103;
         public const int ACTIVIDAD_INFORMAR_RECEPCIONES = 104;
 
