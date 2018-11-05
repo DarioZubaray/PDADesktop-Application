@@ -467,10 +467,11 @@ namespace PDADesktop.Classes.Utils
             return JsonUtils.GetControlBloqueoPDA(responseControlBloqueoPDA);
         }
 
-        internal static ListView LoadAdjustmentsGrid()
+        internal static ListView LoadAdjustmentsGrid(string lote, string estadoInformado,
+            string page = "1", string rows = "20", string sidx = "lote", string sord = "asc")
         {
-            string urlModifyLoadAdjustmentsGrid = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_CARGAR_GRILLA_AJUSTES);
-            string queryParams = "?lote=111152&idSincronizacion=121578&page=1&rows=2147483647";
+            string urlModifyLoadAdjustmentsGrid = ConfigurationManager.AppSettings.Get(Constants.API_CARGA_GRILLA_AJUSTES);
+            string queryParams = "?lote="+lote+"&page="+page+"&rows="+page+"&sidx="+sidx+"&sord="+sord;
             string responseModifyLoadAdjustmentsGrid = SendHttpGetRequest(urlModifyLoadAdjustmentsGrid + queryParams);
             return JsonUtils.GetAjustesDTO(responseModifyLoadAdjustmentsGrid);
         }
@@ -512,11 +513,10 @@ namespace PDADesktop.Classes.Utils
             return discardReceptionDictionary;
         }
 
-
-        internal static ListView GetGrillaRECEP(string batchId = "141147", string informedState = "false",
+        internal static ListView GetReceptionGrid(string batchId, string informedState,
             string page = "1", string rows = "10", string sidx = "id", string sord = "asc")
         {
-            string urlReceptionGrid = ConfigurationManager.AppSettings.Get(Constants.API_IMPRIMIR_CARGAR_GRILLA_RECEPCIONES);
+            string urlReceptionGrid = ConfigurationManager.AppSettings.Get(Constants.API_CARGA_GRILLA_RECEPCIONES);
             string queryParams = "?idLote=" + batchId + "&estadoInformado=" + informedState 
                 + "&page=" + page  +"&rows=" + rows + "&sidx=" + sidx + "&sord=" + sord;
             string responseReceptionGrid = SendHttpGetRequest(urlReceptionGrid + queryParams);
@@ -549,7 +549,7 @@ namespace PDADesktop.Classes.Utils
 
         internal static string SearchBatches(string idSucursal, int page = 1, long rows = 20)
         {
-            string urlSearchBatches = ConfigurationManager.AppSettings.Get(Constants.API_IMPRIMIR_CARGAR_GRILLA_LOTES);
+            string urlSearchBatches = ConfigurationManager.AppSettings.Get(Constants.API_CARGA_GRILLA_LOTES);
             Int32 nd = DateTimeUtils.GetUnixTimeFromUTCNow();
             string queryParams = "?idSucursal="+ idSucursal + "&_search=false&nd="+ nd 
                 + "&rows=" + rows + "&page=" + page + "&sidx=idLote&sord=desc";
