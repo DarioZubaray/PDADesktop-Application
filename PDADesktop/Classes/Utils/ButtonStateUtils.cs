@@ -50,7 +50,7 @@ namespace PDADesktop.Classes.Utils
                     PrintReceptions(synchronizationId, batchId);
                     break;
                 case Constants.EGRAL_OK:
-                    SeeAdjustmentsInforms(activityId, deviceState, genesixState, batchId);
+                    stateNeedResolve = SeeAdjustmentsInforms(activityId, deviceState, genesixState, batchId);
                     break;
                 default:
                     stateNeedResolve = false;
@@ -59,7 +59,7 @@ namespace PDADesktop.Classes.Utils
             return stateNeedResolve;
         }
 
-        private static void SeeAdjustmentsInforms(int activityId, int deviceState, int genesixState, string batchId)
+        private static bool SeeAdjustmentsInforms(int activityId, int deviceState, int genesixState, string batchId)
         {
             if ( Constants.EPDA_RECIBIDO.Equals(deviceState)
                  && Constants.EGX_ENVIADO.Equals(genesixState)
@@ -72,6 +72,10 @@ namespace PDADesktop.Classes.Utils
                     MainWindow window = (MainWindow)Application.Current.MainWindow;
                     window.frame.NavigationService.Navigate(uriSeeAdjustmentsInform);
                 }));
+                return true;
+            }
+            else{
+                return false;
             }
         }
 

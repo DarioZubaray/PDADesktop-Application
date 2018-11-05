@@ -17,7 +17,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using PDADesktop.Model.Dto;
 using System.Windows.Threading;
-using System.Windows.Navigation;
 
 namespace PDADesktop.ViewModel
 {
@@ -464,7 +463,8 @@ namespace PDADesktop.ViewModel
         #region dispatcherTimer
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (!loadOnceCentroActividadesWorker.IsBusy || syncWorker.IsBusy)
+            if (!loadOnceCentroActividadesWorker.IsBusy || !syncWorker.IsBusy ||
+                !adjustmentWorker.IsBusy || !redirectWorker.IsBusy || !reloadCentroActividadesWorker.IsBusy)
             {
                 bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
                 logger.Debug("disptachertimer tick => Device status: " + deviceStatus);
@@ -1240,6 +1240,7 @@ namespace PDADesktop.ViewModel
         private void redirectWorker_RunwWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("AdjustmentWorker -> Run worker completed");
+            HidingWaitingPanel();
         }
         #endregion
 
@@ -1374,18 +1375,18 @@ namespace PDADesktop.ViewModel
         public void BotonEstadoGenesix(object obj)
         {
             logger.Info("Boton estado genesix: " + obj);
-            DisplayWaitingPanel("Espere por favor");
+            //DisplayWaitingPanel("Espere por favor");
             logger.Info(MyAppProperties.SelectedSync.actividad);
 
-            redirectWorker.RunWorkerAsync();
+            //redirectWorker.RunWorkerAsync();
         }
         public void BotonEstadoPDA(object obj)
         {
             logger.Info("Boton estado pda");
-            DisplayWaitingPanel("Espere por favor");
+            //DisplayWaitingPanel("Espere por favor");
             logger.Info(MyAppProperties.SelectedSync.actividad);
 
-            redirectWorker.RunWorkerAsync();
+            //redirectWorker.RunWorkerAsync();
         }
         public void BotonEstadoGeneral(object obj)
         {
