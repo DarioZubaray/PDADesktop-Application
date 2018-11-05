@@ -1335,7 +1335,7 @@ namespace PDADesktop.ViewModel
 
         public void BuscarLoteMethod(object obj)
         {
-            DisplayWaitingPanel("");
+            DisplayWaitingPanel("Buscando Lotes...");
             MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uri = new Uri(Constants.BUSCAR_LOTES_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
