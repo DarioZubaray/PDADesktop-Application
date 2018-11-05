@@ -131,7 +131,7 @@
                       BorderThickness="1" BorderBrush="Gainsboro"
                       HorizontalAlignment="Center" VerticalAlignment="Top"
                       Height="Auto" Width="920"
-                      AutoGenerateColumns="False" 
+                      AutoGenerateColumns="False" IsReadOnly="True"
                       AlternatingRowBackground="Gainsboro" AlternationCount="2"
                       ItemsSource="{Binding sincronizaciones}" Grid.ColumnSpan="3"
                       SelectedItem="{Binding Path=SelectedSynchronization, Mode=TwoWay}">
@@ -156,7 +156,7 @@
                                     <Button Content="{Binding genesix}"
                                             Style="{StaticResource MaterialDesignFlatButton}"
                                             materialDesign:RippleAssist.IsDisabled="True"
-                                            Command="{Binding EstadoGenesixCommand}"/>
+                                            Command="{Binding EstadoGenesixCommand}" />
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
