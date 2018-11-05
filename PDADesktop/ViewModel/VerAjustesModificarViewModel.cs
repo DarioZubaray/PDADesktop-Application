@@ -173,7 +173,10 @@ namespace PDADesktop.ViewModel
             dialogCoordinator = instance;
             DisplayWaitingPanel("Cargando...");
 
-            ListView ajustes = HttpWebClientUtil.LoadAdjustmentsGrid();
+            //TODO mover esta llama a un metodo de un worker en segundo plano
+            string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
+            string estadoInformado = "true";
+            ListView ajustes = HttpWebClientUtil.LoadAdjustmentsGrid(batchId, estadoInformado);
             adjustments = ListViewUtils.ParserAjustesDataGrid(ajustes);
 
             AdjustmentEnableEdit = false;

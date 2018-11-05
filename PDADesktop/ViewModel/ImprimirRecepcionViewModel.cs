@@ -160,7 +160,10 @@ namespace PDADesktop.ViewModel
         private void loadPrintReceptionWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("Load Print Reception -> Do Work");
-            ListView listView = HttpWebClientUtil.GetGrillaRECEP();
+            //TODO obtener el idLote
+            string batchId = "141147";
+            string informedState = "false";
+            ListView listView = HttpWebClientUtil.GetReceptionGrid(batchId, informedState);
             var dispatcher = App.Instance.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
