@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PDADesktop.View"
         xmlns:VM="clr-namespace:PDADesktop.ViewModel"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         Icon="../resources/favicon.ico"
         Title="PDA Desktop Application" Height="730" Width="920">
