@@ -867,6 +867,12 @@ namespace PDADesktop.ViewModel
 
             string storeId = MyAppProperties.storeId;
             string currentBatchId = MyAppProperties.currentBatchId;
+            if(currentBatchId == null)
+            {
+                currentMessage = "Obteniendo el id del último lote para sucursal " + storeId + " ...";
+                NotifyCurrentMessage(currentMessage);
+                currentBatchId = HttpWebClientUtil.GetCurrentBatchId(storeId).ToString();
+            }
             if (serverStatus)
             {
                 currentMessage = "Obteniendo detalles de sincronización para lote " + currentBatchId + " ...";
@@ -949,6 +955,11 @@ namespace PDADesktop.ViewModel
                     currentMessage = "Creando nuevo lote de sincronización ...";
                     NotifyCurrentMessage(currentMessage);
                     List<Sincronizacion> newSync = CreateNewBatch();
+
+                    if(newSync == null)
+                    {
+                        //TODO interrumpir la sincronizacion y avisar
+                    }
 
                     currentMessage = "Informando a genesix ...";
                     NotifyCurrentMessage(currentMessage);
@@ -1170,7 +1181,7 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region sync Worker
+        #region reload Sync Data Grid Worker
         private void syncDataGrid_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Info("<- Cargando la grilla");
