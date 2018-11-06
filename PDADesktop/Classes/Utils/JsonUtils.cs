@@ -13,7 +13,14 @@ namespace PDADesktop.Classes.Utils
 
         public static List<Sincronizacion> GetListSinchronization(string serializedJson)
         {
-            return JsonConvert.DeserializeObject<List<Sincronizacion>>(serializedJson);
+            try
+            {
+                return JsonConvert.DeserializeObject<List<Sincronizacion>>(serializedJson);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public static List<String> GetListStringOfAdjustment(string serializedJson)
