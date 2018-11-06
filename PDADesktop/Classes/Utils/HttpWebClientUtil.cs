@@ -459,12 +459,12 @@ namespace PDADesktop.Classes.Utils
             logger.Debug(responseExecutedInform);
         }
 
-        internal static ControlBloqueoPDA ControlDeviceLock(long syncId, string storeId)
+        internal static ActionResultDto ControlDeviceLock(long syncId, string storeId)
         {
             string urlControlBloqueoPDA = ConfigurationManager.AppSettings.Get(Constants.API_CONTROL_BLOQUEO_PDA);
             string queryParams = "?idSincronizacion=" + syncId + "&idSucursal=" + storeId;
             string responseControlBloqueoPDA = SendHttpGetRequest(urlControlBloqueoPDA + queryParams);
-            return JsonUtils.GetControlBloqueoPDA(responseControlBloqueoPDA);
+            return JsonUtils.GetActionResult(responseControlBloqueoPDA);
         }
 
         internal static ListView LoadAdjustmentsGrid(string lote, string estadoInformado,

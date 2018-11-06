@@ -235,8 +235,8 @@ namespace PDADesktop.ViewModel
             }
             var deviceHandler = App.Instance.deviceHandler;
             string storeId = MyAppProperties.storeId;
-            ControlBloqueoPDA unlockDevice = deviceHandler.ControlDeviceLock(syncId, storeId);
-            if (unlockDevice.desbloquearPDA)
+            ActionResultDto unlockDevice = deviceHandler.ControlDeviceLock(syncId, storeId);
+            if (unlockDevice.success)
             {
                 deviceHandler.ChangeSynchronizationState(Constants.ESTADO_SINCRO_FIN);
             }

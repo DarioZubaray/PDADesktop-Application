@@ -1,6 +1,7 @@
 ﻿using log4net;
 using PDADesktop.Classes.Utils;
 using PDADesktop.Model;
+using PDADesktop.Model.Dto;
 using System;
 using System.Configuration;
 
@@ -237,9 +238,9 @@ namespace PDADesktop.Classes.Devices
             return "0|0|00000000000000|0|0.0.0.0|0";
         }
 
-        public ControlBloqueoPDA ControlDeviceLock(long syncId, string storeId)
+        public ActionResultDto ControlDeviceLock(long syncId, string storeId)
         {
-            ControlBloqueoPDA desbloquearPDA = HttpWebClientUtil.ControlDeviceLock(syncId, storeId);
+            ActionResultDto desbloquearPDA = HttpWebClientUtil.ControlDeviceLock(syncId, storeId);
             return desbloquearPDA;
         }
 

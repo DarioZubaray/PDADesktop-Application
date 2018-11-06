@@ -128,8 +128,8 @@ namespace PDADesktop.Classes.Utils
                 string storeId = MyAppProperties.storeId;
                 DownloadFromGenesix(Constants.ACTIVIDAD_INFORMAR_RECEPCIONES, storeId, syncId);
 
-                ControlBloqueoPDA unlockDevice = deviceHandler.ControlDeviceLock(syncId, storeId);
-                if (unlockDevice.desbloquearPDA)
+                ActionResultDto unlockDevice = deviceHandler.ControlDeviceLock(syncId, storeId);
+                if (unlockDevice.success)
                 {
                     deviceHandler.ChangeSynchronizationState(Constants.ESTADO_SINCRO_FIN);
                 }
@@ -145,8 +145,8 @@ namespace PDADesktop.Classes.Utils
                 string storeId = MyAppProperties.storeId;
                 DownloadFromGenesix(activityId, storeId, syncId);
 
-                ControlBloqueoPDA desbloquearPDA = deviceHandler.ControlDeviceLock(syncId, storeId);
-                if (desbloquearPDA.desbloquearPDA)
+                ActionResultDto desbloquearPDA = deviceHandler.ControlDeviceLock(syncId, storeId);
+                if (desbloquearPDA.success)
                 {
                     deviceHandler.ChangeSynchronizationState(Constants.ESTADO_SINCRO_FIN);
                 }
@@ -168,8 +168,8 @@ namespace PDADesktop.Classes.Utils
 
             HttpWebClientUtil.ExecuteInformGenesix(syncId);
             string storeId = MyAppProperties.storeId;
-            ControlBloqueoPDA unlockDevice = deviceHandler.ControlDeviceLock(syncId, storeId);
-            if (unlockDevice.desbloquearPDA)
+            ActionResultDto unlockDevice = deviceHandler.ControlDeviceLock(syncId, storeId);
+            if (unlockDevice.success)
             {
                 deviceHandler.ChangeSynchronizationState(Constants.ESTADO_SINCRO_FIN);
             }

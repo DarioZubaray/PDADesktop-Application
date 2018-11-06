@@ -1,4 +1,4 @@
-﻿using PDADesktop.Model;
+﻿using PDADesktop.Model.Dto;
 
 namespace PDADesktop.Classes.Devices
 {
@@ -26,7 +26,7 @@ namespace PDADesktop.Classes.Devices
         void CreateEmptyDefaultDataFile();
         string GetLastVersionProgramFileFromServer();
         string GetNewDefaultDataContent();
-        ControlBloqueoPDA ControlDeviceLock(long syncId, string storeId);
+        ActionResultDto ControlDeviceLock(long syncId, string storeId);
         void ChangeSynchronizationState(string syncState);
 
         string ReadAdjustmentsDataFile();
