@@ -153,9 +153,9 @@ namespace PDADesktop.Classes.Utils
             return JsonUtils.GetListActividades(responseActivities);
         }
 
-        internal static bool DownloadFileFromServer(string urlPath, string filenameAndExtension, string destino)
+        internal static bool DownloadFileFromServer(string urlPath, string filenameAndExtension, string destino, int timeout = 150000)
         {
-            var client = new WebClient();
+            var client = new PDAWebClient(timeout);
             string userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
             client.Headers.Add("user-agent", userAgent);
             string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
