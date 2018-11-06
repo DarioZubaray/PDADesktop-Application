@@ -104,6 +104,61 @@ namespace PDADesktop.ViewModel
             }
         }
 
+        private bool firstButtonEnabled;
+        public bool FirstButtonEnabled
+        {
+            get
+            {
+                return firstButtonEnabled;
+            }
+            set
+            {
+                firstButtonEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool previousButtonEnabled;
+        public bool PreviousButtonEnabled
+        {
+            get
+            {
+                return previousButtonEnabled;
+            }
+            set
+            {
+                previousButtonEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool nextButtonEnabled;
+        public bool NextButtonEnabled
+        {
+            get
+            {
+                return nextButtonEnabled;
+            }
+            set
+            {
+                nextButtonEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool lastButtonEnabled;
+        public bool LastButtonEnabled
+        {
+            get
+            {
+                return lastButtonEnabled;
+            }
+            set
+            {
+                lastButtonEnabled = value;
+                OnPropertyChanged();
+            }
+        }
 
         private Model.Dto.ListView listView;
         #endregion
@@ -257,6 +312,11 @@ namespace PDADesktop.ViewModel
             AcceptCommand = new RelayCommand(AcceptMethod);
             PanelCloseCommand = new RelayCommand(PanelCloseMethod);
 
+            FirstButtonEnabled = false;
+            PreviousButtonEnabled = false;
+            NextButtonEnabled = true;
+            LastButtonEnabled = true;
+
             FirstCommand = new RelayCommand(GoFirstPage);
             PreviousCommand = new RelayCommand(GoPreviousPage);
             NextCommand = new RelayCommand(GoNextPage);
@@ -272,7 +332,7 @@ namespace PDADesktop.ViewModel
         #region RelayCommand Methods
         public void ReturnActivityCenterMethod(object obj)
         {
-            MyAppProperties.currentBatchId = obj.ToString();
+            MyAppProperties.currentBatchId = obj?.ToString();
             MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
@@ -297,32 +357,58 @@ namespace PDADesktop.ViewModel
         public void GoFirstPage(object obj)
         {
             DisplayWaitingPanel("");
-            logger.Debug("Pagina: " + this.listView.page);
             this.listView.page = 1;
+            FirstButtonEnabled = false;
+            PreviousButtonEnabled = false;
             loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
         }
 
         public void GoPreviousPage(object obj)
         {
             DisplayWaitingPanel("");
-            logger.Debug("Pagina: " + this.listView.page);
-            this.listView.page -= 1;
+            if(this.listView.page == 2)
+            {
+                this.listView.page = 1;
+                FirstButtonEnabled = false;
+                PreviousButtonEnabled = false;
+            }
+            else
+            {
+                this.listView.page -= 1;
+                FirstButtonEnabled = true;
+                PreviousButtonEnabled = true;
+            }
+            NextButtonEnabled = true;
+            LastButtonEnabled = true;
             loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
         }
 
         public void GoNextPage(object obj)
         {
             DisplayWaitingPanel("");
-            logger.Debug("Pagina: " + this.listView.page);
-            this.listView.page += 1;
+            if(this.listView.page == this.listView.total - 1)
+            {
+                this.listView.page = this.listView.total;
+                NextButtonEnabled = false;
+                LastButtonEnabled = false;
+            }
+            else
+            {
+                this.listView.page += 1;
+                NextButtonEnabled = true;
+                LastButtonEnabled = true;
+            }
+            FirstButtonEnabled = true;
+            PreviousButtonEnabled = true;
             loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
         }
 
         public void GoLastPage(object obj)
         {
             DisplayWaitingPanel("");
-            logger.Debug("Pagina: " + this.listView.page);
             this.listView.page = this.listView.total;
+            NextButtonEnabled = false;
+            LastButtonEnabled = false;
             loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
         }
         #endregion

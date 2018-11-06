@@ -93,11 +93,11 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Button Command="{Binding FirstCommand}" Grid.Column="0" 
+            <Button Command="{Binding FirstCommand}" IsEnabled="{Binding FirstButtonEnabled}" Grid.Column="0" 
                     Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Margin="5">
                 <materialDesign:PackIcon Kind="ChevronDoubleLeft" Height="24" Width="24" />
             </Button>
-            <Button Command="{Binding PreviousCommand}" Grid.Column="1" 
+            <Button Command="{Binding PreviousCommand}" IsEnabled="{Binding PreviousButtonEnabled}" Grid.Column="1" 
                     Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Margin="5">
                 <materialDesign:PackIcon Kind="ChevronLeft" Height="24" Width="24" />
             </Button>
@@ -106,11 +106,11 @@
                        VerticalAlignment="Center"  Grid.Column="2"
                        Text="{Binding Path=PagerLegend, UpdateSourceTrigger=PropertyChanged}" Margin="10, 0"/>
 
-            <Button Command="{Binding NextCommand}"  Grid.Column="3" 
+            <Button Command="{Binding NextCommand}" IsEnabled="{Binding NextButtonEnabled}" Grid.Column="3" 
                     Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Margin="5">
                 <materialDesign:PackIcon Kind="ChevronRight" Height="24" Width="24" />
             </Button>
-            <Button Command="{Binding LastCommand}" Grid.Column="4" 
+            <Button Command="{Binding LastCommand}" IsEnabled="{Binding LastButtonEnabled}" Grid.Column="4" 
                     Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Margin="5">
                 <materialDesign:PackIcon Kind="ChevronDoubleRight" Height="24" Width="24" />
             </Button>
