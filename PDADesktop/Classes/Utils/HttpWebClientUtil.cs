@@ -541,7 +541,7 @@ namespace PDADesktop.Classes.Utils
         {
             string urlGetAdjustmentsByBatchId = ConfigurationManager.AppSettings.Get(Constants.API_GET_ADJUSTMENTS_BY_BATCH_ID);
             Int32 nd = DateTimeUtils.GetUnixTimeFromUTCNow();
-            string queryParams = "?idLote="+ batchId + "&_search=false"
+            string queryParams = "?lote="+ batchId + "&_search=false"
                 +"&nd="+nd+"&rows="+rows+"&page="+page+"&sidx=idAjuste&sord=asc";
             string responseGetAdjustmentsByBatchId = SendHttpGetRequest(urlGetAdjustmentsByBatchId + queryParams);
             return JsonUtils.GetListView(responseGetAdjustmentsByBatchId);
