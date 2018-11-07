@@ -65,8 +65,8 @@ namespace PDADesktop.Classes.Utils
                 adjustmentContent.Append(ajuste.ean).Append("|");
                 adjustmentContent.Append(ajuste.fechaAjuste).Append("|");
                 adjustmentContent.Append(ajuste.motivo).Append("|");
-                adjustmentContent.Append(ajuste.cantidad).Append("|");
                 adjustmentContent.Append(ajuste.perfilGenesix).Append("|");
+                adjustmentContent.Append(ajuste.cantidad).Append("|");
                 adjustmentContent.Append(ajuste.claveAjuste).Append("\r\n");
             }
             return adjustmentContent.ToString();
