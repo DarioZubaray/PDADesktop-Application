@@ -93,7 +93,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <TextBlock Text="No hay ajustes realizados que mostrar" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="280,100,280,355"
+        <TextBlock Text="No hay ajustes realizados que mostrar" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="280,100"
                        Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=dataGrid_verAjustesRealizados}" Grid.Column="1" Width="350" />
 
         <StackPanel Grid.Row="1">
