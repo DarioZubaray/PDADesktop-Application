@@ -18,6 +18,7 @@ using System.Windows.Input;
 using PDADesktop.Model.Dto;
 using System.Windows.Threading;
 using MahApps.Metro.Controls.Dialogs;
+using System.Threading.Tasks;
 
 namespace PDADesktop.ViewModel
 {
@@ -454,7 +455,6 @@ namespace PDADesktop.ViewModel
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 15);
-            dispatcherTimer.Start();
 
             ShowPanelCommand = new RelayCommand(MostrarPanel);
             PanelCloseCommand = new RelayCommand(CerrarPanel, param => this.canExecute);
@@ -482,12 +482,14 @@ namespace PDADesktop.ViewModel
                 }
                 else
                 {
+                    dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        HidePanelNoConnection();
+                    }));
                     if (MyAppProperties.needReloadActivityCenter)
                     {
                         dispatcher.BeginInvoke(new Action(() =>
                         {
-                            PanelLoading_NC = false;
-                            PanelMainMessage_NC = "La conexión ha vuelto! que bien!";
                             PanelLoading = true;
                         }));
                         loadOnceCentroActividadesWorker.RunWorkerAsync();
@@ -509,6 +511,12 @@ namespace PDADesktop.ViewModel
             PanelLoading_NC = true;
             PanelMainMessage_NC = "Se ha perdido la conexión con el Dispositivo " + App.Instance.deviceHandler.GetNameToDisplay();
             PanelSubMessage_NC = "Reintentando...";
+        }
+
+        private void HidePanelNoConnection()
+        {
+            PanelLoading_NC = false;
+            PanelMainMessage_NC = "La conexión ha vuelto! que bien!";
         }
         #endregion
 
@@ -834,12 +842,12 @@ namespace PDADesktop.ViewModel
         private void loadOnceCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("loadOnceCentroActividades Worker ->runWorkedCompleted");
+            MyAppProperties.needReloadActivityCenter = false;
             HidingWaitingPanel();
-            if (dispatcherTimer != null)
+            if (dispatcherTimer != null && !dispatcherTimer.IsEnabled)
             {
                 dispatcherTimer.Start();
             }
-            MyAppProperties.needReloadActivityCenter = false;
         }
         #endregion
 
@@ -1227,7 +1235,7 @@ namespace PDADesktop.ViewModel
             else
             {
                 PanelLoading = true;
-                AvisoAlUsuario("No se detecta conexion con la PDA");
+                AlertUserMetroDialog("No se detecta conexion con la PDA");
             }
         }
 
@@ -1412,7 +1420,6 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-
         #region Panel Methods
         public void DisplayWaitingPanel(string mainMessage, string subMessage = "")
         {
@@ -1443,18 +1450,30 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        public void AvisoAlUsuario(string mensaje)
+        #region Metro Dialog
+        private async Task<bool> AskUserMetroDialog(string message, string title = "Aviso")
         {
-            string message = mensaje;
-            string caption = "Aviso!";
-            MessageBoxButton messageBoxButton = MessageBoxButton.OK;
-            MessageBoxImage messageBoxImage = MessageBoxImage.Error;
-            MessageBoxResult result = MessageBox.Show(message, caption, messageBoxButton, messageBoxImage);
-            if (result == MessageBoxResult.OK)
-            {
-                logger.Debug("Informando al usuario: " + mensaje);
-            }
+            MessageDialogStyle messageDialogStyle = MessageDialogStyle.AffirmativeAndNegative;
+            bool userResponse = await ShowMetroDialog(messageDialogStyle, message, title);
+            return userResponse;
         }
+
+        private async void AlertUserMetroDialog(string message)
+        {
+            MessageDialogStyle messageDialogStyle = MessageDialogStyle.Affirmative;
+            await ShowMetroDialog(messageDialogStyle, message);
+        }
+
+        private async Task<bool> ShowMetroDialog(MessageDialogStyle messageDialogStyle, string message, string title = "Aviso")
+        {
+            MetroDialogSettings metroDialogSettings = new MetroDialogSettings();
+            metroDialogSettings.AffirmativeButtonText = "Aceptar";
+            metroDialogSettings.NegativeButtonText = "Cancelar";
+            MessageDialogResult userResponse = await dialogCoordinator.ShowMessageAsync(this, title, message, messageDialogStyle, metroDialogSettings);
+            return userResponse == MessageDialogResult.Affirmative;
+        }
+        #endregion
+
         #endregion
     }
 }
