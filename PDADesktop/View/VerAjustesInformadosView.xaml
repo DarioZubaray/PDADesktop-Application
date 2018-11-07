@@ -18,10 +18,6 @@
         Background="WhiteSmoke"
         FontFamily="{DynamicResource MaterialDesignFont}">
 
-    <UserControl.DataContext>
-        <VM:VerAjustesInformadosViewModel />
-    </UserControl.DataContext>
-
     <UserControl.Resources>
         <Style x:Key="DataGridContentCellCentering" TargetType="{x:Type DataGridCell}">
             <Setter Property="Template">

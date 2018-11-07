@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using PDADesktop.ViewModel;
+using System.Windows.Controls;
 
 namespace PDADesktop.View
 {
@@ -7,10 +8,12 @@ namespace PDADesktop.View
     /// </summary>
     public partial class LoginView : UserControl
     {
+        LoginViewModel loginViewModel = new LoginViewModel();
 
         public LoginView()
         {
             InitializeComponent();
+            this.DataContext = loginViewModel;
         }
     }
 }

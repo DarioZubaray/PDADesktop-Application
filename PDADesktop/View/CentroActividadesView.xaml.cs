@@ -11,9 +11,12 @@ namespace PDADesktop.View
     /// </summary>
     public partial class CentroActividadesView : UserControl
     {
+        CentroActividadesViewModel centroActividadesViewModel = new CentroActividadesViewModel();
+
         public CentroActividadesView()
         {
             InitializeComponent();
+            this.DataContext = centroActividadesViewModel;
         }
     }
 }

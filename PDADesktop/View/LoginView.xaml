@@ -20,10 +20,6 @@
              FontFamily="{DynamicResource MaterialDesignFont}"
              FocusManager.FocusedElement="{Binding ElementName=usernameText}">
 
-    <UserControl.DataContext>
-        <VM:LoginViewModel />
-    </UserControl.DataContext>
-
     <UserControl.Background>
         <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
             <GradientStop Color="#FFBF00" Offset="0"/>

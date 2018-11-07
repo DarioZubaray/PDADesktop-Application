@@ -18,10 +18,6 @@
              mc:Ignorable="d"
              d:DesignHeight="730" d:DesignWidth="920">
 
-    <UserControl.DataContext>
-        <VM:CentroActividadesViewModel />
-    </UserControl.DataContext>
-
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding CentroActividadesLoadedCommand}" />
@@ -189,6 +185,10 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
+
+            <TextBlock Text="No hay sincronizaciones que mostrar" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="300,100,300,355"
+                       Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=dataGrid}" Grid.Column="1" Width="285"  />
+
             <Grid Grid.Column="1" Grid.Row="2" Width="Auto">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="Auto">
                     <Label x:Name="label_version" Content="Version Escritorio" HorizontalAlignment="Center" VerticalAlignment="Center"/>
