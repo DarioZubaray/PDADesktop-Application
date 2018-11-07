@@ -88,6 +88,9 @@
             </DataGrid.Columns>
         </DataGrid>
 
+        <TextBlock Text="No hay ajustes informados que mostrar" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="280,100,280,355"
+                       Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=dataGrid_verAjustesInformados}" Grid.Column="1" Width="350" />
+
         <StackPanel Margin="0,680,0,0">
             <Button Style="{StaticResource MaterialDesignFlatButton}" 
                     ToolTip="Volver al centro de actividades"

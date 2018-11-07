@@ -80,6 +80,9 @@
             </DataGrid.Columns>
         </DataGrid>
 
+        <TextBlock Text="No hay lotes que mostrar" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="300,100,300,355"
+                       Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=dataGrid_buscarLotes}" Grid.Column="1" Width="285" />
+
         <Grid Margin="0, 580, 0, 80" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />

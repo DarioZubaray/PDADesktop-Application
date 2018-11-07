@@ -46,7 +46,7 @@
             <RowDefinition Height="8*" />
             <RowDefinition Height="3*" />
         </Grid.RowDefinitions>
-        <DataGrid x:Name="dataGrid_verAjustesRealizados" Grid.Row="0"
+        <DataGrid x:Name="dataGrid_verAjustesModificar" Grid.Row="0"
                   BorderThickness="1" BorderBrush="Gainsboro"
                   HorizontalAlignment="Center" VerticalAlignment="Stretch"
                   HorizontalContentAlignment="Center" VerticalContentAlignment="Top"
@@ -87,6 +87,9 @@
                                     CellStyle="{StaticResource DataGridContentCellCentering}"/>
             </DataGrid.Columns>
         </DataGrid>
+
+        <TextBlock Text="No hay ajustes a modificar que mostrar" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="280,100,280,355"
+                       Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=dataGrid_verAjustesModificar}" Grid.Column="1" Width="350" />
 
         <StackPanel Grid.Row="1">
             <Grid VerticalAlignment="Stretch">
