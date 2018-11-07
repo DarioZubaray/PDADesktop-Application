@@ -11,6 +11,7 @@ using System.Windows.Input;
 using MahApps.Metro.Controls.Dialogs;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using PDADesktop.Classes.Devices;
 
 namespace PDADesktop.ViewModel
 {
@@ -258,19 +259,28 @@ namespace PDADesktop.ViewModel
             bool deviceStatus = deviceHandler.IsDeviceConnected();
             if (deviceStatus)
             {
-                string deviceReadAdjustmentDataFile = deviceHandler.ReadAdjustmentsDataFile();
+                string deviceReadAdjustmentDataFile = null;
+                try
+                {
+                    deviceReadAdjustmentDataFile = deviceHandler.ReadAdjustmentsDataFile();
+                }
+                catch (Exception ex)
+                {
+                    logger.Debug(ex.Message);
+                    await AlertUserMetroDialog("Ocurrio un error en la lectura del archivo de ajuste.");
+                }
                 if (deviceReadAdjustmentDataFile != null)
                 {
                     UpdateAjustesGrid(deviceReadAdjustmentDataFile);
                 }
                 else
                 {
-                    await NotifyToUserMahappDialog("No se encotraron ajustes!");
+                    await AlertUserMetroDialog("No se encotraron ajustes!");
                 }
             }
             else
             {
-                await NotifyToUserMahappDialog("No se detecta conexion con la PDA");
+                await AlertUserMetroDialog("No se detecta conexion con la PDA");
             }
         }
 
@@ -323,14 +333,22 @@ namespace PDADesktop.ViewModel
             logger.Debug("GuardarCambiosButton");
             string newAdjustmentContent = TextUtils.ParseCollectionToAdjustmentDAT(Adjustments);
             logger.Debug("Nuevos ajustes: " + newAdjustmentContent);
-
-            if (App.Instance.deviceHandler.OverWriteAdjustmentMade(newAdjustmentContent))
+            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
+            try
             {
-                RedirectToActivityCenterView();
-            }
-            else
+                bool overWriteSuccess = deviceHandler.OverWriteAdjustmentMade(newAdjustmentContent);
+                if (overWriteSuccess)
+                {
+                    RedirectToActivityCenterView();
+                }
+                else
+                {
+                    await AlertUserMetroDialog("No se ha podido sobreescribir el ajuste deseado.");
+                }
+            }catch (Exception e)
             {
-                await NotifyToUserMahappDialog("No se ha podido sobreescribir el ajuste deseado.");
+                logger.Error(e.Message);
+                await AlertUserMetroDialog("Ocurrió un error al escribir el archivo de ajuste");
             }
         }
 
@@ -370,7 +388,7 @@ namespace PDADesktop.ViewModel
             return resultAffirmative;
         }
 
-        private async Task<bool> NotifyToUserMahappDialog(string message, string title = "Aviso")
+        private async Task<bool> AlertUserMetroDialog(string message, string title = "Aviso")
         {
             MetroDialogSettings settings = new MetroDialogSettings();
             settings.AffirmativeButtonText = "Aceptar";
