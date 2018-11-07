@@ -490,7 +490,7 @@ namespace PDADesktop.ViewModel
                     {
                         dispatcher.BeginInvoke(new Action(() =>
                         {
-                            PanelLoading = true;
+                            DisplayWaitingPanel(String.Empty);
                         }));
                         loadOnceCentroActividadesWorker.RunWorkerAsync();
                         MyAppProperties.needReloadActivityCenter = false;
@@ -893,7 +893,7 @@ namespace PDADesktop.ViewModel
         private void reloadCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("ReloadCentroActividades Worker ->runWorkedCompleted");
-            PanelLoading = false;
+            HidingWaitingPanel();
             if (dispatcherTimer != null)
             {
                 dispatcherTimer.Start();
@@ -1183,7 +1183,7 @@ namespace PDADesktop.ViewModel
             var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
-                PanelLoading = false;
+                HidingWaitingPanel();
             }));
             if (dispatcherTimer != null)
             {
@@ -1210,9 +1210,7 @@ namespace PDADesktop.ViewModel
         }
         private void syncDataGrid_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            PanelLoading = false;
-            PanelMainMessage = "";
-            PanelSubMessage = "";
+            HidingWaitingPanel();
         }
         #endregion
 
@@ -1234,7 +1232,6 @@ namespace PDADesktop.ViewModel
             }
             else
             {
-                PanelLoading = true;
                 AlertUserMetroDialog("No se detecta conexion con la PDA");
             }
         }
@@ -1292,20 +1289,18 @@ namespace PDADesktop.ViewModel
 
         public void SincronizarTodosLosDatos(object obj)
         {
-            PanelLoading = true;
+            DisplayWaitingPanel("Sincronizando todos los datos, Espere por favor");
             BannerApp.PrintSynchronization();
             MyAppProperties.isSynchronizationComplete = true;
-            PanelMainMessage = "Sincronizando todos los datos, Espere por favor";
             logger.Info("Sincronizando todos los datos");
             syncWorker.RunWorkerAsync();
         }
 
         public void InformarGenesix(object obj)
         {
-            PanelLoading = true;
+            DisplayWaitingPanel("Informando a genesix, Espere por favor");
             BannerApp.PrintInformGX();
             MyAppProperties.isSynchronizationComplete = false;
-            PanelMainMessage = "Informando a genesix, Espere por favor";
             logger.Info("Informando a genesix");
             syncWorker.RunWorkerAsync();
         }
@@ -1331,27 +1326,21 @@ namespace PDADesktop.ViewModel
 
         public void SincronizacionAnterior(object obj)
         {
-            PanelLoading = true;
-            PanelMainMessage = "Obteniendo sincronizaciones";
-            PanelSubMessage = "Espere por favor";
+            DisplayWaitingPanel("Obteniendo sincronizaciones", "Espere por favor");
             MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ANTERIOR);
             syncDataGridWorker.RunWorkerAsync();
         }
 
         public void SincronizacionSiguiente(object obj)
         {
-            PanelLoading = true;
-            PanelMainMessage = "Obteniendo sincronizaciones";
-            PanelSubMessage = "Espere por favor";
+            DisplayWaitingPanel("Obteniendo sincronizaciones", "Espere por favor");
             MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_SIGUIENTE);
             syncDataGridWorker.RunWorkerAsync();
         }
 
         public void GoLastSynchronization(object obj)
         {
-            PanelLoading = true;
-            PanelMainMessage = "Obteniendo sincronizaciones";
-            PanelSubMessage = "Espere por favor";
+            DisplayWaitingPanel("Obteniendo sincronizaciones", "Espere por favor");
             MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
             syncDataGridWorker.RunWorkerAsync();
         }
@@ -1436,12 +1425,12 @@ namespace PDADesktop.ViewModel
 
         public void MostrarPanel(object obj)
         {
-            PanelLoading = true;
+            DisplayWaitingPanel(String.Empty);
         }
 
         public void CerrarPanel(object obj)
         {
-            PanelLoading = false;
+            HidingWaitingPanel();
         }
 
         public void CerrarPanelNoConnection(object obj)
