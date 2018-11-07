@@ -1072,10 +1072,11 @@ namespace PDADesktop.ViewModel
             try
             {
                 string filePath = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+                string filePathExtended = TextUtils.ExpandEnviromentVariable(filePath);
                 string parametros = "?idActividad={0}&idSincronizacion={1}&registros={2}";
-                var lineCount = FileUtils.CountRegistryWithinFile(filePath + slashFilenameAndExtension);
+                var lineCount = FileUtils.CountRegistryWithinFile(filePathExtended + slashFilenameAndExtension);
                 parametros = String.Format(parametros, actionId, syncId, lineCount);
-                string respuesta = HttpWebClientUtil.UploadFileToServer(filePath + slashFilenameAndExtension, parametros);
+                string respuesta = HttpWebClientUtil.UploadFileToServer(filePathExtended + slashFilenameAndExtension, parametros);
                 logger.Debug(respuesta);
 
                 SynchronizationStateUtil.SetSentGenesixState(syncId);
