@@ -355,6 +355,7 @@ namespace PDADesktop.ViewModel
         {
             HidingWaitingPanel();
         }
+        #endregion
 
         #region Paginator
         public void GoFirstPage(object obj)
@@ -363,6 +364,8 @@ namespace PDADesktop.ViewModel
             this.listView.page = 1;
             FirstButtonEnabled = false;
             PreviousButtonEnabled = false;
+            NextButtonEnabled = true;
+            LastButtonEnabled = true;
             loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
         }
 
@@ -412,10 +415,10 @@ namespace PDADesktop.ViewModel
             this.listView.page = this.listView.total;
             NextButtonEnabled = false;
             LastButtonEnabled = false;
+            FirstButtonEnabled = true;
+            PreviousButtonEnabled = true;
             loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
         }
-        #endregion
-
         #endregion
 
         #region Worker
@@ -449,7 +452,6 @@ namespace PDADesktop.ViewModel
             }));
         }
         #endregion
-
 
         #region Panel Methods
         public void DisplayWaitingPanel(string mainMessage, string subMessage = "")
