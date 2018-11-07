@@ -1,4 +1,5 @@
 ﻿using log4net;
+using MahApps.Metro.Controls.Dialogs;
 using PDADesktop.Classes;
 using PDADesktop.Classes.Utils;
 using PDADesktop.Model;
@@ -19,7 +20,7 @@ namespace PDADesktop.ViewModel
 
         #region Attributes
         private readonly BackgroundWorker loadAdjustmentInformed = new BackgroundWorker();
-
+        private IDialogCoordinator dialogCoordinator;
         private ObservableCollection<Ajustes> adjustmentsInformed;
         public ObservableCollection<Ajustes> AdjustmentsInformed
         {
@@ -123,10 +124,11 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Constructor
-        public VerAjustesInformadosViewModel()
+        public VerAjustesInformadosViewModel(IDialogCoordinator instance)
         {
             BannerApp.PrintSeeAdjustmentsInformed();
             DisplayWaitingPanel("Cargando...");
+            dialogCoordinator = instance;
             var dispatcher = App.Instance.MainWindow.Dispatcher;
 
             loadAdjustmentInformed.DoWork += loadAdjustmentInformed_DoWork;

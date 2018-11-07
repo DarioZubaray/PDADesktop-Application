@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using PDADesktop.Model.Dto;
 using System.Windows.Threading;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace PDADesktop.ViewModel
 {
@@ -219,7 +220,7 @@ namespace PDADesktop.ViewModel
         private readonly BackgroundWorker redirectWorker = new BackgroundWorker();
 
         private DispatcherTimer dispatcherTimer { get; set; }
-
+        private IDialogCoordinator dialogCoordinator;
         private string _txt_sincronizacion;
         public string txt_sincronizacion
         {
@@ -411,12 +412,13 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Constructor
-        public CentroActividadesViewModel()
+        public CentroActividadesViewModel(IDialogCoordinator instance)
         {
             BannerApp.PrintActivityCenter();
             PanelLoading_NC = false;
             PanelMainMessage_NC = "PDA SIN CONEXION";
             DisplayWaitingPanel("Cargando...");
+            dialogCoordinator = instance;
             setInfoLabels();
             ExitButtonCommand = new RelayCommand(ExitPortalApi, param => this.canExecute);
             SincronizarCommand = new RelayCommand(SincronizarTodosLosDatos, param => this.canExecute);

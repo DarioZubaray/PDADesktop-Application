@@ -1,4 +1,5 @@
-﻿using PDADesktop.ViewModel;
+﻿using MahApps.Metro.Controls.Dialogs;
+using PDADesktop.ViewModel;
 using System.Windows.Controls;
 
 namespace PDADesktop.View
@@ -8,7 +9,7 @@ namespace PDADesktop.View
     /// </summary>
     public partial class LoginView : UserControl
     {
-        LoginViewModel loginViewModel = new LoginViewModel();
+        LoginViewModel loginViewModel = new LoginViewModel(DialogCoordinator.Instance);
 
         public LoginView()
         {

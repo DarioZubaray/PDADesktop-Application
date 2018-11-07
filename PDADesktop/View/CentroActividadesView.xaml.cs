@@ -1,4 +1,5 @@
-﻿using PDADesktop.ViewModel;
+﻿using MahApps.Metro.Controls.Dialogs;
+using PDADesktop.ViewModel;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,7 +12,7 @@ namespace PDADesktop.View
     /// </summary>
     public partial class CentroActividadesView : UserControl
     {
-        CentroActividadesViewModel centroActividadesViewModel = new CentroActividadesViewModel();
+        CentroActividadesViewModel centroActividadesViewModel = new CentroActividadesViewModel(DialogCoordinator.Instance);
 
         public CentroActividadesView()
         {

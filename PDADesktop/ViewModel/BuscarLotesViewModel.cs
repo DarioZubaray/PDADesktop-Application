@@ -1,4 +1,5 @@
 ﻿using log4net;
+using MahApps.Metro.Controls.Dialogs;
 using PDADesktop.Classes;
 using PDADesktop.Classes.Utils;
 using PDADesktop.Model;
@@ -19,6 +20,7 @@ namespace PDADesktop.ViewModel
 
         #region Attributes
         private readonly BackgroundWorker loadSearchBatches = new BackgroundWorker();
+        private IDialogCoordinator dialogCoordinator;
 
         private ObservableCollection<Lote> searchBatch;
         public ObservableCollection<Lote> SearchBatch
@@ -300,10 +302,11 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Constructor
-        public BuscarLotesViewModel()
+        public BuscarLotesViewModel(IDialogCoordinator instance)
         {
             BannerApp.SearchBatches();
             DisplayWaitingPanel("Cargando...");
+            dialogCoordinator = instance;
             PagerLegend = "Buscar Lotes View Model";
             PagerResultLegend = "Mostrando 1 - 10 de 10 resultados";
             loadSearchBatches.DoWork += loadSearchBatches_DoWork;

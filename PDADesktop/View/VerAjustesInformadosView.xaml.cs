@@ -1,4 +1,5 @@
-﻿using PDADesktop.ViewModel;
+﻿using MahApps.Metro.Controls.Dialogs;
+using PDADesktop.ViewModel;
 using System.Windows.Controls;
 
 namespace PDADesktop.View
@@ -8,7 +9,7 @@ namespace PDADesktop.View
     /// </summary>
     public partial class VerAjustesInformadosView : UserControl
     {
-        VerAjustesInformadosViewModel verAjustesInformadosViewModel = new VerAjustesInformadosViewModel();
+        VerAjustesInformadosViewModel verAjustesInformadosViewModel = new VerAjustesInformadosViewModel(DialogCoordinator.Instance);
 
         public VerAjustesInformadosView()
         {

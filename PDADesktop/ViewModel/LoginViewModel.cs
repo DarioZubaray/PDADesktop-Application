@@ -1,4 +1,5 @@
 ﻿using log4net;
+using MahApps.Metro.Controls.Dialogs;
 using MaterialDesignThemes.Wpf;
 using PDADesktop.Classes;
 using PDADesktop.View;
@@ -15,6 +16,7 @@ namespace PDADesktop.ViewModel
         #region attributes
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly BackgroundWorker loginWorker = new BackgroundWorker();
+        private IDialogCoordinator dialogCoordinator;
         public string usernameText { get; set; }
         public string FloatingPasswordBox { get; set; }
 
@@ -170,10 +172,11 @@ namespace PDADesktop.ViewModel
         #endregion
         
         #region Constructor
-        public LoginViewModel()
+        public LoginViewModel(IDialogCoordinator instance)
         {
             BannerApp.PrintLogin();
             MyAppProperties.window = (MainWindow)Application.Current.MainWindow;
+            dialogCoordinator = instance;
             LoginButtonCommand = new RelayCommand(LoginPortalApi, param => this.canExecute);
             ShowPanelCommand = new RelayCommand(ShowPanel, param => this.canExecute);
             HidePanelCommand = new RelayCommand(HidePanel, param => this.canExecute);
