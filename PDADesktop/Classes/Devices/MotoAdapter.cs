@@ -2,6 +2,7 @@
 using PDADesktop.Classes.Utils;
 using PDADesktop.Model;
 using PDADesktop.Model.Dto;
+using System;
 using System.Configuration;
 
 namespace PDADesktop.Classes.Devices

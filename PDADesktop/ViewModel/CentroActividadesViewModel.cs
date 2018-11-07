@@ -726,12 +726,21 @@ namespace PDADesktop.ViewModel
         {
             string slashFilenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             IDeviceHandler deviceHandler = App.Instance.deviceHandler;
-            ResultFileOperation deviceCopyResult = deviceHandler.CopyDeviceFileToPublicLookUp(slashFilenameAndExtension);
-            if(deviceCopyResult.Equals(ResultFileOperation.OK))
+            try
             {
-                logger.Debug("Archivo copiado con éxito.");
+                ResultFileOperation deviceCopyResult = deviceHandler.CopyDeviceFileToPublicLookUp(slashFilenameAndExtension);
+                if(deviceCopyResult.Equals(ResultFileOperation.OK))
+                {
+                    logger.Debug("Archivo copiado con éxito.");
+                }
+                else
+                {
+                    string errorCopyDeviceFile = "Error al leer el archivo DEFAULT, Regenerándolo...";
+                    NotifyCurrentMessage(errorCopyDeviceFile);
+                    deviceHandler.CreateEmptyDefaultDataFile();
+                }
             }
-            else
+            catch
             {
                 string errorCopyDeviceFile = "Error al leer el archivo DEFAULT, Regenerándolo...";
                 NotifyCurrentMessage(errorCopyDeviceFile);
@@ -767,8 +776,15 @@ namespace PDADesktop.ViewModel
 
                         string deviceRelPathBin = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_BIN);
                         string slashFilenameAndExtension = FileUtils.PrependSlash(name);
-                        ResultFileOperation copyResult = deviceHandler.CopyPublicBinFileToDevice(deviceRelPathBin, slashFilenameAndExtension);
-                        logger.Debug("Resultado de copiar el archivo " + copyResult.ToString());
+                        try
+                        {
+                            ResultFileOperation copyResult = deviceHandler.CopyPublicBinFileToDevice(deviceRelPathBin, slashFilenameAndExtension);
+                            logger.Debug("Resultado de copiar el archivo " + copyResult.ToString());
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error(ex);
+                        }
                     }
                     logger.Info("Version obtenida del server: " + lastServerVersion);
                     FileUtils.UpdateDefaultDatFileInPublic(lastServerVersion, DeviceMainData.POSITION_VERSION);
