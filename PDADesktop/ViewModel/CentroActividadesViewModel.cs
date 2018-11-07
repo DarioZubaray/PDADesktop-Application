@@ -902,7 +902,7 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Synchonization Worker
-        private void syncWorker_DoWork(object sender, DoWorkEventArgs e)
+        private async void syncWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             string currentMessage = "sincronizar Worker ->doWork";
             logger.Debug(currentMessage);
@@ -939,8 +939,8 @@ namespace PDADesktop.ViewModel
                     if(needAskDiscarOldBatch)
                     {
                         string messageOldBatch = "Aun no se han finalizado todas las Actividades de la ultima Sincronización. Si genera una nueva Sincronización no podrá continuar con las Actividades pendientes. ¿Desesa continuar de todos modos?";
-                        bool continueOrCancel = AskCancelCurrentSynchronization(messageOldBatch);
-                        if(continueOrCancel)
+                        bool continueOrCancel = await AskUserMetroDialog(messageOldBatch);
+                        if (continueOrCancel)
                         {
                             logger.Info("Cancelando operacion por tener lotes antiguos");
                             return;
@@ -953,7 +953,7 @@ namespace PDADesktop.ViewModel
                     if(discardReceptionsIfThereWas)
                     {
                         string messageInformedReceptions = "Existen recepciones pendientes de informar, ¿Desea continuar y descartar las mismas?";
-                        bool continueOrCancel = AskCancelCurrentSynchronization(messageInformedReceptions);
+                        bool continueOrCancel = await AskUserMetroDialog(messageInformedReceptions);
                         if (continueOrCancel)
                         {
                             logger.Info("Cancelando operacion por tener recepciones pendientes");
@@ -1018,13 +1018,6 @@ namespace PDADesktop.ViewModel
             string idSucursal = MyAppProperties.storeId;
             ActionResultDto actionResult = HttpWebClientUtil.VerifyNewBatch(idSucursal);
             return !actionResult.success;
-        }
-
-        private bool AskCancelCurrentSynchronization(string message)
-        {
-            string caption = "Confirme";
-            MessageBoxResult result = MessageBox.Show(message, caption, MessageBoxButton.OKCancel, MessageBoxImage.Error);
-            return result.Equals(MessageBoxResult.Cancel);
         }
 
         private bool CheckInformedReceptions()
