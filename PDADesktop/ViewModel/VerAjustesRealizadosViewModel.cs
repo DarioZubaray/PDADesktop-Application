@@ -252,7 +252,7 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Workers
-        private async void loadVerAjustesRealizadosWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void loadVerAjustesRealizadosWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("Load ver ajustes realizados => Do Work");
             var deviceHandler = App.Instance.deviceHandler;
@@ -267,7 +267,7 @@ namespace PDADesktop.ViewModel
                 catch (Exception ex)
                 {
                     logger.Debug(ex.Message);
-                    await AlertUserMetroDialog("Ocurrio un error en la lectura del archivo de ajuste.");
+                    AlertUserMetroDialog("Ocurrio un error en la lectura del archivo de ajuste.");
                 }
                 if (deviceReadAdjustmentDataFile != null)
                 {
@@ -275,12 +275,12 @@ namespace PDADesktop.ViewModel
                 }
                 else
                 {
-                    await AlertUserMetroDialog("No se encotraron ajustes!");
+                    AlertUserMetroDialog("No se encotraron ajustes!");
                 }
             }
             else
             {
-                await AlertUserMetroDialog("No se detecta conexion con la PDA");
+                AlertUserMetroDialog("No se detecta conexion con la PDA");
             }
         }
 
@@ -321,14 +321,14 @@ namespace PDADesktop.ViewModel
         {
             logger.Debug("DescartarCambiosButton");
             string pregunta = "¿Desea descartar los cambios?";
-            bool discardChanges = await AskToUserMahappDialog(pregunta);
+            bool discardChanges = await AskUserMetroDialog(pregunta);
             if (discardChanges)
             {
                 RedirectToActivityCenterView();
             }
         }
 
-        public async void SaveChangesMethod(object obj)
+        public void SaveChangesMethod(object obj)
         {
             logger.Debug("GuardarCambiosButton");
             string newAdjustmentContent = TextUtils.ParseCollectionToAdjustmentDAT(Adjustments);
@@ -343,12 +343,12 @@ namespace PDADesktop.ViewModel
                 }
                 else
                 {
-                    await AlertUserMetroDialog("No se ha podido sobreescribir el ajuste deseado.");
+                    AlertUserMetroDialog("No se ha podido sobreescribir el ajuste deseado.");
                 }
             }catch (Exception e)
             {
                 logger.Error(e.Message);
-                await AlertUserMetroDialog("Ocurrió un error al escribir el archivo de ajuste");
+                AlertUserMetroDialog("Ocurrió un error al escribir el archivo de ajuste");
             }
         }
 
@@ -377,25 +377,26 @@ namespace PDADesktop.ViewModel
             window.frame.NavigationService.Navigate(uri);
         }
 
-        private async Task<bool> AskToUserMahappDialog(string message, string title = "Aviso")
+        private async Task<bool> AskUserMetroDialog(string message, string title = "Aviso")
         {
-            MetroDialogSettings settings = new MetroDialogSettings();
-            settings.AffirmativeButtonText = "Aceptar";
-            settings.NegativeButtonText = "Cancelar";
-            Task<MessageDialogResult> showMessageAsync = dialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative, settings);
-            MessageDialogResult messsageDialogResult = await showMessageAsync;
-            bool resultAffirmative = messsageDialogResult.Equals(MessageDialogResult.Affirmative);
-            return resultAffirmative;
+            MessageDialogStyle messageDialogStyle = MessageDialogStyle.AffirmativeAndNegative;
+            bool userResponse = await ShowMetroDialog(messageDialogStyle, message, title);
+            return userResponse;
         }
 
-        private async Task<bool> AlertUserMetroDialog(string message, string title = "Aviso")
+        private async void AlertUserMetroDialog(string message, string title = "Aviso")
         {
-            MetroDialogSettings settings = new MetroDialogSettings();
-            settings.AffirmativeButtonText = "Aceptar";
-            Task<MessageDialogResult> showMessageAsync = dialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative, settings);
-            MessageDialogResult messsageDialogResult = await showMessageAsync;
-            bool resultAffirmative = messsageDialogResult.Equals(MessageDialogResult.Affirmative);
-            return resultAffirmative;
+            MessageDialogStyle messageDialogStyle = MessageDialogStyle.Affirmative;
+            await ShowMetroDialog(messageDialogStyle, message);
+        }
+
+        private async Task<bool> ShowMetroDialog(MessageDialogStyle messageDialogStyle, string message, string title = "Aviso")
+        {
+            MetroDialogSettings metroDialogSettings = new MetroDialogSettings();
+            metroDialogSettings.AffirmativeButtonText = "Aceptar";
+            metroDialogSettings.NegativeButtonText = "Cancelar";
+            MessageDialogResult userResponse = await dialogCoordinator.ShowMessageAsync(this, title, message, messageDialogStyle, metroDialogSettings);
+            return userResponse == MessageDialogResult.Affirmative;
         }
         #endregion
     }
