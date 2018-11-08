@@ -14,13 +14,10 @@ namespace PDADesktop.ViewModel
 {
     class ImprimirRecepcionViewModel : ViewModelBase
     {
-        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         #region Attributes
+        #region Commons Attributes
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDialogCoordinator dialogCoordinator;
-
-        private readonly BackgroundWorker loadPrintReceptionWorker = new BackgroundWorker();
-        private readonly BackgroundWorker printerReceptionsWorker = new BackgroundWorker();
 
         private ObservableCollection<ImprimirRecepcionesDtoDataGrid> printReceptions;
         public ObservableCollection<ImprimirRecepcionesDtoDataGrid> PrintReceptions
@@ -51,49 +48,54 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region Loading panel
-        private bool _panelLoading;
+        #region Worker Attributes
+        private readonly BackgroundWorker loadPrintReceptionWorker = new BackgroundWorker();
+        private readonly BackgroundWorker printerReceptionsWorker = new BackgroundWorker();
+        #endregion
+
+        #region Loading panel Attributes
+        private bool panelLoading;
         public bool PanelLoading
         {
             get
             {
-                return _panelLoading;
+                return panelLoading;
             }
             set
             {
-                _panelLoading = value;
+                panelLoading = value;
                 OnPropertyChanged();
             }
         }
-        private string _panelMainMessage;
+        private string panelMainMessage;
         public string PanelMainMessage
         {
             get
             {
-                return _panelMainMessage;
+                return panelMainMessage;
             }
             set
             {
-                _panelMainMessage = value;
+                panelMainMessage = value;
                 OnPropertyChanged();
             }
         }
-        private string _panelSubMessage;
+        private string panelSubMessage;
         public string PanelSubMessage
         {
             get
             {
-                return _panelSubMessage;
+                return panelSubMessage;
             }
             set
             {
-                _panelSubMessage = value;
+                panelSubMessage = value;
                 OnPropertyChanged();
             }
         }
         #endregion
 
-        #region Command
+        #region Command Attributes
         private ICommand printCommand;
         public ICommand PrintCommand
         {
@@ -133,6 +135,7 @@ namespace PDADesktop.ViewModel
             }
         }
         #endregion
+        #endregion
 
         #region Constructor
         public ImprimirRecepcionViewModel(IDialogCoordinator instance)
@@ -147,19 +150,18 @@ namespace PDADesktop.ViewModel
             printerReceptionsWorker.DoWork += printerReceptionsWorker_DoWork;
             printerReceptionsWorker.RunWorkerCompleted += printerReceptionsWorker_RunWorkerCompleted;
 
-            ReturnCommand = new RelayCommand(ReturnMethod);
-            PanelCloseCommand = new RelayCommand(PanelCloseMethod);
+            ReturnCommand = new RelayCommand(ReturnActivityCenterAction);
+            PanelCloseCommand = new RelayCommand(PanelCloseAction);
 
             loadPrintReceptionWorker.RunWorkerAsync();
         }
         #endregion
 
         #region Workers
-
-        #region Load Print Reception
+        #region Load Print Reception Worker
         private void loadPrintReceptionWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("Load Print Reception -> Do Work");
+            logger.Debug("load print reception => Do Work");
             //TODO obtener el idLote
             string batchId = "141147";
             string informedState = "false";
@@ -175,14 +177,14 @@ namespace PDADesktop.ViewModel
         }
         private void loadPrintReceptionWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("Load Print Reception -> Run Work Completed");
+            logger.Debug("load print reception => Run Worker Completed");
         }
         #endregion
 
         #region Printer Reception Worker
         private void printerReceptionsWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("Printer Receptions => Do Worker");
+            logger.Debug("printer receptions => Do Worker");
             logger.Debug(this.SelectedReception);
 
             logger.Debug("Numero de recepcion: " + SelectedReception.numeroRecepcion);
@@ -206,7 +208,7 @@ namespace PDADesktop.ViewModel
 
         private void printerReceptionsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("Printer Receptions => Run Work Completed");
+            logger.Debug("printer receptions => Run Worker Completed");
             var dispatcher = App.Instance.Dispatcher;
             dispatcher.BeginInvoke(new Action(() => {
                 HidingWaitingPanel();
@@ -215,8 +217,8 @@ namespace PDADesktop.ViewModel
         #endregion
         #endregion
 
-        #region Command Methods
-        private void PrintMethod(object sender)
+        #region Action Methods
+        private void PrintAction(object sender)
         {
             logger.Debug("Print Method");
             DisplayWaitingPanel("Imprimiendo...");
@@ -224,7 +226,7 @@ namespace PDADesktop.ViewModel
             printerReceptionsWorker.RunWorkerAsync();
         }
 
-        private void ReturnMethod(object sender)
+        private void ReturnActivityCenterAction(object sender)
         {
             DisplayWaitingPanel("Volviendo...");
             logger.Debug("return Method");
@@ -232,21 +234,30 @@ namespace PDADesktop.ViewModel
             HidingWaitingPanel();
         }
 
-        private void PanelCloseMethod(object sender)
+        private void PanelCloseAction(object sender)
         {
             HidingWaitingPanel();
         }
         #endregion
 
-       #region Methods
+        #region Commons Methods
         public void AddPrintCommand(ObservableCollection<ImprimirRecepcionesDtoDataGrid> imprimirRecepciones)
         {
             foreach(ImprimirRecepcionesDtoDataGrid imprimirRecepcion in imprimirRecepciones)
             {
-                imprimirRecepcion.PrintCommand = new RelayCommand(PrintMethod, param => true);
+                imprimirRecepcion.PrintCommand = new RelayCommand(PrintAction, param => true);
             }
         }
 
+        private void RedirectToActivityCenterView()
+        {
+            MainWindow window = (MainWindow)Application.Current.MainWindow;
+            Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
+            window.frame.NavigationService.Navigate(uri);
+        }
+        #endregion
+
+        #region Panel Methods
         public void DisplayWaitingPanel(string mainMessage, string subMessage = "")
         {
             PanelLoading = true;
@@ -259,14 +270,6 @@ namespace PDADesktop.ViewModel
             PanelMainMessage = "";
             PanelSubMessage = "";
         }
-
-        private void RedirectToActivityCenterView()
-        {
-            MainWindow window = (MainWindow)Application.Current.MainWindow;
-            Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
-            window.frame.NavigationService.Navigate(uri);
-        }
-
         #endregion
     }
 }

@@ -13,10 +13,11 @@ namespace PDADesktop.ViewModel
 {
     class LoginViewModel : ViewModelBase
     {
-        #region attributes
+        #region Attributes
+        #region Commons Attributes
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly BackgroundWorker loginWorker = new BackgroundWorker();
         private IDialogCoordinator dialogCoordinator;
+
         public string usernameText { get; set; }
         public string FloatingPasswordBox { get; set; }
 
@@ -32,6 +33,10 @@ namespace PDADesktop.ViewModel
                 remembermeCheck = value;
             }
         }
+        #endregion
+
+        #region Worker Attributes
+        private readonly BackgroundWorker loginWorker = new BackgroundWorker();
         #endregion
 
         #region Panel Loading Attributes
@@ -76,7 +81,7 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region Command
+        #region Command Attributes
         private ICommand loginButtonCommand;
         public ICommand LoginButtonCommand
         {
@@ -170,48 +175,42 @@ namespace PDADesktop.ViewModel
 
         private bool canExecute = true;
         #endregion
-        
+        #endregion
+
         #region Constructor
         public LoginViewModel(IDialogCoordinator instance)
         {
             BannerApp.PrintLogin();
             MyAppProperties.window = (MainWindow)Application.Current.MainWindow;
             dialogCoordinator = instance;
-            LoginButtonCommand = new RelayCommand(LoginPortalApi, param => this.canExecute);
-            ShowPanelCommand = new RelayCommand(ShowPanel, param => this.canExecute);
-            HidePanelCommand = new RelayCommand(HidePanel, param => this.canExecute);
-            ChangeMainMessageCommand = new RelayCommand(ChangeMainMensage, param => this.canExecute);
-            ChangeSubMessageCommand = new RelayCommand(ChangeSubMensage, param => this.canExecute);
-            PanelCloseCommand = new RelayCommand(ClosePanel, param => this.canExecute);
-            FlipLoginCommand = new RelayCommand(FlipLoginMethod);
-            loginWorker.DoWork += worker_DoWork;
-            loginWorker.RunWorkerCompleted += worker_RunWorkerCompleted;
+
+            LoginButtonCommand = new RelayCommand(LoginPortalApiAction, param => this.canExecute);
+            ShowPanelCommand = new RelayCommand(ShowPanelAction, param => this.canExecute);
+            HidePanelCommand = new RelayCommand(HidePanelAction, param => this.canExecute);
+            ChangeMainMessageCommand = new RelayCommand(ChangeMainMensageAction, param => this.canExecute);
+            ChangeSubMessageCommand = new RelayCommand(ChangeSubMensageAction, param => this.canExecute);
+            PanelCloseCommand = new RelayCommand(ClosePanelAction, param => this.canExecute);
+            FlipLoginCommand = new RelayCommand(FlipLoginAction);
+
+            loginWorker.DoWork += loginWorker_DoWork;
+            loginWorker.RunWorkerCompleted += loginWorker_RunWorkerCompleted;
+
             RemembermeCheck = true;
         }
         #endregion
 
-        #region Worker Method
-        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        #region Workers
+        #region Login Worker
+        private void loginWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            // run all background tasks here
-            logger.Debug("login worker -> doWork");
+            logger.Debug("login => Do Work");
             Thread.Sleep(1200);
             MainWindow window = MyAppProperties.window;
             if ("juli".Equals(usernameText))
             {
                 logger.Debug("recuerdame: " + RemembermeCheck);
                 logger.Debug("Nombre no null: " + usernameText);
-                /*
-                DateTime fechaExpiracion = new DateTime(2020, 12, 31);
-                string userCookie = "username=" + usernameText + ";expires=" + fechaExpiracion.ToString("r");
-                string urlFromProperties = ConfigurationManager.AppSettings.Get("URL_COOKIE");
-                string variablePublic = Environment.ExpandEnvironmentVariables(urlFromProperties);
-                Uri cookieUri1 = new Uri(variablePublic);
-                Application.SetCookie(cookieUri1, userCookie);
 
-                string cookie = Application.GetCookie(cookieUri1);
-                logger.Info("Cookie recibida: " + cookie);
-                */
                 //aca deberia llamar al servicio de login
                 //Redirecciona a centroActividades
                 Uri uriActivityCenter = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
@@ -240,9 +239,9 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void loginWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("login Worker ->runWorkedCompleted");
+            logger.Debug("login => Run Worker Completed");
             var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
@@ -250,9 +249,10 @@ namespace PDADesktop.ViewModel
             }));
         }
         #endregion
+        #endregion
 
-        #region methods
-        public void LoginPortalApi(object obj)
+        #region Commons Methods
+        public void LoginPortalApiAction(object obj)
         {
             logger.Info("login portal api");
             logger.Debug("Usuario: " + usernameText);
@@ -262,52 +262,43 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region panel methods
-        public void ShowPanel(object obj)
+        #region Panel Methods
+        public void ShowPanelAction(object obj)
         {
             logger.Debug("Mostrando panel de carga");
             PanelLoading = true;
         }
 
-        public void HidePanel(object obj)
+        public void HidePanelAction(object obj)
         {
             logger.Debug("Ocultando panel de carga");
             PanelLoading = false;
         }
-        public void ChangeMainMensage(object obj)
+        public void ChangeMainMensageAction(object obj)
         {
             PanelMainMessage = "Espere por favor";
         }
 
-        public void ChangeSubMensage(object obj)
+        public void ChangeSubMensageAction(object obj)
         {
             PanelSubMessage = "";
         }
 
-        public void ClosePanel(object obj)
+        public void ClosePanelAction(object obj)
         {
             PanelLoading = false;
         }
+        #endregion
 
-        public void FlipLoginMethod(object obj)
+        #region Action Methods
+        public void FlipLoginAction(object obj)
         {
             logger.Debug("Invocando a flip command");
             MainWindow window = MyAppProperties.window;
-            //if ( usernameText?.Length > 3)
-            //{
-                Flipper.FlipCommand.Execute(null, null);
-                LoginView loginview = (LoginView)window.frame.Content;
-                loginview.FloatingPasswordBox.Focus();
-            //}
-            //else
-            //{
-            //    LoginView loginview = (LoginView)window.frame.Content;
-            //    loginview.msgbar.Clear();
-            //    loginview.msgbar.SetWarningAlert("Especifique un usuario de por lo menos 4 caracteres", 3);
-            //    loginview.usernameText.Text = String.Empty;
-            //    loginview.FloatingPasswordBox.Clear();
-            //    loginview.usernameText.Focus();
-            //}
+
+            Flipper.FlipCommand.Execute(null, null);
+            LoginView loginview = (LoginView)window.frame.Content;
+            loginview.FloatingPasswordBox.Focus();
         }
         #endregion
     }

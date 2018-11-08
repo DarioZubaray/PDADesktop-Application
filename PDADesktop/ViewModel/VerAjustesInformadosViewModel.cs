@@ -16,11 +16,11 @@ namespace PDADesktop.ViewModel
 {
     class VerAjustesInformadosViewModel : ViewModelBase
     {
-        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         #region Attributes
-        private readonly BackgroundWorker loadAdjustmentInformed = new BackgroundWorker();
+        #region Commons Attributes
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDialogCoordinator dialogCoordinator;
+
         private ObservableCollection<Ajustes> adjustmentsInformed;
         public ObservableCollection<Ajustes> AdjustmentsInformed
         {
@@ -64,49 +64,53 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region Loading panel
-        private bool _panelLoading;
+        #region Workers Attributes
+        private readonly BackgroundWorker loadAdjustmentInformedWorker = new BackgroundWorker();
+        #endregion
+
+        #region Loading Panel Attributes
+        private bool panelLoading;
         public bool PanelLoading
         {
             get
             {
-                return _panelLoading;
+                return panelLoading;
             }
             set
             {
-                _panelLoading = value;
+                panelLoading = value;
                 OnPropertyChanged();
             }
         }
-        private string _panelMainMessage;
+        private string panelMainMessage;
         public string PanelMainMessage
         {
             get
             {
-                return _panelMainMessage;
+                return panelMainMessage;
             }
             set
             {
-                _panelMainMessage = value;
+                panelMainMessage = value;
                 OnPropertyChanged();
             }
         }
-        private string _panelSubMessage;
+        private string panelSubMessage;
         public string PanelSubMessage
         {
             get
             {
-                return _panelSubMessage;
+                return panelSubMessage;
             }
             set
             {
-                _panelSubMessage = value;
+                panelSubMessage = value;
                 OnPropertyChanged();
             }
         }
         #endregion
 
-        #region Commands
+        #region Commands Attributes
         private ICommand returnCommand;
         public ICommand ReturnCommand
         {
@@ -119,8 +123,7 @@ namespace PDADesktop.ViewModel
                 returnCommand = value;
             }
         }
-
-        
+        #endregion
         #endregion
 
         #region Constructor
@@ -131,18 +134,20 @@ namespace PDADesktop.ViewModel
             dialogCoordinator = instance;
             var dispatcher = App.Instance.MainWindow.Dispatcher;
 
-            loadAdjustmentInformed.DoWork += loadAdjustmentInformed_DoWork;
-            loadAdjustmentInformed.RunWorkerCompleted += loadAdjustmentInformed_RunWorkerCompleted;
-            ReturnCommand = new RelayCommand(ReturnActivitycenterMethod);
+            loadAdjustmentInformedWorker.DoWork += loadAdjustmentInformedWorker_DoWork;
+            loadAdjustmentInformedWorker.RunWorkerCompleted += loadAdjustmentInformedWorker_RunWorkerCompleted;
 
-            loadAdjustmentInformed.RunWorkerAsync();
+            ReturnCommand = new RelayCommand(ReturnActivityCenterAction);
+
+            loadAdjustmentInformedWorker.RunWorkerAsync();
         }
         #endregion
 
-        #region Worker
-        private void loadAdjustmentInformed_DoWork(object sender, DoWorkEventArgs e)
+        #region Workers
+        #region Load Adjustments Informed Worker
+        private void loadAdjustmentInformedWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("Load adjustments informed => Do Work");
+            logger.Debug("load adjustments informed => Do Work");
             string batchId = MyAppProperties.buttonState_batchId;
             ListView responseGetAdjustments = HttpWebClientUtil.GetAdjustmentsByBatchId(batchId);
 
@@ -153,9 +158,9 @@ namespace PDADesktop.ViewModel
            }));
         }
 
-        private void loadAdjustmentInformed_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void loadAdjustmentInformedWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("Load adjustments informed => Run Worker Completed");
+            logger.Debug("load adjustments informed => Run Worker Completed");
             var dispatcher = App.Instance.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
           {
@@ -163,15 +168,15 @@ namespace PDADesktop.ViewModel
           }));
         }
         #endregion
+        #endregion
 
-        #region RelayCommand Methods
-        public void ReturnActivitycenterMethod(object obj)
+        #region Action Methods
+        public void ReturnActivityCenterAction(object obj)
         {
             MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
         }
-
         #endregion
 
         #region Panel Methods

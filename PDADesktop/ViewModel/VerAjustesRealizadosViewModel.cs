@@ -17,9 +17,10 @@ namespace PDADesktop.ViewModel
 {
     class VerAjustesRealizadosViewModel : ViewModelBase
     {
-        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         #region Attributes
+
+        #region Common Attributes
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDialogCoordinator dialogCoordinator;
 
         private ObservableCollection<Ajustes> adjustments;
@@ -118,49 +119,49 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region Loading panel
-        private bool _panelLoading;
+        #region Loading Panel Attributes
+        private bool panelLoading;
         public bool PanelLoading
         {
             get
             {
-                return _panelLoading;
+                return panelLoading;
             }
             set
             {
-                _panelLoading = value;
+                panelLoading = value;
                 OnPropertyChanged();
             }
         }
-        private string _panelMainMessage;
+        private string panelMainMessage;
         public string PanelMainMessage
         {
             get
             {
-                return _panelMainMessage;
+                return panelMainMessage;
             }
             set
             {
-                _panelMainMessage = value;
+                panelMainMessage = value;
                 OnPropertyChanged();
             }
         }
-        private string _panelSubMessage;
+        private string panelSubMessage;
         public string PanelSubMessage
         {
             get
             {
-                return _panelSubMessage;
+                return panelSubMessage;
             }
             set
             {
-                _panelSubMessage = value;
+                panelSubMessage = value;
                 OnPropertyChanged();
             }
         }
         #endregion
 
-        #region Commands
+        #region Commands Attributes
         private ICommand deleteAdjustmentCommand;
         public ICommand DeleteAdjustmentCommand
         {
@@ -227,7 +228,11 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        private readonly BackgroundWorker loadVerAjustesRealizadosWorker = new BackgroundWorker();
+        #region Worker Attributes
+        private readonly BackgroundWorker loadSeeAdjustmentMadeWorker = new BackgroundWorker();
+        #endregion
+
+        #endregion
 
         #region Constructor
         public VerAjustesRealizadosViewModel(IDialogCoordinator instance)
@@ -236,25 +241,26 @@ namespace PDADesktop.ViewModel
             dialogCoordinator = instance;
             DisplayWaitingPanel("Cargando", "Espere por favor...");
 
-            loadVerAjustesRealizadosWorker.DoWork += loadVerAjustesRealizadosWorker_DoWork;
-            loadVerAjustesRealizadosWorker.RunWorkerCompleted += loadVerAjustesRealizadosWorker_RunWorkerCompleted;
+            loadSeeAdjustmentMadeWorker.DoWork += loadSeeAdjustmentMadeWorker_DoWork;
+            loadSeeAdjustmentMadeWorker.RunWorkerCompleted += loadSeeAdjustmentMadeWorker_RunWorkerCompleted;
 
             AdjustmentEnableEdit = false;
 
-            DeleteAdjustmentCommand = new RelayCommand(DeleteAdjustmentMethod);
-            UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentMethod);
-            DiscardChangesCommand = new RelayCommand(DiscardChangesMethod);
-            SaveChangesCommand = new RelayCommand(SaveChangesMethod);
-            PanelCloseCommand = new RelayCommand(PanelCloseMethod);
+            DeleteAdjustmentCommand = new RelayCommand(DeleteAdjustmentAction);
+            UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentAction);
+            DiscardChangesCommand = new RelayCommand(DiscardChangesAction);
+            SaveChangesCommand = new RelayCommand(SaveChangesAction);
+            PanelCloseCommand = new RelayCommand(PanelCloseAction);
 
-            loadVerAjustesRealizadosWorker.RunWorkerAsync();
+            loadSeeAdjustmentMadeWorker.RunWorkerAsync();
         }
         #endregion
 
-        #region Workers
-        private void loadVerAjustesRealizadosWorker_DoWork(object sender, DoWorkEventArgs e)
+        #region Workers Methods
+        #region Load See Adjusment Made Worker
+        private void loadSeeAdjustmentMadeWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("Load ver ajustes realizados => Do Work");
+            logger.Debug("load see adjusment made => Do Work");
             var deviceHandler = App.Instance.deviceHandler;
             bool deviceStatus = deviceHandler.IsDeviceConnected();
             if (deviceStatus)
@@ -267,7 +273,7 @@ namespace PDADesktop.ViewModel
                 catch (Exception ex)
                 {
                     logger.Debug(ex.Message);
-                    AlertUserMetroDialog("Ocurrio un error en la lectura del archivo de ajuste.");
+                    AlertUserMetroDialog("Ocurrió un error en la lectura del archivo de ajuste.");
                 }
                 if (deviceReadAdjustmentDataFile != null)
                 {
@@ -280,7 +286,7 @@ namespace PDADesktop.ViewModel
             }
             else
             {
-                AlertUserMetroDialog("No se detecta conexion con la PDA");
+                AlertUserMetroDialog("No se detecta conexión con la PDA");
             }
         }
 
@@ -292,15 +298,16 @@ namespace PDADesktop.ViewModel
             logger.Debug(AdjustmentsTypes.ToString());
         }
 
-        private void loadVerAjustesRealizadosWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void loadSeeAdjustmentMadeWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("Load ver ajustes reliazados => Run Worker Completed");
+            logger.Debug("load see adjustments made => Run Worker Completed");
             HidingWaitingPanel();
         }
         #endregion
+        #endregion
 
-        #region Methods
-        public void DeleteAdjustmentMethod(object obj)
+        #region Action Methods
+        public void DeleteAdjustmentAction(object obj)
         {
             logger.Debug("EliminarAjusteButton");
             Ajustes parametro = obj as Ajustes;
@@ -312,12 +319,12 @@ namespace PDADesktop.ViewModel
             Adjustments.Remove(SelectedAdjustment);
             SelectedAdjustment = null;
         }
-        public void UpdateAdjustmentMethod(object obj)
+        public void UpdateAdjustmentAction(object obj)
         {
             logger.Debug("ActualizarAjusteButton");
             SelectedAdjustment = null;
         }
-        public async void DiscardChangesMethod(object obj)
+        public async void DiscardChangesAction(object obj)
         {
             logger.Debug("DescartarCambiosButton");
             string pregunta = "¿Desea descartar los cambios?";
@@ -328,7 +335,7 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        public void SaveChangesMethod(object obj)
+        public void SaveChangesAction(object obj)
         {
             logger.Debug("GuardarCambiosButton");
             string newAdjustmentContent = TextUtils.ParseCollectionToAdjustmentDAT(Adjustments);
@@ -351,8 +358,10 @@ namespace PDADesktop.ViewModel
                 AlertUserMetroDialog("Ocurrió un error al escribir el archivo de ajuste");
             }
         }
+        #endregion
 
-        private void PanelCloseMethod(object sender)
+        #region Panel Methods
+        private void PanelCloseAction(object sender)
         {
             HidingWaitingPanel();
         }
@@ -369,14 +378,18 @@ namespace PDADesktop.ViewModel
             PanelMainMessage = "";
             PanelSubMessage = "";
         }
+        #endregion
 
+        #region Commons Methods
         private void RedirectToActivityCenterView()
         {
             MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
         }
+        #endregion
 
+        #region Metro Dialog Methods
         private async Task<bool> AskUserMetroDialog(string message, string title = "Aviso")
         {
             MessageDialogStyle messageDialogStyle = MessageDialogStyle.AffirmativeAndNegative;

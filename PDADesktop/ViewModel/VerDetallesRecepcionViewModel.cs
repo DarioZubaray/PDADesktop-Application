@@ -17,9 +17,9 @@ namespace PDADesktop.ViewModel
 {
     class VerDetallesRecepcionViewModel : ViewModelBase
     {
-        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         #region Attributes
+        #region Commons Attributes
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDialogCoordinator dialogCoordinator;
 
         private ObservableCollection<Recepcion> receptions;
@@ -73,55 +73,55 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region Loading panel
-        private bool _panelLoading;
+        #region Loading Panel Attributes
+        private bool panelLoading;
         public bool PanelLoading
         {
             get
             {
-                return _panelLoading;
+                return panelLoading;
             }
             set
             {
-                _panelLoading = value;
+                panelLoading = value;
                 OnPropertyChanged();
             }
         }
-        private string _panelMainMessage;
+        private string panelMainMessage;
         public string PanelMainMessage
         {
             get
             {
-                return _panelMainMessage;
+                return panelMainMessage;
             }
             set
             {
-                _panelMainMessage = value;
+                panelMainMessage = value;
                 OnPropertyChanged();
             }
         }
-        private string _panelSubMessage;
+        private string panelSubMessage;
         public string PanelSubMessage
         {
             get
             {
-                return _panelSubMessage;
+                return panelSubMessage;
             }
             set
             {
-                _panelSubMessage = value;
+                panelSubMessage = value;
                 OnPropertyChanged();
             }
         }
         #endregion
 
-        #region Worker
+        #region Worker Attributes
         private readonly BackgroundWorker loadSeeDetailsWorker = new BackgroundWorker();
         private readonly BackgroundWorker discardReceptionsWorker = new BackgroundWorker();
-        private readonly BackgroundWorker retryInformWorker = new BackgroundWorker();
+        private readonly BackgroundWorker retryInformReceptionsWorker = new BackgroundWorker();
         #endregion
 
-        #region Commands
+        #region Commands Attributes
         private ICommand discardAllCommand;
         public ICommand DiscardAllCommand
         {
@@ -171,6 +171,7 @@ namespace PDADesktop.ViewModel
             }
         }
         #endregion
+        #endregion
 
         #region Constructor
         public VerDetallesRecepcionViewModel(IDialogCoordinator instance)
@@ -184,30 +185,29 @@ namespace PDADesktop.ViewModel
             loadSeeDetailsWorker.RunWorkerCompleted += loadSeeDetailsWorker_RunWorkerCompleted;
             discardReceptionsWorker.DoWork += discardReceptionsWorker_DoWork;
             discardReceptionsWorker.RunWorkerCompleted += discardReceptionsWorker_RunWorkerCompleted;
-            retryInformWorker.DoWork += retryInformWorker_DoWork;
-            retryInformWorker.RunWorkerCompleted += retryInformWorker_RunWorkerCompleted;
+            retryInformReceptionsWorker.DoWork += retryInformReceptionsWorker_DoWork;
+            retryInformReceptionsWorker.RunWorkerCompleted += retryInformReceptionsWorker_RunWorkerCompleted;
 
-            DiscardAllCommand = new RelayCommand(DiscardAllMethod);
-            CancelCommand = new RelayCommand(CancelMethod);
-            RetryCommand = new RelayCommand(RetryMethod);
-            PanelCloseCommand = new RelayCommand(PanelCloseMethod);
+            DiscardAllCommand = new RelayCommand(DiscardAllAction);
+            CancelCommand = new RelayCommand(CancelAction);
+            RetryCommand = new RelayCommand(RetryAction);
+            PanelCloseCommand = new RelayCommand(PanelCloseAction);
 
             loadSeeDetailsWorker.RunWorkerAsync();
         }
         #endregion
 
-        #region Workers
-
+        #region Workers Methods
         #region Load See Details Worker
         private void loadSeeDetailsWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("Load See Details Receptions -> Do Work");
+            logger.Debug("load see details receptions => Do Work");
             ListView listView = HttpWebClientUtil.LoadReceptionsGrid();
             Receptions = ListViewUtils.ParserRecepcionDataGrid(listView);
         }
         private void loadSeeDetailsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("Load See Details Receptions -> Run Work Completed");
+            logger.Debug("load see details receptions => Run Worker Completed");
             var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action( () =>
             {
@@ -219,7 +219,7 @@ namespace PDADesktop.ViewModel
         #region Discard Reception Worker
         private void discardReceptionsWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("Discard Receptions -> Do Work");
+            logger.Debug("discard receptions => Do Work");
             long syncId = MyAppProperties.SeeDetailsReception_syncId;
             long batchId = MyAppProperties.SeeDetailsReception_batchId;
             Dictionary<string, string> responseDiscard = HttpWebClientUtil.DiscardReceptions(batchId.ToString(), syncId.ToString());
@@ -270,7 +270,7 @@ namespace PDADesktop.ViewModel
 
         private void discardReceptionsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("Discard Receptions -> Run Work Completed");
+            logger.Debug("discard receptions => Run Worker Completed");
             var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
@@ -280,17 +280,17 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region Retry Inform Worker
-        private void retryInformWorker_DoWork(object sender, DoWorkEventArgs e)
+        #region Retry Inform Receptions Worker
+        private void retryInformReceptionsWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("Retry Inform Receptions -> Do Work");
+            logger.Debug("retry inform receptions => Do Work");
             long syncId = MyAppProperties.SeeDetailsReception_syncId;
             int activityId = Convert.ToInt32(Constants.RECEP_CODE);
             ButtonStateUtils.RetryInformToGenesix(syncId, activityId);
         }
-        private void retryInformWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void retryInformReceptionsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("Retry Inform Receptions -> Run Work Completed");
+            logger.Debug("retry inform receptions => Run Worker Completed");
             var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
@@ -299,14 +299,13 @@ namespace PDADesktop.ViewModel
             }));
         }
         #endregion
-
         #endregion
 
-        #region Command Methods
-        private async void DiscardAllMethod(object sender)
+        #region Action Methods
+        private async void DiscardAllAction(object sender)
         {
             string messageToAskToUser = "Se descartarán todas las Recepciones pendientes de informar. ¿Desea continuar?";
-            bool userAnswer = await AskToUserMahappDialog(messageToAskToUser);
+            bool userAnswer = await AskUserMetroDialog(messageToAskToUser);
 
             if (userAnswer)
             {
@@ -314,40 +313,47 @@ namespace PDADesktop.ViewModel
                 discardReceptionsWorker.RunWorkerAsync();
             }
         }
-        private void CancelMethod(object sender)
+        private void CancelAction(object sender)
         {
             DisplayWaitingPanel("Espere por favor");
             RedirectToActivityCenterView();
         }
-        private void RetryMethod(object sender)
+        private void RetryAction(object sender)
         {
             DisplayWaitingPanel("Espere por favor", "Reintentando informar recepciones");
-            retryInformWorker.RunWorkerAsync();
+            retryInformReceptionsWorker.RunWorkerAsync();
         }
 
-        private void PanelCloseMethod(object sender)
+        private void PanelCloseAction(object sender)
         {
             HidingWaitingPanel();
         }
         #endregion
 
-        #region Methods
+        #region Commons Methods
         private void RedirectToActivityCenterView()
         {
             MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
         }
+        #endregion
 
-        private async Task<bool> AskToUserMahappDialog(string message, string title = "Aviso")
+        #region Metro Dialog Methods
+        private async Task<bool> AskUserMetroDialog(string message, string title = "Aviso")
         {
-            MetroDialogSettings settings = new MetroDialogSettings();
-            settings.AffirmativeButtonText = "Aceptar";
-            settings.NegativeButtonText = "Cancelar";
-            Task<MessageDialogResult> showMessageAsync = dialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative, settings);
-            MessageDialogResult messsageDialogResult = await showMessageAsync;
-            bool resultAffirmative = messsageDialogResult.Equals(MessageDialogResult.Affirmative);
-            return resultAffirmative;
+            MessageDialogStyle messageDialogStyle = MessageDialogStyle.AffirmativeAndNegative;
+            bool userResponse = await ShowMetroDialog(messageDialogStyle, message, title);
+            return userResponse;
+        }
+
+        private async Task<bool> ShowMetroDialog(MessageDialogStyle messageDialogStyle, string message, string title = "Aviso")
+        {
+            MetroDialogSettings metroDialogSettings = new MetroDialogSettings();
+            metroDialogSettings.AffirmativeButtonText = "Aceptar";
+            metroDialogSettings.NegativeButtonText = "Cancelar";
+            MessageDialogResult userResponse = await dialogCoordinator.ShowMessageAsync(this, title, message, messageDialogStyle, metroDialogSettings);
+            return userResponse == MessageDialogResult.Affirmative;
         }
         #endregion
 

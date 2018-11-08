@@ -24,9 +24,105 @@ namespace PDADesktop.ViewModel
 {
     class CentroActividadesViewModel : ViewModelBase
     {
+        #region Attributes
+        #region Commons Attributes
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private IDialogCoordinator dialogCoordinator;
 
-        #region Commands
+        private List<SincronizacionDtoDataGrid> sincronizaciones;
+        public List<SincronizacionDtoDataGrid> Sincronizaciones
+        {
+            get
+            {
+                return sincronizaciones;
+            }
+            set
+            {
+                sincronizaciones = value;
+                OnPropertyChanged();
+            }
+        }
+        private SincronizacionDtoDataGrid selectedSynchronization;
+        public SincronizacionDtoDataGrid SelectedSynchronization
+        {
+            get
+            {
+                return selectedSynchronization;
+            }
+            set
+            {
+                selectedSynchronization = value;
+                MyAppProperties.SelectedSync = selectedSynchronization;
+                OnPropertyChanged();
+            }
+        }
+
+        private Badged badge_verAjustesRealizados;
+        public Badged Badge_verAjustesRealizados
+        {
+            get
+            {
+                return badge_verAjustesRealizados;
+            }
+            set
+            {
+                badge_verAjustesRealizados = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string textBox_sincronizacion;
+        public string TextBox_sincronizacion
+        {
+            get
+            {
+                return textBox_sincronizacion;
+            }
+            set
+            {
+                textBox_sincronizacion = value;
+                OnPropertyChanged();
+            }
+        }
+        private string label_version;
+        public string Label_version
+        {
+            get
+            {
+                return label_version;
+            }
+            set
+            {
+                label_version = value;
+            }
+        }
+        private string label_usuario;
+        public string Label_usuario
+        {
+            get
+            {
+                return label_usuario;
+            }
+            set
+            {
+                label_usuario = value;
+            }
+        }
+        private string label_sucursal;
+        public string Label_sucursal
+        {
+            get
+            {
+                return label_sucursal;
+            }
+            set
+            {
+                label_sucursal = value;
+            }
+        }
+        #endregion
+
+        #region Commands Attributes
         private ICommand exitButtonCommand;
         public ICommand ExitButtonCommand
         {
@@ -144,32 +240,6 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private ICommand estadoGenesixCommand;
-        public ICommand EstadoGenesixCommand
-        {
-            get
-            {
-                return estadoGenesixCommand;
-            }
-            set
-            {
-                estadoGenesixCommand = value;
-            }
-        }
-
-        private ICommand estadoPDACommand;
-        public ICommand EstadoPDACommand
-        {
-            get
-            {
-                return estadoPDACommand;
-            }
-            set
-            {
-                estadoPDACommand = value;
-            }
-        }
-
         private ICommand estadoGeneralCommand;
         public ICommand EstadoGeneralCommand
         {
@@ -209,151 +279,6 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private bool canExecute = true;
-        #endregion
-
-        #region Attributes
-        private readonly BackgroundWorker loadOnceCentroActividadesWorker = new BackgroundWorker();
-        private readonly BackgroundWorker reloadCentroActividadesWorker = new BackgroundWorker();
-        private readonly BackgroundWorker syncWorker = new BackgroundWorker();
-        private readonly BackgroundWorker syncDataGridWorker = new BackgroundWorker();
-        private readonly BackgroundWorker adjustmentWorker = new BackgroundWorker();
-        private readonly BackgroundWorker redirectWorker = new BackgroundWorker();
-
-        private DispatcherTimer dispatcherTimer { get; set; }
-        private IDialogCoordinator dialogCoordinator;
-        private string _txt_sincronizacion;
-        public string txt_sincronizacion
-        {
-            get
-            {
-                return _txt_sincronizacion;
-            }
-            set
-            {
-                _txt_sincronizacion = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _label_version;
-        public string label_version
-        {
-            get
-            {
-                return _label_version;
-            }
-            set
-            {
-                _label_version = value;
-            }
-        }
-        private string _label_usuario;
-        public string label_usuario
-        {
-            get
-            {
-                return _label_usuario;
-            }
-            set
-            {
-                _label_usuario = value;
-            }
-        }
-        private string _label_sucursal;
-        public string label_sucursal
-        {
-            get
-            {
-                return _label_sucursal;
-            }
-            set
-            {
-                _label_sucursal = value;
-            }
-        }
-
-        #region Loading panel
-        private bool _panelLoading;
-        public bool PanelLoading
-        {
-            get
-            {
-                return _panelLoading;
-            }
-            set
-            {
-                _panelLoading = value;
-                OnPropertyChanged();
-            }
-        }
-        private string _panelMainMessage;
-        public string PanelMainMessage
-        {
-            get
-            {
-                return _panelMainMessage;
-            }
-            set
-            {
-                _panelMainMessage = value;
-                OnPropertyChanged();
-            }
-        }
-        private string _panelSubMessage;
-        public string PanelSubMessage
-        {
-            get
-            {
-                return _panelSubMessage;
-            }
-            set
-            {
-                _panelSubMessage = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-        #region Panel no connection
-        private bool _panelLoading_NC;
-        public bool PanelLoading_NC
-        {
-            get
-            {
-                return _panelLoading_NC;
-            }
-            set
-            {
-                _panelLoading_NC = value;
-                OnPropertyChanged();
-            }
-        }
-        private string _panelMainMessage_NC;
-        public string PanelMainMessage_NC
-        {
-            get
-            {
-                return _panelMainMessage_NC;
-            }
-            set
-            {
-                _panelMainMessage_NC = value;
-                OnPropertyChanged();
-            }
-        }
-        private string _panelSubMessage_NC;
-        public string PanelSubMessage_NC
-        {
-            get
-            {
-                return _panelSubMessage_NC;
-            }
-            set
-            {
-                _panelSubMessage_NC = value;
-                OnPropertyChanged();
-            }
-        }
         private ICommand panelCloseCommand_NC;
         public ICommand PanelCloseCommand_NC
         {
@@ -366,50 +291,108 @@ namespace PDADesktop.ViewModel
                 panelCloseCommand_NC = value;
             }
         }
+
+        private bool canExecute = true;
         #endregion
 
-        //Con ObservableCollection no se actualiza la grilla :\
-        private List<SincronizacionDtoDataGrid> _sincronizaciones;
-        public List<SincronizacionDtoDataGrid> sincronizaciones
-        {
-            get
-            {
-                return _sincronizaciones;
-            }
-            set
-            {
-                _sincronizaciones = value;
-                OnPropertyChanged();
-            }
-        }
-        private SincronizacionDtoDataGrid selectedSynchronization;
-        public SincronizacionDtoDataGrid SelectedSynchronization
-        {
-            get
-            {
-                return selectedSynchronization;
-            }
-            set
-            {
-                selectedSynchronization = value;
-                MyAppProperties.SelectedSync = selectedSynchronization;
-                OnPropertyChanged();
-            }
-        }
+        #region Workers Attributes
+        private readonly BackgroundWorker loadOnceActivityCenterWorker = new BackgroundWorker();
+        private readonly BackgroundWorker reloadActivityCenterWorker = new BackgroundWorker();
+        private readonly BackgroundWorker syncWorker = new BackgroundWorker();
+        private readonly BackgroundWorker syncDataGridWorker = new BackgroundWorker();
+        private readonly BackgroundWorker adjustmentWorker = new BackgroundWorker();
+        private readonly BackgroundWorker redirectWorker = new BackgroundWorker();
+        #endregion
 
-        private Badged badge_verAjustesRealizados;
-        public Badged Badge_verAjustesRealizados
+        #region Dispatcher Attributes
+        private DispatcherTimer dispatcherTimer { get; set; }
+        private Dispatcher dispatcher { get; set; }
+        #endregion
+
+        #region Loading Panel Attributes
+        private bool panelLoading;
+        public bool PanelLoading
         {
             get
             {
-                return badge_verAjustesRealizados;
+                return panelLoading;
             }
             set
             {
-                badge_verAjustesRealizados = value;
+                panelLoading = value;
                 OnPropertyChanged();
             }
         }
+        private string panelMainMessage;
+        public string PanelMainMessage
+        {
+            get
+            {
+                return panelMainMessage;
+            }
+            set
+            {
+                panelMainMessage = value;
+                OnPropertyChanged();
+            }
+        }
+        private string panelSubMessage;
+        public string PanelSubMessage
+        {
+            get
+            {
+                return panelSubMessage;
+            }
+            set
+            {
+                panelSubMessage = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region Panel No Connection Attributes
+        private bool panelLoading_NC;
+        public bool PanelLoading_NC
+        {
+            get
+            {
+                return panelLoading_NC;
+            }
+            set
+            {
+                panelLoading_NC = value;
+                OnPropertyChanged();
+            }
+        }
+        private string panelMainMessage_NC;
+        public string PanelMainMessage_NC
+        {
+            get
+            {
+                return panelMainMessage_NC;
+            }
+            set
+            {
+                panelMainMessage_NC = value;
+                OnPropertyChanged();
+            }
+        }
+        private string panelSubMessage_NC;
+        public string PanelSubMessage_NC
+        {
+            get
+            {
+                return panelSubMessage_NC;
+            }
+            set
+            {
+                panelSubMessage_NC = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Constructor
@@ -421,24 +404,23 @@ namespace PDADesktop.ViewModel
             DisplayWaitingPanel("Cargando...");
             dialogCoordinator = instance;
             setInfoLabels();
-            ExitButtonCommand = new RelayCommand(ExitPortalApi, param => this.canExecute);
-            SincronizarCommand = new RelayCommand(SincronizarTodosLosDatos, param => this.canExecute);
-            InformarCommand = new RelayCommand(InformarGenesix, param => this.canExecute);
-            VerAjustesRealizadosCommand = new RelayCommand(VerAjustesRealizados, param => this.canExecute);
-            CentroActividadesLoadedCommand = new RelayCommand(CentroActividadesLoaded, param => this.canExecute);
-            AnteriorCommand = new RelayCommand(SincronizacionAnterior, param => this.canExecute);
-            SiguienteCommand = new RelayCommand(SincronizacionSiguiente, param => this.canExecute);
-            UltimaCommand = new RelayCommand(GoLastSynchronization, param => this.canExecute);
-            BuscarLoteCommand = new RelayCommand(BuscarLoteMethod);
-            EstadoGenesixCommand = new RelayCommand(BotonEstadoGenesix, param => this.canExecute);
-            EstadoPDACommand = new RelayCommand(BotonEstadoPDA, param => this.canExecute);
-            EstadoGeneralCommand = new RelayCommand(BotonEstadoGeneral, param => this.canExecute);
+            ExitButtonCommand = new RelayCommand(ExitPortalApiAction, param => this.canExecute);
+            SincronizarCommand = new RelayCommand(SyncAllDataAction, param => this.canExecute);
+            InformarCommand = new RelayCommand(InformGenesixAction, param => this.canExecute);
+            VerAjustesRealizadosCommand = new RelayCommand(SeeAdjustmentMadeAction, param => this.canExecute);
+            CentroActividadesLoadedCommand = new RelayCommand(ActivityCenterLoadedAction, param => this.canExecute);
+            AnteriorCommand = new RelayCommand(PreviousSyncAction, param => this.canExecute);
+            SiguienteCommand = new RelayCommand(NextSyncAction, param => this.canExecute);
+            UltimaCommand = new RelayCommand(LastSyncAction, param => this.canExecute);
+            BuscarLoteCommand = new RelayCommand(SearchBatchAction);
 
-            loadOnceCentroActividadesWorker.DoWork += loadOnceActivityCenterWorker_DoWork;
-            loadOnceCentroActividadesWorker.RunWorkerCompleted += loadOnceCentroActividadesWorker_RunWorkerCompleted;
+            EstadoGeneralCommand = new RelayCommand(GeneralStateAction, param => this.canExecute);
 
-            reloadCentroActividadesWorker.DoWork += reloadCentroActividadesWorker_DoWork;
-            reloadCentroActividadesWorker.RunWorkerCompleted += reloadCentroActividadesWorker_RunWorkerCompleted;
+            loadOnceActivityCenterWorker.DoWork += loadOnceActivityCenterWorker_DoWork;
+            loadOnceActivityCenterWorker.RunWorkerCompleted += loadOnceCentroActividadesWorker_RunWorkerCompleted;
+
+            reloadActivityCenterWorker.DoWork += reloadActivityCenterWorker_DoWork;
+            reloadActivityCenterWorker.RunWorkerCompleted += reloadActivityCenterWorker_RunWorkerCompleted;
 
             syncWorker.DoWork += syncWorker_DoWork;
             syncWorker.RunWorkerCompleted += syncWorker_RunWorkerCompleted;
@@ -456,17 +438,17 @@ namespace PDADesktop.ViewModel
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 15);
 
-            ShowPanelCommand = new RelayCommand(MostrarPanel);
-            PanelCloseCommand = new RelayCommand(CerrarPanel, param => this.canExecute);
-            PanelCloseCommand_NC = new RelayCommand(CerrarPanelNoConnection);
+            ShowPanelCommand = new RelayCommand(ShowPanelAction);
+            PanelCloseCommand = new RelayCommand(ClosePanelAction, param => this.canExecute);
+            PanelCloseCommand_NC = new RelayCommand(ClosePanelNoConnectionAction);
         }
         #endregion
 
         #region dispatcherTimer
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (!loadOnceCentroActividadesWorker.IsBusy || !syncWorker.IsBusy ||
-                !adjustmentWorker.IsBusy || !redirectWorker.IsBusy || !reloadCentroActividadesWorker.IsBusy)
+            if (!loadOnceActivityCenterWorker.IsBusy || !syncWorker.IsBusy ||
+                !adjustmentWorker.IsBusy || !redirectWorker.IsBusy || !reloadActivityCenterWorker.IsBusy)
             {
                 bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
                 logger.Debug("disptachertimer tick => Device status: " + deviceStatus);
@@ -492,7 +474,7 @@ namespace PDADesktop.ViewModel
                         {
                             DisplayWaitingPanel(String.Empty);
                         }));
-                        loadOnceCentroActividadesWorker.RunWorkerAsync();
+                        loadOnceActivityCenterWorker.RunWorkerAsync();
                         MyAppProperties.needReloadActivityCenter = false;
                     }
                 }
@@ -524,7 +506,7 @@ namespace PDADesktop.ViewModel
         #region Loaded Activity Center Worker
         private void loadOnceActivityCenterWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            string currentMessage = "Load Activity Center Worker -> doWork";
+            string currentMessage = "Load Once Activity Center => Do Work";
             logger.Debug(currentMessage);
             if(dispatcherTimer != null)
             {
@@ -645,8 +627,8 @@ namespace PDADesktop.ViewModel
                 syncList = HttpWebClientUtil.GetHttpWebSynchronizations(urlPathLastSync, storeId, currentBatchId.ToString());
                 if (syncList != null && syncList.Count != 0)
                 {
-                    this.sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(syncList);
-                    UpdateCurrentBatch(sincronizaciones);
+                    this.Sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(syncList);
+                    UpdateCurrentBatch(Sincronizaciones);
                 }
             }
         }
@@ -661,8 +643,8 @@ namespace PDADesktop.ViewModel
                 syncList = HttpWebClientUtil.GetHttpWebSynchronizations(urlPathLastSync, storeId, currentBatchId.ToString());
                 if (syncList != null && syncList.Count != 0)
                 {
-                    this.sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(syncList);
-                    UpdateCurrentBatch(sincronizaciones);
+                    this.Sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(syncList);
+                    UpdateCurrentBatch(Sincronizaciones);
                 }
             }
         }
@@ -857,7 +839,7 @@ namespace PDADesktop.ViewModel
 
         private void loadOnceCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("loadOnceCentroActividades Worker ->runWorkedCompleted");
+            logger.Debug("load once centro Actividades => Run Worker Completed");
             MyAppProperties.needReloadActivityCenter = false;
             HidingWaitingPanel();
             if (dispatcherTimer != null && !dispatcherTimer.IsEnabled)
@@ -867,10 +849,10 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region reload Activity Center Worker
-        private void reloadCentroActividadesWorker_DoWork(object sender, DoWorkEventArgs e)
+        #region Reload Activity Center Worker
+        private void reloadActivityCenterWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("Reload Activity Center Worker -> doWork");
+            logger.Debug("reload activity center => Do Work");
             if (dispatcherTimer != null)
             {
                 dispatcherTimer.Stop();
@@ -906,9 +888,9 @@ namespace PDADesktop.ViewModel
                 GetActualSync(Convert.ToInt32(currentBatchId), storeId);
             }
         }
-        private void reloadCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void reloadActivityCenterWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("ReloadCentroActividades Worker ->runWorkedCompleted");
+            logger.Debug("reload activity center => Run Worker Completed");
             HidingWaitingPanel();
             if (dispatcherTimer != null)
             {
@@ -917,10 +899,10 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region Synchonization Worker
+        #region Sync Worker
         private async void syncWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            string currentMessage = "sincronizar Worker ->doWork";
+            string currentMessage = "sync => Do Work";
             logger.Debug(currentMessage);
 
             if (dispatcherTimer != null)
@@ -1182,13 +1164,13 @@ namespace PDADesktop.ViewModel
             string batchId = newSync[0].lote.idLote.ToString();
             string urlLastSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
             List<Sincronizacion> lastSync = HttpWebClientUtil.GetHttpWebSynchronizations(urlLastSync, storeId, batchId);
-            this.sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(lastSync);
-            UpdateCurrentBatch(sincronizaciones);
+            this.Sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(lastSync);
+            UpdateCurrentBatch(Sincronizaciones);
         }
 
         private void syncWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("sincronizar Worker ->runWorkedCompleted");
+            logger.Debug("sync => Run Worker Completed");
             var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
@@ -1201,10 +1183,10 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region reload Sync Data Grid Worker
+        #region Reload Data Grid Worker
         private void syncDataGrid_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Info("<- Cargando la grilla");
+            logger.Info("sync data grid => Do Work");
             string urlSincronizacionAnterior = MyAppProperties.currentUrlSync;
             string _sucursal = MyAppProperties.storeId;
             string _idLote = MyAppProperties.currentBatchId;
@@ -1213,12 +1195,13 @@ namespace PDADesktop.ViewModel
             if (listaSincronizaciones != null && listaSincronizaciones.Count != 0)
             {
                 logger.Debug(listaSincronizaciones);
-                this.sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(listaSincronizaciones);
-                UpdateCurrentBatch(sincronizaciones);
+                this.Sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(listaSincronizaciones);
+                UpdateCurrentBatch(Sincronizaciones);
             }
         }
         private void syncDataGrid_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            logger.Info("sync data grid => Run Worker Completed");
             HidingWaitingPanel();
         }
         #endregion
@@ -1226,7 +1209,7 @@ namespace PDADesktop.ViewModel
         #region Adjustment Worker
         private void adjustmentWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("AdjustmentWorker -> Do worker started");
+            logger.Debug("adjustment => Do Work");
             bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
             if (estadoDevice)
             {
@@ -1247,14 +1230,14 @@ namespace PDADesktop.ViewModel
 
         private void adjustmentWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("AdjustmentWorker -> Run worker completed");
+            logger.Debug("adjustment => Run Worker Completed");
         }
         #endregion
 
         #region Redirect Worker
         private void redirectWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("RedirectWorker -> Do worker started");
+            logger.Debug("Redirect => Do Work");
 
             bool stateNeedResolve = ButtonStateUtils.ResolveState();
             if (stateNeedResolve)
@@ -1267,114 +1250,35 @@ namespace PDADesktop.ViewModel
         
         private void redirectWorker_RunwWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("AdjustmentWorker -> Run worker completed");
+            logger.Debug("adjustment => Run Worker Completed");
             HidingWaitingPanel();
         }
         #endregion
-
         #endregion
 
-        #region Methods
+        #region Commons Methods
         public void setInfoLabels()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
-            label_version = assembly.GetName().Version.ToString(3);
+            Label_version = assembly.GetName().Version.ToString(3);
             // de donde obtenemos el usuario y sucursal (?)
-            label_usuario = "Admin";
-            label_sucursal = MyAppProperties.storeId;
-            logger.Debug("setInfoLabels[version: " + label_version
-                + ", usuario: " + label_usuario + ", sucursal: " + label_sucursal + "]");
-        }
-
-        public void ExitPortalApi(object obj)
-        {
-            logger.Info("exit portal api");
-            //aca deberia invocar el logout al portal?
-            MyAppProperties.loadOnce = true;
-            MainWindow window = (MainWindow) Application.Current.MainWindow;
-            Uri uri = new Uri(Constants.LOGIN_VIEW, UriKind.Relative);
-            window.frame.NavigationService.Navigate(uri);
-        }
-
-        public void SincronizarTodosLosDatos(object obj)
-        {
-            DisplayWaitingPanel("Sincronizando todos los datos, Espere por favor");
-            BannerApp.PrintSynchronization();
-            MyAppProperties.isSynchronizationComplete = true;
-            logger.Info("Sincronizando todos los datos");
-            syncWorker.RunWorkerAsync();
-        }
-
-        public void InformarGenesix(object obj)
-        {
-            DisplayWaitingPanel("Informando a genesix, Espere por favor");
-            BannerApp.PrintInformGX();
-            MyAppProperties.isSynchronizationComplete = false;
-            logger.Info("Informando a genesix");
-            syncWorker.RunWorkerAsync();
-        }
-
-        public void VerAjustesRealizados(object obj)
-        {
-            DisplayWaitingPanel("Cargando ajustes realizados", "Espere por favor");
-            logger.Debug("Viendo ajustes realizados");
-            adjustmentWorker.RunWorkerAsync();
-        }
-
-        public void CentroActividadesLoaded(object obj)
-        {
-            if (MyAppProperties.loadOnce)
-            {
-                loadOnceCentroActividadesWorker.RunWorkerAsync();
-            }
-            else
-            {
-                reloadCentroActividadesWorker.RunWorkerAsync();
-            }
-        }
-
-        public void SincronizacionAnterior(object obj)
-        {
-            DisplayWaitingPanel("Obteniendo sincronizaciones", "Espere por favor");
-            MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ANTERIOR);
-            syncDataGridWorker.RunWorkerAsync();
-        }
-
-        public void SincronizacionSiguiente(object obj)
-        {
-            DisplayWaitingPanel("Obteniendo sincronizaciones", "Espere por favor");
-            MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_SIGUIENTE);
-            syncDataGridWorker.RunWorkerAsync();
-        }
-
-        public void GoLastSynchronization(object obj)
-        {
-            DisplayWaitingPanel("Obteniendo sincronizaciones", "Espere por favor");
-            MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
-            syncDataGridWorker.RunWorkerAsync();
-        }
-
-        public void BuscarLoteMethod(object obj)
-        {
-            DisplayWaitingPanel("Buscando Lotes...");
-            MainWindow window = (MainWindow)Application.Current.MainWindow;
-            Uri uri = new Uri(Constants.BUSCAR_LOTES_VIEW, UriKind.Relative);
-            window.frame.NavigationService.Navigate(uri);
+            Label_usuario = "Admin";
+            Label_sucursal = MyAppProperties.storeId;
+            logger.Debug("setInfoLabels[version: " + Label_version
+                + ", usuario: " + Label_usuario + ", sucursal: " + Label_sucursal + "]");
         }
 
         public void AddCommandForButtonsState(List<SincronizacionDtoDataGrid> sincronizaciones)
         {
             foreach (SincronizacionDtoDataGrid sync in sincronizaciones)
             {
-                sync.EstadoGeneralCommand = new RelayCommand(BotonEstadoGeneral, param => true);
-                sync.EstadoGenesixCommand = new RelayCommand(BotonEstadoGenesix, param => true);
-                sync.EstadoPDACommand = new RelayCommand(BotonEstadoPDA, param => true);
+                sync.EstadoGeneralCommand = new RelayCommand(GeneralStateAction, param => true);
             }
         }
 
         public void UpdateCurrentBatch(List<SincronizacionDtoDataGrid> synchronizations)
         {
-            AddCommandForButtonsState(sincronizaciones);
+            AddCommandForButtonsState(Sincronizaciones);
             if (synchronizations != null && synchronizations.Count != 0)
             {
                 var s = synchronizations[0] as SincronizacionDtoDataGrid;
@@ -1388,27 +1292,90 @@ namespace PDADesktop.ViewModel
         {
             string currentBatch = synchronization.lote;
             string currentDate = synchronization.fecha;
-            txt_sincronizacion = String.Format(" ({0}) {1}", currentBatch, currentDate);
+            TextBox_sincronizacion = String.Format(" ({0}) {1}", currentBatch, currentDate);
         }
+        #endregion
 
-        #region Button States
-        public void BotonEstadoGenesix(object obj)
+        #region Actions Methods
+        public void ExitPortalApiAction(object obj)
         {
-            logger.Info("Boton estado genesix: " + obj);
-            //DisplayWaitingPanel("Espere por favor");
-            logger.Info(MyAppProperties.SelectedSync.actividad);
-
-            //redirectWorker.RunWorkerAsync();
+            logger.Info("exit portal api");
+            //aca deberia invocar el logout al portal?
+            MyAppProperties.loadOnce = true;
+            MainWindow window = (MainWindow) Application.Current.MainWindow;
+            Uri uri = new Uri(Constants.LOGIN_VIEW, UriKind.Relative);
+            window.frame.NavigationService.Navigate(uri);
         }
-        public void BotonEstadoPDA(object obj)
+
+        public void SyncAllDataAction(object obj)
         {
-            logger.Info("Boton estado pda");
-            //DisplayWaitingPanel("Espere por favor");
-            logger.Info(MyAppProperties.SelectedSync.actividad);
-
-            //redirectWorker.RunWorkerAsync();
+            DisplayWaitingPanel("Sincronizando todos los datos, Espere por favor");
+            BannerApp.PrintSynchronization();
+            MyAppProperties.isSynchronizationComplete = true;
+            logger.Info("Sincronizando todos los datos");
+            syncWorker.RunWorkerAsync();
         }
-        public void BotonEstadoGeneral(object obj)
+
+        public void InformGenesixAction(object obj)
+        {
+            DisplayWaitingPanel("Informando a genesix, Espere por favor");
+            BannerApp.PrintInformGX();
+            MyAppProperties.isSynchronizationComplete = false;
+            logger.Info("Informando a genesix");
+            syncWorker.RunWorkerAsync();
+        }
+
+        public void SeeAdjustmentMadeAction(object obj)
+        {
+            DisplayWaitingPanel("Cargando ajustes realizados", "Espere por favor");
+            logger.Debug("Viendo ajustes realizados");
+            adjustmentWorker.RunWorkerAsync();
+        }
+
+        public void ActivityCenterLoadedAction(object obj)
+        {
+            if (MyAppProperties.loadOnce)
+            {
+                loadOnceActivityCenterWorker.RunWorkerAsync();
+            }
+            else
+            {
+                reloadActivityCenterWorker.RunWorkerAsync();
+            }
+        }
+
+        public void PreviousSyncAction(object obj)
+        {
+            DisplayWaitingPanel("Obteniendo sincronizaciones", "Espere por favor");
+            MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ANTERIOR);
+            syncDataGridWorker.RunWorkerAsync();
+        }
+
+        public void NextSyncAction(object obj)
+        {
+            DisplayWaitingPanel("Obteniendo sincronizaciones", "Espere por favor");
+            MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_SIGUIENTE);
+            syncDataGridWorker.RunWorkerAsync();
+        }
+
+        public void LastSyncAction(object obj)
+        {
+            DisplayWaitingPanel("Obteniendo sincronizaciones", "Espere por favor");
+            MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
+            syncDataGridWorker.RunWorkerAsync();
+        }
+
+        public void SearchBatchAction(object obj)
+        {
+            DisplayWaitingPanel("Buscando Lotes...");
+            MainWindow window = (MainWindow)Application.Current.MainWindow;
+            Uri uri = new Uri(Constants.BUSCAR_LOTES_VIEW, UriKind.Relative);
+            window.frame.NavigationService.Navigate(uri);
+        }
+        #endregion
+
+        #region States Action Methods
+        public void GeneralStateAction(object obj)
         {
             logger.Info("Boton estado general");
             DisplayWaitingPanel("Espere por favor");
@@ -1432,23 +1399,23 @@ namespace PDADesktop.ViewModel
             PanelSubMessage = "";
         }
 
-        public void MostrarPanel(object obj)
+        public void ShowPanelAction(object obj)
         {
             DisplayWaitingPanel(String.Empty);
         }
 
-        public void CerrarPanel(object obj)
+        public void ClosePanelAction(object obj)
         {
             HidingWaitingPanel();
         }
 
-        public void CerrarPanelNoConnection(object obj)
+        public void ClosePanelNoConnectionAction(object obj)
         {
             PanelLoading_NC = false;
         }
         #endregion
 
-        #region Metro Dialog
+        #region Metro Dialog Methods
         private async Task<bool> AskUserMetroDialog(string message, string title = "Aviso")
         {
             MessageDialogStyle messageDialogStyle = MessageDialogStyle.AffirmativeAndNegative;
@@ -1470,8 +1437,6 @@ namespace PDADesktop.ViewModel
             MessageDialogResult userResponse = await dialogCoordinator.ShowMessageAsync(this, title, message, messageDialogStyle, metroDialogSettings);
             return userResponse == MessageDialogResult.Affirmative;
         }
-        #endregion
-
         #endregion
     }
 }

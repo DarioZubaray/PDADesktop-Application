@@ -101,9 +101,9 @@
                             <materialDesign:PackIcon Kind="ArrowLeftBoldCircleOutline" />
                         </Button>
 
-                        <TextBox x:Name="txt_sincronizacion" FontSize="15" TextWrapping="Wrap" Margin="10"
+                        <TextBox x:Name="TextBox_sincronizacion" FontSize="15" TextWrapping="Wrap" Margin="10"
                                  VerticalContentAlignment="Center" TextAlignment="Center" Width="255" IsEnabled="False"
-                                 Text="{Binding txt_sincronizacion}">
+                                 Text="{Binding TextBox_sincronizacion}">
                             <TextBox.Resources>
                                 <Style TargetType="{x:Type Border}">
                                     <Setter Property="CornerRadius" Value="10"/>
@@ -131,7 +131,7 @@
                       Height="Auto" Width="920"
                       AutoGenerateColumns="False" IsReadOnly="True"
                       AlternatingRowBackground="Gainsboro" AlternationCount="2"
-                      ItemsSource="{Binding sincronizaciones}" Grid.ColumnSpan="3"
+                      ItemsSource="{Binding Sincronizaciones}" Grid.ColumnSpan="3"
                       SelectedItem="{Binding Path=SelectedSynchronization, Mode=TwoWay}">
 
                 <DataGrid.CellStyle>
@@ -193,12 +193,12 @@
 
             <Grid Grid.Column="1" Grid.Row="2" Width="Auto">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="Auto">
-                    <Label x:Name="label_version" Content="Version Escritorio" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label x:Name="label_version_data" Content="{Binding label_version}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
-                    <Label x:Name="label_usuario" Content="Usuario" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="100 0 0 0"/>
-                    <Label x:Name="label_usuario_data" Content="{Binding label_usuario}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
-                    <Label x:Name="label_sucursal" Content="Sucursal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="100 0 0 0"/>
-                    <Label x:Name="label_sucursal_data" Content="{Binding label_sucursal}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
+                    <Label x:Name="_label_version" Content="Version Escritorio" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label x:Name="label_version" Content="{Binding Label_version}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
+                    <Label x:Name="_label_usuario" Content="Usuario" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="100 0 0 0"/>
+                    <Label x:Name="label_usuario" Content="{Binding Label_usuario}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
+                    <Label x:Name="_label_sucursal" Content="Sucursal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="100 0 0 0"/>
+                    <Label x:Name="label_sucursal" Content="{Binding Label_sucursal}" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
 
                 </StackPanel>
             </Grid>

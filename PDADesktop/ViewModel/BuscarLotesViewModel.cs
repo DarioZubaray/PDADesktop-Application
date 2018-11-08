@@ -16,10 +16,9 @@ namespace PDADesktop.ViewModel
 {
     class BuscarLotesViewModel : ViewModelBase
     {
-        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         #region Attributes
-        private readonly BackgroundWorker loadSearchBatches = new BackgroundWorker();
+        #region Commons Attributes
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDialogCoordinator dialogCoordinator;
 
         private ObservableCollection<Lote> searchBatch;
@@ -165,49 +164,53 @@ namespace PDADesktop.ViewModel
         private Model.Dto.ListView listView;
         #endregion
 
-        #region Loading panel
-        private bool _panelLoading;
+        #region Workers Attributes
+        private readonly BackgroundWorker loadSearchBatchesWorker = new BackgroundWorker();
+        #endregion
+
+        #region Loading Panel Attributes
+        private bool panelLoading;
         public bool PanelLoading
         {
             get
             {
-                return _panelLoading;
+                return panelLoading;
             }
             set
             {
-                _panelLoading = value;
+                panelLoading = value;
                 OnPropertyChanged();
             }
         }
-        private string _panelMainMessage;
+        private string panelMainMessage;
         public string PanelMainMessage
         {
             get
             {
-                return _panelMainMessage;
+                return panelMainMessage;
             }
             set
             {
-                _panelMainMessage = value;
+                panelMainMessage = value;
                 OnPropertyChanged();
             }
         }
-        private string _panelSubMessage;
+        private string panelSubMessage;
         public string PanelSubMessage
         {
             get
             {
-                return _panelSubMessage;
+                return panelSubMessage;
             }
             set
             {
-                _panelSubMessage = value;
+                panelSubMessage = value;
                 OnPropertyChanged();
             }
         }
         #endregion
 
-        #region Commands
+        #region Commands Attributes
         private ICommand returnCommand;
         public ICommand ReturnCommand
         {
@@ -298,7 +301,7 @@ namespace PDADesktop.ViewModel
                 lastCommand = value;
             }
         }
-
+        #endregion
         #endregion
 
         #region Constructor
@@ -309,31 +312,33 @@ namespace PDADesktop.ViewModel
             dialogCoordinator = instance;
             PagerLegend = "Buscar Lotes View Model";
             PagerResultLegend = "Mostrando 1 - 10 de 10 resultados";
-            loadSearchBatches.DoWork += loadSearchBatches_DoWork;
-            loadSearchBatches.RunWorkerCompleted += loadSearchBatches_RunWorkerCompleted;
-            ReturnCommand = new RelayCommand(ReturnActivityCenterMethod);
-            AcceptCommand = new RelayCommand(AcceptMethod);
-            PanelCloseCommand = new RelayCommand(PanelCloseMethod);
+
+            loadSearchBatchesWorker.DoWork += loadSearchBatchesWorker_DoWork;
+            loadSearchBatchesWorker.RunWorkerCompleted += loadSearchBatchesWorker_RunWorkerCompleted;
+
+            ReturnCommand = new RelayCommand(ReturnActivityCenterAction);
+            AcceptCommand = new RelayCommand(AcceptAction);
+            PanelCloseCommand = new RelayCommand(PanelCloseAction);
 
             FirstButtonEnabled = false;
             PreviousButtonEnabled = false;
             NextButtonEnabled = true;
             LastButtonEnabled = true;
 
-            FirstCommand = new RelayCommand(GoFirstPage);
-            PreviousCommand = new RelayCommand(GoPreviousPage);
-            NextCommand = new RelayCommand(GoNextPage);
-            LastCommand = new RelayCommand(GoLastPage);
+            FirstCommand = new RelayCommand(GoFirstPageAction);
+            PreviousCommand = new RelayCommand(GoPreviousPageAction);
+            NextCommand = new RelayCommand(GoNextPageAction);
+            LastCommand = new RelayCommand(GoLastPageAction);
 
             LongListResultToDisplay = new long[] { 5, 10, 15, 20 };
             SelectedValueOne = 20;
             int initialPage = 1;
-            loadSearchBatches.RunWorkerAsync(argument: initialPage);
+            loadSearchBatchesWorker.RunWorkerAsync(argument: initialPage);
         }
         #endregion
 
-        #region RelayCommand Methods
-        public void ReturnActivityCenterMethod(object obj)
+        #region Action Methods
+        public void ReturnActivityCenterAction(object obj)
         {
             MyAppProperties.currentBatchId = obj?.ToString();
             MainWindow window = (MainWindow)Application.Current.MainWindow;
@@ -341,24 +346,24 @@ namespace PDADesktop.ViewModel
             window.frame.NavigationService.Navigate(uri);
         }
 
-        public void AcceptMethod(object obj)
+        public void AcceptAction(object obj)
         {
             logger.Debug("Accept Method");
             if(this.SelectedBatch != null)
             {
                 logger.Debug("SelectedBatch: " + this.SelectedBatch.idLote);
-                ReturnActivityCenterMethod(this.SelectedBatch.idLote);
+                ReturnActivityCenterAction(this.SelectedBatch.idLote);
             }
         }
 
-        public void PanelCloseMethod(object obj)
+        public void PanelCloseAction(object obj)
         {
             HidingWaitingPanel();
         }
         #endregion
 
-        #region Paginator
-        public void GoFirstPage(object obj)
+        #region Paginator Methods
+        public void GoFirstPageAction(object obj)
         {
             DisplayWaitingPanel("");
             this.listView.page = 1;
@@ -366,10 +371,10 @@ namespace PDADesktop.ViewModel
             PreviousButtonEnabled = false;
             NextButtonEnabled = true;
             LastButtonEnabled = true;
-            loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
+            loadSearchBatchesWorker.RunWorkerAsync(argument: this.listView.page);
         }
 
-        public void GoPreviousPage(object obj)
+        public void GoPreviousPageAction(object obj)
         {
             DisplayWaitingPanel("");
             if(this.listView.page == 2)
@@ -386,10 +391,10 @@ namespace PDADesktop.ViewModel
             }
             NextButtonEnabled = true;
             LastButtonEnabled = true;
-            loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
+            loadSearchBatchesWorker.RunWorkerAsync(argument: this.listView.page);
         }
 
-        public void GoNextPage(object obj)
+        public void GoNextPageAction(object obj)
         {
             DisplayWaitingPanel("");
             if(this.listView.page == this.listView.total - 1)
@@ -406,10 +411,10 @@ namespace PDADesktop.ViewModel
             }
             FirstButtonEnabled = true;
             PreviousButtonEnabled = true;
-            loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
+            loadSearchBatchesWorker.RunWorkerAsync(argument: this.listView.page);
         }
 
-        public void GoLastPage(object obj)
+        public void GoLastPageAction(object obj)
         {
             DisplayWaitingPanel("");
             this.listView.page = this.listView.total;
@@ -417,14 +422,15 @@ namespace PDADesktop.ViewModel
             LastButtonEnabled = false;
             FirstButtonEnabled = true;
             PreviousButtonEnabled = true;
-            loadSearchBatches.RunWorkerAsync(argument: this.listView.page);
+            loadSearchBatchesWorker.RunWorkerAsync(argument: this.listView.page);
         }
         #endregion
 
-        #region Worker
-        private void loadSearchBatches_DoWork(object sender, DoWorkEventArgs e)
+        #region Workers Methods
+        #region Load Search Batches Worker
+        private void loadSearchBatchesWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("Load Search Batchs => Do Work");
+            logger.Debug("load search batches => Do Work");
             System.Threading.Thread.Sleep(1000);
             int page = (int)e.Argument;
             string storeId = MyAppProperties.storeId;
@@ -442,15 +448,16 @@ namespace PDADesktop.ViewModel
             }));
         }
 
-        private void loadSearchBatches_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void loadSearchBatchesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("Load Search Batchs => Run Worker Completed");
+            logger.Debug("load search batches => Run Worker Completed");
             var dispatcher = App.Instance.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
                 HidingWaitingPanel();
             }));
         }
+        #endregion
         #endregion
 
         #region Panel Methods

@@ -17,9 +17,11 @@ namespace PDADesktop.ViewModel
 {
     class VerAjustesModificarViewModel : ViewModelBase
     {
-        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         #region Attributes
+        #region Commons Attributes
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private IDialogCoordinator dialogCoordinator;
+
         private ObservableCollection<Ajustes> adjustments;
         public ObservableCollection<Ajustes> Adjustments
         {
@@ -115,115 +117,55 @@ namespace PDADesktop.ViewModel
                 OnPropertyChanged();
             }
         }
+        #endregion
 
-        private IDialogCoordinator dialogCoordinator;
+        #region Workers Attributes
+        private readonly BackgroundWorker updateAdjustementWorker = new BackgroundWorker();
+        #endregion
 
-        #region Loading panel
-        private bool _panelLoading;
+        #region Loading Panel Attributes
+        private bool panelLoading;
         public bool PanelLoading
         {
             get
             {
-                return _panelLoading;
+                return panelLoading;
             }
             set
             {
-                _panelLoading = value;
+                panelLoading = value;
                 OnPropertyChanged();
             }
         }
-        private string _panelMainMessage;
+        private string panelMainMessage;
         public string PanelMainMessage
         {
             get
             {
-                return _panelMainMessage;
+                return panelMainMessage;
             }
             set
             {
-                _panelMainMessage = value;
+                panelMainMessage = value;
                 OnPropertyChanged();
             }
         }
-        private string _panelSubMessage;
+        private string panelSubMessage;
         public string PanelSubMessage
         {
             get
             {
-                return _panelSubMessage;
+                return panelSubMessage;
             }
             set
             {
-                _panelSubMessage = value;
+                panelSubMessage = value;
                 OnPropertyChanged();
             }
         }
         #endregion
 
-        #endregion
-
-        #region BackgroundWorkers
-        private readonly BackgroundWorker updateAdjustementWorker = new BackgroundWorker();
-        #endregion
-
-        #region Constructor
-        public VerAjustesModificarViewModel(IDialogCoordinator instance)
-        {
-            BannerApp.PrintSeeAdjustmentsModify();
-            dialogCoordinator = instance;
-            DisplayWaitingPanel("Cargando...");
-
-            //TODO mover esta llama a un metodo de un worker en segundo plano
-            string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
-            string estadoInformado = "true";
-            ListView ajustes = HttpWebClientUtil.LoadAdjustmentsGrid(batchId, estadoInformado);
-            adjustments = ListViewUtils.ParserAjustesDataGrid(ajustes);
-
-            AdjustmentEnableEdit = false;
-
-            updateAdjustementWorker.DoWork += UpdateAdjustementWorker_DoWork;
-            updateAdjustementWorker.RunWorkerCompleted += UpdateAdjustmentWorker_RunWorkerCompleted;
-
-            DeleteAdjustmentCommand = new RelayCommand(DeleteAdjustmentMethod);
-            UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentMethod);
-            DiscardChangesCommand = new RelayCommand(DiscardChangesMethod);
-            SaveChangesCommand = new RelayCommand(SaveChangesMethod);
-
-            PanelCloseCommand = new RelayCommand(CerrarPanel);
-            HidingWaitingPanel();
-        }
-
-        ~VerAjustesModificarViewModel()
-        {
-            MyAppProperties.SeeAdjustmentModify_syncId = 0L;
-            MyAppProperties.SeeAdjustmentModify_batchId = null;
-        }
-        #endregion
-
-        #region Update Adjustment Worker
-        private void UpdateAdjustementWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            logger.Debug("Update Adjustment Worker -> doWork");
-            long syncId = MyAppProperties.SeeAdjustmentModify_syncId;
-            logger.Debug("syncId: " + syncId);
-            logger.Debug("Ajustes: " + adjustments);
-            string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
-            string responseUpdateModifyAdjustments = HttpWebClientUtil.UpdateModifiedAdjustments(batchId, Adjustments, syncId);
-            logger.Debug(responseUpdateModifyAdjustments);
-        }
-
-        private void UpdateAdjustmentWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            logger.Debug("Update Adjustment Worker -> runWorker Completed");
-            var dispatcher = App.Current.Dispatcher;
-            dispatcher.BeginInvoke(new Action(() =>
-            {
-                RedirectToActivityCenterView();
-            }));
-        }
-        #endregion
-
-        #region Commands
+        #region Commands Attributes
         private ICommand deleteAdjustmentCommand;
         public ICommand DeleteAdjustmentCommand
         {
@@ -289,13 +231,71 @@ namespace PDADesktop.ViewModel
             }
         }
         #endregion
+        #endregion
 
-        #region Methods
-        public async void DeleteAdjustmentMethod(object obj)
+        #region Constructor
+        public VerAjustesModificarViewModel(IDialogCoordinator instance)
+        {
+            BannerApp.PrintSeeAdjustmentsModify();
+            dialogCoordinator = instance;
+            DisplayWaitingPanel("Cargando...");
+
+            //TODO mover esta llama a un metodo de un worker en segundo plano
+            string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
+            string estadoInformado = "true";
+            ListView ajustes = HttpWebClientUtil.LoadAdjustmentsGrid(batchId, estadoInformado);
+            adjustments = ListViewUtils.ParserAjustesDataGrid(ajustes);
+
+            AdjustmentEnableEdit = false;
+
+            updateAdjustementWorker.DoWork += UpdateAdjustementWorker_DoWork;
+            updateAdjustementWorker.RunWorkerCompleted += UpdateAdjustmentWorker_RunWorkerCompleted;
+
+            DeleteAdjustmentCommand = new RelayCommand(DeleteAdjustmentAction);
+            UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentAction);
+            DiscardChangesCommand = new RelayCommand(DiscardChangesAction);
+            SaveChangesCommand = new RelayCommand(SaveChangesAction);
+
+            PanelCloseCommand = new RelayCommand(ClosePanelAction);
+            HidingWaitingPanel();
+        }
+
+        ~VerAjustesModificarViewModel()
+        {
+            MyAppProperties.SeeAdjustmentModify_syncId = 0L;
+            MyAppProperties.SeeAdjustmentModify_batchId = null;
+        }
+        #endregion
+
+        #region Update Adjustment Worker
+        private void UpdateAdjustementWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Debug("Update Adjustment Worker -> doWork");
+            long syncId = MyAppProperties.SeeAdjustmentModify_syncId;
+            logger.Debug("syncId: " + syncId);
+            logger.Debug("Ajustes: " + adjustments);
+            string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
+            string responseUpdateModifyAdjustments = HttpWebClientUtil.UpdateModifiedAdjustments(batchId, Adjustments, syncId);
+            logger.Debug(responseUpdateModifyAdjustments);
+        }
+
+        private void UpdateAdjustmentWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("Update Adjustment Worker -> runWorker Completed");
+            var dispatcher = App.Current.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                RedirectToActivityCenterView();
+            }));
+        }
+        #endregion
+
+        #region Actions Methods
+        public async void DeleteAdjustmentAction(object obj)
         {
             logger.Debug("EliminarAjusteButton");
             string message = "¿Está seguro que desea eliminar el ajuste? Esta acción no se puede deshacer";
-            bool userAnswer = await AskToUserMahappDialog(message);
+            bool userAnswer = await AskUserMetroDialog(message);
 
             if (userAnswer)
             {
@@ -315,17 +315,17 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        public void UpdateAdjustmentMethod(object obj)
+        public void UpdateAdjustmentAction(object obj)
         {
             logger.Debug("ActualizarAjusteButton");
             SelectedAdjustment = null;
         }
 
-        public async void DiscardChangesMethod(object obj)
+        public async void DiscardChangesAction(object obj)
         {
             logger.Debug("DescartarCambiosButton");
             string message = "¿Desea descartar los cambios?";
-            bool userAnswer = await AskToUserMahappDialog(message);
+            bool userAnswer = await AskUserMetroDialog(message);
 
             if (userAnswer)
             {
@@ -333,11 +333,11 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        public async void SaveChangesMethod(object obj)
+        public async void SaveChangesAction(object obj)
         {
             logger.Debug("GuardarCambiosButton");
             string messageToAskToUser = "¿Está seguro que desea continuar, confirmando la modificación del ajuste?";
-            bool userAnswer = await AskToUserMahappDialog(messageToAskToUser);
+            bool userAnswer = await AskUserMetroDialog(messageToAskToUser);
 
             if (userAnswer)
             {
@@ -348,24 +348,34 @@ namespace PDADesktop.ViewModel
                 updateAdjustementWorker.RunWorkerAsync();
             }
         }
+        #endregion
 
+        #region Commons Methods
         private void RedirectToActivityCenterView()
         {
             MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
         }
+        #endregion
 
-        private async Task<bool> AskToUserMahappDialog(string message, string title = "Aviso")
+        #region Metro Dialog Methods
+        private async Task<bool> AskUserMetroDialog(string message, string title = "Aviso")
         {
-            MetroDialogSettings settings = new MetroDialogSettings();
-            settings.AffirmativeButtonText = "Aceptar";
-            settings.NegativeButtonText = "Cancelar";
-            Task<MessageDialogResult> showMessageAsync = dialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative, settings);
-            MessageDialogResult messsageDialogResult = await showMessageAsync;
-            bool resultAffirmative = messsageDialogResult.Equals(MessageDialogResult.Affirmative);
-            return resultAffirmative;
+            MessageDialogStyle messageDialogStyle = MessageDialogStyle.AffirmativeAndNegative;
+            bool userResponse = await ShowMetroDialog(messageDialogStyle, message, title);
+            return userResponse;
         }
+
+        private async Task<bool> ShowMetroDialog(MessageDialogStyle messageDialogStyle, string message, string title = "Aviso")
+        {
+            MetroDialogSettings metroDialogSettings = new MetroDialogSettings();
+            metroDialogSettings.AffirmativeButtonText = "Aceptar";
+            metroDialogSettings.NegativeButtonText = "Cancelar";
+            MessageDialogResult userResponse = await dialogCoordinator.ShowMessageAsync(this, title, message, messageDialogStyle, metroDialogSettings);
+            return userResponse == MessageDialogResult.Affirmative;
+        }
+        #endregion
 
         #region Panel Methods
         public void DisplayWaitingPanel(string mainMessage, string subMessage = "")
@@ -381,12 +391,10 @@ namespace PDADesktop.ViewModel
             PanelSubMessage = "";
         }
 
-        public void CerrarPanel(object obj)
+        public void ClosePanelAction(object obj)
         {
             PanelLoading = false;
         }
-        #endregion
-
         #endregion
     }
 }
