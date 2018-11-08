@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
@@ -170,6 +171,10 @@ namespace PDADesktop.ViewModel
         private readonly BackgroundWorker loadSearchBatchesWorker = new BackgroundWorker();
         #endregion
 
+        #region Dispatcher Attributes
+        private Dispatcher dispatcher;
+        #endregion
+
         #region Loading Panel Attributes
         private bool panelLoading;
         public bool PanelLoading
@@ -329,6 +334,7 @@ namespace PDADesktop.ViewModel
             BannerApp.SearchBatches();
             DisplayWaitingPanel("Cargando...");
             dialogCoordinator = instance;
+            dispatcher = App.Instance.Dispatcher;
             PagerLegend = "Buscar Lotes View Model";
             PagerResultLegend = "Mostrando 1 - 10 de 10 resultados";
 
@@ -384,7 +390,7 @@ namespace PDADesktop.ViewModel
         #region Paginator Methods
         public void GoFirstPageAction(object obj)
         {
-            DisplayWaitingPanel("");
+            DisplayWaitingPanel("Espere por favor", "Buscando los más recientes registros de lotes.");
             this.listView.page = 1;
             FirstButtonEnabled = false;
             PreviousButtonEnabled = false;
@@ -395,7 +401,7 @@ namespace PDADesktop.ViewModel
 
         public void GoPreviousPageAction(object obj)
         {
-            DisplayWaitingPanel("");
+            DisplayWaitingPanel("Espere por favor", "Buscando la página anterior de lotes.");
             if(this.listView.page == 2)
             {
                 this.listView.page = 1;
@@ -415,7 +421,7 @@ namespace PDADesktop.ViewModel
 
         public void GoNextPageAction(object obj)
         {
-            DisplayWaitingPanel("");
+            DisplayWaitingPanel("Espere por favor", "Buscando los siguientes registros de lotes.");
             if(this.listView.page == this.listView.total - 1)
             {
                 this.listView.page = this.listView.total;
@@ -435,7 +441,7 @@ namespace PDADesktop.ViewModel
 
         public void GoLastPageAction(object obj)
         {
-            DisplayWaitingPanel("");
+            DisplayWaitingPanel("Espere por favor", "Buscando los más antiguos registros de lotes.");
             this.listView.page = this.listView.total;
             NextButtonEnabled = false;
             LastButtonEnabled = false;
@@ -457,7 +463,6 @@ namespace PDADesktop.ViewModel
             if (responseSearchBatch != null)
             {
                 listView = JsonUtils.GetListView(responseSearchBatch);
-                var dispatcher = App.Instance.Dispatcher;
                 dispatcher.BeginInvoke(new Action(() =>
                 {
                     SearchBatch = ListViewUtils.ParserSearchBatchesDataGrid(listView);
@@ -470,7 +475,6 @@ namespace PDADesktop.ViewModel
             }
             else
             {
-                var dispatcher = App.Instance.Dispatcher;
                 dispatcher.BeginInvoke(new Action(() => {
                     notifier.ShowWarning("El servidor PDAExpress no ha respondido a tiempo.");
                 }));
@@ -480,7 +484,6 @@ namespace PDADesktop.ViewModel
         private void loadSearchBatchesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("load search batches => Run Worker Completed");
-            var dispatcher = App.Instance.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
                 HidingWaitingPanel();
@@ -499,8 +502,8 @@ namespace PDADesktop.ViewModel
         public void HidingWaitingPanel()
         {
             PanelLoading = false;
-            PanelMainMessage = "";
-            PanelSubMessage = "";
+            PanelMainMessage = String.Empty;
+            PanelSubMessage = String.Empty;
         }
         #endregion
     }
