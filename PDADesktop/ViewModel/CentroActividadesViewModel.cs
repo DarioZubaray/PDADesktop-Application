@@ -32,6 +32,7 @@ namespace PDADesktop.ViewModel
         #region Commons Attributes
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDialogCoordinator dialogCoordinator;
+        private IDeviceHandler deviceHandler { get; set; }
 
         private List<SincronizacionDtoDataGrid> sincronizaciones;
         public List<SincronizacionDtoDataGrid> Sincronizaciones
@@ -124,6 +125,34 @@ namespace PDADesktop.ViewModel
                 label_sucursal = value;
             }
         }
+
+        private bool firstGroupPagination;
+        public bool FirstGroupPagination
+        {
+            get
+            {
+                return firstGroupPagination;
+            }
+            set
+            {
+                firstGroupPagination = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool lastGroupPagination;
+        public bool LastGroupPagination
+        {
+            get
+            {
+                return lastGroupPagination;
+            }
+            set
+            {
+                lastGroupPagination = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region Commands Attributes
@@ -180,7 +209,7 @@ namespace PDADesktop.ViewModel
         }
 
         private ICommand centroActividadesLoadedCommand;
-        public ICommand CentroActividadesLoadedCommand
+        public ICommand CentroActividadesLoadedEvent
         {
             get
             {
@@ -420,16 +449,20 @@ namespace PDADesktop.ViewModel
         {
             BannerApp.PrintActivityCenter();
             PanelLoading_NC = false;
-            PanelMainMessage_NC = "PDA SIN CONEXION";
+            HidingNoConnectionPanel();
             DisplayWaitingPanel("Cargando...");
             dialogCoordinator = instance;
             dispatcher = App.Instance.Dispatcher;
-            setInfoLabels();
+            deviceHandler = App.Instance.deviceHandler;
+            SetGroupPaginator(true, false);
+            SetInfoLabels();
+
+            CentroActividadesLoadedEvent = new RelayCommand(ActivityCenterLoadedEvent, param => this.canExecute);
+
             ExitButtonCommand = new RelayCommand(ExitPortalApiAction, param => this.canExecute);
             SincronizarCommand = new RelayCommand(SyncAllDataAction, param => this.canExecute);
             InformarCommand = new RelayCommand(InformGenesixAction, param => this.canExecute);
             VerAjustesRealizadosCommand = new RelayCommand(SeeAdjustmentMadeAction, param => this.canExecute);
-            CentroActividadesLoadedCommand = new RelayCommand(ActivityCenterLoadedAction, param => this.canExecute);
             AnteriorCommand = new RelayCommand(PreviousSyncAction, param => this.canExecute);
             SiguienteCommand = new RelayCommand(NextSyncAction, param => this.canExecute);
             UltimaCommand = new RelayCommand(LastSyncAction, param => this.canExecute);
@@ -465,13 +498,27 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
+        #region Loaded Event
+        public void ActivityCenterLoadedEvent(object obj)
+        {
+            if (MyAppProperties.loadOnce)
+            {
+                loadOnceActivityCenterWorker.RunWorkerAsync();
+            }
+            else
+            {
+                reloadActivityCenterWorker.RunWorkerAsync();
+            }
+        }
+        #endregion
+
         #region dispatcherTimer
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             if (!loadOnceActivityCenterWorker.IsBusy || !syncWorker.IsBusy ||
                 !adjustmentWorker.IsBusy || !redirectWorker.IsBusy || !reloadActivityCenterWorker.IsBusy)
             {
-                bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
+                bool deviceStatus = deviceHandler.IsDeviceConnected();
                 logger.Debug("disptachertimer tick => Device status: " + deviceStatus);
 
                 if (!deviceStatus)
@@ -479,14 +526,14 @@ namespace PDADesktop.ViewModel
                     MyAppProperties.needReloadActivityCenter = true;
                     dispatcher.BeginInvoke(new Action(() =>
                     {
-                        ShowPanelNoConnection();
+                        DisplayDefaultNoConnectionPanel();
                     }));
                 }
                 else
                 {
                     dispatcher.BeginInvoke(new Action(() =>
                     {
-                        HidePanelNoConnection();
+                        HidingNoConnectionPanel();
                     }));
                     if (MyAppProperties.needReloadActivityCenter)
                     {
@@ -507,23 +554,10 @@ namespace PDADesktop.ViewModel
                 logger.Debug("se esta cargando el centro de actividades...");
             }
         }
-
-        private void ShowPanelNoConnection()
-        {
-            PanelLoading_NC = true;
-            PanelMainMessage_NC = "Se ha perdido la conexión con el Dispositivo " + App.Instance.deviceHandler.GetNameToDisplay();
-            PanelSubMessage_NC = "Reintentando...";
-        }
-
-        private void HidePanelNoConnection()
-        {
-            PanelLoading_NC = false;
-            PanelMainMessage_NC = "La conexión ha vuelto! que bien!";
-        }
         #endregion
 
         #region Workers Method
-        #region Loaded Activity Center Worker
+        #region Load Once Activity Center Worker
         private void loadOnceActivityCenterWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             string currentMessage = "Load Once Activity Center => Do Work";
@@ -550,7 +584,7 @@ namespace PDADesktop.ViewModel
 
                 currentMessage = "Obteniendo el id del último lote para sucursal " + storeId + " ...";
                 NotifyCurrentMessage(currentMessage);
-                int currentBatchId = HttpWebClientUtil.GetCurrentBatchId(storeId);
+                int currentBatchId = HttpWebClientUtil.GetLastBatchId(storeId);
 
                 currentMessage = "Obteniendo detalles de sincronización para lote " + currentBatchId + " ...";
                 NotifyCurrentMessage(currentMessage);
@@ -608,7 +642,7 @@ namespace PDADesktop.ViewModel
             {
                 logger.Info("Dispositivo no detectado");
                 CreateBadgeSeeAdjustments();
-                ShowPanelNoConnection();
+                DisplayDefaultNoConnectionPanel();
             }
             MyAppProperties.loadOnce = false;
             DeleteTempFiles();
@@ -674,7 +708,7 @@ namespace PDADesktop.ViewModel
 
         private bool CheckDeviceConnected()
         {
-            bool isDeviceConnected = App.Instance.deviceHandler.IsDeviceConnected();
+            bool isDeviceConnected = deviceHandler.IsDeviceConnected();
             logger.Info("Device is connected: " + isDeviceConnected);
             return isDeviceConnected;
         }
@@ -692,10 +726,10 @@ namespace PDADesktop.ViewModel
                 buttonSeeAdjustment.Command = this.VerAjustesRealizadosCommand;
 
                 Badged badge = new Badged();
-                bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
+                bool estadoDevice = deviceHandler.IsDeviceConnected();
                 if (estadoDevice)
                 {
-                    string DeviceAjusteFile = App.Instance.deviceHandler.ReadAdjustmentsDataFile();
+                    string DeviceAjusteFile = deviceHandler.ReadAdjustmentsDataFile();
                     if (DeviceAjusteFile != null)
                     {
                         ObservableCollection<Ajustes> ajustes = JsonUtils.GetObservableCollectionAjustes(DeviceAjusteFile);
@@ -729,7 +763,6 @@ namespace PDADesktop.ViewModel
         private void CopyDeviceMainDataFileToPublic()
         {
             string slashFilenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
-            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             try
             {
                 ResultFileOperation deviceCopyResult = deviceHandler.CopyDeviceFileToPublicLookUp(slashFilenameAndExtension);
@@ -763,7 +796,6 @@ namespace PDADesktop.ViewModel
                 string lastServerVersion = lastVersionFromServer.version.ToString();
                 logger.Debug("Ultima versión en el servidor: " + lastServerVersion);
 
-                IDeviceHandler deviceHandler = App.Instance.deviceHandler;
                 string deviceMainFileVersion =  deviceHandler.ReadVersionDeviceProgramFileFromDefaultData();
                 logger.Debug("Versión del dispositivo: " + deviceMainFileVersion);
 
@@ -799,7 +831,6 @@ namespace PDADesktop.ViewModel
         private bool CheckStoreIdDevice()
         {
             bool needAssociate = false;
-            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             string storeIDFromDevice = deviceHandler.ReadStoreIdFromDefaultData();
             string storeIdFromLogin = MyAppProperties.storeId;
             if(!TextUtils.CompareStoreId(storeIDFromDevice, storeIdFromLogin))
@@ -817,7 +848,6 @@ namespace PDADesktop.ViewModel
 
         private void DeleteAllPreviousFiles(bool isCompletedSynchronization)
         {
-            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             List<Actividad> actividades = MyAppProperties.activitiesEnables;
             if(isCompletedSynchronization)
             {
@@ -836,7 +866,6 @@ namespace PDADesktop.ViewModel
 
         private void CheckLastSyncDateFromDefault(bool filesPreviouslyDeleted)
         {
-            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             string synchronizationDefault = deviceHandler.ReadSynchronizationDateFromDefaultData();
             bool isGreatherThanToday = DateTimeUtils.IsGreatherThanToday(synchronizationDefault);
             if(isGreatherThanToday && !filesPreviouslyDeleted)
@@ -848,7 +877,6 @@ namespace PDADesktop.ViewModel
         private void UpdateDeviceMainFile(string sucursal)
         {
             FileUtils.UpdateDeviceMainFileInPublic(sucursal);
-            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_LOOKUP);
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             deviceHandler.CopyPublicLookUpFileToDevice(destinationDirectory, filenameAndExtension);
@@ -894,20 +922,28 @@ namespace PDADesktop.ViewModel
             currentMessage = "Verificando conexión con el servidor PDAExpress...";
             NotifyCurrentMessage(currentMessage);
             bool serverStatus = CheckServerStatus();
-
-            string storeId = MyAppProperties.storeId;
-            string currentBatchId = MyAppProperties.currentBatchId;
-            if(currentBatchId == null)
-            {
-                currentMessage = "Obteniendo el id del último lote para sucursal " + storeId + " ...";
-                NotifyCurrentMessage(currentMessage);
-                currentBatchId = HttpWebClientUtil.GetCurrentBatchId(storeId).ToString();
-            }
             if (serverStatus)
             {
+                string storeId = MyAppProperties.storeId;
+                currentMessage = "Obteniendo el id del último lote para sucursal " + storeId + " ...";
+                NotifyCurrentMessage(currentMessage);
+                string lastBatchId = HttpWebClientUtil.GetLastBatchId(storeId).ToString();
+
+                string currentBatchId = MyAppProperties.currentBatchId;
+                if(currentBatchId == null)
+                {
+                    currentBatchId = lastBatchId;
+                    SetGroupPaginator(true, false);
+                }
+                else
+                {
+                    SetGroupPaginator(true, true);
+                }
+
                 currentMessage = "Obteniendo detalles de sincronización para lote " + currentBatchId + " ...";
                 NotifyCurrentMessage(currentMessage);
                 GetActualSync(Convert.ToInt32(currentBatchId), storeId);
+
             }
             else
             {
@@ -1031,7 +1067,7 @@ namespace PDADesktop.ViewModel
             else
             {
                 logger.Debug("Dispositivo no conectado");
-                ShowPanelNoConnection();
+                DisplayDefaultNoConnectionPanel();
             }
         }
 
@@ -1052,7 +1088,7 @@ namespace PDADesktop.ViewModel
         private bool CheckInformedReceptions()
         {
             string sotreId = MyAppProperties.storeId;
-            string batchId = HttpWebClientUtil.GetCurrentBatchId(sotreId).ToString();
+            string batchId = HttpWebClientUtil.GetLastBatchId(sotreId).ToString();
             bool informedReceptions = HttpWebClientUtil.CheckInformedReceptions(batchId);
             logger.Info("recepciones Informadas pendientes: " + (informedReceptions ? "NO" : "SI"));
 
@@ -1078,7 +1114,6 @@ namespace PDADesktop.ViewModel
                     try
                     {
                         string slashFilenameAndExtension = ArchivosDATUtils.GetDataFileNameAndExtensionByIdActividad(actionId);
-                        IDeviceHandler deviceHandler = App.Instance.deviceHandler;
                         ResultFileOperation resultCopy = deviceHandler.CopyDeviceFileToPublicData(slashFilenameAndExtension);
                         if (resultCopy.Equals(ResultFileOperation.OK))
                         {
@@ -1162,7 +1197,7 @@ namespace PDADesktop.ViewModel
                             string filename = ArchivosDATUtils.GetDataFileNameByIdActividad((int)sync.actividad.idActividad);
                             string filenameAndExtension = FileUtils.WrapSlashAndDATExtension(filename);
 
-                            ResultFileOperation result = App.Instance.deviceHandler.CopyPublicDataFileToDevice(destinationDirectory, filenameAndExtension);
+                            ResultFileOperation result = deviceHandler.CopyPublicDataFileToDevice(destinationDirectory, filenameAndExtension);
                             logger.Debug("result: " + result);
                             NotifyCurrentMessage("Moviendo al dispositivo");
 
@@ -1213,10 +1248,11 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region Reload Data Grid Worker
+        #region Sync Data Grid Worker
         private void syncDataGrid_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Info("sync data grid => Do Work");
+            Thread.Sleep(500);
             string urlSincronizacionAnterior = MyAppProperties.currentUrlSync;
             string _sucursal = MyAppProperties.storeId;
             string _idLote = MyAppProperties.currentBatchId;
@@ -1231,7 +1267,7 @@ namespace PDADesktop.ViewModel
             else
             {
                 dispatcher.BeginInvoke(new Action(() => {
-                    notifier.ShowWarning("El servidor PDAExpress no ha respondido a tiempo.");
+                    notifier.ShowWarning("El servidor PDAExpress no ha respondido como se esperaba.");
                 }));
             }
         }
@@ -1246,7 +1282,7 @@ namespace PDADesktop.ViewModel
         private void adjustmentWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("adjustment => Do Work");
-            bool estadoDevice = App.Instance.deviceHandler.IsDeviceConnected();
+            bool estadoDevice = deviceHandler.IsDeviceConnected();
             if (estadoDevice)
             {
                 MainWindow window = MyAppProperties.window;
@@ -1292,7 +1328,22 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Commons Methods
-        public void setInfoLabels()
+        public void SetGroupPaginator(bool firstGroup, bool lastGroup)
+        {
+            SetFirstGroupPaginator(firstGroup);
+            SetLastGroupPaginator(lastGroup);
+        }
+
+        private void SetFirstGroupPaginator(bool firstGroup)
+        {
+            FirstGroupPagination = firstGroup;
+        }
+        private void SetLastGroupPaginator(bool lastGroup)
+        {
+            LastGroupPagination = lastGroup;
+        }
+
+        public void SetInfoLabels()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             Label_version = assembly.GetName().Version.ToString(3);
@@ -1367,42 +1418,43 @@ namespace PDADesktop.ViewModel
             adjustmentWorker.RunWorkerAsync();
         }
 
-        public void ActivityCenterLoadedAction(object obj)
-        {
-            if (MyAppProperties.loadOnce)
-            {
-                loadOnceActivityCenterWorker.RunWorkerAsync();
-            }
-            else
-            {
-                reloadActivityCenterWorker.RunWorkerAsync();
-            }
-        }
-
         public void PreviousSyncAction(object obj)
         {
             DisplayWaitingPanel("Obteniendo sincronizaciones", "Espere por favor");
+            SetLastGroupPaginator(true);
             MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ANTERIOR);
-            syncDataGridWorker.RunWorkerAsync();
+            if (!syncDataGridWorker.IsBusy)
+            {
+                syncDataGridWorker.RunWorkerAsync();
+            }
         }
 
         public void NextSyncAction(object obj)
         {
             DisplayWaitingPanel("Obteniendo sincronizaciones", "Espere por favor");
+            SetFirstGroupPaginator(true);
             MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_SIGUIENTE);
-            syncDataGridWorker.RunWorkerAsync();
+            if (!syncDataGridWorker.IsBusy)
+            {
+                syncDataGridWorker.RunWorkerAsync();
+            }
         }
 
         public void LastSyncAction(object obj)
         {
             DisplayWaitingPanel("Obteniendo sincronizaciones", "Espere por favor");
+            SetFirstGroupPaginator(true);
             MyAppProperties.currentUrlSync = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMA);
-            syncDataGridWorker.RunWorkerAsync();
+            if(!syncDataGridWorker.IsBusy)
+            {
+                syncDataGridWorker.RunWorkerAsync();
+            }
         }
 
         public void SearchBatchAction(object obj)
         {
             DisplayWaitingPanel("Buscando Lotes...");
+            Thread.Sleep(400);
             MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uri = new Uri(Constants.BUSCAR_LOTES_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
@@ -1430,8 +1482,8 @@ namespace PDADesktop.ViewModel
         public void HidingWaitingPanel()
         {
             PanelLoading = false;
-            PanelMainMessage = "";
-            PanelSubMessage = "";
+            PanelMainMessage = String.Empty;
+            PanelSubMessage = String.Empty;
         }
 
         public void ShowPanelAction(object obj)
@@ -1442,6 +1494,27 @@ namespace PDADesktop.ViewModel
         public void ClosePanelAction(object obj)
         {
             HidingWaitingPanel();
+        }
+
+        public void DisplayDefaultNoConnectionPanel()
+        {
+            logger.Debug("Displat Default NoConnection Panel <- llamado");
+            string deviceName = deviceHandler.GetNameToDisplay();
+            string mainMessage = "Se ha perdido la conexión con " + deviceName;
+            string subMessage = "Reintentando..";
+            DisplayNoConnectionPanel(mainMessage, subMessage);
+        }
+        public void DisplayNoConnectionPanel(string mainMessage, string subMessage = "")
+        {
+            PanelLoading_NC = true;
+            PanelMainMessage_NC = mainMessage;
+            PanelSubMessage_NC = subMessage;
+        }
+        public void HidingNoConnectionPanel()
+        {
+            PanelLoading_NC = false;
+            PanelMainMessage_NC = String.Empty;
+            PanelSubMessage_NC = String.Empty;
         }
 
         public void ClosePanelNoConnectionAction(object obj)

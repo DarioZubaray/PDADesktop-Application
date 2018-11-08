@@ -22,7 +22,7 @@
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding CentroActividadesLoadedCommand}" />
+            <i:InvokeCommandAction Command="{Binding CentroActividadesLoadedEvent}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
@@ -97,7 +97,7 @@
                     <Separator Style="{StaticResource MaterialDesignDarkSeparator}" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                        <Button x:Name="btn_sincro_atras" Margin="10" Command="{Binding AnteriorCommand}">
+                        <Button x:Name="btn_sincro_atras" Margin="10" Command="{Binding AnteriorCommand}" IsEnabled="{Binding FirstGroupPagination}">
                             <materialDesign:PackIcon Kind="ArrowLeftBoldCircleOutline" />
                         </Button>
 
@@ -111,7 +111,7 @@
                             </TextBox.Resources>
                         </TextBox>
 
-                        <Button x:Name="btn_sincro_adelante" Margin="10" Command="{Binding SiguienteCommand}">
+                        <Button x:Name="btn_sincro_adelante" Margin="10" Command="{Binding SiguienteCommand}" IsEnabled="{Binding LastGroupPagination}">
                             <materialDesign:PackIcon Kind="ArrowRightBoldCircleOutline" />
                         </Button>
 
@@ -119,7 +119,7 @@
                                 Command="{Binding BuscarLoteCommand}"/>
 
                         <Button x:Name="btn_ultimaSincronizacion" Content="Ir a la última Sincronización" Margin="10" FontSize="11.5"
-                                Command="{Binding UltimaCommand}"/>
+                                Command="{Binding UltimaCommand}" IsEnabled="{Binding LastGroupPagination}"/>
 
                     </StackPanel>
                 </StackPanel>
@@ -153,8 +153,7 @@
                                 <StackPanel>
                                     <Button Content="{Binding genesix}"
                                             Style="{StaticResource MaterialDesignFlatButton}"
-                                            materialDesign:RippleAssist.IsDisabled="True"
-                                            Command="{Binding EstadoGenesixCommand}" />
+                                            materialDesign:RippleAssist.IsDisabled="True"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -166,8 +165,7 @@
                                 <StackPanel>
                                     <Button Content="{Binding pda}"
                                             Style="{StaticResource MaterialDesignFlatButton}"
-                                            materialDesign:RippleAssist.IsDisabled="True"
-                                            Command="{Binding EstadoPDACommand}"/>
+                                            materialDesign:RippleAssist.IsDisabled="True"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
