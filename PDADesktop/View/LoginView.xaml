@@ -22,6 +22,12 @@
              FontFamily="{DynamicResource MaterialDesignFont}"
              FocusManager.FocusedElement="{Binding ElementName=usernameText}">
 
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoginLoadedEvent}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <UserControl.Background>
         <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
             <GradientStop Color="#FFBF00" Offset="0"/>

@@ -122,6 +122,19 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Commands Attributes
+        private ICommand verDetallesRecepcionLoadedEvent;
+        public ICommand VerDetallesRecepcionLoadedEvent
+        {
+            get
+            {
+                return verDetallesRecepcionLoadedEvent;
+            }
+            set
+            {
+                verDetallesRecepcionLoadedEvent = value;
+            }
+        }
+
         private ICommand discardAllCommand;
         public ICommand DiscardAllCommand
         {
@@ -181,6 +194,8 @@ namespace PDADesktop.ViewModel
             DisplayWaitingPanel("Cargando...");
             ReceptionEnableEdit = false;
 
+            VerDetallesRecepcionLoadedEvent = new RelayCommand(VerDetallesRecepcionLoadedEventAction);
+
             loadSeeDetailsWorker.DoWork += loadSeeDetailsWorker_DoWork;
             loadSeeDetailsWorker.RunWorkerCompleted += loadSeeDetailsWorker_RunWorkerCompleted;
             discardReceptionsWorker.DoWork += discardReceptionsWorker_DoWork;
@@ -194,6 +209,13 @@ namespace PDADesktop.ViewModel
             PanelCloseCommand = new RelayCommand(PanelCloseAction);
 
             loadSeeDetailsWorker.RunWorkerAsync();
+        }
+        #endregion
+
+        #region Event Method
+        public void VerDetallesRecepcionLoadedEventAction(object sender)
+        {
+            logger.Debug("Ver detalles recepcion => Loaded Event");
         }
         #endregion
 

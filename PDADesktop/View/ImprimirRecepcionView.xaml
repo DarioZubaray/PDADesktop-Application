@@ -20,6 +20,12 @@
              Background="WhiteSmoke"
              FontFamily="{DynamicResource MaterialDesignFont}">
 
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding ImprimirRecepcionLoadedEvent}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <UserControl.Resources>
         <Style x:Key="DataGridContentCellCentering" TargetType="{x:Type DataGridCell}">
             <Setter Property="Template">

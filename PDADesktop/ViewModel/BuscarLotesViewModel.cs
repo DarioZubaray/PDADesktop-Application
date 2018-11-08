@@ -218,6 +218,19 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Commands Attributes
+        private ICommand buscarLotesLoadedEvent;
+        public ICommand BuscarLotesLoadedEvent
+        {
+            get
+            {
+                return buscarLotesLoadedEvent;
+            }
+            set
+            {
+                buscarLotesLoadedEvent = value;
+            }
+        }
+
         private ICommand returnCommand;
         public ICommand ReturnCommand
         {
@@ -338,6 +351,8 @@ namespace PDADesktop.ViewModel
             PagerLegend = "Buscar Lotes View Model";
             PagerResultLegend = "Mostrando 1 - 10 de 10 resultados";
 
+            BuscarLotesLoadedEvent = new RelayCommand(BuscarLotesLoadedEventAction);
+
             loadSearchBatchesWorker.DoWork += loadSearchBatchesWorker_DoWork;
             loadSearchBatchesWorker.RunWorkerCompleted += loadSearchBatchesWorker_RunWorkerCompleted;
 
@@ -359,6 +374,13 @@ namespace PDADesktop.ViewModel
             SelectedValueOne = 20;
             int initialPage = 1;
             loadSearchBatchesWorker.RunWorkerAsync(argument: initialPage);
+        }
+        #endregion
+
+        #region Event Method
+        public void BuscarLotesLoadedEventAction(object sender)
+        {
+            logger.Debug("Buscar lotes => Loaded Event");
         }
         #endregion
 

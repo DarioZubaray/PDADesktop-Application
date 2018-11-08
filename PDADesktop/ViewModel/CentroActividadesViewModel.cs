@@ -457,7 +457,7 @@ namespace PDADesktop.ViewModel
             SetGroupPaginator(true, false);
             SetInfoLabels();
 
-            CentroActividadesLoadedEvent = new RelayCommand(ActivityCenterLoadedEvent, param => this.canExecute);
+            CentroActividadesLoadedEvent = new RelayCommand(ActivityCenterLoadedEventAction, param => this.canExecute);
 
             ExitButtonCommand = new RelayCommand(ExitPortalApiAction, param => this.canExecute);
             SincronizarCommand = new RelayCommand(SyncAllDataAction, param => this.canExecute);
@@ -499,7 +499,7 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Loaded Event
-        public void ActivityCenterLoadedEvent(object obj)
+        public void ActivityCenterLoadedEventAction(object obj)
         {
             if (MyAppProperties.loadOnce)
             {

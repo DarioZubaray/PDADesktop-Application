@@ -110,6 +110,19 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Commands Attributes
+        private ICommand verAjustesInformadosLoadedEvent;
+        public ICommand VerAjustesInformadosLoadedEvent
+        {
+            get
+            {
+                return verAjustesInformadosLoadedEvent;
+            }
+            set
+            {
+                verAjustesInformadosLoadedEvent = value;
+            }
+        }
+
         private ICommand returnCommand;
         public ICommand ReturnCommand
         {
@@ -132,6 +145,7 @@ namespace PDADesktop.ViewModel
             DisplayWaitingPanel("Cargando...");
             dialogCoordinator = instance;
             var dispatcher = App.Instance.MainWindow.Dispatcher;
+            VerAjustesInformadosLoadedEvent = new RelayCommand(VerAjustesInformadosLoadedEventAction);
 
             loadAdjustmentInformedWorker.DoWork += loadAdjustmentInformedWorker_DoWork;
             loadAdjustmentInformedWorker.RunWorkerCompleted += loadAdjustmentInformedWorker_RunWorkerCompleted;
@@ -139,6 +153,13 @@ namespace PDADesktop.ViewModel
             ReturnCommand = new RelayCommand(ReturnActivityCenterAction);
 
             loadAdjustmentInformedWorker.RunWorkerAsync();
+        }
+        #endregion
+
+        #region Event Method
+        public void VerAjustesInformadosLoadedEventAction(object sender)
+        {
+            logger.Debug("Ver ajustes informados => Loaded Event");
         }
         #endregion
 

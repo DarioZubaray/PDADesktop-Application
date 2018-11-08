@@ -161,6 +161,19 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Commands Attributes
+        private ICommand verAjustesRealizadosLoadedEvent;
+        public ICommand VerAjustesRealizadosLoadedEvent
+        {
+            get
+            {
+                return verAjustesRealizadosLoadedEvent;
+            }
+            set
+            {
+                verAjustesRealizadosLoadedEvent = value;
+            }
+        }
+
         private ICommand deleteAdjustmentCommand;
         public ICommand DeleteAdjustmentCommand
         {
@@ -240,6 +253,8 @@ namespace PDADesktop.ViewModel
             dialogCoordinator = instance;
             DisplayWaitingPanel("Cargando", "Espere por favor...");
 
+            VerAjustesRealizadosLoadedEvent = new RelayCommand(VerAjustesRealizadosLoadedEventAction);
+
             loadSeeAdjustmentMadeWorker.DoWork += loadSeeAdjustmentMadeWorker_DoWork;
             loadSeeAdjustmentMadeWorker.RunWorkerCompleted += loadSeeAdjustmentMadeWorker_RunWorkerCompleted;
 
@@ -252,6 +267,13 @@ namespace PDADesktop.ViewModel
             PanelCloseCommand = new RelayCommand(PanelCloseAction);
 
             loadSeeAdjustmentMadeWorker.RunWorkerAsync();
+        }
+        #endregion
+
+        #region Event Method
+        public void VerAjustesRealizadosLoadedEventAction(object sender)
+        {
+            logger.Debug("Ver ajustes Realizados => Loaded Event");
         }
         #endregion
 

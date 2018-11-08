@@ -166,6 +166,19 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Commands Attributes
+        private ICommand verAjustesModificarLoadedEvent;
+        public ICommand VerAjustesModificarLoadedEvent
+        {
+            get
+            {
+                return verAjustesModificarLoadedEvent;
+            }
+            set
+            {
+                verAjustesModificarLoadedEvent = value;
+            }
+        }
+
         private ICommand deleteAdjustmentCommand;
         public ICommand DeleteAdjustmentCommand
         {
@@ -240,6 +253,8 @@ namespace PDADesktop.ViewModel
             dialogCoordinator = instance;
             DisplayWaitingPanel("Cargando...");
 
+            VerAjustesModificarLoadedEvent = new RelayCommand(VerAjustesModificarLoadedEventAction);
+
             //TODO mover esta llama a un metodo de un worker en segundo plano
             string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
             string estadoInformado = "true";
@@ -264,6 +279,13 @@ namespace PDADesktop.ViewModel
         {
             MyAppProperties.SeeAdjustmentModify_syncId = 0L;
             MyAppProperties.SeeAdjustmentModify_batchId = null;
+        }
+        #endregion
+
+        #region Event Method
+        public void VerAjustesModificarLoadedEventAction(object sender)
+        {
+            logger.Debug("Ver ajustes Modificar => Loaded Event");
         }
         #endregion
 

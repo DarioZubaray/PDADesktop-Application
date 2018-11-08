@@ -88,6 +88,19 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Command Attributes
+        private ICommand loginLoadedEvent;
+        public ICommand LoginLoadedEvent
+        {
+            get
+            {
+                return loginLoadedEvent;
+            }
+            set
+            {
+                loginLoadedEvent = value;
+            }
+        }
+
         private ICommand loginButtonCommand;
         public ICommand LoginButtonCommand
         {
@@ -209,6 +222,7 @@ namespace PDADesktop.ViewModel
             dialogCoordinator = instance;
             DisplayWaitingPanel("Inicializando PDA Desktop Application");
 
+            LoginLoadedEvent = new RelayCommand(LoginLoadedEventAction);
             LoginButtonCommand = new RelayCommand(LoginPortalApiAction, param => this.canExecute);
             ShowPanelCommand = new RelayCommand(ShowPanelAction, param => this.canExecute);
             HidePanelCommand = new RelayCommand(HidePanelAction, param => this.canExecute);
@@ -224,6 +238,13 @@ namespace PDADesktop.ViewModel
 
             RemembermeCheck = true;
             loadLoginWorker.RunWorkerAsync();
+        }
+        #endregion
+
+        #region Event Method
+        public void LoginLoadedEventAction(object sender)
+        {
+            logger.Debug("Login => Loaded Event");
         }
         #endregion
 

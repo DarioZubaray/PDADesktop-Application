@@ -96,6 +96,19 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Command Attributes
+        private ICommand imprimirRecepcionLoadedEvent;
+        public ICommand ImprimirRecepcionLoadedEvent
+        {
+            get
+            {
+                return imprimirRecepcionLoadedEvent;
+            }
+            set
+            {
+                imprimirRecepcionLoadedEvent = value;
+            }
+        }
+
         private ICommand printCommand;
         public ICommand PrintCommand
         {
@@ -144,6 +157,8 @@ namespace PDADesktop.ViewModel
             BannerApp.PrintPrintReception();
             dialogCoordinator = instance;
 
+            ImprimirRecepcionLoadedEvent = new RelayCommand(ImprimirRecepcionLoadedEventAction);
+
             loadPrintReceptionWorker.DoWork += loadPrintReceptionWorker_DoWork;
             loadPrintReceptionWorker.RunWorkerCompleted += loadPrintReceptionWorker_RunWorkerCompleted;
 
@@ -154,6 +169,13 @@ namespace PDADesktop.ViewModel
             PanelCloseCommand = new RelayCommand(PanelCloseAction);
 
             loadPrintReceptionWorker.RunWorkerAsync();
+        }
+        #endregion
+
+        # region Event Method
+        public void ImprimirRecepcionLoadedEventAction(object sender)
+        {
+            logger.Debug("Imprimir Recepcion => Loaded Event");
         }
         #endregion
 

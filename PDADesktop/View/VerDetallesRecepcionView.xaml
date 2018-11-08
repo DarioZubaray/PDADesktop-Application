@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:VM="clr-namespace:PDADesktop.ViewModel"
              xmlns:local="clr-namespace:PDADesktop.View"
              xmlns:ctr="clr-namespace:PDADesktop.View.Controls"
@@ -18,6 +19,12 @@
              TextOptions.TextRenderingMode="Auto"
              Background="WhiteSmoke"
              FontFamily="{DynamicResource MaterialDesignFont}">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding VerDetallesRecepcionLoadedEvent}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <UserControl.Resources>
         <Style x:Key="DataGridContentCellCentering" TargetType="{x:Type DataGridCell}">
