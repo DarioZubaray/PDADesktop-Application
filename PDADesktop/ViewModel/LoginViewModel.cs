@@ -206,26 +206,21 @@ namespace PDADesktop.ViewModel
             logger.Debug("login => Do Work");
             Thread.Sleep(1200);
             MainWindow window = MyAppProperties.window;
+            var dispatcher = Application.Current.Dispatcher;
             if ("juli".Equals(usernameText))
             {
                 logger.Debug("recuerdame: " + RemembermeCheck);
                 logger.Debug("Nombre no null: " + usernameText);
 
-                //aca deberia llamar al servicio de login
-                //Redirecciona a centroActividades
                 Uri uriActivityCenter = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
-
-                var dispatcher = Application.Current.Dispatcher;
                 dispatcher.BeginInvoke(new Action(() =>
                 {
                     window.frame.NavigationService.Navigate(uriActivityCenter);
                 }));
-                
             }
             else
             {
                 logger.Info("usuario y/o contraseña incorrectos");
-                var dispatcher = Application.Current.Dispatcher;
                 dispatcher.BeginInvoke(new Action(() =>
                 {
                     LoginView loginview = (LoginView)window.frame.Content;

@@ -18,7 +18,6 @@ namespace PDADesktop.ViewModel
     class VerAjustesRealizadosViewModel : ViewModelBase
     {
         #region Attributes
-
         #region Common Attributes
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDialogCoordinator dialogCoordinator;

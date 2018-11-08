@@ -3,13 +3,11 @@ using MahApps.Metro.Controls.Dialogs;
 using PDADesktop.Classes;
 using PDADesktop.Classes.Utils;
 using PDADesktop.Model;
-using PDADesktop.Model.Dto;
 using PDADesktop.View;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace PDADesktop.ViewModel

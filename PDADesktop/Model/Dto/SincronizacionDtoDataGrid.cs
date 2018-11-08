@@ -23,30 +23,6 @@ namespace PDADesktop.Model.Dto
         public int idEstadoGeneral { get; set; }
         public string estado { get; set; }
 
-        private ICommand estadoGenesixCommand;
-        public ICommand EstadoGenesixCommand
-        {
-            get
-            {
-                return estadoGenesixCommand;
-            }
-            set
-            {
-                estadoGenesixCommand = value;
-            }
-        }
-        private ICommand estadoPDACommand;
-        public ICommand EstadoPDACommand
-        {
-            get
-            {
-                return estadoPDACommand;
-            }
-            set
-            {
-                estadoPDACommand = value;
-            }
-        }
         private ICommand estadoGeneralCommand;
         public ICommand EstadoGeneralCommand
         {
@@ -124,7 +100,6 @@ namespace PDADesktop.Model.Dto
                     buttonStateName = defaultName;
                     break;
             }
-
 
             return buttonStateName;
         }
