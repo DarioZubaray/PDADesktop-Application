@@ -40,7 +40,7 @@
         public const string API_MAESTRO_URLPATH = "API_MAESTRO_URLPATH";
         public const string API_BUSCAR_RECEPCIONES_INFORMADAS = "API_BUSCAR_RECEPCIONES_INFORMADAS";
         public const string API_GET_TIPOS_AJUSTES = "API_GET_TIPOS_AJUSTES";
-        public const string API_SYNC_ID_LOTE = "API_SYNC_ID_LOTE";
+        public const string API_SYNC_ULTIMO_ID_LOTE = "API_SYNC_ULTIMO_ID_LOTE";
         public const string API_SERVER_CONEXION_STATUS = "API_SERVER_CONEXION_STATUS";
         public const string SERVER_HOST_PROTOCOL_IP_PORT = "SERVER_HOST_PROTOCOL_IP_PORT";
         public const string API_MODIFICAR_ELIMINAR_AJUTE = "API_MODIFICAR_ELIMINAR_AJUTE";
