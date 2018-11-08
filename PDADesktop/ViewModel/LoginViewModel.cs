@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
@@ -43,6 +44,10 @@ namespace PDADesktop.ViewModel
         #region Worker Attributes
         private readonly BackgroundWorker loadLoginWorker = new BackgroundWorker();
         private readonly BackgroundWorker loginWorker = new BackgroundWorker();
+        #endregion
+
+        #region Dispatcher Attributes
+        private Dispatcher dispatcher { get; set; }
         #endregion
 
         #region Panel Loading Attributes
@@ -220,6 +225,7 @@ namespace PDADesktop.ViewModel
             BannerApp.PrintLogin();
             MyAppProperties.window = (MainWindow)Application.Current.MainWindow;
             dialogCoordinator = instance;
+            dispatcher = App.Instance.Dispatcher;
             DisplayWaitingPanel("Inicializando PDA Desktop Application");
 
             LoginLoadedEvent = new RelayCommand(LoginLoadedEventAction);
@@ -255,7 +261,6 @@ namespace PDADesktop.ViewModel
             logger.Debug("load login => Do Work");
             if(!CheckServerStatus())
             {
-                var dispatcher = App.Instance.Dispatcher;
                 dispatcher.BeginInvoke(new Action(() => {
                     notifier.ShowWarning("El servidor PDAExpress no ha respondido a tiempo.");
                 }));
@@ -272,7 +277,6 @@ namespace PDADesktop.ViewModel
         private void loadLoginWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("load login => Run Worker Completed");
-            var dispatcher = App.Instance.Dispatcher;
             dispatcher.BeginInvoke(new Action(() => {
                 HidingWaitingPanel();
             }));
@@ -285,7 +289,6 @@ namespace PDADesktop.ViewModel
             logger.Debug("login => Do Work");
             Thread.Sleep(1200);
             MainWindow window = MyAppProperties.window;
-            var dispatcher = Application.Current.Dispatcher;
             if ("juli".Equals(usernameText))
             {
                 logger.Debug("recuerdame: " + RemembermeCheck);
@@ -316,7 +319,6 @@ namespace PDADesktop.ViewModel
         private void loginWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("login => Run Worker Completed");
-            var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
                 PanelLoading = false;

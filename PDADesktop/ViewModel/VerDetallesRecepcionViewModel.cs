@@ -1,6 +1,7 @@
 ﻿using log4net;
 using MahApps.Metro.Controls.Dialogs;
 using PDADesktop.Classes;
+using PDADesktop.Classes.Devices;
 using PDADesktop.Classes.Utils;
 using PDADesktop.Model;
 using PDADesktop.Model.Dto;
@@ -12,6 +13,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace PDADesktop.ViewModel
 {
@@ -21,6 +23,7 @@ namespace PDADesktop.ViewModel
         #region Commons Attributes
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDialogCoordinator dialogCoordinator;
+        private IDeviceHandler deviceHandler { get; set; }
 
         private ObservableCollection<Recepcion> receptions;
         public ObservableCollection<Recepcion> Receptions
@@ -121,6 +124,10 @@ namespace PDADesktop.ViewModel
         private readonly BackgroundWorker retryInformReceptionsWorker = new BackgroundWorker();
         #endregion
 
+        #region Dispatcher Attributes
+        private Dispatcher dispatcher;
+        #endregion
+
         #region Commands Attributes
         private ICommand verDetallesRecepcionLoadedEvent;
         public ICommand VerDetallesRecepcionLoadedEvent
@@ -191,6 +198,9 @@ namespace PDADesktop.ViewModel
         {
             BannerApp.PrintSeeDetailsReception();
             dialogCoordinator = instance;
+            deviceHandler = App.Instance.deviceHandler;
+            dispatcher = App.Instance.Dispatcher;
+
             DisplayWaitingPanel("Cargando...");
             ReceptionEnableEdit = false;
 
@@ -230,7 +240,6 @@ namespace PDADesktop.ViewModel
         private void loadSeeDetailsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("load see details receptions => Run Worker Completed");
-            var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action( () =>
             {
                 HidingWaitingPanel();
@@ -255,7 +264,7 @@ namespace PDADesktop.ViewModel
                     UpdateOrder(syncIdResponse, thereAreInformed);
                 }
             }
-            var deviceHandler = App.Instance.deviceHandler;
+
             string storeId = MyAppProperties.storeId;
             ActionResultDto unlockDevice = deviceHandler.ControlDeviceLock(syncId, storeId);
             if (unlockDevice.success)
@@ -293,7 +302,6 @@ namespace PDADesktop.ViewModel
         private void discardReceptionsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("discard receptions => Run Worker Completed");
-            var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
                 HidingWaitingPanel();
@@ -313,7 +321,6 @@ namespace PDADesktop.ViewModel
         private void retryInformReceptionsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("retry inform receptions => Run Worker Completed");
-            var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
                 HidingWaitingPanel();

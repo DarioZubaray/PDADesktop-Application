@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace PDADesktop.ViewModel
 {
@@ -51,6 +52,10 @@ namespace PDADesktop.ViewModel
         #region Worker Attributes
         private readonly BackgroundWorker loadPrintReceptionWorker = new BackgroundWorker();
         private readonly BackgroundWorker printerReceptionsWorker = new BackgroundWorker();
+        #endregion
+
+        #region Dispatcher Attributes
+        private Dispatcher dispatcher { get; set; }
         #endregion
 
         #region Loading panel Attributes
@@ -156,6 +161,7 @@ namespace PDADesktop.ViewModel
             DisplayWaitingPanel("Espere por favor");
             BannerApp.PrintPrintReception();
             dialogCoordinator = instance;
+            dispatcher = App.Instance.Dispatcher;
 
             ImprimirRecepcionLoadedEvent = new RelayCommand(ImprimirRecepcionLoadedEventAction);
 
@@ -188,7 +194,6 @@ namespace PDADesktop.ViewModel
             string batchId = "141147";
             string informedState = "false";
             ListView listView = HttpWebClientUtil.GetReceptionGrid(batchId, informedState);
-            var dispatcher = App.Instance.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
                 PrintReceptions = ListViewUtils.ParserImprimirRecepcionDataGrid(listView);
@@ -231,7 +236,6 @@ namespace PDADesktop.ViewModel
         private void printerReceptionsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("printer receptions => Run Worker Completed");
-            var dispatcher = App.Instance.Dispatcher;
             dispatcher.BeginInvoke(new Action(() => {
                 HidingWaitingPanel();
             }));

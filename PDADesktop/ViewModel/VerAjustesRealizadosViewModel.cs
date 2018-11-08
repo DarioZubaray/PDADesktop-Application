@@ -21,6 +21,7 @@ namespace PDADesktop.ViewModel
         #region Common Attributes
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDialogCoordinator dialogCoordinator;
+        private IDeviceHandler deviceHandler { get; set; }
 
         private ObservableCollection<Ajustes> adjustments;
         public ObservableCollection<Ajustes> Adjustments
@@ -251,6 +252,7 @@ namespace PDADesktop.ViewModel
         {
             BannerApp.PrintSeeAdjustmentsRealized();
             dialogCoordinator = instance;
+            deviceHandler = App.Instance.deviceHandler;
             DisplayWaitingPanel("Cargando", "Espere por favor...");
 
             VerAjustesRealizadosLoadedEvent = new RelayCommand(VerAjustesRealizadosLoadedEventAction);
@@ -282,7 +284,6 @@ namespace PDADesktop.ViewModel
         private void loadSeeAdjustmentMadeWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("load see adjusment made => Do Work");
-            var deviceHandler = App.Instance.deviceHandler;
             bool deviceStatus = deviceHandler.IsDeviceConnected();
             if (deviceStatus)
             {
@@ -361,7 +362,6 @@ namespace PDADesktop.ViewModel
             logger.Debug("GuardarCambiosButton");
             string newAdjustmentContent = TextUtils.ParseCollectionToAdjustmentDAT(Adjustments);
             logger.Debug("Nuevos ajustes: " + newAdjustmentContent);
-            IDeviceHandler deviceHandler = App.Instance.deviceHandler;
             try
             {
                 bool overWriteSuccess = deviceHandler.OverWriteAdjustmentMade(newAdjustmentContent);

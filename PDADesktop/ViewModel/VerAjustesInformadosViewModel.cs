@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace PDADesktop.ViewModel
 {
@@ -65,6 +66,10 @@ namespace PDADesktop.ViewModel
 
         #region Workers Attributes
         private readonly BackgroundWorker loadAdjustmentInformedWorker = new BackgroundWorker();
+        #endregion
+
+        #region Dispatcher Attributes
+        private Dispatcher dispatcher;
         #endregion
 
         #region Loading Panel Attributes
@@ -144,7 +149,7 @@ namespace PDADesktop.ViewModel
             BannerApp.PrintSeeAdjustmentsInformed();
             DisplayWaitingPanel("Cargando...");
             dialogCoordinator = instance;
-            var dispatcher = App.Instance.MainWindow.Dispatcher;
+            dispatcher = App.Instance.Dispatcher;
             VerAjustesInformadosLoadedEvent = new RelayCommand(VerAjustesInformadosLoadedEventAction);
 
             loadAdjustmentInformedWorker.DoWork += loadAdjustmentInformedWorker_DoWork;
@@ -171,7 +176,6 @@ namespace PDADesktop.ViewModel
             string batchId = MyAppProperties.buttonState_batchId;
             ListView responseGetAdjustments = HttpWebClientUtil.GetAdjustmentsByBatchId(batchId);
 
-            var dispatcher = App.Instance.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
            {
                AdjustmentsInformed = ListViewUtils.ParserAjustesInformadosDataGrid(responseGetAdjustments);
@@ -181,7 +185,6 @@ namespace PDADesktop.ViewModel
         private void loadAdjustmentInformedWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("load adjustments informed => Run Worker Completed");
-            var dispatcher = App.Instance.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
           {
               HidingWaitingPanel();

@@ -12,6 +12,7 @@ using PDADesktop.Model.Dto;
 using MahApps.Metro.Controls.Dialogs;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Windows.Threading;
 
 namespace PDADesktop.ViewModel
 {
@@ -121,6 +122,10 @@ namespace PDADesktop.ViewModel
 
         #region Workers Attributes
         private readonly BackgroundWorker updateAdjustementWorker = new BackgroundWorker();
+        #endregion
+
+        #region Dispatcher Attributes
+        private Dispatcher dispatcher;
         #endregion
 
         #region Loading Panel Attributes
@@ -251,6 +256,7 @@ namespace PDADesktop.ViewModel
         {
             BannerApp.PrintSeeAdjustmentsModify();
             dialogCoordinator = instance;
+            dispatcher = App.Instance.Dispatcher;
             DisplayWaitingPanel("Cargando...");
 
             VerAjustesModificarLoadedEvent = new RelayCommand(VerAjustesModificarLoadedEventAction);
@@ -304,7 +310,6 @@ namespace PDADesktop.ViewModel
         private void UpdateAdjustmentWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("Update Adjustment Worker -> runWorker Completed");
-            var dispatcher = App.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
                 RedirectToActivityCenterView();
