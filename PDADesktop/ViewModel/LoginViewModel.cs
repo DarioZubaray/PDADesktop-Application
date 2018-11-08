@@ -2,12 +2,17 @@
 using MahApps.Metro.Controls.Dialogs;
 using MaterialDesignThemes.Wpf;
 using PDADesktop.Classes;
+using PDADesktop.Classes.Utils;
 using PDADesktop.View;
 using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using ToastNotifications;
+using ToastNotifications.Lifetime;
+using ToastNotifications.Messages;
+using ToastNotifications.Position;
 
 namespace PDADesktop.ViewModel
 {
@@ -36,6 +41,7 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Worker Attributes
+        private readonly BackgroundWorker loadLoginWorker = new BackgroundWorker();
         private readonly BackgroundWorker loginWorker = new BackgroundWorker();
         #endregion
 
@@ -175,6 +181,24 @@ namespace PDADesktop.ViewModel
 
         private bool canExecute = true;
         #endregion
+
+        #region Notifier Attributes
+        Notifier notifier = new Notifier(cfg =>
+        {
+            cfg.PositionProvider = new WindowPositionProvider(
+                parentWindow: Application.Current.MainWindow,
+                corner: Corner.BottomRight,
+                offsetX: 10,
+                offsetY: 10);
+
+            cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+                notificationLifetime: TimeSpan.FromSeconds(5),
+                maximumNotificationCount: MaximumNotificationCount.FromCount(3));
+
+            cfg.Dispatcher = Application.Current.Dispatcher;
+        });
+        #endregion
+
         #endregion
 
         #region Constructor
@@ -183,6 +207,7 @@ namespace PDADesktop.ViewModel
             BannerApp.PrintLogin();
             MyAppProperties.window = (MainWindow)Application.Current.MainWindow;
             dialogCoordinator = instance;
+            DisplayWaitingPanel("Inicializando PDA Desktop Application");
 
             LoginButtonCommand = new RelayCommand(LoginPortalApiAction, param => this.canExecute);
             ShowPanelCommand = new RelayCommand(ShowPanelAction, param => this.canExecute);
@@ -192,14 +217,47 @@ namespace PDADesktop.ViewModel
             PanelCloseCommand = new RelayCommand(ClosePanelAction, param => this.canExecute);
             FlipLoginCommand = new RelayCommand(FlipLoginAction);
 
+            loadLoginWorker.DoWork += loadLoginWorker_DoWork;
+            loadLoginWorker.RunWorkerCompleted += loadLoginWorker_RunWorkerCompleted;
             loginWorker.DoWork += loginWorker_DoWork;
             loginWorker.RunWorkerCompleted += loginWorker_RunWorkerCompleted;
 
             RemembermeCheck = true;
+            loadLoginWorker.RunWorkerAsync();
         }
         #endregion
 
         #region Workers
+        #region Load Login Worker
+        private void loadLoginWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Debug("load login => Do Work");
+            if(!CheckServerStatus())
+            {
+                var dispatcher = App.Instance.Dispatcher;
+                dispatcher.BeginInvoke(new Action(() => {
+                    notifier.ShowWarning("El servidor PDAExpress no ha respondido a tiempo.");
+                }));
+            }
+        }
+
+        private bool CheckServerStatus()
+        {
+            bool serverStatus = HttpWebClientUtil.GetHttpWebServerConexionStatus();
+            logger.Info("Conexión pdaexpress server " + serverStatus);
+            return serverStatus;
+        }
+
+        private void loadLoginWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("load login => Run Worker Completed");
+            var dispatcher = App.Instance.Dispatcher;
+            dispatcher.BeginInvoke(new Action(() => {
+                HidingWaitingPanel();
+            }));
+        }
+        #endregion
+
         #region Login Worker
         private void loginWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -255,19 +313,32 @@ namespace PDADesktop.ViewModel
             PanelMainMessage = "Espere por favor ...";
             loginWorker.RunWorkerAsync();
         }
+
+        public void DisplayWaitingPanel(string mainMessage, string subMessage = "")
+        {
+            PanelLoading = true;
+            PanelMainMessage = mainMessage;
+            PanelSubMessage = subMessage;
+        }
+        public void HidingWaitingPanel()
+        {
+            PanelLoading = false;
+            PanelMainMessage = "";
+            PanelSubMessage = "";
+        }
         #endregion
 
         #region Panel Methods
         public void ShowPanelAction(object obj)
         {
             logger.Debug("Mostrando panel de carga");
-            PanelLoading = true;
+            DisplayWaitingPanel(String.Empty);
         }
 
         public void HidePanelAction(object obj)
         {
             logger.Debug("Ocultando panel de carga");
-            PanelLoading = false;
+            HidingWaitingPanel();
         }
         public void ChangeMainMensageAction(object obj)
         {

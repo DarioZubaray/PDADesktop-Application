@@ -48,26 +48,8 @@ namespace PDADesktop
             string sucursalHarcodeada = "706";
             MyAppProperties.storeId = sucursalHarcodeada;
 
-            /*
-             * 0- checkear que la aplicacion no este ejecutandose
-             * 1- verificar en segundo plano actualizaciones con squirrel
-             * 2- checkear conexion PDAExpress server
-             * 3- checkear conexion PDAMoto
-             * 4- verificar datos guardados
-             * 5- iniciar ventana (Login - centroActividades)
-            */
-
             logger.Debug("Verificando en segundo plano actualizaciones con squirrel.window");
             UpdateApp();
-
-            logger.Debug("Checkeando conexión el servidor PDAExpress server");
-            CheckServerStatus();
-
-            logger.Debug("Checkear conexión con dispositivo");
-            if (!CheckDeviceConnected())
-            {
-                //impedir continuar hasta que se conecte el dispositivo (?)
-            }
 
             logger.Debug("Verificando datos guardados...");
             string isUserReminded = VerifySavedData();
@@ -159,22 +141,8 @@ namespace PDADesktop
             updateManager.Dispose();
         }
 
-        private void CheckServerStatus()
-        {
-            bool serverStatus = HttpWebClientUtil.GetHttpWebServerConexionStatus();
-            logger.Info("Conexión pdaexpress server " + serverStatus);
-        }
-
-        private bool CheckDeviceConnected()
-        {
-            bool dispositivoConectado = deviceHandler.IsDeviceConnected();
-            logger.Info("PDA is connected: " + dispositivoConectado);
-            return dispositivoConectado;
-        }
-
         private string VerifySavedData()
         {
-            //return CookieManager.getCookie(CookieManager.Cookie.recuerdame);
             return null;
         }
 

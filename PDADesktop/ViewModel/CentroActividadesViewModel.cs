@@ -19,6 +19,10 @@ using PDADesktop.Model.Dto;
 using System.Windows.Threading;
 using MahApps.Metro.Controls.Dialogs;
 using System.Threading.Tasks;
+using ToastNotifications;
+using ToastNotifications.Position;
+using ToastNotifications.Lifetime;
+using ToastNotifications.Messages;
 
 namespace PDADesktop.ViewModel
 {
@@ -393,6 +397,22 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
+        #region Notifier Attributes
+        Notifier notifier = new Notifier(cfg =>
+        {
+            cfg.PositionProvider = new WindowPositionProvider(
+                parentWindow: Application.Current.MainWindow,
+                corner: Corner.BottomRight,
+                offsetX: 10,
+                offsetY: 10);
+
+            cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+                notificationLifetime: TimeSpan.FromSeconds(5),
+                maximumNotificationCount: MaximumNotificationCount.FromCount(3));
+
+            cfg.Dispatcher = Application.Current.Dispatcher;
+        });
+        #endregion
         #endregion
 
         #region Constructor
@@ -403,6 +423,7 @@ namespace PDADesktop.ViewModel
             PanelMainMessage_NC = "PDA SIN CONEXION";
             DisplayWaitingPanel("Cargando...");
             dialogCoordinator = instance;
+            dispatcher = App.Instance.Dispatcher;
             setInfoLabels();
             ExitButtonCommand = new RelayCommand(ExitPortalApiAction, param => this.canExecute);
             SincronizarCommand = new RelayCommand(SyncAllDataAction, param => this.canExecute);
@@ -453,7 +474,6 @@ namespace PDADesktop.ViewModel
                 bool deviceStatus = App.Instance.deviceHandler.IsDeviceConnected();
                 logger.Debug("disptachertimer tick => Device status: " + deviceStatus);
 
-                var dispatcher = App.Instance.Dispatcher;
                 if (!deviceStatus)
                 {
                     MyAppProperties.needReloadActivityCenter = true;
@@ -539,6 +559,9 @@ namespace PDADesktop.ViewModel
             else
             {
                 logger.Info("Server no disponible");
+                dispatcher.BeginInvoke(new Action(() => {
+                    notifier.ShowWarning("El servidor PDAExpress no ha respondido a tiempo.");
+                }));
             }
 
             currentMessage = "Checkeando conexión con el dispositivo...";
@@ -658,7 +681,6 @@ namespace PDADesktop.ViewModel
 
         public void CreateBadgeSeeAdjustments()
         {
-            var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
                 Button buttonSeeAdjustment = new Button();
@@ -887,6 +909,12 @@ namespace PDADesktop.ViewModel
                 NotifyCurrentMessage(currentMessage);
                 GetActualSync(Convert.ToInt32(currentBatchId), storeId);
             }
+            else
+            {
+                dispatcher.BeginInvoke(new Action(() => {
+                    notifier.ShowWarning("El servidor PDAExpress no ha respondido a tiempo.");
+                }));
+            }
         }
         private void reloadActivityCenterWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -995,6 +1023,9 @@ namespace PDADesktop.ViewModel
                 else
                 {
                     logger.Debug("Servidor no disponible");
+                    await dispatcher.BeginInvoke(new Action(() => {
+                        notifier.ShowWarning("El servidor PDAExpress no ha respondido a tiempo.");
+                    }));
                 }
             }
             else
@@ -1171,7 +1202,6 @@ namespace PDADesktop.ViewModel
         private void syncWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("sync => Run Worker Completed");
-            var dispatcher = Application.Current.Dispatcher;
             dispatcher.BeginInvoke(new Action(() =>
             {
                 HidingWaitingPanel();
@@ -1198,6 +1228,12 @@ namespace PDADesktop.ViewModel
                 this.Sincronizaciones = SincronizacionDtoDataGrid.ParserDataGrid(listaSincronizaciones);
                 UpdateCurrentBatch(Sincronizaciones);
             }
+            else
+            {
+                dispatcher.BeginInvoke(new Action(() => {
+                    notifier.ShowWarning("El servidor PDAExpress no ha respondido a tiempo.");
+                }));
+            }
         }
         private void syncDataGrid_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -1216,7 +1252,6 @@ namespace PDADesktop.ViewModel
                 MainWindow window = MyAppProperties.window;
                 Uri uriSeeAdjustments = new Uri(Constants.VER_AJUSTES_REALIZADOS_VIEW, UriKind.Relative);
 
-                var dispatcher = Application.Current.Dispatcher;
                 dispatcher.BeginInvoke(new Action(() =>
                 {
                     window.frame.NavigationService.Navigate(uriSeeAdjustments);

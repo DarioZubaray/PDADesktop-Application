@@ -36,7 +36,6 @@ namespace PDADesktop.Classes.Utils
             catch (Exception e)
             {
                 logger.Error(e.GetType() + " - " + e.Message);
-                ShowErrorMessage(e);
             }
             return response;
         }

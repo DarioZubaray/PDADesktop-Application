@@ -9,6 +9,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using ToastNotifications;
+using ToastNotifications.Lifetime;
+using ToastNotifications.Messages;
+using ToastNotifications.Position;
 
 namespace PDADesktop.ViewModel
 {
@@ -300,6 +304,23 @@ namespace PDADesktop.ViewModel
             }
         }
         #endregion
+
+        #region Notifier Attributes
+        Notifier notifier = new Notifier(cfg =>
+        {
+            cfg.PositionProvider = new WindowPositionProvider(
+                parentWindow: Application.Current.MainWindow,
+                corner: Corner.BottomRight,
+                offsetX: 10,
+                offsetY: 10);
+
+            cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+                notificationLifetime: TimeSpan.FromSeconds(5),
+                maximumNotificationCount: MaximumNotificationCount.FromCount(3));
+
+            cfg.Dispatcher = Application.Current.Dispatcher;
+        });
+        #endregion
         #endregion
 
         #region Constructor
@@ -433,17 +454,27 @@ namespace PDADesktop.ViewModel
             int page = (int)e.Argument;
             string storeId = MyAppProperties.storeId;
             string responseSearchBatch = HttpWebClientUtil.SearchBatches(storeId, page, SelectedValueOne);
-            listView = JsonUtils.GetListView(responseSearchBatch);
-            var dispatcher = App.Instance.Dispatcher;
-            dispatcher.BeginInvoke(new Action(() =>
+            if (responseSearchBatch != null)
             {
-                SearchBatch = ListViewUtils.ParserSearchBatchesDataGrid(listView);
-                PagerLegend = "Página " + listView.page + " de " + listView.total;
-                long inicio = (listView.page * SelectedValueOne) - (SelectedValueOne - 1);
-                long fin = inicio + (SelectedValueOne - 1);
-                int totalRecords = listView.records;
-                PagerResultLegend = String.Format("Mostrando {0} - {1} de {2} resultados.", inicio, fin, totalRecords);
-            }));
+                listView = JsonUtils.GetListView(responseSearchBatch);
+                var dispatcher = App.Instance.Dispatcher;
+                dispatcher.BeginInvoke(new Action(() =>
+                {
+                    SearchBatch = ListViewUtils.ParserSearchBatchesDataGrid(listView);
+                    PagerLegend = "Página " + listView.page + " de " + listView.total;
+                    long inicio = (listView.page * SelectedValueOne) - (SelectedValueOne - 1);
+                    long fin = inicio + (SelectedValueOne - 1);
+                    int totalRecords = listView.records;
+                    PagerResultLegend = String.Format("Mostrando {0} - {1} de {2} resultados.", inicio, fin, totalRecords);
+                }));
+            }
+            else
+            {
+                var dispatcher = App.Instance.Dispatcher;
+                dispatcher.BeginInvoke(new Action(() => {
+                    notifier.ShowWarning("El servidor PDAExpress no ha respondido a tiempo.");
+                }));
+            }
         }
 
         private void loadSearchBatchesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
