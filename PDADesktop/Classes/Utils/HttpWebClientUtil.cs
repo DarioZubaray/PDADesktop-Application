@@ -187,19 +187,19 @@ namespace PDADesktop.Classes.Utils
             return conexionStatus;
         }
 
-        internal static int GetCurrentBatchId(string storeId)
+        internal static int GetLastBatchId(string storeId)
         {
             int batchId = 0;
-            string urlPathGetCurrentBatchId = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ID_LOTE);
-            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPathGetCurrentBatchId, storeId);
-            string responseGetCurrentBatchId = SendHttpGetRequest(urlPath_urlQuery);
-            if (responseGetCurrentBatchId != null && !responseGetCurrentBatchId.Equals("null"))
+            string urlPathGetLastBatchId = ConfigurationManager.AppSettings.Get(Constants.API_SYNC_ULTIMO_ID_LOTE);
+            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPathGetLastBatchId, storeId);
+            string responseGetLastBatchId = SendHttpGetRequest(urlPath_urlQuery);
+            if (responseGetLastBatchId != null && !responseGetLastBatchId.Equals("null"))
             {
-                if (responseGetCurrentBatchId.Contains("\""))
+                if (responseGetLastBatchId.Contains("\""))
                 {
-                    responseGetCurrentBatchId = responseGetCurrentBatchId.Replace("\"", "");
+                    responseGetLastBatchId = responseGetLastBatchId.Replace("\"", "");
                 }
-                batchId = Convert.ToInt32(responseGetCurrentBatchId);
+                batchId = Convert.ToInt32(responseGetLastBatchId);
             }
             return batchId;
         }
