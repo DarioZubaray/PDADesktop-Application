@@ -362,3 +362,68 @@ Movie m = JsonConvert.DeserializeObject<Movie>(json);
 string name = m.Name;
 // Bad Boys
 ```
+
+##### [rafallopatka/ToastNotifications](https://github.com/rafallopatka/ToastNotifications) 
+##### 1 Se instaló via nuget:
+[ToastNotifications](https://www.nuget.org/packages/ToastNotifications/) y [ToastNotifications.Messages](https://www.nuget.org/packages/ToastNotifications.Messages/)
+
+```
+Install-Package ToastNotifications
+Install-Package ToastNotifications.Messages
+```
+
+*Nugget "ToastNotifications"* es un core, el cual contiene solo mecanismos principales para crear y mostrar notificaciones.
+Predefinir mensages y otras funcionalidades sin key son proveidas por separados.
+
+*Nugget ToastNotifications.Messages* contiene mensages basicos como error, information, warning, success.
+No es requirido en caso que quieras crear tu propio mensaje.
+
+##### 2 Se importó ToastNotifications.Messages theme in App.xaml
+
+```xml
+<Application.Resources>
+    <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
+        </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+</Application.Resources>
+```
+
+##### 3 Uso: Crear una instancia de Notifier
+```csharp
+using ToastNotifications;
+using ToastNotifications.Lifetime;
+using ToastNotifications.Position;
+/* * */
+Notifier notifier = new Notifier(cfg =>
+{
+    cfg.PositionProvider = new WindowPositionProvider(
+        parentWindow: Application.Current.MainWindow,
+        corner: Corner.TopRight,
+        offsetX: 10,  
+        offsetY: 10);
+
+    cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+        notificationLifetime: TimeSpan.FromSeconds(3),
+        maximumNotificationCount: MaximumNotificationCount.FromCount(5));
+
+    cfg.Dispatcher = Application.Current.Dispatcher;
+});
+```
+
+### 4 Uso provided messages
+```csharp
+using ToastNotifications.Messages;
+/* * */
+notifier.ShowInformation(message);
+notifier.ShowSuccess(message);
+notifier.ShowWarning(message);
+notifier.ShowError(message);
+```
+
+### 5 Dispose notifier cuando no se lo necesite más
+```csharp
+/* * */
+notifier.Dispose();
+```
