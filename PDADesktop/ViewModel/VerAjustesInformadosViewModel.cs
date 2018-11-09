@@ -64,10 +64,6 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region Workers Attributes
-        private readonly BackgroundWorker loadAdjustmentInformedWorker = new BackgroundWorker();
-        #endregion
-
         #region Dispatcher Attributes
         private Dispatcher dispatcher;
         #endregion
@@ -151,13 +147,7 @@ namespace PDADesktop.ViewModel
             dialogCoordinator = instance;
             dispatcher = App.Instance.Dispatcher;
             VerAjustesInformadosLoadedEvent = new RelayCommand(VerAjustesInformadosLoadedEventAction);
-
-            loadAdjustmentInformedWorker.DoWork += loadAdjustmentInformedWorker_DoWork;
-            loadAdjustmentInformedWorker.RunWorkerCompleted += loadAdjustmentInformedWorker_RunWorkerCompleted;
-
             ReturnCommand = new RelayCommand(ReturnActivityCenterAction);
-
-            loadAdjustmentInformedWorker.RunWorkerAsync();
         }
         #endregion
 
@@ -165,32 +155,15 @@ namespace PDADesktop.ViewModel
         public void VerAjustesInformadosLoadedEventAction(object sender)
         {
             logger.Debug("Ver ajustes informados => Loaded Event");
-        }
-        #endregion
-
-        #region Workers
-        #region Load Adjustments Informed Worker
-        private void loadAdjustmentInformedWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            logger.Debug("load adjustments informed => Do Work");
             string batchId = MyAppProperties.buttonState_batchId;
             ListView responseGetAdjustments = HttpWebClientUtil.GetAdjustmentsByBatchId(batchId);
 
             dispatcher.BeginInvoke(new Action(() =>
-           {
-               AdjustmentsInformed = ListViewUtils.ParserAjustesInformadosDataGrid(responseGetAdjustments);
-           }));
+            {
+                AdjustmentsInformed = ListViewUtils.ParserAjustesInformadosDataGrid(responseGetAdjustments);
+                HidingWaitingPanel();
+            }));
         }
-
-        private void loadAdjustmentInformedWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            logger.Debug("load adjustments informed => Run Worker Completed");
-            dispatcher.BeginInvoke(new Action(() =>
-          {
-              HidingWaitingPanel();
-          }));
-        }
-        #endregion
         #endregion
 
         #region Action Methods

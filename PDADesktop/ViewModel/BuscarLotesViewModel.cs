@@ -168,7 +168,7 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Workers Attributes
-        private readonly BackgroundWorker loadSearchBatchesWorker = new BackgroundWorker();
+        private readonly BackgroundWorker searchBatchesWorker = new BackgroundWorker();
         #endregion
 
         #region Dispatcher Attributes
@@ -353,8 +353,8 @@ namespace PDADesktop.ViewModel
 
             BuscarLotesLoadedEvent = new RelayCommand(BuscarLotesLoadedEventAction);
 
-            loadSearchBatchesWorker.DoWork += loadSearchBatchesWorker_DoWork;
-            loadSearchBatchesWorker.RunWorkerCompleted += loadSearchBatchesWorker_RunWorkerCompleted;
+            searchBatchesWorker.DoWork += searchBatchesWorker_DoWork;
+            searchBatchesWorker.RunWorkerCompleted += searchBatchesWorker_RunWorkerCompleted;
 
             ReturnCommand = new RelayCommand(ReturnActivityCenterAction);
             AcceptCommand = new RelayCommand(AcceptAction);
@@ -372,8 +372,6 @@ namespace PDADesktop.ViewModel
 
             LongListResultToDisplay = new long[] { 5, 10, 15, 20 };
             SelectedValueOne = 20;
-            int initialPage = 1;
-            loadSearchBatchesWorker.RunWorkerAsync(argument: initialPage);
         }
         #endregion
 
@@ -381,6 +379,8 @@ namespace PDADesktop.ViewModel
         public void BuscarLotesLoadedEventAction(object sender)
         {
             logger.Debug("Buscar lotes => Loaded Event");
+            int initialPage = 1;
+            searchBatchesWorker.RunWorkerAsync(argument: initialPage);
         }
         #endregion
 
@@ -418,7 +418,7 @@ namespace PDADesktop.ViewModel
             PreviousButtonEnabled = false;
             NextButtonEnabled = true;
             LastButtonEnabled = true;
-            loadSearchBatchesWorker.RunWorkerAsync(argument: this.listView.page);
+            searchBatchesWorker.RunWorkerAsync(argument: this.listView.page);
         }
 
         public void GoPreviousPageAction(object obj)
@@ -438,7 +438,7 @@ namespace PDADesktop.ViewModel
             }
             NextButtonEnabled = true;
             LastButtonEnabled = true;
-            loadSearchBatchesWorker.RunWorkerAsync(argument: this.listView.page);
+            searchBatchesWorker.RunWorkerAsync(argument: this.listView.page);
         }
 
         public void GoNextPageAction(object obj)
@@ -458,7 +458,7 @@ namespace PDADesktop.ViewModel
             }
             FirstButtonEnabled = true;
             PreviousButtonEnabled = true;
-            loadSearchBatchesWorker.RunWorkerAsync(argument: this.listView.page);
+            searchBatchesWorker.RunWorkerAsync(argument: this.listView.page);
         }
 
         public void GoLastPageAction(object obj)
@@ -469,15 +469,15 @@ namespace PDADesktop.ViewModel
             LastButtonEnabled = false;
             FirstButtonEnabled = true;
             PreviousButtonEnabled = true;
-            loadSearchBatchesWorker.RunWorkerAsync(argument: this.listView.page);
+            searchBatchesWorker.RunWorkerAsync(argument: this.listView.page);
         }
         #endregion
 
         #region Workers Methods
-        #region Load Search Batches Worker
-        private void loadSearchBatchesWorker_DoWork(object sender, DoWorkEventArgs e)
+        #region Search Batches Worker
+        private void searchBatchesWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            logger.Debug("load search batches => Do Work");
+            logger.Debug("search batches => Do Work");
             System.Threading.Thread.Sleep(1000);
             int page = (int)e.Argument;
             string storeId = MyAppProperties.storeId;
@@ -503,9 +503,9 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private void loadSearchBatchesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void searchBatchesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            logger.Debug("load search batches => Run Worker Completed");
+            logger.Debug("search batches => Run Worker Completed");
             dispatcher.BeginInvoke(new Action(() =>
             {
                 HidingWaitingPanel();

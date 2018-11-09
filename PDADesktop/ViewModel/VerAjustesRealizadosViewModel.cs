@@ -12,6 +12,7 @@ using MahApps.Metro.Controls.Dialogs;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using PDADesktop.Classes.Devices;
+using System.Windows.Threading;
 
 namespace PDADesktop.ViewModel
 {
@@ -241,10 +242,9 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region Worker Attributes
-        private readonly BackgroundWorker loadSeeAdjustmentMadeWorker = new BackgroundWorker();
+        #region Dispatcher Attributes
+        Dispatcher dispatcher { get; set; }
         #endregion
-
         #endregion
 
         #region Constructor
@@ -256,10 +256,6 @@ namespace PDADesktop.ViewModel
             DisplayWaitingPanel("Cargando", "Espere por favor...");
 
             VerAjustesRealizadosLoadedEvent = new RelayCommand(VerAjustesRealizadosLoadedEventAction);
-
-            loadSeeAdjustmentMadeWorker.DoWork += loadSeeAdjustmentMadeWorker_DoWork;
-            loadSeeAdjustmentMadeWorker.RunWorkerCompleted += loadSeeAdjustmentMadeWorker_RunWorkerCompleted;
-
             AdjustmentEnableEdit = false;
 
             DeleteAdjustmentCommand = new RelayCommand(DeleteAdjustmentAction);
@@ -267,8 +263,6 @@ namespace PDADesktop.ViewModel
             DiscardChangesCommand = new RelayCommand(DiscardChangesAction);
             SaveChangesCommand = new RelayCommand(SaveChangesAction);
             PanelCloseCommand = new RelayCommand(PanelCloseAction);
-
-            loadSeeAdjustmentMadeWorker.RunWorkerAsync();
         }
         #endregion
 
@@ -276,14 +270,6 @@ namespace PDADesktop.ViewModel
         public void VerAjustesRealizadosLoadedEventAction(object sender)
         {
             logger.Debug("Ver ajustes Realizados => Loaded Event");
-        }
-        #endregion
-
-        #region Workers Methods
-        #region Load See Adjusment Made Worker
-        private void loadSeeAdjustmentMadeWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            logger.Debug("load see adjusment made => Do Work");
             bool deviceStatus = deviceHandler.IsDeviceConnected();
             if (deviceStatus)
             {
@@ -310,6 +296,7 @@ namespace PDADesktop.ViewModel
             {
                 AlertUserMetroDialog("No se detecta conexión con la PDA");
             }
+            dispatcher.BeginInvoke(new Action(() => HidingWaitingPanel()));
         }
 
         private void UpdateAjustesGrid(string deviceReadAdjustmentDataFile)
@@ -319,13 +306,6 @@ namespace PDADesktop.ViewModel
             AdjustmentsTypes = HttpWebClientUtil.GetAdjustmentsTypes();
             logger.Debug(AdjustmentsTypes.ToString());
         }
-
-        private void loadSeeAdjustmentMadeWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            logger.Debug("load see adjustments made => Run Worker Completed");
-            HidingWaitingPanel();
-        }
-        #endregion
         #endregion
 
         #region Action Methods

@@ -261,12 +261,6 @@ namespace PDADesktop.ViewModel
 
             VerAjustesModificarLoadedEvent = new RelayCommand(VerAjustesModificarLoadedEventAction);
 
-            //TODO mover esta llama a un metodo de un worker en segundo plano
-            string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
-            string estadoInformado = "true";
-            ListView ajustes = HttpWebClientUtil.LoadAdjustmentsGrid(batchId, estadoInformado);
-            adjustments = ListViewUtils.ParserAjustesDataGrid(ajustes);
-
             AdjustmentEnableEdit = false;
 
             updateAdjustementWorker.DoWork += UpdateAdjustementWorker_DoWork;
@@ -278,7 +272,6 @@ namespace PDADesktop.ViewModel
             SaveChangesCommand = new RelayCommand(SaveChangesAction);
 
             PanelCloseCommand = new RelayCommand(ClosePanelAction);
-            HidingWaitingPanel();
         }
 
         ~VerAjustesModificarViewModel()
@@ -292,9 +285,17 @@ namespace PDADesktop.ViewModel
         public void VerAjustesModificarLoadedEventAction(object sender)
         {
             logger.Debug("Ver ajustes Modificar => Loaded Event");
+            string batchId = MyAppProperties.SeeAdjustmentModify_batchId;
+            string estadoInformado = "true";
+            ListView ajustes = HttpWebClientUtil.LoadAdjustmentsGrid(batchId, estadoInformado);
+            adjustments = ListViewUtils.ParserAjustesDataGrid(ajustes);
+            dispatcher.BeginInvoke(new Action(() => {
+                HidingWaitingPanel();
+            }));
         }
         #endregion
 
+        #region Workers
         #region Update Adjustment Worker
         private void UpdateAdjustementWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -315,6 +316,7 @@ namespace PDADesktop.ViewModel
                 RedirectToActivityCenterView();
             }));
         }
+        #endregion
         #endregion
 
         #region Actions Methods

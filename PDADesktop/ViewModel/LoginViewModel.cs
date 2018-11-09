@@ -42,7 +42,6 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Worker Attributes
-        private readonly BackgroundWorker loadLoginWorker = new BackgroundWorker();
         private readonly BackgroundWorker loginWorker = new BackgroundWorker();
         #endregion
 
@@ -237,13 +236,10 @@ namespace PDADesktop.ViewModel
             PanelCloseCommand = new RelayCommand(ClosePanelAction, param => this.canExecute);
             FlipLoginCommand = new RelayCommand(FlipLoginAction);
 
-            loadLoginWorker.DoWork += loadLoginWorker_DoWork;
-            loadLoginWorker.RunWorkerCompleted += loadLoginWorker_RunWorkerCompleted;
             loginWorker.DoWork += loginWorker_DoWork;
             loginWorker.RunWorkerCompleted += loginWorker_RunWorkerCompleted;
 
             RemembermeCheck = true;
-            loadLoginWorker.RunWorkerAsync();
         }
         #endregion
 
@@ -251,38 +247,20 @@ namespace PDADesktop.ViewModel
         public void LoginLoadedEventAction(object sender)
         {
             logger.Debug("Login => Loaded Event");
-        }
-        #endregion
-
-        #region Workers
-        #region Load Login Worker
-        private void loadLoginWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            logger.Debug("load login => Do Work");
-            if(!CheckServerStatus())
+            bool serverStatus = HttpWebClientUtil.GetHttpWebServerConexionStatus();
+            if (!serverStatus)
             {
                 dispatcher.BeginInvoke(new Action(() => {
                     notifier.ShowWarning("El servidor PDAExpress no ha respondido a tiempo.");
                 }));
             }
-        }
-
-        private bool CheckServerStatus()
-        {
-            bool serverStatus = HttpWebClientUtil.GetHttpWebServerConexionStatus();
-            logger.Info("Conexión pdaexpress server " + serverStatus);
-            return serverStatus;
-        }
-
-        private void loadLoginWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            logger.Debug("load login => Run Worker Completed");
             dispatcher.BeginInvoke(new Action(() => {
                 HidingWaitingPanel();
             }));
         }
         #endregion
 
+        #region Workers
         #region Login Worker
         private void loginWorker_DoWork(object sender, DoWorkEventArgs e)
         {

@@ -224,10 +224,7 @@ namespace PDADesktop.ViewModel
             string batchId = MyAppProperties.currentBatchId;
             ListView listView = HttpWebClientUtil.LoadReceptionsGrid(Convert.ToInt64(batchId));
             Receptions = ListViewUtils.ParserRecepcionDataGrid(listView);
-            dispatcher.BeginInvoke(new Action(() =>
-            {
-                HidingWaitingPanel();
-            }));
+            dispatcher.BeginInvoke(new Action(() => HidingWaitingPanel()));
         }
         #endregion
 
