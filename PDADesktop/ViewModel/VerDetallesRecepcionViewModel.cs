@@ -119,7 +119,6 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Worker Attributes
-        private readonly BackgroundWorker loadSeeDetailsWorker = new BackgroundWorker();
         private readonly BackgroundWorker discardReceptionsWorker = new BackgroundWorker();
         private readonly BackgroundWorker retryInformReceptionsWorker = new BackgroundWorker();
         #endregion
@@ -206,8 +205,6 @@ namespace PDADesktop.ViewModel
 
             VerDetallesRecepcionLoadedEvent = new RelayCommand(VerDetallesRecepcionLoadedEventAction);
 
-            loadSeeDetailsWorker.DoWork += loadSeeDetailsWorker_DoWork;
-            loadSeeDetailsWorker.RunWorkerCompleted += loadSeeDetailsWorker_RunWorkerCompleted;
             discardReceptionsWorker.DoWork += discardReceptionsWorker_DoWork;
             discardReceptionsWorker.RunWorkerCompleted += discardReceptionsWorker_RunWorkerCompleted;
             retryInformReceptionsWorker.DoWork += retryInformReceptionsWorker_DoWork;
@@ -217,8 +214,6 @@ namespace PDADesktop.ViewModel
             CancelCommand = new RelayCommand(CancelAction);
             RetryCommand = new RelayCommand(RetryAction);
             PanelCloseCommand = new RelayCommand(PanelCloseAction);
-
-            loadSeeDetailsWorker.RunWorkerAsync();
         }
         #endregion
 
@@ -226,27 +221,17 @@ namespace PDADesktop.ViewModel
         public void VerDetallesRecepcionLoadedEventAction(object sender)
         {
             logger.Debug("Ver detalles recepcion => Loaded Event");
-        }
-        #endregion
-
-        #region Workers Methods
-        #region Load See Details Worker
-        private void loadSeeDetailsWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            logger.Debug("load see details receptions => Do Work");
-            ListView listView = HttpWebClientUtil.LoadReceptionsGrid();
+            string batchId = MyAppProperties.currentBatchId;
+            ListView listView = HttpWebClientUtil.LoadReceptionsGrid(Convert.ToInt64(batchId));
             Receptions = ListViewUtils.ParserRecepcionDataGrid(listView);
-        }
-        private void loadSeeDetailsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            logger.Debug("load see details receptions => Run Worker Completed");
-            dispatcher.BeginInvoke(new Action( () =>
+            dispatcher.BeginInvoke(new Action(() =>
             {
                 HidingWaitingPanel();
             }));
         }
         #endregion
 
+        #region Workers
         #region Discard Reception Worker
         private void discardReceptionsWorker_DoWork(object sender, DoWorkEventArgs e)
         {
