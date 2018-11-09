@@ -229,17 +229,14 @@ namespace PDADesktop.Classes.Utils
             return adjustmentsTypes;
         }
 
-        internal static bool CheckInformedReceptions(string batchId)
+        internal static bool HasInformedReceptions(string batchId)
         {
-            bool informedReceptions = false;
-            string urlPathInformedReceptions = ConfigurationManager.AppSettings.Get(Constants.API_BUSCAR_RECEPCIONES_INFORMADAS);
-            string urlPath_urlQuery = String.Format("{0}?idLoteRecepcionInformada={1}", urlPathInformedReceptions, batchId);
-            string response = SendHttpGetRequest(urlPath_urlQuery);
-            if (response != null)
-            {
-                informedReceptions = response.Equals("\"1\"") ? true : false;
-            }
-            return informedReceptions;
+            string urlPathHasInformedReceptions = ConfigurationManager.AppSettings.Get(Constants.API_TIENE_RECEPCIONES_INFORMADAS);
+            string urlPath_urlQuery = String.Format("{0}?lote={1}", urlPathHasInformedReceptions, batchId);
+            string responseHasInformedReceptions = SendHttpGetRequest(urlPath_urlQuery);
+            ActionResultDto actionResult = JsonUtils.GetActionResult(responseHasInformedReceptions);
+            logger.Debug(actionResult.message);
+            return actionResult.success;
         }
 
         internal static bool SearchDATsMasterFile(int activityId, string storeId)
@@ -475,10 +472,13 @@ namespace PDADesktop.Classes.Utils
             return JsonUtils.GetAjustesDTO(responseModifyLoadAdjustmentsGrid);
         }
 
-        internal static ListView LoadReceptionsGrid(long lote = 111152, bool informedReceptions = false)
+        internal static ListView LoadReceptionsGrid(long lote = 111152, string informedReceptions = "false", 
+            string page = "1", string rows = "20", string sord = "desc", string sidx = "idRecepcion")
         {
-            string urlSeeDetailsReceptionsGrid = ConfigurationManager.AppSettings.Get(Constants.API_MODIFICAR_CARGAR_GRILLA_RECEPCIONES);
-            string queryParams = "?recepcionesInformadas=" + informedReceptions + "&Lote=" + lote.ToString();
+            string urlSeeDetailsReceptionsGrid = ConfigurationManager.AppSettings.Get(Constants.API_CARGA_GRILLA_RECEPCIONES);
+            Int32 nd = DateTimeUtils.GetUnixTimeFromUTCNow();
+            string queryParams = "?recepcionesInformadas=" + informedReceptions + "&lote=" + lote.ToString() +
+                "&page=" + page + "&rows=" + rows + "&sord=" +sord + "&sidx=" + sidx + "&nd=" + nd;
             string responseModifyLoadAdjustmentsGrid = SendHttpGetRequest(urlSeeDetailsReceptionsGrid + queryParams);
             return JsonUtils.GetRecepciones(responseModifyLoadAdjustmentsGrid);
         }
