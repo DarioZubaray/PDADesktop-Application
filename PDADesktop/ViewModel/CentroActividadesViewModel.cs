@@ -1011,7 +1011,7 @@ namespace PDADesktop.ViewModel
 
                     currentMessage = "Controlando recepciones informadas ...";
                     NotifyCurrentMessage(currentMessage);
-                    bool discardReceptionsIfThereWas = CheckInformedReceptions();
+                    bool discardReceptionsIfThereWas = HasInformedReceptions();
                     if(discardReceptionsIfThereWas)
                     {
                         string messageInformedReceptions = "Existen recepciones pendientes de informar, ¿Desea continuar y descartar las mismas?";
@@ -1085,11 +1085,11 @@ namespace PDADesktop.ViewModel
             return !actionResult.success;
         }
 
-        private bool CheckInformedReceptions()
+        private bool HasInformedReceptions()
         {
             string sotreId = MyAppProperties.storeId;
             string batchId = HttpWebClientUtil.GetLastBatchId(sotreId).ToString();
-            bool informedReceptions = HttpWebClientUtil.CheckInformedReceptions(batchId);
+            bool informedReceptions = HttpWebClientUtil.HasInformedReceptions(batchId);
             logger.Info("recepciones Informadas pendientes: " + (informedReceptions ? "NO" : "SI"));
 
             return !informedReceptions;
