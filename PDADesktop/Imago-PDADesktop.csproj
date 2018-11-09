@@ -256,6 +256,33 @@
     <Compile Include="View\ImprimirRecepcionView.xaml.cs">
       <DependentUpon>ImprimirRecepcionView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Transitions.xaml.cs">
+      <DependentUpon>Transitions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TransitionsDemo\Slide1_Intro.xaml.cs">
+      <DependentUpon>Slide1_Intro.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TransitionsDemo\Slide2_Intro.xaml.cs">
+      <DependentUpon>Slide2_Intro.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TransitionsDemo\Slide3_Intro.xaml.cs">
+      <DependentUpon>Slide3_Intro.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TransitionsDemo\Slide4_CombineTransitions.xaml.cs">
+      <DependentUpon>Slide4_CombineTransitions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TransitionsDemo\Slide5_TransitioningContent.xaml.cs">
+      <DependentUpon>Slide5_TransitioningContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TransitionsDemo\Slide6_Origins.xaml.cs">
+      <DependentUpon>Slide6_Origins.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TransitionsDemo\Slide7_MVVM.xaml.cs">
+      <DependentUpon>Slide7_MVVM.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TransitionsDemo\TransitionsDemoHome.xaml.cs">
+      <DependentUpon>TransitionsDemoHome.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\VerAjustesInformadosView.xaml.cs">
       <DependentUpon>VerAjustesInformadosView.xaml</DependentUpon>
     </Compile>
@@ -327,6 +354,42 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\Transitions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TransitionsDemo\Slide1_Intro.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TransitionsDemo\Slide2_Intro.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TransitionsDemo\Slide3_Intro.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TransitionsDemo\Slide4_CombineTransitions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TransitionsDemo\Slide5_TransitioningContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TransitionsDemo\Slide6_Origins.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TransitionsDemo\Slide7_MVVM.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TransitionsDemo\TransitionsDemoHome.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\VerAjustesInformadosView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

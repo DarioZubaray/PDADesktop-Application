@@ -44,6 +44,11 @@ namespace PDADesktop
             CheckApplicationRunning();
             base.OnStartup(e);
 
+            if(true)
+            {
+                RedirectToDemoTransition();
+                return;
+            }
             MyAppProperties.loadOnce = true;
             string sucursalHarcodeada = "706";
             MyAppProperties.storeId = sucursalHarcodeada;
@@ -144,6 +149,15 @@ namespace PDADesktop
         private string VerifySavedData()
         {
             return null;
+        }
+
+        private void RedirectToDemoTransition()
+        {
+            logger.Info("Redireccionando a la demo de transiciones...");
+            var mainWindow = this.Container.GetInstance<MainWindow>();
+            Uri uri = new Uri("View/Transitions.xaml", UriKind.Relative);
+            mainWindow.frame.NavigationService.Navigate(uri);
+            mainWindow.Show();
         }
 
         private void RedirectToActivitiesCenter()
