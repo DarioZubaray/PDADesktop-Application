@@ -178,11 +178,12 @@ namespace PDADesktop.Classes.Utils
         internal static Boolean GetHttpWebServerConexionStatus()
         {
             Boolean conexionStatus = false;
-            string urlServerStatus = ConfigurationManager.AppSettings.Get(Constants.API_SERVER_CONEXION_STATUS);
+            string urlServerStatus = ConfigurationManager.AppSettings.Get(Constants.API_PING);
             string response = SendHttpGetRequest(urlServerStatus);
             if (response != null)
             {
-                conexionStatus = response.Length > 0 ? true : false;
+                int index = response.IndexOf("pong");
+                conexionStatus = index >= 0 ;
             }
             return conexionStatus;
         }
