@@ -558,7 +558,7 @@ namespace PDADesktop.ViewModel
 
         #region Workers Method
         #region Load Once Activity Center Worker
-        private void loadOnceActivityCenterWorker_DoWork(object sender, DoWorkEventArgs e)
+        private async void loadOnceActivityCenterWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             string currentMessage = "Load Once Activity Center => Do Work";
             logger.Debug(currentMessage);
@@ -593,7 +593,7 @@ namespace PDADesktop.ViewModel
             else
             {
                 logger.Info("Server no disponible");
-                dispatcher.BeginInvoke(new Action(() => {
+                await dispatcher.BeginInvoke(new Action(() => {
                     notifier.ShowWarning("El servidor PDAExpress no ha respondido a tiempo.");
                 }));
             }
@@ -626,9 +626,25 @@ namespace PDADesktop.ViewModel
                     filesPreviouslyDeleted = true;
                 }
 
-                currentMessage = "Borrando datos antiguos ...";
+                currentMessage = "Verificando remanente de archivos ...";
                 NotifyCurrentMessage(currentMessage);
-                CheckLastSyncDateFromDefault(filesPreviouslyDeleted);
+                bool hasOldData = CheckLastSyncDateFromDefault(filesPreviouslyDeleted);
+
+                if(hasOldData)
+                {
+                    string messageDeleteAllPreviousFile = "El dispositivo contiene datos antiguos. ¿Confirma que desea descartarlos?";
+                    bool continueOrCancel = await AskUserMetroDialog(messageDeleteAllPreviousFile);
+                    if (continueOrCancel)
+                    {
+                        currentMessage = "Borrando datos antiguos ...";
+                        NotifyCurrentMessage(currentMessage);
+                        DeleteAllPreviousFiles(true);
+                    }
+                    else
+                    {
+                        logger.Info("El usuario no desea borrar los archivos antiguos");
+                    }
+                }
 
                 currentMessage = "Actualizando archivo principal de configuración del dispositivo ...";
                 NotifyCurrentMessage(currentMessage);
@@ -864,14 +880,11 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private void CheckLastSyncDateFromDefault(bool filesPreviouslyDeleted)
+        private bool CheckLastSyncDateFromDefault(bool filesPreviouslyDeleted)
         {
             string synchronizationDefault = deviceHandler.ReadSynchronizationDateFromDefaultData();
             bool isGreatherThanToday = DateTimeUtils.IsGreatherThanToday(synchronizationDefault);
-            if(isGreatherThanToday && !filesPreviouslyDeleted)
-            {
-                DeleteAllPreviousFiles(true);
-            }
+            return isGreatherThanToday && !filesPreviouslyDeleted;
         }
 
         private void UpdateDeviceMainFile(string sucursal)
@@ -983,6 +996,26 @@ namespace PDADesktop.ViewModel
                 currentMessage = "Leyendo la configuración del dispositivo...";
                 NotifyCurrentMessage(currentMessage);
                 CopyDeviceMainDataFileToPublic();
+
+                currentMessage = "Verificando remanente de archivos ...";
+                NotifyCurrentMessage(currentMessage);
+                bool hasOldData = CheckLastSyncDateFromDefault(false);
+
+                if (hasOldData)
+                {
+                    string messageDeleteAllPreviousFile = "El dispositivo contiene datos antiguos. ¿Confirma que desea descartarlos?";
+                    bool continueOrCancel = await AskUserMetroDialog(messageDeleteAllPreviousFile);
+                    if (continueOrCancel)
+                    {
+                        currentMessage = "Borrando datos antiguos ...";
+                        NotifyCurrentMessage(currentMessage);
+                        DeleteAllPreviousFiles(true);
+                    }
+                    else
+                    {
+                        logger.Info("El usuario no desea borrar los archivos antiguos");
+                    }
+                }
 
                 currentMessage = "Actualizando el estado de la sincronización...";
                 NotifyCurrentMessage(currentMessage);

@@ -1,6 +1,5 @@
 ﻿using log4net;
 using PDADesktop.Classes;
-using PDADesktop.Classes.Utils;
 using PDADesktop.Classes.Devices;
 using PDADesktop.View;
 using Squirrel;
