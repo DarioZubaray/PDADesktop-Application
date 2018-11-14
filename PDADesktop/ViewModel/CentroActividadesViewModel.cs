@@ -329,9 +329,7 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Workers Attributes
-        private readonly BackgroundWorker loadOnceActivityCenterWorker = new BackgroundWorker();
         private readonly BackgroundWorker reloadActivityCenterWorker = new BackgroundWorker();
-        private readonly BackgroundWorker syncWorker = new BackgroundWorker();
         private readonly BackgroundWorker syncDataGridWorker = new BackgroundWorker();
         private readonly BackgroundWorker adjustmentWorker = new BackgroundWorker();
         private readonly BackgroundWorker redirectWorker = new BackgroundWorker();
@@ -470,14 +468,8 @@ namespace PDADesktop.ViewModel
 
             EstadoGeneralCommand = new RelayCommand(GeneralStateAction, param => this.canExecute);
 
-            loadOnceActivityCenterWorker.DoWork += loadOnceActivityCenterWorker_DoWork;
-            loadOnceActivityCenterWorker.RunWorkerCompleted += loadOnceCentroActividadesWorker_RunWorkerCompleted;
-
             reloadActivityCenterWorker.DoWork += reloadActivityCenterWorker_DoWork;
             reloadActivityCenterWorker.RunWorkerCompleted += reloadActivityCenterWorker_RunWorkerCompleted;
-
-            syncWorker.DoWork += syncWorker_DoWork;
-            syncWorker.RunWorkerCompleted += syncWorker_RunWorkerCompleted;
 
             syncDataGridWorker.DoWork += syncDataGrid_DoWork;
             syncDataGridWorker.RunWorkerCompleted += syncDataGrid_RunWorkerCompleted;
@@ -499,11 +491,15 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Loaded Event
-        public void ActivityCenterLoadedEventAction(object obj)
+        public async void ActivityCenterLoadedEventAction(object obj)
         {
             if (MyAppProperties.loadOnce)
             {
-                loadOnceActivityCenterWorker.RunWorkerAsync();
+                await Task.Run(async () =>
+                {
+                    await loadOnceActivityCenter_DoWork();
+                });
+                loadOnceActivityCenter_RunCompleted();
             }
             else
             {
@@ -513,10 +509,9 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region dispatcherTimer
-        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        private async void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (!loadOnceActivityCenterWorker.IsBusy || !syncWorker.IsBusy ||
-                !adjustmentWorker.IsBusy || !redirectWorker.IsBusy || !reloadActivityCenterWorker.IsBusy)
+            if (!adjustmentWorker.IsBusy || !redirectWorker.IsBusy || !reloadActivityCenterWorker.IsBusy)
             {
                 bool deviceStatus = deviceHandler.IsDeviceConnected();
                 logger.Debug("disptachertimer tick => Device status: " + deviceStatus);
@@ -524,29 +519,28 @@ namespace PDADesktop.ViewModel
                 if (!deviceStatus)
                 {
                     MyAppProperties.needReloadActivityCenter = true;
-                    dispatcher.BeginInvoke(new Action(() =>
+                    await dispatcher.BeginInvoke(new Action(() =>
                     {
                         DisplayDefaultNoConnectionPanel();
                     }));
                 }
                 else
                 {
-                    dispatcher.BeginInvoke(new Action(() =>
+                    await dispatcher.BeginInvoke(new Action(() =>
                     {
                         HidingNoConnectionPanel();
                     }));
                     if (MyAppProperties.needReloadActivityCenter)
                     {
-                        dispatcher.BeginInvoke(new Action(() =>
+                        await dispatcher.BeginInvoke(new Action(() =>
                         {
                             DisplayWaitingPanel(String.Empty);
                         }));
-                        loadOnceActivityCenterWorker.RunWorkerAsync();
+                        await loadOnceActivityCenter_DoWork();
+                        loadOnceActivityCenter_RunCompleted();
                         MyAppProperties.needReloadActivityCenter = false;
                     }
                 }
-
-                // Forcing the CommandManager to raise the RequerySuggested event
                 CommandManager.InvalidateRequerySuggested();
             }
             else
@@ -557,8 +551,8 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Workers Method
-        #region Load Once Activity Center Worker
-        private async void loadOnceActivityCenterWorker_DoWork(object sender, DoWorkEventArgs e)
+        #region Load Once Activity Center
+        private async Task loadOnceActivityCenter_DoWork()
         {
             string currentMessage = "Load Once Activity Center => Do Work";
             logger.Debug(currentMessage);
@@ -639,16 +633,16 @@ namespace PDADesktop.ViewModel
                         currentMessage = "Borrando datos antiguos ...";
                         NotifyCurrentMessage(currentMessage);
                         DeleteAllPreviousFiles(true);
+
+                        currentMessage = "Actualizando archivo principal de configuración del dispositivo ...";
+                        NotifyCurrentMessage(currentMessage);
+                        UpdateDeviceMainFile(storeId);
                     }
                     else
                     {
                         logger.Info("El usuario no desea borrar los archivos antiguos");
                     }
                 }
-
-                currentMessage = "Actualizando archivo principal de configuración del dispositivo ...";
-                NotifyCurrentMessage(currentMessage);
-                UpdateDeviceMainFile(storeId);
 
                 currentMessage = "Leyendo Ajustes realizados...";
                 NotifyCurrentMessage(currentMessage);
@@ -900,7 +894,7 @@ namespace PDADesktop.ViewModel
             FileUtils.DeleteTempFiles();
         }
 
-        private void loadOnceCentroActividadesWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void loadOnceActivityCenter_RunCompleted()
         {
             logger.Debug("load once centro Actividades => Run Worker Completed");
             MyAppProperties.needReloadActivityCenter = false;
@@ -976,8 +970,8 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region Sync Worker
-        private async void syncWorker_DoWork(object sender, DoWorkEventArgs e)
+        #region Synchronization
+        private async Task synchronization_DoWork()
         {
             string currentMessage = "sync => Do Work";
             logger.Debug(currentMessage);
@@ -1010,16 +1004,17 @@ namespace PDADesktop.ViewModel
                         currentMessage = "Borrando datos antiguos ...";
                         NotifyCurrentMessage(currentMessage);
                         DeleteAllPreviousFiles(true);
+
+                        currentMessage = "Actualizando el estado de la sincronización...";
+                        NotifyCurrentMessage(currentMessage);
+                        ChangeSyncState();
                     }
                     else
                     {
                         logger.Info("El usuario no desea borrar los archivos antiguos");
+                        return;
                     }
                 }
-
-                currentMessage = "Actualizando el estado de la sincronización...";
-                NotifyCurrentMessage(currentMessage);
-                ChangeSyncState();
 
                 currentMessage = "Verificando conexión con el servidor PDAExpress...";
                 NotifyCurrentMessage(currentMessage);
@@ -1035,7 +1030,7 @@ namespace PDADesktop.ViewModel
                     {
                         string messageOldBatch = "Aun no se han finalizado todas las Actividades de la ultima Sincronización. Si genera una nueva Sincronización no podrá continuar con las Actividades pendientes. ¿Desesa continuar de todos modos?";
                         bool continueOrCancel = await AskUserMetroDialog(messageOldBatch);
-                        if (continueOrCancel)
+                        if (!continueOrCancel)
                         {
                             logger.Info("Cancelando operacion por tener lotes antiguos");
                             return;
@@ -1267,7 +1262,7 @@ namespace PDADesktop.ViewModel
             UpdateCurrentBatch(Sincronizaciones);
         }
 
-        private void syncWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void synchronization_RunCompleted()
         {
             logger.Debug("sync => Run Worker Completed");
             dispatcher.BeginInvoke(new Action(() =>
@@ -1426,22 +1421,29 @@ namespace PDADesktop.ViewModel
             window.frame.NavigationService.Navigate(uri);
         }
 
-        public void SyncAllDataAction(object obj)
+        public async void SyncAllDataAction(object obj)
         {
             DisplayWaitingPanel("Sincronizando todos los datos, Espere por favor");
             BannerApp.PrintSynchronization();
             MyAppProperties.isSynchronizationComplete = true;
             logger.Info("Sincronizando todos los datos");
-            syncWorker.RunWorkerAsync();
+
+            await Task.Run( async () => {
+                await synchronization_DoWork();
+            });
+            synchronization_RunCompleted();
         }
 
-        public void InformGenesixAction(object obj)
+        public async void InformGenesixAction(object obj)
         {
             DisplayWaitingPanel("Informando a genesix, Espere por favor");
             BannerApp.PrintInformGX();
             MyAppProperties.isSynchronizationComplete = false;
             logger.Info("Informando a genesix");
-            syncWorker.RunWorkerAsync();
+            await Task.Run(async () => {
+                await synchronization_DoWork();
+            });
+            synchronization_RunCompleted();
         }
 
         public void SeeAdjustmentMadeAction(object obj)
