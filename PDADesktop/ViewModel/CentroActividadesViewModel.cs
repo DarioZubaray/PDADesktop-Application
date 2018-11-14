@@ -1039,12 +1039,12 @@ namespace PDADesktop.ViewModel
 
                     currentMessage = "Controlando recepciones informadas ...";
                     NotifyCurrentMessage(currentMessage);
-                    bool discardReceptionsIfThereWas = HasInformedReceptions();
+                    bool discardReceptionsIfThereWas = HasNotInformedAnNotRuledOutReceptions();
                     if(discardReceptionsIfThereWas)
                     {
                         string messageInformedReceptions = "Existen recepciones pendientes de informar, ¿Desea continuar y descartar las mismas?";
                         bool continueOrCancel = await AskUserMetroDialog(messageInformedReceptions);
-                        if (continueOrCancel)
+                        if (!continueOrCancel)
                         {
                             logger.Info("Cancelando operacion por tener recepciones pendientes");
                             return;
@@ -1113,14 +1113,14 @@ namespace PDADesktop.ViewModel
             return !actionResult.success;
         }
 
-        private bool HasInformedReceptions()
+        private bool HasNotInformedAnNotRuledOutReceptions()
         {
             string sotreId = MyAppProperties.storeId;
             string batchId = HttpWebClientUtil.GetLastBatchId(sotreId).ToString();
-            bool informedReceptions = HttpWebClientUtil.HasInformedReceptions(batchId);
-            logger.Info("recepciones Informadas pendientes: " + (informedReceptions ? "NO" : "SI"));
+            bool informedReceptions = HttpWebClientUtil.HasNotInformedAndNotRuledOutReceptions(batchId);
+            logger.Info("recepciones no-Informadas y/o no-descartadas: " + (informedReceptions ? "SI" : "NO"));
 
-            return !informedReceptions;
+            return informedReceptions;
         }
 
         private List<Sincronizacion> CreateNewBatch()

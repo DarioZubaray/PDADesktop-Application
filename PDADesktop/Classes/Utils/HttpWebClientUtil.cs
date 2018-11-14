@@ -229,9 +229,9 @@ namespace PDADesktop.Classes.Utils
             return adjustmentsTypes;
         }
 
-        internal static bool HasInformedReceptions(string batchId)
+        internal static bool HasNotInformedAndNotRuledOutReceptions(string batchId)
         {
-            string urlPathHasInformedReceptions = ConfigurationManager.AppSettings.Get(Constants.API_TIENE_RECEPCIONES_INFORMADAS);
+            string urlPathHasInformedReceptions = ConfigurationManager.AppSettings.Get(Constants.API_RECEPCIONES_NOINFORMADAS_NODESCARTADAS);
             string urlPath_urlQuery = String.Format("{0}?lote={1}", urlPathHasInformedReceptions, batchId);
             string responseHasInformedReceptions = SendHttpGetRequest(urlPath_urlQuery);
             ActionResultDto actionResult = JsonUtils.GetActionResult(responseHasInformedReceptions);
