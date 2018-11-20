@@ -27,17 +27,38 @@ namespace PDADesktop.Classes.Utils
 
         public static void WriteFile(string source, string content)
         {
-            File.WriteAllText(source, content);
+            try
+            {
+                File.WriteAllText(source, content);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message, e);
+            }
         }
 
         public static void CopyFile(string source, string destination)
         {
-            File.Copy(source, destination);
+            try
+            {
+                File.Copy(source, destination);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message, e);
+            }
         }
 
         public static void DeleteFile(string source)
         {
-            File.Delete(source);
+            try
+            {
+                File.Delete(source);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message, e);
+            }
         }
 
         public static bool VerifyIfExitsFile(string fullFilePath)
@@ -47,13 +68,29 @@ namespace PDADesktop.Classes.Utils
 
         public static void VerifyFoldersOrCreate(string fullDirectoryPathExtended)
         {
-            Directory.CreateDirectory(fullDirectoryPathExtended);
+            try
+            {
+                Directory.CreateDirectory(fullDirectoryPathExtended);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message, e);
+            }
         }
 
         public static string CountRegistryWithinFile(string filepath)
         {
-            var lines = File.ReadAllLines(filepath).Length;
-            return lines.ToString();
+            var totalLines = 0;
+            try
+            {
+                totalLines = File.ReadAllLines(filepath).Length;
+                return totalLines.ToString();
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message, e);
+                return totalLines.ToString();
+            }
         }
 
         public static string WrapSlashAndDATExtension(string filename)
@@ -77,7 +114,14 @@ namespace PDADesktop.Classes.Utils
             string defaultPathPublicExtended = TextUtils.ExpandEnviromentVariable(defaultPathPublic);
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             string currentDefaultContent = ReadFile(defaultPathPublicExtended + filenameAndExtension);
-            return TextUtils.BuildDefaultContent(currentDefaultContent, positionContent, position);
+            if(currentDefaultContent != null)
+            {
+                return TextUtils.BuildDefaultContent(currentDefaultContent, positionContent, position);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public static void UpdateDefaultDatFileInPublic(string positionContent, int position)
@@ -88,7 +132,10 @@ namespace PDADesktop.Classes.Utils
             string defaultPathPublicExtended = TextUtils.ExpandEnviromentVariable(defaultPathPublic);
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
             string currentDefaultContent = ReadFile(defaultPathPublicExtended + filenameAndExtension);
-            WriteFile(defaultPathPublicExtended + filenameAndExtension, content);
+            if(currentDefaultContent != null)
+            {
+                WriteFile(defaultPathPublicExtended + filenameAndExtension, content);
+            }
         }
 
         public static void UpdateDeviceMainFileInPublic(string _sucursal)
@@ -98,6 +145,11 @@ namespace PDADesktop.Classes.Utils
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
 
             string currentDefaultContent = ReadFile(defaultPathPublicExtended + filenameAndExtension);
+            if(currentDefaultContent == null)
+            {
+                logger.Error("No se pudo obtener el contenido por defecto");
+                return;
+            }
             String[] defaultArray = currentDefaultContent.Split('|');
 
             if (defaultArray.Length == DeviceMainData.TOTAL_POSITION_ONE_BASE)
@@ -131,7 +183,7 @@ namespace PDADesktop.Classes.Utils
             }
             catch (IOException ex)
             {
-               logger.Error(ex.Message);
+               logger.Error(ex.Message, ex);
             }
         }
     }
