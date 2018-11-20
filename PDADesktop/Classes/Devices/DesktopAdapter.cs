@@ -191,7 +191,14 @@ namespace PDADesktop.Classes.Devices
         public string ReadSynchronizationStateFromDefaultData()
         {
             string contentDefault = ReadDefaultContentFromDefaultData();
-            return TextUtils.GetSynchronizationStateFromDefaultDat(contentDefault);
+            if (contentDefault != null)
+            {
+                return TextUtils.GetSynchronizationStateFromDefaultDat(contentDefault);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public string ReadSynchronizationDateFromDefaultData()
@@ -210,14 +217,28 @@ namespace PDADesktop.Classes.Devices
         public string ReadStoreIdFromDefaultData()
         {
             string contentDefault = ReadDefaultContentFromDefaultData();
-            return TextUtils.GetStoreIdFromDefaultDat(contentDefault);
+            if(contentDefault != null)
+            {
+                return TextUtils.GetStoreIdFromDefaultDat(contentDefault);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public string ReadVersionDeviceProgramFileFromDefaultData()
         {
             string contentDefault = ReadDefaultContentFromDefaultData();
-            contentDefault = TextUtils.RemoveQuotesMarks(contentDefault);
-            return TextUtils.GetVersionFromDefaultDat(contentDefault);
+            if(contentDefault != null)
+            {
+                contentDefault = TextUtils.RemoveQuotesMarks(contentDefault);
+                return TextUtils.GetVersionFromDefaultDat(contentDefault);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public void CreateEmptyDefaultDataFile()
