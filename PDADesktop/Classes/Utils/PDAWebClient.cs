@@ -7,90 +7,89 @@ namespace PDADesktop.Classes.Utils
     public class PDAWebClient : WebClient
     {
         #region Attributes
-        private int timeout;
-        public int Timeout
-        {
-            get
-            {
-                return timeout;
-            }
-            set
-            {
-                timeout = value;
-            }
-        }
-        private string url;
-        public string Url
-        {
-            get
-            {
-                return url;
-            }
-            set
-            {
-                url = value;
-            }
-        }
-        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        #endregion
+        private int timeout { get; set; }
+        private string url { get; set; }
+        private int retries { get; set; }
 
         public const string DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
+
 
         #region Constructor
         public PDAWebClient()
         {
             this.timeout = 60000;
+            this.retries = 0;
             this.Headers.Add("user-agent", DEFAULT_USER_AGENT);
         }
 
-        public PDAWebClient(int timeout, string url)
+        public PDAWebClient(string url, int timeout, int retries = 3)
         {
-            this.Timeout = timeout;
+            this.timeout = timeout;
+            this.retries = retries;
             this.Headers.Add("user-agent", DEFAULT_USER_AGENT);
-            this.Url = url;
-            this.DownloadStringCompleted += new DownloadStringCompletedEventHandler(pdaWebClient_DownloadStringCompleted);
-            this.DownloadStringAsync(new Uri(this.Url));
-        }
-
-        public PDAWebClient(string userAgent)
-        {
-            this.timeout = 60000;
-            this.Headers.Add("user-agent", userAgent);
+            this.url = url;
         }
         #endregion
 
-        protected override WebRequest GetWebRequest(Uri address)
+        protected override WebRequest GetWebRequest(Uri uri)
         {
-            var result = base.GetWebRequest(address);
-            result.Timeout = this.timeout;
-            return result;
+            WebRequest lWebRequest = base.GetWebRequest(uri);
+            lWebRequest.Timeout = timeout;
+            ((HttpWebRequest)lWebRequest).ReadWriteTimeout = timeout;
+            return lWebRequest;
         }
 
-        private int _retryCount = 0;
-        public void pdaWebClient_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
+        public string GetRequest(string url, int timeout = 15, int retries = 3, string userAgent = DEFAULT_USER_AGENT)
         {
-            logger.Debug("PDA Web Client => DownloadStringCompleted");
-            if (e.Error != null)
+            var lWebClient = new PDAWebClient();
+            try
             {
-                _retryCount++;
-                logger.Info("Reintento numero: " + _retryCount);
-                if (_retryCount < 3)
+                lWebClient.timeout = timeout * 1000;
+                lWebClient.Headers.Add("user-agent", userAgent);
+                lWebClient.url = url;
+                lWebClient.retries = retries;
+                return lWebClient.DownloadString(url);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Cacheando el timeout, reintentado...");
+                return lWebClient.Retry();
+            }
+            finally
+            {
+                lWebClient.Dispose();
+            }
+        }
+
+        private string Retry()
+        {
+            string retryResponse = "";
+            int retryCount = 0;
+            bool stopRetry = false;
+            while (!stopRetry)
+            {
+                retryCount++;
+                if (retryCount > this.retries)
                 {
-                    WebClient pdaWebClient = (WebClient)sender;
-                    pdaWebClient.DownloadStringAsync(new Uri(this.Url));
+                    logger.Info("Se agotaron todos los reintentos");
+                    stopRetry = true;
+                    retryResponse = null;
+                    break;
                 }
-                else
+                try
                 {
-                    _retryCount = 0;
-                    logger.Error(e.Error.Message);
+                    logger.Info("Reintentando conectar a: " + this.url);
+                    logger.Debug("Reintento numero: " + retryCount);
+                    retryResponse = this.DownloadString(this.url);
+                }
+                catch
+                {
+                    logger.Info("Se excedio el tiempo de espera para el reintento: " + retryCount);
                 }
             }
-            else
-            {
-                _retryCount = 0;
-                logger.Info("PDA Web Client successfull.");
-            }
+            return retryResponse;
         }
     }
 }
