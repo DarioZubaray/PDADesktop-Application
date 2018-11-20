@@ -15,7 +15,6 @@ namespace PDADesktop.Classes.Utils
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-
         #region Constructor
         public PDAWebClient()
         {
@@ -23,13 +22,11 @@ namespace PDADesktop.Classes.Utils
             this.retries = 0;
             this.Headers.Add("user-agent", DEFAULT_USER_AGENT);
         }
-
-        public PDAWebClient(string url, int timeout, int retries = 3)
+        public PDAWebClient(string url, int timeout = 15)
         {
-            this.timeout = timeout;
-            this.retries = retries;
+            this.timeout = 60000;
+            this.retries = 0;
             this.Headers.Add("user-agent", DEFAULT_USER_AGENT);
-            this.url = url;
         }
         #endregion
 
@@ -52,7 +49,7 @@ namespace PDADesktop.Classes.Utils
                 lWebClient.retries = retries;
                 return lWebClient.DownloadString(url);
             }
-            catch (Exception e)
+            catch
             {
                 Console.WriteLine("Cacheando el timeout, reintentado...");
                 return lWebClient.Retry();

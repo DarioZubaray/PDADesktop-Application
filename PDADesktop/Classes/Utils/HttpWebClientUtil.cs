@@ -21,21 +21,14 @@ namespace PDADesktop.Classes.Utils
         {
             string response = null;
             string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
-            try
+
+            logger.Debug("Enviando petición a " + urlAuthority + urlPath);
+            var clientTimeoutRetry = new PDAWebClient();
+
+            response = clientTimeoutRetry.GetRequest(urlAuthority + urlPath, 25, 3);
+            if (response.Length < 100)
             {
-                logger.Debug("Enviando petición a " + urlAuthority + urlPath);
-                using (var client = new PDAWebClient(20000, urlAuthority + urlPath))
-                {
-                    response = client.DownloadString(urlAuthority + urlPath);
-                    if (response.Length < 100)
-                    {
-                        logger.Debug("response: " + response);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.GetType() + " - " + e.Message);
+                logger.Debug("response: " + response);
             }
             return response;
         }
@@ -162,7 +155,7 @@ namespace PDADesktop.Classes.Utils
         internal static bool DownloadFileFromServer(string urlPath, string filenameAndExtension, string destino, int timeout = 150000)
         {
             string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
-            var client = new PDAWebClient(timeout, urlAuthority + urlPath);
+            var client = new PDAWebClient(urlAuthority + urlPath, timeout);
             string userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
             client.Headers.Add("user-agent", userAgent);
             try
