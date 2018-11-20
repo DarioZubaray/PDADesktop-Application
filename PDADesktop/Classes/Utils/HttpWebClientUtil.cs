@@ -24,7 +24,7 @@ namespace PDADesktop.Classes.Utils
             try
             {
                 logger.Debug("Enviando petición a " + urlAuthority + urlPath);
-                using (var client = new PDAWebClient(20000))
+                using (var client = new PDAWebClient(20000, urlAuthority + urlPath))
                 {
                     response = client.DownloadString(urlAuthority + urlPath);
                     if (response.Length < 100)
@@ -48,17 +48,24 @@ namespace PDADesktop.Classes.Utils
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
 
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            try
             {
-                streamWriter.Write(jsonBody);
-                streamWriter.Flush();
-                streamWriter.Close();
-            }
+                using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                {
+                    streamWriter.Write(jsonBody);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
 
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    result = streamReader.ReadToEnd();
+                }
+            }
+            catch (Exception e)
             {
-                result = streamReader.ReadToEnd();
+                logger.Error(e.Message, e);
             }
             return result;
         }
@@ -154,10 +161,10 @@ namespace PDADesktop.Classes.Utils
 
         internal static bool DownloadFileFromServer(string urlPath, string filenameAndExtension, string destino, int timeout = 150000)
         {
-            var client = new PDAWebClient(timeout);
+            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
+            var client = new PDAWebClient(timeout, urlAuthority + urlPath);
             string userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
             client.Headers.Add("user-agent", userAgent);
-            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
             try
             {
                 logger.Debug("Enviando petición a " + urlAuthority + urlPath);
@@ -236,7 +243,7 @@ namespace PDADesktop.Classes.Utils
             string urlPath_urlQuery = String.Format("{0}?lote={1}", urlPathHasInformedReceptions, batchId);
             string responseHasInformedReceptions = SendHttpGetRequest(urlPath_urlQuery);
             ActionResultDto actionResult = JsonUtils.GetActionResult(responseHasInformedReceptions);
-            logger.Debug(actionResult.message);
+            logger.Debug("Tiene recepciones no informas y no descartadas: " + actionResult.message);
             return actionResult.success;
         }
 
