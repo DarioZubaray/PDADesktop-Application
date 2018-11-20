@@ -187,6 +187,10 @@ namespace PDADesktop.Classes.Utils
                 if (!areEqualsStoresIds)
                 {
                     string synchronizationDefault = deviceHandler.ReadSynchronizationDateFromDefaultData();
+                    if(synchronizationDefault == null)
+                    {
+                        return false;
+                    }
                     bool isGreatherThanToday = DateTimeUtils.IsGreatherThanToday(synchronizationDefault);
                     if (isGreatherThanToday)
                     {

@@ -877,6 +877,10 @@ namespace PDADesktop.ViewModel
         private bool CheckLastSyncDateFromDefault(bool filesPreviouslyDeleted)
         {
             string synchronizationDefault = deviceHandler.ReadSynchronizationDateFromDefaultData();
+            if(synchronizationDefault == null)
+            {
+                return false;
+            }
             bool isGreatherThanToday = DateTimeUtils.IsGreatherThanToday(synchronizationDefault);
             return isGreatherThanToday && !filesPreviouslyDeleted;
         }

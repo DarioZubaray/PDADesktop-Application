@@ -197,7 +197,14 @@ namespace PDADesktop.Classes.Devices
         public string ReadSynchronizationDateFromDefaultData()
         {
             string contentDefault = ReadDefaultContentFromDefaultData();
-            return TextUtils.GetSynchronizationDateFromDefaultDat(contentDefault);
+            if(contentDefault != null)
+            {
+                return TextUtils.GetSynchronizationDateFromDefaultDat(contentDefault);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public string ReadStoreIdFromDefaultData()

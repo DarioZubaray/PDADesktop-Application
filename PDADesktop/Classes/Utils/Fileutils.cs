@@ -13,7 +13,16 @@ namespace PDADesktop.Classes.Utils
 
         public static string ReadFile(string source)
         {
-            return File.ReadAllText(source, Encoding.UTF8);
+            string fileReaded = null;
+            try
+            {
+                fileReaded = File.ReadAllText(source, Encoding.UTF8);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message, e);
+            }
+            return fileReaded;
         }
 
         public static void WriteFile(string source, string content)
