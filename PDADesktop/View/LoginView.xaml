@@ -157,7 +157,7 @@
                                                  ff:PasswordBoxAssistant.BoundPassword="{Binding Path=FloatingPasswordBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></PasswordBox>
                                 </Grid>
 
-                                <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
+                                <!--<StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
                                     <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}"
                                                   ToolTip="MaterialDesignActionLightToggleButton"
                                                   IsChecked="{Binding RemembermeCheck, Mode=TwoWay}">
@@ -169,7 +169,7 @@
                                         </materialDesign:ToggleButtonAssist.OnContent>
                                     </ToggleButton>
                                     <Label Content="Recuerdame" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </StackPanel>
+                                </StackPanel>-->
 
                                 <Button Grid.Row="3"
                                         x:Name="button_iniciar"

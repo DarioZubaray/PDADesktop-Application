@@ -853,6 +853,10 @@ namespace PDADesktop.ViewModel
         private void AssociateCurrentStoreId(string sucursal)
         {
             FileUtils.UpdateDefaultDatFileInPublic(sucursal, DeviceMainData.POSITION_SUCURSAL);
+            string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_LOOKUP);
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
+            deviceHandler.CopyPublicLookUpFileToDevice(destinationDirectory, filenameAndExtension);
+            NotifyCurrentMessage("Borrando remanente de archivos");
             DeleteAllPreviousFiles(true);
         }
 
@@ -1380,7 +1384,7 @@ namespace PDADesktop.ViewModel
             Assembly assembly = Assembly.GetExecutingAssembly();
             Label_version = assembly.GetName().Version.ToString(3);
             // de donde obtenemos el usuario y sucursal (?)
-            Label_usuario = "Admin";
+            Label_usuario = MyAppProperties.username;
             Label_sucursal = MyAppProperties.storeId;
             logger.Debug("setInfoLabels[version: " + Label_version
                 + ", usuario: " + Label_usuario + ", sucursal: " + Label_sucursal + "]");
@@ -1418,7 +1422,8 @@ namespace PDADesktop.ViewModel
         public void ExitPortalApiAction(object obj)
         {
             logger.Info("exit portal api");
-            //aca deberia invocar el logout al portal?
+            HttpWebClientUtil.AttempLogoutPortalImagoSur();
+
             MyAppProperties.loadOnce = true;
             MainWindow window = (MainWindow) Application.Current.MainWindow;
             Uri uri = new Uri(Constants.LOGIN_VIEW, UriKind.Relative);

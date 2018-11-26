@@ -2,7 +2,7 @@
 {
     public class UserKey
     {
-        User user { get; set; }
-        string key { get; set; }
+        public User user { get; set; }
+        public string key { get; set; }
     }
 }

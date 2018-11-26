@@ -271,10 +271,11 @@ namespace PDADesktop.ViewModel
 
             UserKey userKey = HttpWebClientUtil.AttemptAutoLoginPortalImagoSur(usernameText, FloatingPasswordBox);
             logger.Debug(userKey);
-            if ("juli".Equals(usernameText))
+            if (userKey != null)
             {
-                logger.Debug("recuerdame: " + RemembermeCheck);
-                logger.Debug("Username: " + usernameText);
+                logger.Info("userKey " + userKey.key);
+                MyAppProperties.storeId = userKey.user.sucursal.ToString();
+                MyAppProperties.username = userKey.user.userName;
 
                 Uri uriActivityCenter = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
                 dispatcher.BeginInvoke(new Action(() =>

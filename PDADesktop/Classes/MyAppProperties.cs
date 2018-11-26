@@ -8,6 +8,7 @@ namespace PDADesktop.Classes
     class MyAppProperties
     {
         public static string storeId { get; set; }
+        public static string username { get; set; }
         public static string currentBatchId { get; set; }
         public static string currentUrlSync { get; set; }
         public static long SeeAdjustmentModify_syncId { get; set; }

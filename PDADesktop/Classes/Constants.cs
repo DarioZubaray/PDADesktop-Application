@@ -43,7 +43,6 @@
         public const string API_GET_TIPOS_AJUSTES = "API_GET_TIPOS_AJUSTES";
         public const string API_SYNC_ULTIMO_ID_LOTE = "API_SYNC_ULTIMO_ID_LOTE";
         public const string API_PING = "API_PING";
-        public const string SERVER_HOST_PROTOCOL_IP_PORT = "SERVER_HOST_PROTOCOL_IP_PORT";
         public const string API_MODIFICAR_ELIMINAR_AJUTE = "API_MODIFICAR_ELIMINAR_AJUTE";
         public const string API_MODIFICAR_ACTUALIZAR_AJUSTES = "API_MODIFICAR_ACTUALIZAR_AJUSTES";
         public const string API_MODIFICAR_DESCARTAR_RECEPCIONES = "API_MODIFICAR_DESCARTAR_RECEPCIONES";
@@ -139,5 +138,6 @@
         public const string ESTADO_SINCRO_FIN = "0";
 
         public const string PORTAL_LOGIN = "PORTAL_LOGIN";
+        public const string PORTAL_LOGOUT = "PORTAL_LOGOUT";
     }
 }

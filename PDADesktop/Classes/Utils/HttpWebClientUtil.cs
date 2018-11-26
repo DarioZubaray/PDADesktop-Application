@@ -18,10 +18,13 @@ namespace PDADesktop.Classes.Utils
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Requests
-        private static string SendHttpGetRequest(string urlPath)
+        private static string SendHttpGetRequest(string urlPath, string urlAuthority = "PDAExpress")
         {
             string response = null;
-            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
+            if (urlAuthority.Equals("PDAExpress"))
+            {
+                urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PDAEXPRESS_SERVER_HOST);
+            }
 
             logger.Debug("Enviando petición a " + urlAuthority + urlPath);
             var clientTimeoutRetry = new PDAWebClient();
@@ -39,7 +42,7 @@ namespace PDADesktop.Classes.Utils
             string result = null;
             if (urlAuthority.Equals("PDAExpress"))
             {
-                urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
+                urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PDAEXPRESS_SERVER_HOST);
             }
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(urlAuthority + urlPath);
             httpWebRequest.ContentType = "application/json";
@@ -73,7 +76,7 @@ namespace PDADesktop.Classes.Utils
             try
             {
                 filePath = TextUtils.ExpandEnviromentVariable(filePath);
-                string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
+                string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PDAEXPRESS_SERVER_HOST);
                 string sWebAddress = urlAuthority + url;
 
                 string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
@@ -158,7 +161,7 @@ namespace PDADesktop.Classes.Utils
 
         internal static bool DownloadFileFromServer(string urlPath, string filenameAndExtension, string destino, int timeout = 150000)
         {
-            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
+            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PDAEXPRESS_SERVER_HOST);
             var client = new PDAWebClient(urlAuthority + urlPath, timeout);
             string userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
             client.Headers.Add("user-agent", userAgent);
@@ -568,6 +571,13 @@ namespace PDADesktop.Classes.Utils
             string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PORTAL_SERVER_HOST);
             string userKeyResponse = SendHttpPostRequest(urlPath, jsonBody, urlAuthority);
             return JsonUtils.GetUserKey(userKeyResponse);
+        }
+
+        internal static void AttempLogoutPortalImagoSur()
+        {
+            string urlPathLogout = ConfigurationManager.AppSettings.Get(Constants.PORTAL_LOGOUT);
+            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PORTAL_SERVER_HOST);
+            string responseLogout = SendHttpGetRequest(urlPathLogout, urlAuthority);
         }
     }
 }

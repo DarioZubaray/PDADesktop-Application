@@ -107,7 +107,14 @@ namespace PDADesktop.Classes.Utils
 
         internal static UserKey GetUserKey(string userkeyResponse)
         {
-            return JsonConvert.DeserializeObject<UserKey>(userkeyResponse);
+            if(userkeyResponse != null)
+            {
+                return JsonConvert.DeserializeObject<UserKey>(userkeyResponse);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         internal static String GetJsonBodyUser(string userName, string password)

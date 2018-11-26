@@ -44,8 +44,6 @@ namespace PDADesktop
             base.OnStartup(e);
 
             MyAppProperties.loadOnce = true;
-            string sucursalHarcodeada = "706";
-            MyAppProperties.storeId = sucursalHarcodeada;
 
             logger.Debug("Verificando en segundo plano actualizaciones con squirrel.window");
             UpdateApp();
