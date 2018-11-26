@@ -2,6 +2,7 @@
 using PDADesktop.Model;
 using PDADesktop.Model.Dto;
 using PDADesktop.Model.Json;
+using PDADesktop.Model.Portal;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -102,6 +103,19 @@ namespace PDADesktop.Classes.Utils
         internal static ListView GetListView(string responseReceptionGrid)
         {
             return JsonConvert.DeserializeObject<ListView>(responseReceptionGrid);
+        }
+
+        internal static UserKey GetUserKey(string userkeyResponse)
+        {
+            return JsonConvert.DeserializeObject<UserKey>(userkeyResponse);
+        }
+
+        internal static String GetJsonBodyUser(string userName, string password)
+        {
+            JsonBodyUser user = new JsonBodyUser();
+            user.userName = userName;
+            user.password = password;
+            return JsonConvert.SerializeObject(user);
         }
     }
 }

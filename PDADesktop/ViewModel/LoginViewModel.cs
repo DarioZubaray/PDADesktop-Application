@@ -3,6 +3,7 @@ using MahApps.Metro.Controls.Dialogs;
 using MaterialDesignThemes.Wpf;
 using PDADesktop.Classes;
 using PDADesktop.Classes.Utils;
+using PDADesktop.Model.Portal;
 using PDADesktop.View;
 using System;
 using System.ComponentModel;
@@ -267,10 +268,13 @@ namespace PDADesktop.ViewModel
             logger.Debug("login => Do Work");
             Thread.Sleep(1200);
             MainWindow window = MyAppProperties.window;
+
+            UserKey userKey = HttpWebClientUtil.AttemptAutoLoginPortalImagoSur(usernameText, FloatingPasswordBox);
+            logger.Debug(userKey);
             if ("juli".Equals(usernameText))
             {
                 logger.Debug("recuerdame: " + RemembermeCheck);
-                logger.Debug("Nombre no null: " + usernameText);
+                logger.Debug("Username: " + usernameText);
 
                 Uri uriActivityCenter = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
                 dispatcher.BeginInvoke(new Action(() =>

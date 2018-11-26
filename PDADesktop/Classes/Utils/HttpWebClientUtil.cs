@@ -9,6 +9,7 @@ using System.IO;
 using System.Text;
 using PDADesktop.Model.Dto;
 using System.Collections.ObjectModel;
+using PDADesktop.Model.Portal;
 
 namespace PDADesktop.Classes.Utils
 {
@@ -26,17 +27,20 @@ namespace PDADesktop.Classes.Utils
             var clientTimeoutRetry = new PDAWebClient();
 
             response = clientTimeoutRetry.GetRequest(urlAuthority + urlPath, 25, 3);
-            if (response.Length < 100)
+            if (response?.Length < 100)
             {
                 logger.Debug("response: " + response);
             }
             return response;
         }
 
-        private static string SendHttpPostRequest(string urlPath, string jsonBody)
+        private static string SendHttpPostRequest(string urlPath, string jsonBody, string urlAuthority = "PDAExpress")
         {
             string result = null;
-            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
+            if (urlAuthority.Equals("PDAExpress"))
+            {
+                urlAuthority = ConfigurationManager.AppSettings.Get(Constants.SERVER_HOST_PROTOCOL_IP_PORT);
+            }
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(urlAuthority + urlPath);
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
@@ -555,6 +559,15 @@ namespace PDADesktop.Classes.Utils
                 + "&rows=" + rows + "&page=" + page + "&sidx=idLote&sord=desc";
             string responseSearchBatches = SendHttpGetRequest(urlSearchBatches + queryParams);
             return responseSearchBatches;
+        }
+
+        internal static UserKey AttemptAutoLoginPortalImagoSur(string username, string password)
+        {
+            string urlPath = ConfigurationManager.AppSettings.Get(Constants.PORTAL_LOGIN);
+            string jsonBody = JsonUtils.GetJsonBodyUser(username, password);
+            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PORTAL_SERVER_HOST);
+            string userKeyResponse = SendHttpPostRequest(urlPath, jsonBody, urlAuthority);
+            return JsonUtils.GetUserKey(userKeyResponse);
         }
     }
 }
