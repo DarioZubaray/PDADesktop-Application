@@ -1422,7 +1422,6 @@ namespace PDADesktop.ViewModel
         public void ExitPortalApiAction(object obj)
         {
             logger.Info("exit portal api");
-            HttpWebClientUtil.AttempLogoutPortalImagoSur();
 
             MyAppProperties.loadOnce = true;
             MainWindow window = (MainWindow) Application.Current.MainWindow;

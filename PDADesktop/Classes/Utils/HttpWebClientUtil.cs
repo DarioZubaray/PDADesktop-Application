@@ -18,7 +18,7 @@ namespace PDADesktop.Classes.Utils
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Requests
-        private static string SendHttpGetRequest(string urlPath, string urlAuthority = "PDAExpress")
+        private static string SendHttpGetRequest(string urlPath)
         {
             string response = null;
             if (urlAuthority.Equals("PDAExpress"))
@@ -573,11 +573,5 @@ namespace PDADesktop.Classes.Utils
             return JsonUtils.GetUserKey(userKeyResponse);
         }
 
-        internal static void AttempLogoutPortalImagoSur()
-        {
-            string urlPathLogout = ConfigurationManager.AppSettings.Get(Constants.PORTAL_LOGOUT);
-            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PORTAL_SERVER_HOST);
-            string responseLogout = SendHttpGetRequest(urlPathLogout, urlAuthority);
-        }
     }
 }
