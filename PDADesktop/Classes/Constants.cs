@@ -10,7 +10,8 @@
 
         public const long INFORMAR_GENESIX = 1;
         public const long DESCARGAR_GENESIX = 2;
-        public const string SERVER_IP = "SERVER_HOST_PROTOCOL_IP_PORT";
+        public const string PDAEXPRESS_SERVER_HOST = "PDAEXPRESS_SERVER_PROTOCOL_IP_PORT";
+        public const string PORTAL_SERVER_HOST = "PORTAL_SERVER_PROTOCOL_IP_PROTOCOL";
         public const string URL_APPLICATION_UPDATE = "URL_UPDATE";
 
         public const string CENTRO_ACTIVIDADES_VIEW = "View/CentroActividadesView.xaml";
@@ -137,5 +138,6 @@
         public const string ESTADO_SINCRO_INICIADO = "1";
         public const string ESTADO_SINCRO_FIN = "0";
 
+        public const string PORTAL_LOGIN = "PORTAL_LOGIN";
     }
 }
