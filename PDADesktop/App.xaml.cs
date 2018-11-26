@@ -117,7 +117,7 @@ namespace PDADesktop
 
         async void UpdateApp()
         {
-            string hostIpPort = ConfigurationManager.AppSettings.Get(Constants.SERVER_IP);
+            string hostIpPort = ConfigurationManager.AppSettings.Get(Constants.PDAEXPRESS_SERVER_HOST);
             string urlOrPath = hostIpPort + ConfigurationManager.AppSettings.Get(Constants.URL_APPLICATION_UPDATE);
             try
             {
