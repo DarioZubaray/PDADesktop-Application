@@ -269,7 +269,7 @@ namespace PDADesktop.ViewModel
             Thread.Sleep(1200);
             MainWindow window = MyAppProperties.window;
 
-            UserKey userKey = HttpWebClientUtil.AttemptAutoLoginPortalImagoSur(usernameText, FloatingPasswordBox);
+            UserKey userKey = HttpWebClientUtil.AttemptAuthenticatePortalImagoSur(usernameText, FloatingPasswordBox);
             logger.Debug(userKey);
             if (userKey != null)
             {

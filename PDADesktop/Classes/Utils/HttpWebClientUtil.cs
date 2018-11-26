@@ -564,9 +564,9 @@ namespace PDADesktop.Classes.Utils
             return responseSearchBatches;
         }
 
-        internal static UserKey AttemptAutoLoginPortalImagoSur(string username, string password)
+        internal static UserKey AttemptAuthenticatePortalImagoSur(string username, string password)
         {
-            string urlPath = ConfigurationManager.AppSettings.Get(Constants.PORTAL_LOGIN);
+            string urlPath = ConfigurationManager.AppSettings.Get(Constants.PORTAL_AUTHENTICATE);
             string jsonBody = JsonUtils.GetJsonBodyUser(username, password);
             string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PORTAL_SERVER_HOST);
             string userKeyResponse = SendHttpPostRequest(urlPath, jsonBody, urlAuthority);

@@ -137,7 +137,6 @@
         public const string ESTADO_SINCRO_INICIADO = "1";
         public const string ESTADO_SINCRO_FIN = "0";
 
-        public const string PORTAL_LOGIN = "PORTAL_LOGIN";
-        public const string PORTAL_LOGOUT = "PORTAL_LOGOUT";
+        public const string PORTAL_AUTHENTICATE = "PORTAL_AUTHENTICATE";
     }
 }
