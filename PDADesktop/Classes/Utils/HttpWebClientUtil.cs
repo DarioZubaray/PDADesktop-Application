@@ -21,10 +21,8 @@ namespace PDADesktop.Classes.Utils
         private static string SendHttpGetRequest(string urlPath)
         {
             string response = null;
-            if (urlAuthority.Equals("PDAExpress"))
-            {
-                urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PDAEXPRESS_SERVER_HOST);
-            }
+            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PDAEXPRESS_SERVER_HOST);
+
 
             logger.Debug("Enviando petición a " + urlAuthority + urlPath);
             var clientTimeoutRetry = new PDAWebClient();
