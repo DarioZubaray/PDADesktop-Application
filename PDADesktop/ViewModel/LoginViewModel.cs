@@ -43,6 +43,7 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Worker Attributes
+        private readonly BackgroundWorker loadLoginWorker = new BackgroundWorker();
         private readonly BackgroundWorker loginWorker = new BackgroundWorker();
         #endregion
 
@@ -237,6 +238,8 @@ namespace PDADesktop.ViewModel
             PanelCloseCommand = new RelayCommand(ClosePanelAction, param => this.canExecute);
             FlipLoginCommand = new RelayCommand(FlipLoginAction);
 
+            loadLoginWorker.DoWork += loadLoginWorker_DoWork;
+            loadLoginWorker.RunWorkerCompleted += loadLoginWorker_RunWorkerCompleted;
             loginWorker.DoWork += loginWorker_DoWork;
             loginWorker.RunWorkerCompleted += loginWorker_RunWorkerCompleted;
 
@@ -248,6 +251,22 @@ namespace PDADesktop.ViewModel
         public void LoginLoadedEventAction(object sender)
         {
             logger.Debug("Login => Loaded Event");
+            loadLoginWorker.RunWorkerAsync();
+        }
+        #endregion
+
+        #region Workers
+        #region Load Login Worker
+        private void loadLoginWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            bool portalStatus = HttpWebClientUtil.GetHttpWebPortalServerConexionStatus();
+            if (!portalStatus)
+            {
+                dispatcher.BeginInvoke(new Action(() => {
+                    notifier.ShowError("No se a podido conectar con el Portal de Aplicaciones - ImagoSur");
+                }));
+            }
+
             bool serverStatus = HttpWebClientUtil.GetHttpWebServerConexionStatus();
             if (!serverStatus)
             {
@@ -255,13 +274,16 @@ namespace PDADesktop.ViewModel
                     notifier.ShowWarning("El servidor PDAExpress no ha respondido a tiempo.");
                 }));
             }
+        }
+
+        private void loadLoginWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
             dispatcher.BeginInvoke(new Action(() => {
                 HidingWaitingPanel();
             }));
         }
         #endregion
 
-        #region Workers
         #region Login Worker
         private void loginWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -269,32 +291,42 @@ namespace PDADesktop.ViewModel
             Thread.Sleep(1200);
             MainWindow window = MyAppProperties.window;
 
-            UserKey userKey = HttpWebClientUtil.AttemptAuthenticatePortalImagoSur(usernameText, FloatingPasswordBox);
-            logger.Debug(userKey);
-            if (userKey != null)
+            bool portalStatus = HttpWebClientUtil.GetHttpWebPortalServerConexionStatus();
+            if (portalStatus)
             {
-                logger.Info("userKey " + userKey.key);
-                MyAppProperties.storeId = userKey.user.sucursal.ToString();
-                MyAppProperties.username = userKey.user.userName;
-
-                Uri uriActivityCenter = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
-                dispatcher.BeginInvoke(new Action(() =>
+                UserKey userKey = HttpWebClientUtil.AttemptAuthenticatePortalImagoSur(usernameText, FloatingPasswordBox);
+                logger.Debug(userKey);
+                if (userKey != null)
                 {
-                    window.frame.NavigationService.Navigate(uriActivityCenter);
-                }));
+                    logger.Info("userKey " + userKey.key);
+                    MyAppProperties.storeId = userKey.user.sucursal.ToString();
+                    MyAppProperties.username = userKey.user.userName;
+
+                    Uri uriActivityCenter = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
+                    dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        window.frame.NavigationService.Navigate(uriActivityCenter);
+                    }));
+                }
+                else
+                {
+                    logger.Info("usuario y/o contraseña incorrectos");
+                    dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        LoginView loginview = (LoginView)window.frame.Content;
+                        loginview.msgbar.Clear();
+                        loginview.msgbar.SetDangerAlert("usuario y/o contraseña incorrectos", 3);
+                        loginview.usernameText.Text = String.Empty;
+                        loginview.FloatingPasswordBox.Clear();
+                        loginview.usernameText.Focus();
+                        PanelLoading = false;
+                    }));
+                }
             }
             else
             {
-                logger.Info("usuario y/o contraseña incorrectos");
-                dispatcher.BeginInvoke(new Action(() =>
-                {
-                    LoginView loginview = (LoginView)window.frame.Content;
-                    loginview.msgbar.Clear();
-                    loginview.msgbar.SetDangerAlert("usuario y/o contraseña incorrectos", 3);
-                    loginview.usernameText.Text = String.Empty;
-                    loginview.FloatingPasswordBox.Clear();
-                    loginview.usernameText.Focus();
-                    PanelLoading = false;
+                dispatcher.BeginInvoke(new Action(() => {
+                    notifier.ShowError("No se a podido conectar con el Portal de Aplicaciones - ImagoSur");
                 }));
             }
         }

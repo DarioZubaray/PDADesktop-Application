@@ -1029,6 +1029,7 @@ namespace PDADesktop.ViewModel
                 bool serverStatus = CheckServerStatus();
 
                 string storeId = MyAppProperties.storeId;
+                string username = MyAppProperties.username;
                 if (serverStatus)
                 {
                     currentMessage = "Controlando nuevo lote ...";
@@ -1072,7 +1073,7 @@ namespace PDADesktop.ViewModel
                     currentMessage = "Informando a genesix ...";
                     NotifyCurrentMessage(currentMessage);
                     InformToGenesix(newSync);
-                    ExecuteInformGenesix(newSync);
+                    ExecuteInformGenesix(newSync, username);
 
                     currentMessage = "Borrando remante de archivos ...";
                     NotifyCurrentMessage(currentMessage);
@@ -1190,14 +1191,14 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private void ExecuteInformGenesix(List<Sincronizacion> newSync)
+        private void ExecuteInformGenesix(List<Sincronizacion> newSync, string username)
         {
             foreach (Sincronizacion sync in newSync)
             {
                 if (sync.actividad.accion.idAccion.Equals(Constants.INFORMAR_GENESIX))
                 {
                     long syncId = sync.idSincronizacion;
-                    HttpWebClientUtil.ExecuteInformGenesix(syncId);
+                    HttpWebClientUtil.ExecuteInformGenesix(syncId, username);
                 }
             }
         }

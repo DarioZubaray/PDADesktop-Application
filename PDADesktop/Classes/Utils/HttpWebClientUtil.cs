@@ -18,10 +18,13 @@ namespace PDADesktop.Classes.Utils
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Requests
-        private static string SendHttpGetRequest(string urlPath)
+        private static string SendHttpGetRequest(string urlPath, string urlAuthority = "PDAExpress")
         {
             string response = null;
-            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PDAEXPRESS_SERVER_HOST);
+            if(urlAuthority.Equals("PDAExpress"))
+            {
+                urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PDAEXPRESS_SERVER_HOST);
+            }
 
 
             logger.Debug("Enviando petición a " + urlAuthority + urlPath);
@@ -189,6 +192,21 @@ namespace PDADesktop.Classes.Utils
             {
                 int index = response.IndexOf("pong");
                 conexionStatus = index >= 0 ;
+            }
+            return conexionStatus;
+        }
+
+        internal static Boolean GetHttpWebPortalServerConexionStatus()
+        {
+            Boolean conexionStatus = false;
+            string urlServerStatus = ConfigurationManager.AppSettings.Get(Constants.PORTAL_PING);
+            string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PORTAL_SERVER_HOST);
+
+            string response = SendHttpGetRequest(urlServerStatus, urlAuthority);
+            if (response != null)
+            {
+                int index = response.IndexOf("pong");
+                conexionStatus = index >= 0;
             }
             return conexionStatus;
         }
@@ -453,10 +471,11 @@ namespace PDADesktop.Classes.Utils
             return response;
         }
 
-        internal static void ExecuteInformGenesix(long syncId)
+        internal static void ExecuteInformGenesix(long syncId, string username)
         {
             string urlInformGenesix = ConfigurationManager.AppSettings.Get(Constants.API_INFORMAR_GENESIX);
-            string queryParams = "?idSincronizacion="+ new Random().Next() + "_" + syncId;
+            string queryParams = "?idSincronizacion="+ new Random().Next() + "_" + syncId
+                + "&perfilGenesix=" + username;
             string responseExecutedInform = SendHttpGetRequest(urlInformGenesix + queryParams);
             logger.Debug(responseExecutedInform);
         }

@@ -166,7 +166,8 @@ namespace PDADesktop.Classes.Utils
                 }
             }
 
-            HttpWebClientUtil.ExecuteInformGenesix(syncId);
+            string username = MyAppProperties.username;
+            HttpWebClientUtil.ExecuteInformGenesix(syncId, username);
             string storeId = MyAppProperties.storeId;
             ActionResultDto unlockDevice = deviceHandler.ControlDeviceLock(syncId, storeId);
             if (unlockDevice.success)

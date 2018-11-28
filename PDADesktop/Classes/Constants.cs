@@ -138,5 +138,6 @@
         public const string ESTADO_SINCRO_FIN = "0";
 
         public const string PORTAL_AUTHENTICATE = "PORTAL_AUTHENTICATE";
+        public const string PORTAL_PING = "PORTAL_PING";
     }
 }
