@@ -344,13 +344,21 @@ namespace PDADesktop.ViewModel
 
         private bool AuthorizeUserKey(UserKey userKey)
         {
-            var perfilesSet = userKey.user.perfilesSet;
-            foreach(var perfil in perfilesSet)
+            try
             {
-                if(perfil.codigoPerfil == 54)
+                var perfilesSet = userKey.user.perfilesSet;
+                foreach (var perfil in perfilesSet)
                 {
-                    return true;
+                    string desc = perfil.descripcion.Replace(" ", "").ToLower();
+                    if (desc.Equals("pdaexpress", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return true;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.Message, e);
             }
             return false;
         }
