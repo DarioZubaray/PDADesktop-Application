@@ -1356,6 +1356,11 @@ namespace PDADesktop.ViewModel
         #region Redirect Worker
         private void redirectWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                DisplayWaitingPanel("Espere por favor");
+            }));
+            Thread.Sleep(800);
             logger.Debug("Redirect => Do Work");
 
             bool stateNeedResolve = ButtonStateUtils.ResolveState();
@@ -1366,7 +1371,7 @@ namespace PDADesktop.ViewModel
                 syncDataGridWorker.RunWorkerAsync();
             }
         }
-        
+
         private void redirectWorker_RunwWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logger.Debug("adjustment => Run Worker Completed");
@@ -1520,9 +1525,7 @@ namespace PDADesktop.ViewModel
         public void GeneralStateAction(object obj)
         {
             logger.Info("Boton estado general");
-            DisplayWaitingPanel("Espere por favor");
             logger.Info(MyAppProperties.SelectedSync.actividad);
-
             redirectWorker.RunWorkerAsync();
         }
         #endregion
