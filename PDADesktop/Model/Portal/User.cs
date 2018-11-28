@@ -22,7 +22,7 @@ namespace PDADesktop.Model.Portal
         public string nombre { get; set; }
         public string password { get; set; }
         public Object perfilConsolidado { get; set; }
-        public ICollection<Object> perfilesSet { get; set; }
+        public ICollection<Perfil> perfilesSet { get; set; }
         public List<Object> profiles { get; set; }
         public string puesto { get; set; }
         public ICollection<Object> puntosSecundarios { get; set; }

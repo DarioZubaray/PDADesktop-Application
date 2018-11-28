@@ -298,15 +298,29 @@ namespace PDADesktop.ViewModel
                 logger.Debug(userKey);
                 if (userKey != null)
                 {
-                    logger.Info("userKey " + userKey.key);
-                    MyAppProperties.storeId = userKey.user.sucursal.ToString();
-                    MyAppProperties.username = userKey.user.userName;
-
-                    Uri uriActivityCenter = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
-                    dispatcher.BeginInvoke(new Action(() =>
+                    if (AuthorizeUserKey(userKey))
                     {
-                        window.frame.NavigationService.Navigate(uriActivityCenter);
-                    }));
+                        logger.Info("userKey " + userKey.key);
+                        MyAppProperties.storeId = userKey.user.sucursal.ToString();
+                        MyAppProperties.username = userKey.user.userName;
+
+                        Uri uriActivityCenter = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
+                        dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            window.frame.NavigationService.Navigate(uriActivityCenter);
+                        }));
+                    }
+                    else
+                    {
+                        logger.Info("Sin perfil PDAExpress");
+                        dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            LoginView loginview = (LoginView)window.frame.Content;
+                            ShowMSGBar(loginview, "No posee el perfil PDAExpress para acceder", "danger");
+                            ResetLoginForm(loginview);
+                            PanelLoading = false;
+                        }));
+                    }
                 }
                 else
                 {
@@ -314,11 +328,8 @@ namespace PDADesktop.ViewModel
                     dispatcher.BeginInvoke(new Action(() =>
                     {
                         LoginView loginview = (LoginView)window.frame.Content;
-                        loginview.msgbar.Clear();
-                        loginview.msgbar.SetDangerAlert("usuario y/o contraseña incorrectos", 3);
-                        loginview.usernameText.Text = String.Empty;
-                        loginview.FloatingPasswordBox.Clear();
-                        loginview.usernameText.Focus();
+                        ShowMSGBar(loginview, "usuario y/o contraseña incorrectos");
+                        ResetLoginForm(loginview);
                         PanelLoading = false;
                     }));
                 }
@@ -329,6 +340,39 @@ namespace PDADesktop.ViewModel
                     notifier.ShowError("No se a podido conectar con el Portal de Aplicaciones - ImagoSur");
                 }));
             }
+        }
+
+        private bool AuthorizeUserKey(UserKey userKey)
+        {
+            var perfilesSet = userKey.user.perfilesSet;
+            foreach(var perfil in perfilesSet)
+            {
+                if(perfil.codigoPerfil == 54)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void ShowMSGBar(LoginView loginview, string message, string type = "warning")
+        {
+            loginview.msgbar.Clear();
+            if(type.Equals("warning"))
+            {
+                loginview.msgbar.SetWarningAlert(message, 3);
+            }
+            else
+            {
+                loginview.msgbar.SetDangerAlert(message, 3);
+            }
+        }
+
+        private void ResetLoginForm(LoginView loginview)
+        {
+            loginview.usernameText.Text = String.Empty;
+            loginview.FloatingPasswordBox.Clear();
+            loginview.usernameText.Focus();
         }
 
         private void loginWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

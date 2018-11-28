@@ -226,6 +226,7 @@
     <Compile Include="Model\Json\JsonBodyCreateNewBatch.cs" />
     <Compile Include="Model\Json\JsonBodyModifyAdjustments.cs" />
     <Compile Include="Model\Json\JsonBodyUser.cs" />
+    <Compile Include="Model\Portal\Perfil.cs" />
     <Compile Include="Model\Portal\User.cs" />
     <Compile Include="Model\Portal\UserKey.cs" />
     <Compile Include="Model\Recepcion.cs" />
