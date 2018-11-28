@@ -572,6 +572,14 @@ namespace PDADesktop.ViewModel
                 NotifyCurrentMessage(currentMessage);
                 List<Accion> actionsAvailables = GetAllActions();
 
+                if(actionsAvailables == null || actionsAvailables.Count == 0)
+                {
+                    await dispatcher.BeginInvoke(new Action(() => {
+                        AlertUserMetroDialog("No se ha podido obtener actiones disponibles");
+                    }));
+                    return;
+                }
+
                 currentMessage = "Obteniendo actividades de todas las acciones...";
                 NotifyCurrentMessage(currentMessage);
                 GetActivitiesByActions(actionsAvailables);
@@ -800,7 +808,7 @@ namespace PDADesktop.ViewModel
             int device = 2;
             bool enabled = true;
             List<VersionDispositivo> latestVersionsFromServer =  HttpWebClientUtil.GetInfoVersions(device, enabled);
-            if(latestVersionsFromServer != null)
+            if(latestVersionsFromServer != null && latestVersionsFromServer.Count > 1)
             {
                 VersionDispositivo lastVersionFromServer = latestVersionsFromServer[0];
                 string lastServerVersion = lastVersionFromServer.version.ToString();
@@ -1067,7 +1075,10 @@ namespace PDADesktop.ViewModel
 
                     if(newSync == null)
                     {
-                        //TODO interrumpir la sincronizacion y avisar
+                        await dispatcher.BeginInvoke(new Action(() => {
+                            AlertUserMetroDialog("No se ha podido crear una nueva sincronizacion");
+                        }));
+                        return;
                     }
 
                     currentMessage = "Informando a genesix ...";
