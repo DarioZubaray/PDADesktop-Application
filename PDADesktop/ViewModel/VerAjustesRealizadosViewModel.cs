@@ -13,6 +13,10 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using PDADesktop.Classes.Devices;
 using System.Windows.Threading;
+using ToastNotifications;
+using ToastNotifications.Position;
+using ToastNotifications.Lifetime;
+using ToastNotifications.Messages;
 
 namespace PDADesktop.ViewModel
 {
@@ -242,8 +246,29 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
+        #region Worker Attributes
+        private readonly BackgroundWorker loadSeeAdjustmentMadeWorker = new BackgroundWorker();
+        #endregion
+
         #region Dispatcher Attributes
         Dispatcher dispatcher { get; set; }
+        #endregion
+
+        #region Notifier Attributes
+        Notifier notifier = new Notifier(cfg =>
+        {
+            cfg.PositionProvider = new WindowPositionProvider(
+                parentWindow: Application.Current.MainWindow,
+                corner: Corner.BottomRight,
+                offsetX: 10,
+                offsetY: 10);
+
+            cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+                notificationLifetime: TimeSpan.FromSeconds(5),
+                maximumNotificationCount: MaximumNotificationCount.FromCount(3));
+
+            cfg.Dispatcher = Application.Current.Dispatcher;
+        });
         #endregion
         #endregion
 
@@ -253,10 +278,14 @@ namespace PDADesktop.ViewModel
             BannerApp.PrintSeeAdjustmentsRealized();
             dialogCoordinator = instance;
             deviceHandler = App.Instance.deviceHandler;
+            dispatcher = App.Instance.Dispatcher;
             DisplayWaitingPanel("Cargando", "Espere por favor...");
 
             VerAjustesRealizadosLoadedEvent = new RelayCommand(VerAjustesRealizadosLoadedEventAction);
             AdjustmentEnableEdit = false;
+
+            loadSeeAdjustmentMadeWorker.DoWork += loadSeeAdjustmentMadeWorker_DoWork;
+            loadSeeAdjustmentMadeWorker.RunWorkerCompleted += loadSeeAdjustmentMadeWorker_RunWorkerCompleted;
 
             DeleteAdjustmentCommand = new RelayCommand(DeleteAdjustmentAction);
             UpdateAdjustmentCommand = new RelayCommand(UpdateAdjustmentAction);
@@ -270,6 +299,30 @@ namespace PDADesktop.ViewModel
         public void VerAjustesRealizadosLoadedEventAction(object sender)
         {
             logger.Debug("Ver ajustes Realizados => Loaded Event");
+            loadSeeAdjustmentMadeWorker.RunWorkerAsync();
+        }
+
+        private void UpdateAjustesGrid(string deviceReadAdjustmentDataFile)
+        {
+            Adjustments = JsonUtils.GetObservableCollectionAjustes(deviceReadAdjustmentDataFile);
+
+            AdjustmentsTypes = HttpWebClientUtil.GetAdjustmentsTypes();
+            logger.Debug(AdjustmentsTypes?.ToString());
+            if (AdjustmentsTypes == null)
+            {
+                dispatcher.BeginInvoke(new Action(() => {
+                    notifier.ShowWarning("El servidor PDAExpress no ha devolvio para los tipos de ajustes.");
+                }));
+            }
+        }
+        #endregion
+
+        #region Workers
+        #region Load SeeAdjustmentMade Work
+        private void loadSeeAdjustmentMadeWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Debug("Load see adjustment made => do work");
+
             bool deviceStatus = deviceHandler.IsDeviceConnected();
             if (deviceStatus)
             {
@@ -296,16 +349,13 @@ namespace PDADesktop.ViewModel
             {
                 AlertUserMetroDialog("No se detecta conexión con la PDA");
             }
+        }
+        private void loadSeeAdjustmentMadeWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("Load see adjustment made => run worker completed");
             dispatcher.BeginInvoke(new Action(() => HidingWaitingPanel()));
         }
-
-        private void UpdateAjustesGrid(string deviceReadAdjustmentDataFile)
-        {
-            Adjustments = JsonUtils.GetObservableCollectionAjustes(deviceReadAdjustmentDataFile);
-
-            AdjustmentsTypes = HttpWebClientUtil.GetAdjustmentsTypes();
-            logger.Debug(AdjustmentsTypes.ToString());
-        }
+        #endregion
         #endregion
 
         #region Action Methods
