@@ -311,7 +311,7 @@ namespace PDADesktop.ViewModel
             if (AdjustmentsTypes == null)
             {
                 dispatcher.BeginInvoke(new Action(() => {
-                    notifier.ShowWarning("El servidor PDAExpress no ha devolvio para los tipos de ajustes.");
+                    notifier.ShowWarning("El servidor PDAExpress no ha respondido a tiempo.");
                 }));
             }
         }
