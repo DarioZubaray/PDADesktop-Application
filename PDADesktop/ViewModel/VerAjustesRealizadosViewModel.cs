@@ -307,7 +307,10 @@ namespace PDADesktop.ViewModel
             Adjustments = JsonUtils.GetObservableCollectionAjustes(deviceReadAdjustmentDataFile);
 
             AdjustmentsTypes = HttpWebClientUtil.GetAdjustmentsTypes();
-            logger.Debug(AdjustmentsTypes?.ToString());
+            if(AdjustmentsTypes != null)
+            {
+                logger.Debug(AdjustmentsTypes.ToString());
+            }
             if (AdjustmentsTypes == null)
             {
                 dispatcher.BeginInvoke(new Action(() => {

@@ -31,7 +31,7 @@ namespace PDADesktop.Classes.Utils
             var clientTimeoutRetry = new PDAWebClient();
 
             response = clientTimeoutRetry.GetRequest(urlAuthority + urlPath, 25, 3);
-            if (response?.Length < 100)
+            if (response != null && response.Length < 100)
             {
                 logger.Debug("response: " + response);
             }

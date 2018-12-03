@@ -387,7 +387,10 @@ namespace PDADesktop.ViewModel
         #region Action Methods
         public void ReturnActivityCenterAction(object obj)
         {
-            MyAppProperties.currentBatchId = obj?.ToString();
+            if(obj != null)
+            {
+                MyAppProperties.currentBatchId = obj.ToString();
+            }
             MainWindow window = (MainWindow)Application.Current.MainWindow;
             Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
             window.frame.NavigationService.Navigate(uri);
