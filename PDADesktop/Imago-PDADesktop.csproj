@@ -441,7 +441,7 @@
     <Message Importance="High" Text="Target Package: creando paquete NuGet" />
     <Exec Command="nuget pack PDADesktop.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release" />
     <Message Importance="High" Text="Target Release: generando version con squirrel windows" />
-    <Exec Command="squirrel --releasify PDADesktop.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg" />
+    <Exec Command="..\packages\squirrel.windows.1.8.0\tools\Squirrel.exe --releasify PDADesktop.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg" />
   </Target>
   <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Web\Microsoft.Web.Publishing.Tasks.dll" />
   <Target Name="App_config_AfterCompile" AfterTargets="AfterCompile" Condition="Exists('App.$(Configuration).config')">
