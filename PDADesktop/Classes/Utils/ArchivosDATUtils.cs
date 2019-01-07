@@ -159,20 +159,23 @@ namespace PDADesktop.Classes.Utils
             string pedidosFileName = GetAAAttributes(Model.ArchivoActividad.PEDIDOS).nombreArchivo;
             logger.Debug("Leyendo archivo pedidos: " + publicPedidosExtended + FileUtils.PrependSlash(pedidosFileName));
             string pedidosContent = FileUtils.ReadFile(publicPedidosExtended + FileUtils.PrependSlash(pedidosFileName));
-            if (pedidosContent.Substring(pedidosContent.Length - 5).Equals(separador))
+            if(pedidosContent != null && pedidosContent.Length > 5)
             {
-                //Si el último campo es vacío, agrego un espacio para que lo reconozca el split
-                pedidosContent += " ";
-            }
-            String[] resultadoPartes = Regex.Split(pedidosContent, "\\*eof\\*");
-            pedidosContent = resultadoPartes[0];
-            logger.Debug("sobreescribiendo: " + pedidosFileName);
-            FileUtils.WriteFile(publicPedidosExtended + FileUtils.PrependSlash(pedidosFileName), pedidosContent);
+                if (pedidosContent.Substring(pedidosContent.Length - 5).Equals(separador))
+                {
+                    //Si el último campo es vacío, agrego un espacio para que lo reconozca el split
+                    pedidosContent += " ";
+                }
+                String[] resultadoPartes = Regex.Split(pedidosContent, "\\*eof\\*");
+                pedidosContent = resultadoPartes[0];
+                logger.Debug("sobreescribiendo: " + pedidosFileName);
+                FileUtils.WriteFile(publicPedidosExtended + FileUtils.PrependSlash(pedidosFileName), pedidosContent);
 
-            crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.RPEDIDOS, resultadoPartes[1]);
-            crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.APEDIDOS, resultadoPartes[2]);
-            crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.EPEDIDOS, resultadoPartes[3]);
-            crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.RPEDIDOS, resultadoPartes[4]);
+                crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.RPEDIDOS, resultadoPartes[1]);
+                crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.APEDIDOS, resultadoPartes[2]);
+                crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.EPEDIDOS, resultadoPartes[3]);
+                crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.RPEDIDOS, resultadoPartes[4]);
+            }
         }
 
         private static void crearMoverArchivoDePEDIDOS(string rutaArchivo, string filename, string texto)
