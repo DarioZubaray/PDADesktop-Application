@@ -30,7 +30,7 @@ namespace PDADesktop.Classes.Utils
             logger.Debug("Enviando petición a " + urlAuthority + urlPath);
             var clientTimeoutRetry = new PDAWebClient();
 
-            response = clientTimeoutRetry.GetRequest(urlAuthority + urlPath, 25, 3);
+            response = clientTimeoutRetry.GetRequest(urlAuthority + urlPath, 150, 3);
             if (response != null && response.Length < 100)
             {
                 logger.Debug("response: " + response);
@@ -263,12 +263,12 @@ namespace PDADesktop.Classes.Utils
             return actionResult.success;
         }
 
-        internal static bool SearchDATsMasterFile(int activityId, string storeId)
+        internal static bool SearchDATsMasterFile(int activityId, string storeId, string userName)
         {
             string masterFile = ArchivosDATUtils.GetDataFileNameByIdActividad(activityId);
             string urlPathMasterFile = ConfigurationManager.AppSettings.Get(Constants.API_MAESTRO_URLPATH);
             urlPathMasterFile = String.Format(urlPathMasterFile, masterFile);
-            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}", urlPathMasterFile, storeId);
+            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}&userName={2}", urlPathMasterFile, storeId, userName);
             string slashFilenameAndExtension = FileUtils.WrapSlashAndDATExtension(masterFile);
             string publicPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
 
