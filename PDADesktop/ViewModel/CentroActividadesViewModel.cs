@@ -1224,7 +1224,8 @@ namespace PDADesktop.ViewModel
                     try
                     {
                         string storeId = MyAppProperties.storeId;
-                        bool descargaMaestroCorrecta = HttpWebClientUtil.SearchDATsMasterFile((int)sync.actividad.idActividad, storeId);
+                        string userName = MyAppProperties.username;
+                        bool descargaMaestroCorrecta = HttpWebClientUtil.SearchDATsMasterFile((int)sync.actividad.idActividad, storeId, userName);
                         NotifyCurrentMessage("Descargando " + sync.actividad.descripcion.ToString());
                         Thread.Sleep(500);
 

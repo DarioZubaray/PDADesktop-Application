@@ -222,7 +222,8 @@ namespace PDADesktop.Classes.Utils
 
         public static void DownloadFromGenesix(int activityId, string storeId, long syncId)
         {
-            bool downloadSuccess = HttpWebClientUtil.SearchDATsMasterFile(activityId, storeId);
+            string userName = MyAppProperties.username;
+            bool downloadSuccess = HttpWebClientUtil.SearchDATsMasterFile(activityId, storeId, userName);
 
             if (downloadSuccess)
             {

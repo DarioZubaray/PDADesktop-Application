@@ -260,7 +260,8 @@ namespace PDADesktop.ViewModel
             try
             {
                 string storeId = MyAppProperties.storeId;
-                bool downloadOrders = HttpWebClientUtil.SearchDATsMasterFile(Convert.ToInt32(Constants.PEDIDOS_CODE), storeId);
+                string userName = MyAppProperties.username;
+                bool downloadOrders = HttpWebClientUtil.SearchDATsMasterFile(Convert.ToInt32(Constants.PEDIDOS_CODE), storeId, userName);
                 if (downloadOrders)
                 {
                     ArchivosDATUtils.createOrdersFiles();
