@@ -160,7 +160,7 @@ namespace PDADesktop.Classes.Utils
             return JsonUtils.GetListActividades(responseActivities);
         }
 
-        internal static bool DownloadFileFromServer(string urlPath, string filenameAndExtension, string destino, int timeout = 150000)
+        internal static bool DownloadFileFromServer(string urlPath, string filenameAndExtension, string destino, int timeout = 600000)
         {
             string urlAuthority = ConfigurationManager.AppSettings.Get(Constants.PDAEXPRESS_SERVER_HOST);
             var client = new PDAWebClient(urlAuthority + urlPath, timeout);
