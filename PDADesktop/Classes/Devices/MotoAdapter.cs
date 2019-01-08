@@ -47,7 +47,9 @@ namespace PDADesktop.Classes.Devices
             logger.Debug("copiando hacia la ruta: " + desDirExpanded);
             FileUtils.VerifyFoldersOrCreate(desDirExpanded);
             int codigoResultado = MotoApi.downloadFileFromAppData(fileRelPath, desDirExpanded + filenameAndExtension);
-            return getResult(codigoResultado);
+            ResultFileOperation resultFile = getResult(codigoResultado);
+            logger.Debug("resultado de copiado: " + resultFile.ToString());
+            return resultFile;
         }
 
         public ResultFileOperation CopyPublicBinFileToDevice(string relativeDestinationDirectory, string filenameAndExtension)
