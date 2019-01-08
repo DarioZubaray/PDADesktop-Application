@@ -30,7 +30,7 @@ namespace PDADesktop.Classes.Utils
             logger.Debug("Enviando petición a " + urlAuthority + urlPath);
             var clientTimeoutRetry = new PDAWebClient();
 
-            response = clientTimeoutRetry.GetRequest(urlAuthority + urlPath, 150, 3);
+            response = clientTimeoutRetry.GetRequest(urlAuthority + urlPath, 600, 3);
             if (response != null && response.Length < 100)
             {
                 logger.Debug("response: " + response);
@@ -83,7 +83,7 @@ namespace PDADesktop.Classes.Utils
                 string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
                 byte[] boundarybytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
                 HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(sWebAddress);
-                wr.Timeout = 1000 * 15;
+                wr.Timeout = 1000 * 600;
                 wr.ContentType = "multipart/form-data; boundary=" + boundary;
                 wr.Method = "POST";
                 wr.KeepAlive = true;
