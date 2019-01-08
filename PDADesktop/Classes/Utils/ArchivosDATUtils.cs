@@ -159,23 +159,50 @@ namespace PDADesktop.Classes.Utils
             string pedidosFileName = GetAAAttributes(Model.ArchivoActividad.PEDIDOS).nombreArchivo;
             logger.Debug("Leyendo archivo pedidos: " + publicPedidosExtended + FileUtils.PrependSlash(pedidosFileName));
             string pedidosContent = FileUtils.ReadFile(publicPedidosExtended + FileUtils.PrependSlash(pedidosFileName));
-            if(pedidosContent != null && pedidosContent.Length > 5)
+            logger.Debug("Contenido de Pedidos: " + pedidosContent);
+            if(pedidosContent != null && pedidosContent.Length > 0)
             {
-                if (pedidosContent.Substring(pedidosContent.Length - 5).Equals(separador))
+                if (pedidosContent.EndsWith(separador))
                 {
                     //Si el último campo es vacío, agrego un espacio para que lo reconozca el split
                     pedidosContent += " ";
                 }
-                String[] resultadoPartes = Regex.Split(pedidosContent, "\\*eof\\*");
-                pedidosContent = resultadoPartes[0];
+                int totalArchivos = Regex.Matches(pedidosContent, ToLiteral(separador)).Count;
+                logger.Debug("Total de partes de pedidos: " + totalArchivos);
+
+                String[] resultadoPartes = Regex.Split(pedidosContent, ToLiteral(separador));
+                int parteActual = 0;
+                pedidosContent = resultadoPartes[parteActual];
+                parteActual++;
                 logger.Debug("sobreescribiendo: " + pedidosFileName);
                 FileUtils.WriteFile(publicPedidosExtended + FileUtils.PrependSlash(pedidosFileName), pedidosContent);
 
-                crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.RPEDIDOS, resultadoPartes[1]);
-                crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.APEDIDOS, resultadoPartes[2]);
-                crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.EPEDIDOS, resultadoPartes[3]);
-                crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.RPEDIDOS, resultadoPartes[4]);
+                if (totalArchivos >= parteActual)
+                {
+                    crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.LPEDIDOS, resultadoPartes[parteActual]);
+                    parteActual++;
+                }
+                if (totalArchivos >= parteActual)
+                {
+                    crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.APEDIDOS, resultadoPartes[parteActual]);
+                    parteActual++;
+                }
+                if (totalArchivos >= parteActual)
+                {
+                    crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.EPEDIDOS, resultadoPartes[parteActual]);
+                    parteActual++;
+                }
+                if (totalArchivos >= parteActual)
+                {
+                    crearMoverArchivoDePEDIDOS(publicPedidosExtended, Constants.RPEDIDOS, resultadoPartes[parteActual]);
+                    parteActual++;
+                }
             }
+        }
+
+        private static string ToLiteral(string input)
+        {
+            return input.Replace("*", "\\*");
         }
 
         private static void crearMoverArchivoDePEDIDOS(string rutaArchivo, string filename, string texto)
