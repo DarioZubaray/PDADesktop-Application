@@ -268,7 +268,7 @@ namespace PDADesktop.Classes.Utils
             string masterFile = ArchivosDATUtils.GetDataFileNameByIdActividad(activityId);
             string urlPathMasterFile = ConfigurationManager.AppSettings.Get(Constants.API_MAESTRO_URLPATH);
             urlPathMasterFile = String.Format(urlPathMasterFile, masterFile);
-            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}&userName={2}", urlPathMasterFile, storeId, userName);
+            string urlPath_urlQuery = String.Format("{0}?idSucursal={1}&perfilGenesix={2}", urlPathMasterFile, storeId, userName);
             string slashFilenameAndExtension = FileUtils.WrapSlashAndDATExtension(masterFile);
             string publicPathData = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
 
