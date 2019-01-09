@@ -880,9 +880,12 @@ namespace PDADesktop.ViewModel
             }
             foreach(Actividad actividad in actividades)
             {
-                long idActividadActual = actividad.idActividad;
-                string filename = ArchivosDATUtils.GetDataFileNameByIdActividad((int)idActividadActual);
-                deviceHandler.DeleteDeviceAndPublicDataFiles(filename);
+                if(isCompletedSynchronization || actividad.accion.idAccion.Equals(Constants.INFORMAR_GENESIX))
+                {
+                    long idActividadActual = actividad.idActividad;
+                    string filename = ArchivosDATUtils.GetDataFileNameByIdActividad((int)idActividadActual);
+                    deviceHandler.DeleteDeviceAndPublicDataFiles(filename);
+                }
             }
         }
 
@@ -1086,13 +1089,16 @@ namespace PDADesktop.ViewModel
                     InformToGenesix(newSync);
                     ExecuteInformGenesix(newSync, username);
 
-                    currentMessage = "Borrando remante de archivos ...";
+                    currentMessage = "Borrando remanente de archivos ...";
                     NotifyCurrentMessage(currentMessage);
                     DeleteAllPreviousFiles(false);
 
-                    currentMessage = "Descargando archivos maestros...";
-                    NotifyCurrentMessage(currentMessage);
-                    DownloadMasterFile(newSync);
+                    if(MyAppProperties.isSynchronizationComplete)
+                    {
+                        currentMessage = "Descargando archivos maestros...";
+                        NotifyCurrentMessage(currentMessage);
+                        DownloadMasterFile(newSync);
+                    }
 
                     currentMessage = "Refrescando los datos de la tabla de sincronizaciones ...";
                     NotifyCurrentMessage(currentMessage);
