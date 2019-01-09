@@ -6,6 +6,8 @@ using Squirrel;
 using StructureMap;
 using System;
 using System.Configuration;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
@@ -122,7 +124,26 @@ namespace PDADesktop
                 using (updateManager = new UpdateManager(urlOrPath))
                 {
                     logger.Info("buscando actualización");
-                    await updateManager.UpdateApp();
+                    UpdateInfo updateInfo = await updateManager.CheckForUpdate();
+                    if (updateInfo.ReleasesToApply.Any())
+                    {
+                        var versionCount = updateInfo.ReleasesToApply.Count;
+                        logger.Info($"{versionCount} update(s) found.");
+
+                        var versionWord = versionCount > 1 ? "versions" : "version";
+                        var message = new StringBuilder().AppendLine($"PDA Desktop App está {versionCount} {versionWord} por detrás de la última versión.").
+                                                          AppendLine("Se descargará e instalará una actualización, los cambios surgirán efecto una vez el programa sea reiniciado.").
+                                                          ToString();
+
+                        var result = MessageBox.Show(message, "App Update", MessageBoxButton.OK);
+                        logger.Info("Descargando actualizaciones");
+                        var updateResult = await updateManager.UpdateApp();
+                        logger.Info($"Descarga completa. Version {updateResult.Version} tomará efecto cuando la App sea reiniciada.");
+                    }
+                    else
+                    {
+                        logger.Info("No se detectaron actualizaciones");
+                    }
                     logger.Info("actualización finalizada");
                 }
             }
