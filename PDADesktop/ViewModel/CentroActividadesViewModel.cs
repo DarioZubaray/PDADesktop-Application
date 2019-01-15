@@ -514,7 +514,6 @@ namespace PDADesktop.ViewModel
             if (!adjustmentWorker.IsBusy || !redirectWorker.IsBusy || !reloadActivityCenterWorker.IsBusy)
             {
                 bool deviceStatus = deviceHandler.IsDeviceConnected();
-                logger.Debug("disptachertimer tick => Device status: " + deviceStatus);
 
                 if (!deviceStatus)
                 {
@@ -545,7 +544,7 @@ namespace PDADesktop.ViewModel
             }
             else
             {
-                logger.Debug("se esta cargando el centro de actividades...");
+                logger.Debug("Dispatcher time tick Skipeado");
             }
         }
         #endregion
@@ -1173,6 +1172,12 @@ namespace PDADesktop.ViewModel
                         {
                             UploadFileToServer(slashFilenameAndExtension, actionId, syncId);
                             SynchronizationStateUtil.SetReceivedDeviceState(syncId);
+
+                            logger.Debug("action subida con exito, id: " + actionId);
+                            if(actionId.Equals(Constants.ACTIVIDAD_IMPRIMIR_ETIQUETAS))
+                            {
+                                SynchronizationStateUtil.SetPrintReceptions(syncId);
+                            }
                         }
                         else
                         {

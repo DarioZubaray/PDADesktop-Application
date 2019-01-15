@@ -81,7 +81,7 @@ namespace PDADesktop.Classes.Utils
 
         private static void PrintReceptions(long syncId, string batchId)
         {
-            // Cambia estado de sincro a OK y refresca
+            // Cambia estado de sincro a OK
             SynchronizationStateUtil.SetSentGenesixState(syncId);
             //lamar a la vista 'ImprimirRecepcionView'
             Uri uriPrintReceptions = new Uri(Constants.VER_IMPRIMIR_RECEPCION_VIEW, UriKind.Relative);

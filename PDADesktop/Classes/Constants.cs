@@ -133,6 +133,7 @@
 
         public const int ACTIVIDAD_AJUSTES = 103;
         public const int ACTIVIDAD_INFORMAR_RECEPCIONES = 104;
+        public const int ACTIVIDAD_IMPRIMIR_ETIQUETAS = 105;
 
         public const string ESTADO_SINCRO_INICIADO = "1";
         public const string ESTADO_SINCRO_FIN = "0";

@@ -18,13 +18,13 @@ namespace PDADesktop.Classes.Utils
         #region Constructor
         public PDAWebClient()
         {
-            this.timeout = 60000;
+            this.timeout = 600000;
             this.retries = 0;
             this.Headers.Add("user-agent", DEFAULT_USER_AGENT);
         }
-        public PDAWebClient(string url, int timeout = 15)
+        public PDAWebClient(string url, int timeout = 600000)
         {
-            this.timeout = 60000;
+            this.timeout = timeout;
             this.retries = 0;
             this.Headers.Add("user-agent", DEFAULT_USER_AGENT);
         }
@@ -32,18 +32,21 @@ namespace PDADesktop.Classes.Utils
 
         protected override WebRequest GetWebRequest(Uri uri)
         {
-            WebRequest lWebRequest = base.GetWebRequest(uri);
-            lWebRequest.Timeout = timeout;
-            ((HttpWebRequest)lWebRequest).ReadWriteTimeout = timeout;
-            return lWebRequest;
+            WebRequest webRequest = base.GetWebRequest(uri);
+            logger.Info("override: Seteando timeout a " + timeout);
+            webRequest.Timeout = timeout;
+            ((HttpWebRequest)webRequest).ReadWriteTimeout = timeout;
+
+            return webRequest;
         }
 
-        public string GetRequest(string url, int timeout = 15, int retries = 3, string userAgent = DEFAULT_USER_AGENT)
+        public string GetRequest(string url, int timeout = 600000, int retries = 3, string userAgent = DEFAULT_USER_AGENT)
         {
             var lWebClient = new PDAWebClient();
             try
             {
-                lWebClient.timeout = timeout * 1000;
+                logger.Info("GetRequest: Seteando timeout a " + timeout);
+                lWebClient.timeout = timeout;
                 lWebClient.Headers.Add("user-agent", userAgent);
                 lWebClient.url = url;
                 lWebClient.retries = retries;

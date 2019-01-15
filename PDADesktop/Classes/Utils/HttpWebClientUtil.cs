@@ -30,7 +30,7 @@ namespace PDADesktop.Classes.Utils
             logger.Debug("Enviando petición a " + urlAuthority + urlPath);
             var clientTimeoutRetry = new PDAWebClient();
 
-            response = clientTimeoutRetry.GetRequest(urlAuthority + urlPath, 600, 3);
+            response = clientTimeoutRetry.GetRequest(urlAuthority + urlPath, 600000, 3);
             if (response != null && response.Length < 100)
             {
                 logger.Debug("response: " + response);
@@ -434,6 +434,7 @@ namespace PDADesktop.Classes.Utils
         internal static string SetPrintReceptions(string queryParams)
         {
             string urlPrintReceptionsGeneral = ConfigurationManager.AppSettings.Get("API_SET_PRINT_GENERAL");
+            logger.Debug("enviando peticion: " + urlPrintReceptionsGeneral + queryParams);
             return SendHttpGetRequest(urlPrintReceptionsGeneral + queryParams);
         }
 
