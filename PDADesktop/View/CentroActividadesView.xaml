@@ -85,8 +85,15 @@
                                     Command="{Binding InformarCommand}"/>
                         </materialDesign:Badged>
 
-                        <materialDesign:Badged Content="{Binding Badge_verAjustesRealizados}" Margin="10" />
+                        <Button x:Name="button_verActividades" Content="Ver Actividades" Margin="10"
+                                HorizontalAlignment="Left" VerticalAlignment="Top"
+                                ToolTip="Ver todas las actividades a informar y las pendientes."
+                                Command="{Binding VerActividadesCommand}">
+                        </Button>
 
+                        <!--
+                        <materialDesign:Badged Content="{Binding Badge_verAjustesRealizados}" Margin="10" />
+                        -->
                         <Button x:Name="button_salir"
                                 Content="Cerrar sesión" Margin="10"
                                 HorizontalAlignment="Left" VerticalAlignment="Top"

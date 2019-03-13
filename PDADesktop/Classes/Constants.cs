@@ -22,6 +22,7 @@
         public const string VER_DETALLES_RECEPCION_VIEW = "View/VerDetallesRecepcionView.xaml";
         public const string LOGIN_VIEW = "View/LoginView.xaml";
         public const string BUSCAR_LOTES_VIEW = "View/BuscarLotesView.xaml";
+        public const string VER_ACTIVIDADES_VIEW = "View/VerActividadesView.xaml";
 
         public const string API_SYNC_ANTERIOR = "API_SYNC_ANTERIOR";
         public const string API_SYNC_ACTUAL = "API_SYNC_ACTUAL";
@@ -60,6 +61,7 @@
         public const string DEVICE_RELPATH_LOOKUP = "DEVICE_RELPATH_LOOKUP";
         public const string DEVICE_RELPATH_DATA = "DEVICE_RELPATH_DATA";
         public const string DEVICE_RELPATH_FILENAME = "DEVICE_RELPATH_FILENAME";
+        public const string PUBLIC_PATH_DATABASE = "PUBLIC_PATH_DATABASE";
         public const string DEVICE_HANDLER = "DEVICE_HANDLER";
         public const string DESKTOP_FOLDER = "DESKTOP_FOLDER";
 

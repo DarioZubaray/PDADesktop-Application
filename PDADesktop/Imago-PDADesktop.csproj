@@ -151,6 +151,10 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SqlServerCe, Version=9.0.242.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cquential.System.Data.SqlServerCe.3.0.5206\lib\net35\System.Data.SqlServerCe.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http.Extensions, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Extensions.dll</HintPath>
@@ -213,7 +217,10 @@
     <Compile Include="Classes\Utils\PDAWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Classes\Utils\SqlCEReaderUtils.cs" />
     <Compile Include="Classes\Utils\SynchronizationStateUtil.cs" />
+    <Compile Include="Model\ArticuloRecepcion.cs" />
+    <Compile Include="Model\ControlPrecio.cs" />
     <Compile Include="Model\DesbloquearPDA.cs" />
     <Compile Include="Model\DeviceMainData.cs" />
     <Compile Include="Model\Dispositivo.cs" />
@@ -223,6 +230,7 @@
     <Compile Include="Model\Dto\ImprimirRecepcionesDtoDataGrid.cs" />
     <Compile Include="Model\Dto\Row.cs" />
     <Compile Include="Model\EstadoRecepcion.cs" />
+    <Compile Include="Model\Etiqueta.cs" />
     <Compile Include="Model\Json\JsonBodyCreateNewBatch.cs" />
     <Compile Include="Model\Json\JsonBodyModifyAdjustments.cs" />
     <Compile Include="Model\Json\JsonBodyUser.cs" />
@@ -234,6 +242,7 @@
     <Compile Include="Model\VersionDispositivo.cs" />
     <Compile Include="ViewModel\BuscarLotesViewModel.cs" />
     <Compile Include="ViewModel\ImprimirRecepcionViewModel.cs" />
+    <Compile Include="ViewModel\VerActividadesViewModel.cs" />
     <Compile Include="ViewModel\VerAjustesInformadosViewModel.cs" />
     <Compile Include="ViewModel\VerAjustesModificarViewModel.cs" />
     <Compile Include="ViewModel\VerDetallesRecepcionViewModel.cs" />
@@ -260,6 +269,9 @@
     <Compile Include="View\ImprimirRecepcionView.xaml.cs">
       <DependentUpon>ImprimirRecepcionView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\VerActividadesView.xaml.cs">
+      <DependentUpon>VerActividadesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\VerAjustesInformadosView.xaml.cs">
       <DependentUpon>VerAjustesInformadosView.xaml</DependentUpon>
     </Compile>
@@ -272,6 +284,14 @@
     <Compile Include="View\VerDetallesRecepcionView.xaml.cs">
       <DependentUpon>VerDetallesRecepcionView.xaml</DependentUpon>
     </Compile>
+    <Page Include="resources\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="resources\IconsNonShared.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\BuscarLotesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -331,6 +351,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\VerActividadesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\VerAjustesInformadosView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -382,6 +406,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Resource Include="resources\Entypo.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -395,6 +420,8 @@
     <Content Include="lib\PDAMotoCommunication.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="resources\Entypo-license.txt" />
+    <Resource Include="resources\WindowsIcons-license.txt" />
     <SplashScreen Include="resources\Imagosur-SplashScreen.PNG" />
   </ItemGroup>
   <ItemGroup>

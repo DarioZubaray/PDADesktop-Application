@@ -23,6 +23,7 @@ using ToastNotifications;
 using ToastNotifications.Position;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
+using System.Data.SqlServerCe;
 
 namespace PDADesktop.ViewModel
 {
@@ -192,6 +193,19 @@ namespace PDADesktop.ViewModel
             set
             {
                 informarCommand = value;
+            }
+        }
+
+        private ICommand verActividadesCommand;
+        public ICommand VerActividadesCommand
+        {
+            get
+            {
+                return verActividadesCommand;
+            }
+            set
+            {
+                verActividadesCommand = value;
             }
         }
 
@@ -460,6 +474,7 @@ namespace PDADesktop.ViewModel
             ExitButtonCommand = new RelayCommand(ExitPortalApiAction, param => this.canExecute);
             SincronizarCommand = new RelayCommand(SyncAllDataAction, param => this.canExecute);
             InformarCommand = new RelayCommand(InformGenesixAction, param => this.canExecute);
+            VerActividadesCommand = new RelayCommand(SeeActivitiesAction, param => this.canExecute);
             VerAjustesRealizadosCommand = new RelayCommand(SeeAdjustmentMadeAction, param => this.canExecute);
             AnteriorCommand = new RelayCommand(PreviousSyncAction, param => this.canExecute);
             SiguienteCommand = new RelayCommand(NextSyncAction, param => this.canExecute);
@@ -651,14 +666,16 @@ namespace PDADesktop.ViewModel
                     }
                 }
 
-                currentMessage = "Leyendo Ajustes realizados...";
+                //Leer actividades realizadas...
+                currentMessage = "Leyendo actividades realizadas...";
                 NotifyCurrentMessage(currentMessage);
-                CreateBadgeSeeAdjustments();
+                ReadActivitiesDone();
+                //CreateBadgeSeeAdjustments();
             }
             else
             {
                 logger.Info("Dispositivo no detectado");
-                CreateBadgeSeeAdjustments();
+                //CreateBadgeSeeAdjustments();
                 DisplayDefaultNoConnectionPanel();
             }
             MyAppProperties.loadOnce = false;
@@ -728,6 +745,29 @@ namespace PDADesktop.ViewModel
             bool isDeviceConnected = deviceHandler.IsDeviceConnected();
             logger.Info("Device is connected: " + isDeviceConnected);
             return isDeviceConnected;
+        }
+
+        private void ReadActivitiesDone()
+        {
+            dispatcher.BeginInvoke(new Action(() => {
+                string sqlceDataBase = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATABASE);
+                ResultFileOperation result = deviceHandler.CopyDeviceFileToPublicData(sqlceDataBase);
+                if(ResultFileOperation.OK.Equals(result))
+                {
+                    //leer actividades
+                    SqlCeConnection con = new SqlCeConnection(sqlceDataBase);
+                    List<Ajustes> ajustes = SqlCEReaderUtils.leerAjustes(con);
+                    if(ajustes != null && ajustes.Count > 0)
+                    {
+                        logger.Info("hay ajustes en la base de datos embebida que NO se informarán");
+                    }
+                    else
+                    {
+                        logger.Info("No ajustes en estado pendiente");
+                    }
+
+                }
+            }));
         }
 
         public void CreateBadgeSeeAdjustments()
@@ -941,7 +981,7 @@ namespace PDADesktop.ViewModel
                 PanelMainMessage = "Espere por favor...";
                 currentMessage = "Leyendo Ajustes realizados...";
                 NotifyCurrentMessage(currentMessage);
-                CreateBadgeSeeAdjustments();
+                //CreateBadgeSeeAdjustments();
             }
 
             currentMessage = "Verificando conexión con el servidor PDAExpress...";
@@ -1445,6 +1485,7 @@ namespace PDADesktop.ViewModel
             string currentDate = synchronization.fecha;
             TextBox_sincronizacion = String.Format(" ({0}) {1}", currentBatch, currentDate);
         }
+
         #endregion
 
         #region Actions Methods
@@ -1488,6 +1529,18 @@ namespace PDADesktop.ViewModel
             DisplayWaitingPanel("Cargando ajustes realizados", "Espere por favor");
             logger.Debug("Viendo ajustes realizados");
             adjustmentWorker.RunWorkerAsync();
+        }
+
+        public void SeeActivitiesAction(object obj)
+        {
+            logger.Debug("Ver Actividades a informar");
+            // validar PDA conectada
+            // buscar archivos/tablas
+            DisplayWaitingPanel("Espere por favor...");
+            Thread.Sleep(400);
+            MainWindow window = (MainWindow)Application.Current.MainWindow;
+            Uri uri = new Uri(Constants.VER_ACTIVIDADES_VIEW, UriKind.Relative);
+            window.frame.NavigationService.Navigate(uri);
         }
 
         public void PreviousSyncAction(object obj)

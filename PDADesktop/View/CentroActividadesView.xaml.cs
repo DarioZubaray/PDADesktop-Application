@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls.Dialogs;
+using MaterialDesignThemes.Wpf;
 using PDADesktop.ViewModel;
 using System;
 using System.Windows;
