@@ -8,6 +8,7 @@ namespace PDADesktop.Classes.Devices
         string GetAdapterName();
         bool IsDeviceConnected();
 
+        ResultFileOperation CopyFromDeviceToPublicFolder(string filename, string deviceFolder, string publicFolder);
         ResultFileOperation CopyDeviceFileToPublicLookUp(string filenameAndExtension);
         ResultFileOperation CopyDeviceFileToPublicData(string filenameAndExtension);
 

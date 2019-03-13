@@ -40,6 +40,13 @@ namespace PDADesktop.Classes
                          +"==================================");
         }
 
+        public static void PrintSeeActivities()
+        {
+            logger.Debug("\n=================================="
+                         + "=  VER  ACTIVIDADES  REALIZADOS  ="
+                         + "==================================");
+        }
+
         public static void PrintSeeAdjustmentsRealized()
         {
             logger.Debug("\n=================================="

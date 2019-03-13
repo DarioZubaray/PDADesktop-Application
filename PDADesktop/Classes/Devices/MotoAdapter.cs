@@ -25,6 +25,16 @@ namespace PDADesktop.Classes.Devices
             return MotoApi.isDeviceConnected() != 0;
         }
 
+        public ResultFileOperation CopyFromDeviceToPublicFolder(string filename, string deviceFolder, string publicFolder)
+        {
+            logger.Debug("obteniendo archivo desde dispositivo: " + deviceFolder + filename);
+
+            logger.Debug("copiando hacia la ruta: " + publicFolder + filename);
+            FileUtils.VerifyFoldersOrCreate(publicFolder);
+            int codigoResultado = MotoApi.downloadFileFromAppData(deviceFolder + filename, publicFolder + filename);
+            return getResult(codigoResultado);
+        }
+
         public ResultFileOperation CopyDeviceFileToPublicLookUp(string filenameAndExtension)
         {
             string deviceLookupRelPath = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_LOOKUP);

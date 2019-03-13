@@ -7,13 +7,11 @@ using PDADesktop.Classes.Utils;
 using PDADesktop.View;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using PDADesktop.Model.Dto;
 using System.Windows.Threading;
@@ -23,7 +21,6 @@ using ToastNotifications;
 using ToastNotifications.Position;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
-using System.Data.SqlServerCe;
 
 namespace PDADesktop.ViewModel
 {
@@ -209,19 +206,6 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private ICommand verAjustesRealizadosCommand;
-        public ICommand VerAjustesRealizadosCommand
-        {
-            get
-            {
-                return verAjustesRealizadosCommand;
-            }
-            set
-            {
-                verAjustesRealizadosCommand = value;
-            }
-        }
-
         private ICommand centroActividadesLoadedCommand;
         public ICommand CentroActividadesLoadedEvent
         {
@@ -345,7 +329,6 @@ namespace PDADesktop.ViewModel
         #region Workers Attributes
         private readonly BackgroundWorker reloadActivityCenterWorker = new BackgroundWorker();
         private readonly BackgroundWorker syncDataGridWorker = new BackgroundWorker();
-        private readonly BackgroundWorker adjustmentWorker = new BackgroundWorker();
         private readonly BackgroundWorker redirectWorker = new BackgroundWorker();
         #endregion
 
@@ -475,7 +458,6 @@ namespace PDADesktop.ViewModel
             SincronizarCommand = new RelayCommand(SyncAllDataAction, param => this.canExecute);
             InformarCommand = new RelayCommand(InformGenesixAction, param => this.canExecute);
             VerActividadesCommand = new RelayCommand(SeeActivitiesAction, param => this.canExecute);
-            VerAjustesRealizadosCommand = new RelayCommand(SeeAdjustmentMadeAction, param => this.canExecute);
             AnteriorCommand = new RelayCommand(PreviousSyncAction, param => this.canExecute);
             SiguienteCommand = new RelayCommand(NextSyncAction, param => this.canExecute);
             UltimaCommand = new RelayCommand(LastSyncAction, param => this.canExecute);
@@ -488,9 +470,6 @@ namespace PDADesktop.ViewModel
 
             syncDataGridWorker.DoWork += syncDataGrid_DoWork;
             syncDataGridWorker.RunWorkerCompleted += syncDataGrid_RunWorkerCompleted;
-
-            adjustmentWorker.DoWork += adjustmentWorker_DoWork;
-            adjustmentWorker.RunWorkerCompleted += adjustmentWorker_RunWorkerCompleted;
 
             redirectWorker.DoWork += redirectWorker_DoWork;
             redirectWorker.RunWorkerCompleted += redirectWorker_RunwWorkerCompleted;
@@ -526,7 +505,7 @@ namespace PDADesktop.ViewModel
         #region dispatcherTimer
         private async void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (!adjustmentWorker.IsBusy || !redirectWorker.IsBusy || !reloadActivityCenterWorker.IsBusy)
+            if (!redirectWorker.IsBusy || !reloadActivityCenterWorker.IsBusy)
             {
                 bool deviceStatus = deviceHandler.IsDeviceConnected();
 
@@ -665,19 +644,13 @@ namespace PDADesktop.ViewModel
                         logger.Info("El usuario no desea borrar los archivos antiguos");
                     }
                 }
-
-                //Leer actividades realizadas...
-                currentMessage = "Leyendo actividades realizadas...";
-                NotifyCurrentMessage(currentMessage);
-                ReadActivitiesDone();
-                //CreateBadgeSeeAdjustments();
             }
             else
             {
                 logger.Info("Dispositivo no detectado");
-                //CreateBadgeSeeAdjustments();
                 DisplayDefaultNoConnectionPanel();
             }
+            currentMessage = "Casi todo listo!";
             MyAppProperties.loadOnce = false;
             DeleteTempFiles();
             NotifyCurrentMessage("Todo listo!");
@@ -747,76 +720,6 @@ namespace PDADesktop.ViewModel
             return isDeviceConnected;
         }
 
-        private void ReadActivitiesDone()
-        {
-            dispatcher.BeginInvoke(new Action(() => {
-                string sqlceDataBase = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATABASE);
-                ResultFileOperation result = deviceHandler.CopyDeviceFileToPublicData(sqlceDataBase);
-                if(ResultFileOperation.OK.Equals(result))
-                {
-                    //leer actividades
-                    SqlCeConnection con = new SqlCeConnection(sqlceDataBase);
-                    List<Ajustes> ajustes = SqlCEReaderUtils.leerAjustes(con);
-                    if(ajustes != null && ajustes.Count > 0)
-                    {
-                        logger.Info("hay ajustes en la base de datos embebida que NO se informarán");
-                    }
-                    else
-                    {
-                        logger.Info("No ajustes en estado pendiente");
-                    }
-
-                }
-            }));
-        }
-
-        public void CreateBadgeSeeAdjustments()
-        {
-            dispatcher.BeginInvoke(new Action(() =>
-            {
-                Button buttonSeeAdjustment = new Button();
-                buttonSeeAdjustment.Name = "button_verAjustesRealizados";
-                buttonSeeAdjustment.Content = "Ver Ajustes";
-                buttonSeeAdjustment.HorizontalAlignment = HorizontalAlignment.Left;
-                buttonSeeAdjustment.VerticalAlignment = VerticalAlignment.Top;
-                buttonSeeAdjustment.ToolTip = "Ver los ajustes realizados.";
-                buttonSeeAdjustment.Command = this.VerAjustesRealizadosCommand;
-
-                Badged badge = new Badged();
-                bool estadoDevice = deviceHandler.IsDeviceConnected();
-                if (estadoDevice)
-                {
-                    string DeviceAjusteFile = deviceHandler.ReadAdjustmentsDataFile();
-                    if (DeviceAjusteFile != null)
-                    {
-                        ObservableCollection<Ajustes> ajustes = JsonUtils.GetObservableCollectionAjustes(DeviceAjusteFile);
-                        if (ajustes != null && ajustes.Count > 0)
-                        {
-                            badge.Badge = ajustes.Count;
-                        }
-                        else
-                        {
-                            badge.Badge = 0;
-                            buttonSeeAdjustment.IsEnabled = false;
-                        }
-                    }
-                    else
-                    {
-                        badge.Badge = 0;
-                        buttonSeeAdjustment.IsEnabled = false;
-                    }
-                }
-                else
-                {
-                    badge.Badge = "NO PDA";
-                    badge.BadgeColorZoneMode = ColorZoneMode.Dark;
-                    buttonSeeAdjustment.IsEnabled = false;
-                }
-                badge.Content = buttonSeeAdjustment;
-                Badge_verAjustesRealizados = badge;
-            }));
-        }
-
         private void CopyDeviceMainDataFileToPublic()
         {
             string slashFilenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_DEFAULT);
@@ -867,7 +770,7 @@ namespace PDADesktop.ViewModel
                         string fileVersionId = fileVersion.idVersion;
                         HttpWebClientUtil.DownloadDevicePrograms(fileVersionId, name);
 
-                        string deviceRelPathBin = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_BIN);
+                        string deviceRelPathBin = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_ROOT);
                         string slashFilenameAndExtension = FileUtils.PrependSlash(name);
                         try
                         {
@@ -972,19 +875,7 @@ namespace PDADesktop.ViewModel
             {
                 dispatcherTimer.Stop();
             }
-            string currentMessage = "Checkeando conexión con el dispositivo...";
-            NotifyCurrentMessage(currentMessage);
-            bool isConneted = CheckDeviceConnected();
-
-            if (isConneted)
-            {
-                PanelMainMessage = "Espere por favor...";
-                currentMessage = "Leyendo Ajustes realizados...";
-                NotifyCurrentMessage(currentMessage);
-                //CreateBadgeSeeAdjustments();
-            }
-
-            currentMessage = "Verificando conexión con el servidor PDAExpress...";
+            string currentMessage = "Verificando conexión con el servidor PDAExpress...";
             NotifyCurrentMessage(currentMessage);
             bool serverStatus = CheckServerStatus();
             if (serverStatus)
@@ -1378,33 +1269,6 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
-        #region Adjustment Worker
-        private void adjustmentWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            logger.Debug("adjustment => Do Work");
-            bool estadoDevice = deviceHandler.IsDeviceConnected();
-            if (estadoDevice)
-            {
-                MainWindow window = MyAppProperties.window;
-                Uri uriSeeAdjustments = new Uri(Constants.VER_AJUSTES_REALIZADOS_VIEW, UriKind.Relative);
-
-                dispatcher.BeginInvoke(new Action(() =>
-                {
-                    window.frame.NavigationService.Navigate(uriSeeAdjustments);
-                }));
-            }
-            else
-            {
-                AlertUserMetroDialog("No se detecta conexion con la PDA");
-            }
-        }
-
-        private void adjustmentWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            logger.Debug("adjustment => Run Worker Completed");
-        }
-        #endregion
-
         #region Redirect Worker
         private void redirectWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -1522,13 +1386,6 @@ namespace PDADesktop.ViewModel
                 await synchronization_DoWork();
             });
             synchronization_RunCompleted();
-        }
-
-        public void SeeAdjustmentMadeAction(object obj)
-        {
-            DisplayWaitingPanel("Cargando ajustes realizados", "Espere por favor");
-            logger.Debug("Viendo ajustes realizados");
-            adjustmentWorker.RunWorkerAsync();
         }
 
         public void SeeActivitiesAction(object obj)

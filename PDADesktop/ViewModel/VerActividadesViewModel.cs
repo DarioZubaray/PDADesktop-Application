@@ -1,14 +1,24 @@
-﻿using PDADesktop.Model;
+﻿using log4net;
+using PDADesktop.Classes;
+using PDADesktop.Classes.Devices;
+using PDADesktop.Classes.Utils;
+using PDADesktop.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Configuration;
+using System.Data.SqlServerCe;
 
 namespace PDADesktop.ViewModel
 {
     class VerActividadesViewModel : ViewModelBase
     {
+        #region Attributes
+        #region Commons Attributes
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private IDeviceHandler deviceHandler { get; set; }
+        #endregion
+
+        #region List
         private List<ControlPrecio> controlPreciosConfirmados;
         public List<ControlPrecio> ControlPreciosConfirmados
         {
@@ -108,8 +118,51 @@ namespace PDADesktop.ViewModel
                 etiquetasPendientes = value;
             }
         }
+        #endregion
+        #endregion
 
+        #region Constructor
         public VerActividadesViewModel()
+        {
+            BannerApp.PrintSeeActivities();
+            deviceHandler = App.Instance.deviceHandler;
+
+            getDataFromDBCompact();
+
+            //setControlPreciosConfirmadosHardCode();
+            //setAjustesConfirmadosHardCode();
+            //setAjustesPendientesHardCode();
+            //setReceocionesPendientesHardCode();
+            //setEtiquetasConfirmadasHardcode();
+        }
+        #endregion
+
+        #region Methods
+        #region Commons Methods
+        private void getDataFromDBCompact()
+        {
+            string sqlceDataBase = "/" + ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATABASE);
+            string deviceFolder = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_ROOT);
+            logger.Info("copiando desde " + deviceFolder + sqlceDataBase);
+
+            string publicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_PROGRAM);
+            string publicFolderExtended = TextUtils.ExpandEnviromentVariable(publicFolder);
+            logger.Info("hacia " + publicFolderExtended + sqlceDataBase);
+
+            ResultFileOperation result = deviceHandler.CopyFromDeviceToPublicFolder(sqlceDataBase, deviceFolder, publicFolderExtended);
+            if (ResultFileOperation.OK.Equals(result))
+            {
+                //leer actividades
+                ControlPreciosPendientes = SqlCEReaderUtils.leerControlPrecios(@"Data Source=" + publicFolderExtended + sqlceDataBase);
+                AjustesPendientes = SqlCEReaderUtils.leerAjustes(@"Data Source=" + publicFolderExtended + sqlceDataBase);
+                RecepcionesPendientes = SqlCEReaderUtils.leerRecepciones(@"Data Source=" + publicFolderExtended + sqlceDataBase);
+                EtiquetasPendientes = SqlCEReaderUtils.leerEtiquetas(@"Data Source=" + publicFolderExtended + sqlceDataBase);
+            }
+        }
+        #endregion
+
+        #region Methods Hardcode
+        private void setControlPreciosConfirmadosHardCode()
         {
             controlPreciosConfirmados = new List<ControlPrecio>();
             ControlPrecio ctrubic2 = new ControlPrecio();
@@ -134,7 +187,10 @@ namespace PDADesktop.ViewModel
             ctrubic3.AlertaStock = false;
             ctrubic3.NumeroSecuencia = "0";
             controlPreciosConfirmados.Add(ctrubic3);
+        }
 
+        private void setAjustesConfirmadosHardCode()
+        {
             AjustesConfirmados = new List<Ajustes>();
             Ajustes ajuste1 = new Ajustes(77903792L, "20190110091757", "2", 15);
             AjustesConfirmados.Add(ajuste1);
@@ -146,7 +202,10 @@ namespace PDADesktop.ViewModel
             AjustesConfirmados.Add(ajuste4);
             Ajustes ajuste5 = new Ajustes(77900302L, "20190110091811", "10", 4);
             AjustesConfirmados.Add(ajuste5);
+        }
 
+        private void setAjustesPendientesHardCode()
+        {
             AjustesPendientes = new List<Ajustes>();
             Ajustes ajustePendientes1 = new Ajustes(77903792L, "20190110091757", "2", 15);
             AjustesPendientes.Add(ajustePendientes1);
@@ -156,7 +215,10 @@ namespace PDADesktop.ViewModel
             AjustesPendientes.Add(ajustePendientes3);
             Ajustes ajustePendientes4 = new Ajustes(75032715L, "20190110091811", "10", 8);
             AjustesPendientes.Add(ajustePendientes4);
+        }
 
+        private void setReceocionesPendientesHardCode()
+        {
             RecepcionesPendientes = new List<ArticuloRecepcion>();
             ArticuloRecepcion recep1 = new ArticuloRecepcion();
             Recepcion recepcion = new Recepcion();
@@ -170,7 +232,10 @@ namespace PDADesktop.ViewModel
             recep1.EAN = 123;
             recep1.unidadesRecibidas = 15;
             RecepcionesPendientes.Add(recep1);
+        }
 
+        private void setEtiquetasConfirmadasHardcode()
+        {
             EtiquetasConfirmadas = new List<Etiqueta>();
             Etiqueta etiqueta = new Etiqueta();
             etiqueta.EAN = "7790040719804";
@@ -178,5 +243,7 @@ namespace PDADesktop.ViewModel
             etiqueta.CodigoEtiqueta = "ET2";
             EtiquetasConfirmadas.Add(etiqueta);
         }
+        #endregion
+        #endregion
     }
 }

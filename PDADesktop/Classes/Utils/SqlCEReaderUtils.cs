@@ -2,6 +2,7 @@
 using PDADesktop.Model;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlServerCe;
 
 namespace PDADesktop.Classes.Utils
@@ -10,125 +11,150 @@ namespace PDADesktop.Classes.Utils
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static List<Ajustes> leerAjustes(SqlCeConnection con)
+        public static List<Ajustes> leerAjustes(string cadenaConexion)
         {
             logger.Debug("Leyendo ajustes ...");
             List<Ajustes> listaAjustes = new List<Ajustes>();
-            string query = "SELECT * FROM AJUSTES";
-            using (SqlCeCommand com = new SqlCeCommand(query, con))
+            using (SqlCeConnection cnn = new SqlCeConnection(cadenaConexion))
             {
+                SqlCeCommand sqlcmd = cnn.CreateCommand();
+                sqlcmd.CommandText = "Ajustes";
+                sqlcmd.CommandType = CommandType.TableDirect;
+                cnn.Open();
                 bool emptyTable = true;
-                SqlCeDataReader reader = com.ExecuteReader();
-                while (reader.Read())
+                SqlCeDataReader dr = sqlcmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (dr.HasRows)
                 {
-                    emptyTable = false;
-                    Ajustes ajuste = new Ajustes();
-                    ajuste.ean = Int64.Parse(reader.GetString(0));
-                    ajuste.fechaAjuste = reader.GetString(1);
-                    ajuste.claveAjuste = reader.GetString(2);
-                    ajuste.perfilGenesix = reader.GetString(3);
-                    ajuste.cantidad = (long)reader.GetDouble(4);
-                    listaAjustes.Add(ajuste);
-                }
-                if (emptyTable)
-                {
-                    logger.Debug("No se encontraron registros.");
+                    while (dr.Read())
+                    {
+                        emptyTable = false;
+                        Ajustes ajuste = new Ajustes();
+                        ajuste.ean = Int64.Parse(dr.GetString(0));
+                        ajuste.fechaAjuste = dr.GetString(1);
+                        ajuste.claveAjuste = dr.GetString(2);
+                        ajuste.perfilGenesix = dr.GetString(3);
+                        ajuste.cantidad = (long)dr.GetDouble(4);
+                        listaAjustes.Add(ajuste);
+                    }
+                    if (emptyTable)
+                    {
+                        logger.Debug("No se encontraron registros.");
+                    }
                 }
             }
             return listaAjustes;
         }
 
-        public static List<ControlPrecio> leerControlPrecios(SqlCeConnection con)
+        public static List<ControlPrecio> leerControlPrecios(string cadenaConexion)
         {
             logger.Debug("Leyendo control de precios ...");
             List<ControlPrecio> listaControlPrecios = new List<ControlPrecio>();
-            string query = "SELECT * FROM CTRUBIC";
-            using (SqlCeCommand com = new SqlCeCommand(query, con))
+            using(SqlCeConnection cnn = new SqlCeConnection(cadenaConexion))
             {
+                SqlCeCommand sqlcmd = cnn.CreateCommand();
+                sqlcmd.CommandText = "Ctrubic";
+                sqlcmd.CommandType = CommandType.TableDirect;
+                cnn.Open();
                 bool emptyTable = true;
-                SqlCeDataReader reader = com.ExecuteReader();
-                while (reader.Read())
+                SqlCeDataReader dr = sqlcmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (dr.HasRows)
                 {
-                    emptyTable = false;
-                    ControlPrecio controlPrecio = new ControlPrecio();
-                    controlPrecio.EAN = reader.GetString(0);
-                    controlPrecio.FechaControl = reader.GetDateTime(1);
-                    controlPrecio.TipoLectura = reader.GetInt32(2);
-                    controlPrecio.Pasillo = reader.GetString(3);
-                    controlPrecio.ControlUbicacion = (ControlPrecio.TipoControlUbicacion)reader.GetInt32(4);
-                    controlPrecio.IDEtiqueta = reader.GetString(5);
-                    controlPrecio.CantidadEtiquetas = reader.GetInt32(6);
-                    controlPrecio.AlertaStock = reader.GetBoolean(7);
-                    controlPrecio.NumeroSecuencia = reader.GetString(8);
-                    listaControlPrecios.Add(controlPrecio);
-                }
-                if (emptyTable)
-                {
-                    logger.Debug("No se encontraron registros");
+                    while (dr.Read())
+                    {
+                        emptyTable = false;
+                        ControlPrecio controlPrecio = new ControlPrecio();
+                        controlPrecio.EAN = dr.GetString(0);
+                        controlPrecio.FechaControl = dr.GetDateTime(1);
+                        controlPrecio.TipoLectura = dr.GetInt32(2);
+                        controlPrecio.Pasillo = dr.GetString(3);
+                        controlPrecio.ControlUbicacion = (ControlPrecio.TipoControlUbicacion)dr.GetInt32(4);
+                        controlPrecio.IDEtiqueta = dr.GetString(5);
+                        controlPrecio.CantidadEtiquetas = dr.GetInt32(6);
+                        controlPrecio.AlertaStock = dr.GetBoolean(7);
+                        controlPrecio.NumeroSecuencia = dr.GetString(8);
+                        listaControlPrecios.Add(controlPrecio);
+                    }
+                    if (emptyTable)
+                    {
+                        logger.Debug("No se encontraron registros");
+                    }
+                    dr.Close();
                 }
             }
             return listaControlPrecios;
         }
 
-        public static List<Etiqueta> leerEtiquetas(SqlCeConnection con)
+        public static List<Etiqueta> leerEtiquetas(string cadenaConexion)
         {
             logger.Debug("Leyendo etiquetas ...");
             List<Etiqueta> listaEtiquetas = new List<Etiqueta>();
-            string query = "SELECT * FROM ETIQ";
-            using (SqlCeCommand com = new SqlCeCommand(query, con))
+            using (SqlCeConnection cnn = new SqlCeConnection(cadenaConexion))
             {
+                SqlCeCommand sqlcmd = cnn.CreateCommand();
+                sqlcmd.CommandText = "Etiq";
+                sqlcmd.CommandType = CommandType.TableDirect;
+                cnn.Open();
                 bool emptyTable = true;
-                SqlCeDataReader reader = com.ExecuteReader();
-                while (reader.Read())
+                SqlCeDataReader dr = sqlcmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (dr.HasRows)
                 {
-                    emptyTable = false;
-                    Etiqueta etiqueta = new Etiqueta();
-                    etiqueta.EAN = reader.GetString(0);
-                    etiqueta.Fecha = reader.GetString(1);
-                    etiqueta.CodigoEtiqueta = reader.GetString(2);
-                    listaEtiquetas.Add(etiqueta);
-                }
-                if (emptyTable)
-                {
-                    logger.Debug("No se encontraron registros");
+                    while (dr.Read())
+                    {
+                        emptyTable = false;
+                        Etiqueta etiqueta = new Etiqueta();
+                        etiqueta.EAN = dr.GetString(1);
+                        etiqueta.Fecha = dr.GetDateTime(2).ToString();
+                        etiqueta.CodigoEtiqueta = dr.GetString(3);
+                        listaEtiquetas.Add(etiqueta);
+                    }
+                    if (emptyTable)
+                    {
+                        logger.Debug("No se encontraron registros");
+                    }
                 }
             }
             return listaEtiquetas;
         }
 
-        public static List<ArticuloRecepcion> leerRecepciones(SqlCeConnection con)
+        public static List<ArticuloRecepcion> leerRecepciones(string cadenaConexion)
         {
             logger.Debug("Leyendo recepciones ...");
             List<ArticuloRecepcion> listaArticulosRecepcion = new List<ArticuloRecepcion>();
-            string query = "SELECT * FROM RECEP";
-            using (SqlCeCommand com = new SqlCeCommand(query, con))
+            using (SqlCeConnection cnn = new SqlCeConnection(cadenaConexion))
             {
+                SqlCeCommand sqlcmd = cnn.CreateCommand();
+                sqlcmd.CommandText = "Recep";
+                sqlcmd.CommandType = CommandType.TableDirect;
+                cnn.Open();
                 bool emptyTable = true;
-                SqlCeDataReader reader = com.ExecuteReader();
-                while (reader.Read())
+                SqlCeDataReader dr = sqlcmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (dr.HasRows)
                 {
-                    emptyTable = false;
-                    Recepcion recepcion = new Recepcion();
-                    string recepcionString = reader.GetString(0);
-                    recepcion.fechaRecepcion = DateTime.ParseExact(recepcionString, "yyyyMMddHHmmss", null);
-                    recepcion.numeroPedido = reader.GetInt64(1);
-                    recepcion.numeroProveedor = reader.GetInt64(2);
-                    //R - campo 3 sin uso
-                    recepcion.sucursalRemito = Int64.Parse(reader.GetString(4));
-                    recepcion.numeroRemito = Int64.Parse(reader.GetString(5));
-                    string remitoString = reader.GetString(6);
-                    recepcion.FechaRemito = DateTime.ParseExact(remitoString, "yyyyMMddHHmmss", null);
-                    recepcion.descripcionProveedor = reader.GetString(10);
-                    ArticuloRecepcion articuloRecepcion = new ArticuloRecepcion();
-                    articuloRecepcion.EAN = Int64.Parse(reader.GetString(7));
-                    articuloRecepcion.unidadesRecibidas = reader.GetDouble(8);
-                    // Clave - campo 9 sin uso
-                    articuloRecepcion.recepcion = recepcion;
-                    listaArticulosRecepcion.Add(articuloRecepcion);
-                }
-                if (emptyTable)
-                {
-                    logger.Debug("No se encontraron registros");
+                    while (dr.Read())
+                        {
+                            emptyTable = false;
+                            Recepcion recepcion = new Recepcion();
+                            string recepcionString = dr.GetString(0);
+                            recepcion.fechaRecepcion = DateTime.ParseExact(recepcionString, "yyyyMMddHHmmss", null);
+                            recepcion.numeroPedido = dr.GetInt64(1);
+                            recepcion.numeroProveedor = dr.GetInt64(2);
+                            //R - campo 3 sin uso
+                            recepcion.sucursalRemito = Int64.Parse(dr.GetString(4));
+                            recepcion.numeroRemito = Int64.Parse(dr.GetString(5));
+                            string remitoString = dr.GetString(6);
+                            recepcion.FechaRemito = DateTime.ParseExact(remitoString, "yyyyMMddHHmmss", null);
+                            recepcion.descripcionProveedor = dr.GetString(10);
+                            ArticuloRecepcion articuloRecepcion = new ArticuloRecepcion();
+                            articuloRecepcion.EAN = Int64.Parse(dr.GetString(7));
+                            articuloRecepcion.unidadesRecibidas = dr.GetDouble(8);
+                            // Clave - campo 9 sin uso
+                            articuloRecepcion.recepcion = recepcion;
+                            listaArticulosRecepcion.Add(articuloRecepcion);
+                        }
+                    if (emptyTable)
+                    {
+                        logger.Debug("No se encontraron registros");
+                    }
                 }
             }
             return listaArticulosRecepcion;

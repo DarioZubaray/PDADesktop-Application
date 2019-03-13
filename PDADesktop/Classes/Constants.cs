@@ -57,11 +57,14 @@
         public const string PUBLIC_PATH_LOOKUP = "PUBLIC_PATH_LOOKUP";
         public const string PUBLIC_PATH_BIN = "PUBLIC_PATH_BIN";
         public const string PUBLIC_PATH_TEMP = "PUBLIC_PATH_TEMP";
-        public const string DEVICE_RELPATH_BIN = "DEVICE_RELPATH_BIN";
+        public const string PUBLIC_PATH_PROGRAM = "PUBLIC_PATH_PROGRAM";
+        public const string DEVICE_RELPATH_DATABASE = "DEVICE_RELPATH_DATABASE";
+        public const string DEVICE_RELPATH_ROOT = "DEVICE_RELPATH_ROOT";
         public const string DEVICE_RELPATH_LOOKUP = "DEVICE_RELPATH_LOOKUP";
         public const string DEVICE_RELPATH_DATA = "DEVICE_RELPATH_DATA";
         public const string DEVICE_RELPATH_FILENAME = "DEVICE_RELPATH_FILENAME";
         public const string PUBLIC_PATH_DATABASE = "PUBLIC_PATH_DATABASE";
+        
         public const string DEVICE_HANDLER = "DEVICE_HANDLER";
         public const string DESKTOP_FOLDER = "DESKTOP_FOLDER";
 

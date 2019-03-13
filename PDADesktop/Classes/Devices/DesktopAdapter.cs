@@ -35,6 +35,11 @@ namespace PDADesktop.Classes.Devices
             return true;
         }
 
+        public ResultFileOperation CopyFromDeviceToPublicFolder(string filename, string deviceFolder, string publicFolder)
+        {
+            return ResultFileOperation.UNKNOWN;
+        }
+
         public ResultFileOperation CopyDeviceFileToPublicLookUp(string filenameAndExtension)
         {
             string desktopFolder = ConfigurationManager.AppSettings.Get(Constants.DESKTOP_FOLDER);

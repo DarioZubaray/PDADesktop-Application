@@ -21,7 +21,7 @@ namespace PDADesktop.Model
             }
             set
             {
-                _fechaDate = DateTime.ParseExact(value, DATE_FORMAT, CultureInfo.InvariantCulture);
+                //_fechaDate = DateTime.ParseExact(value, DATE_FORMAT, CultureInfo.InvariantCulture);
                 _fecha = value;
             }
         }
