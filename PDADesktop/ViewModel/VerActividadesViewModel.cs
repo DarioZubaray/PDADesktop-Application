@@ -5,6 +5,7 @@ using PDADesktop.Classes.Utils;
 using PDADesktop.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data.SqlServerCe;
 
@@ -19,8 +20,8 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region List
-        private List<ControlPrecio> controlPreciosConfirmados;
-        public List<ControlPrecio> ControlPreciosConfirmados
+        private ObservableCollection<ControlPrecio> controlPreciosConfirmados;
+        public ObservableCollection<ControlPrecio> ControlPreciosConfirmados
         {
             get
             {
@@ -31,8 +32,8 @@ namespace PDADesktop.ViewModel
                 controlPreciosConfirmados = value;
             }
         }
-        private List<ControlPrecio> controlPreciosPendientes;
-        public List<ControlPrecio> ControlPreciosPendientes
+        private ObservableCollection<ControlPrecio> controlPreciosPendientes;
+        public ObservableCollection<ControlPrecio> ControlPreciosPendientes
         {
             get
             {
@@ -44,8 +45,8 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private List<Ajustes> ajustesConfirmados;
-        public List<Ajustes> AjustesConfirmados
+        private ObservableCollection<Ajustes> ajustesConfirmados;
+        public ObservableCollection<Ajustes> AjustesConfirmados
         {
             get
             {
@@ -56,8 +57,8 @@ namespace PDADesktop.ViewModel
                 ajustesConfirmados = value;
             }
         }
-        private List<Ajustes> ajustesPendientes;
-        public List<Ajustes> AjustesPendientes
+        private ObservableCollection<Ajustes> ajustesPendientes;
+        public ObservableCollection<Ajustes> AjustesPendientes
         {
             get
             {
@@ -69,8 +70,8 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private List<ArticuloRecepcion> recepcionesConfirmadas;
-        public List<ArticuloRecepcion> RecepcionesConfirmadas
+        private ObservableCollection<ArticuloRecepcion> recepcionesConfirmadas;
+        public ObservableCollection<ArticuloRecepcion> RecepcionesConfirmadas
         {
             get
             {
@@ -81,8 +82,8 @@ namespace PDADesktop.ViewModel
                 recepcionesConfirmadas = value;
             }
         }
-        private List<ArticuloRecepcion> recepcionesPendientes;
-        public List<ArticuloRecepcion> RecepcionesPendientes
+        private ObservableCollection<ArticuloRecepcion> recepcionesPendientes;
+        public ObservableCollection<ArticuloRecepcion> RecepcionesPendientes
         {
             get
             {
@@ -94,8 +95,8 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private List<Etiqueta> etiquetasConfirmadas;
-        public List<Etiqueta> EtiquetasConfirmadas
+        private ObservableCollection<Etiqueta> etiquetasConfirmadas;
+        public ObservableCollection<Etiqueta> EtiquetasConfirmadas
         {
             get
             {
@@ -106,8 +107,8 @@ namespace PDADesktop.ViewModel
                 etiquetasConfirmadas = value;
             }
         }
-        private List<Etiqueta> etiquetasPendientes;
-        public List<Etiqueta> EtiquetasPendientes
+        private ObservableCollection<Etiqueta> etiquetasPendientes;
+        public ObservableCollection<Etiqueta> EtiquetasPendientes
         {
             get
             {
@@ -127,6 +128,7 @@ namespace PDADesktop.ViewModel
             BannerApp.PrintSeeActivities();
             deviceHandler = App.Instance.deviceHandler;
 
+            getDataFromPlainFiles();
             getDataFromDBCompact();
 
             //setControlPreciosConfirmadosHardCode();
@@ -139,6 +141,15 @@ namespace PDADesktop.ViewModel
 
         #region Methods
         #region Commons Methods
+        private void getDataFromPlainFiles()
+        {
+            string priceControlfileContent = deviceHandler.ReadPriceControlDataFile();
+            if(priceControlfileContent != null)
+            {
+                controlPreciosConfirmados = JsonUtils.GetObservableCollectionControlPrecios(priceControlfileContent);
+            }
+        }
+
         private void getDataFromDBCompact()
         {
             string sqlceDataBase = "/" + ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATABASE);
@@ -164,7 +175,7 @@ namespace PDADesktop.ViewModel
         #region Methods Hardcode
         private void setControlPreciosConfirmadosHardCode()
         {
-            controlPreciosConfirmados = new List<ControlPrecio>();
+            controlPreciosConfirmados = new ObservableCollection<ControlPrecio>();
             ControlPrecio ctrubic2 = new ControlPrecio();
             ctrubic2.EAN = "7791787000422";
             ctrubic2.FechaControl = new DateTime(2019, 1, 10);
@@ -191,7 +202,7 @@ namespace PDADesktop.ViewModel
 
         private void setAjustesConfirmadosHardCode()
         {
-            AjustesConfirmados = new List<Ajustes>();
+            AjustesConfirmados = new ObservableCollection<Ajustes>();
             Ajustes ajuste1 = new Ajustes(77903792L, "20190110091757", "2", 15);
             AjustesConfirmados.Add(ajuste1);
             Ajustes ajuste2 = new Ajustes(77946805L, "20190110091811", "2", 5);
@@ -206,7 +217,7 @@ namespace PDADesktop.ViewModel
 
         private void setAjustesPendientesHardCode()
         {
-            AjustesPendientes = new List<Ajustes>();
+            AjustesPendientes = new ObservableCollection<Ajustes>();
             Ajustes ajustePendientes1 = new Ajustes(77903792L, "20190110091757", "2", 15);
             AjustesPendientes.Add(ajustePendientes1);
             Ajustes ajustePendientes2 = new Ajustes(77946805L, "20190110091811", "2", 5);
@@ -219,7 +230,7 @@ namespace PDADesktop.ViewModel
 
         private void setReceocionesPendientesHardCode()
         {
-            RecepcionesPendientes = new List<ArticuloRecepcion>();
+            RecepcionesPendientes = new ObservableCollection<ArticuloRecepcion>();
             ArticuloRecepcion recep1 = new ArticuloRecepcion();
             Recepcion recepcion = new Recepcion();
             recepcion.fechaRecepcion = new DateTime(2019, 03, 13);
@@ -236,7 +247,7 @@ namespace PDADesktop.ViewModel
 
         private void setEtiquetasConfirmadasHardcode()
         {
-            EtiquetasConfirmadas = new List<Etiqueta>();
+            EtiquetasConfirmadas = new ObservableCollection<Etiqueta>();
             Etiqueta etiqueta = new Etiqueta();
             etiqueta.EAN = "7790040719804";
             etiqueta.FechaDate = new DateTime(2019, 03, 13);
