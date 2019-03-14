@@ -2,6 +2,7 @@
 using PDADesktop.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlServerCe;
 
@@ -11,10 +12,10 @@ namespace PDADesktop.Classes.Utils
     {
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static List<Ajustes> leerAjustes(string cadenaConexion)
+        public static ObservableCollection<Ajustes> leerAjustes(string cadenaConexion)
         {
             logger.Debug("Leyendo ajustes ...");
-            List<Ajustes> listaAjustes = new List<Ajustes>();
+            ObservableCollection<Ajustes> listaAjustes = new ObservableCollection<Ajustes>();
             using (SqlCeConnection cnn = new SqlCeConnection(cadenaConexion))
             {
                 SqlCeCommand sqlcmd = cnn.CreateCommand();
@@ -45,10 +46,10 @@ namespace PDADesktop.Classes.Utils
             return listaAjustes;
         }
 
-        public static List<ControlPrecio> leerControlPrecios(string cadenaConexion)
+        public static ObservableCollection<ControlPrecio> leerControlPrecios(string cadenaConexion)
         {
             logger.Debug("Leyendo control de precios ...");
-            List<ControlPrecio> listaControlPrecios = new List<ControlPrecio>();
+            ObservableCollection<ControlPrecio> listaControlPrecios = new ObservableCollection<ControlPrecio>();
             using(SqlCeConnection cnn = new SqlCeConnection(cadenaConexion))
             {
                 SqlCeCommand sqlcmd = cnn.CreateCommand();
@@ -84,10 +85,10 @@ namespace PDADesktop.Classes.Utils
             return listaControlPrecios;
         }
 
-        public static List<Etiqueta> leerEtiquetas(string cadenaConexion)
+        public static ObservableCollection<Etiqueta> leerEtiquetas(string cadenaConexion)
         {
             logger.Debug("Leyendo etiquetas ...");
-            List<Etiqueta> listaEtiquetas = new List<Etiqueta>();
+            ObservableCollection<Etiqueta> listaEtiquetas = new ObservableCollection<Etiqueta>();
             using (SqlCeConnection cnn = new SqlCeConnection(cadenaConexion))
             {
                 SqlCeCommand sqlcmd = cnn.CreateCommand();
@@ -116,10 +117,10 @@ namespace PDADesktop.Classes.Utils
             return listaEtiquetas;
         }
 
-        public static List<ArticuloRecepcion> leerRecepciones(string cadenaConexion)
+        public static ObservableCollection<ArticuloRecepcion> leerRecepciones(string cadenaConexion)
         {
             logger.Debug("Leyendo recepciones ...");
-            List<ArticuloRecepcion> listaArticulosRecepcion = new List<ArticuloRecepcion>();
+            ObservableCollection<ArticuloRecepcion> listaArticulosRecepcion = new ObservableCollection<ArticuloRecepcion>();
             using (SqlCeConnection cnn = new SqlCeConnection(cadenaConexion))
             {
                 SqlCeCommand sqlcmd = cnn.CreateCommand();

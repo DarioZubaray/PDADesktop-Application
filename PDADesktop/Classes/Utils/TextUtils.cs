@@ -17,6 +17,44 @@ namespace PDADesktop.Classes.Utils
             return Environment.ExpandEnvironmentVariables(source);
         }
 
+        public static string ParsePriceControlDAT2JsonStr(string source)
+        {
+            StringBuilder controlPrecioJSON = new StringBuilder();
+            controlPrecioJSON.Append("[");
+            String[] lineas = source.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            int enBasecero = -1;
+            int tamanioArray = lineas.Length + enBasecero;
+            for(int i = 0; i <= tamanioArray; i++)
+            {
+                String controlPrecio = lineas[i];
+                if(!controlPrecio.Equals("") && controlPrecio.Contains("|"))
+                {
+                    if (i > 0 && i < tamanioArray)
+                    {
+                        controlPrecioJSON.Append(",");
+                    }
+                    String[] item = controlPrecio.Split('|');
+                    controlPrecioJSON.Append("{\"EAN\": \"" + item[0] + "\"");
+                    controlPrecioJSON.Append(", \"fecha\": " + item[1]);
+                    controlPrecioJSON.Append(", \"TipoLectura\": " + item[2]);
+                    controlPrecioJSON.Append(", \"Pasillo\": \"" + item[3] + "\"");
+                    controlPrecioJSON.Append(", \"ControlUbicacion\": " + item[4]);
+                    controlPrecioJSON.Append(", \"IDEtiqueta\": \"" + item[5] + "\"");
+                    controlPrecioJSON.Append(", \"CantidadEtiquetas\": " + item[6]);
+                    controlPrecioJSON.Append(", \"AlertaStock\": " + item[7] + " }");
+                }
+                else
+                {
+                    if (i >= tamanioArray)
+                    {
+                        controlPrecioJSON.Append("]");
+                    }
+                    logger.Info("VA - parseAjusteDAT2Json linea skipeada: " + controlPrecio);
+                }
+            }
+            return controlPrecioJSON.ToString();
+        }
+
         public static string ParseAdjustmentDAT2JsonStr(string source)
         {
             StringBuilder ajusteJSON = new StringBuilder();
