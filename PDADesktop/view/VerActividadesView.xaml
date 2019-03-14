@@ -63,7 +63,7 @@
                               Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
                               AutoGenerateColumns="False" IsReadOnly="True"
                               ItemsSource="{Binding Path=ControlPreciosConfirmados}"
-                              SelectedItem="{Binding Path=ControlPriceConfirmedSelected, Mode=TwoWay}"
+                              SelectedItem="{Binding Path=PriceControlConfirmedSelected, Mode=TwoWay}"
                               AlternatingRowBackground="Gainsboro" AlternationCount="2">
                             <DataGrid.CellStyle>
                                 <Style TargetType="DataGridCell">
@@ -167,7 +167,7 @@
                               Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
                               AutoGenerateColumns="False" IsReadOnly="True"
                               ItemsSource="{Binding Path=ControlPreciosPendientes}"
-                                  SelectedItem="{Binding Path=PendingControlPriceSelected, Mode=TwoWay}"
+                                  SelectedItem="{Binding Path=PendingPriceControlSelected, Mode=TwoWay}"
                               AlternatingRowBackground="Gainsboro" AlternationCount="2">
                             <DataGrid.CellStyle>
                                 <Style TargetType="DataGridCell">

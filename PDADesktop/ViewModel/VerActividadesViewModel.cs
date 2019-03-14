@@ -20,14 +20,14 @@ namespace PDADesktop.ViewModel
         private IDeviceHandler deviceHandler { get; set; }
         #endregion
         #region selectedRow
-        private ControlPrecio PriceControlConfirmedSelected { get; set; }
-        private ControlPrecio PendingPriceControlSelect { get; set; }
-        private Ajustes AdjustmentConfirmedSelected { get; set; }
-        private Ajustes PendingAdjustmentSelected { get; set; }
-        private Recepcion ReceptionConfirmedSelected { get; set; }
-        private Recepcion PendingReceptionSelected { get; set; }
-        private Etiqueta LabelConfirmedSelected { get; set; }
-        private Etiqueta PendingLabelSelected { get; set; }
+        public ControlPrecio PriceControlConfirmedSelected { get; set; }
+        public ControlPrecio PendingPriceControlSelect { get; set; }
+        public Ajustes AdjustmentConfirmedSelected { get; set; }
+        public Ajustes PendingAdjustmentSelected { get; set; }
+        public Recepcion ReceptionConfirmedSelected { get; set; }
+        public Recepcion PendingReceptionSelected { get; set; }
+        public Etiqueta LabelConfirmedSelected { get; set; }
+        public Etiqueta PendingLabelSelected { get; set; }
         #endregion
         #region List
         private ObservableCollection<ControlPrecio> controlPreciosConfirmados;
@@ -131,16 +131,16 @@ namespace PDADesktop.ViewModel
         }
         #endregion
         #region Commands
-        private ICommand volverCommand;
+        private ICommand returnCommand;
         public ICommand ReturnCommand
         {
             get
             {
-                return volverCommand;
+                return returnCommand;
             }
             set
             {
-                volverCommand = value;
+                returnCommand = value;
             }
         }
         private ICommand acceptCommand;
@@ -361,6 +361,9 @@ namespace PDADesktop.ViewModel
             BannerApp.PrintSeeActivities();
             deviceHandler = App.Instance.deviceHandler;
 
+            ReturnCommand = new RelayCommand(ReturnAction);
+            AcceptCommand = new RelayCommand(AcceptAction);
+
             RemoveAllPriceControlCommand = new RelayCommand(RemoveAllPricecontrolAction);
             RemoveOnePriceControlCommand = new RelayCommand(RemoveOnePricecontrolAction);
             AddOnePriceControlCommand = new RelayCommand(AddOnePricecontrolAction);
@@ -436,6 +439,15 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Command Methods
+        public void ReturnAction(object sender)
+        {
+            logger.Debug("ReturnAction");
+        }
+        public void AcceptAction(object sender)
+        {
+            logger.Debug("ReturnAction");
+        }
+
         #region PriceControl Action
         public void RemoveAllPricecontrolAction(object sender)
         {
