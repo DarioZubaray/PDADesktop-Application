@@ -107,30 +107,24 @@ namespace PDADesktop.Classes.Utils
                 String recepciones = lineas[i];
                 if (!recepciones.Equals("") && recepciones.Contains("|"))
                 {
-                    if (i > 0 && i < tamanioArray)
+                    if (i > 0 && i <= tamanioArray)
                     {
                         recepcionesJSON.Append(",");
                     }
                     String[] item = recepciones.Split('|');
                     recepcionesJSON.Append("{\"recepcion\": {");
-                    recepcionesJSON.Append("{\"fechaRecep\": \"" + item[0] + "\"");
+                    recepcionesJSON.Append("\"fechaRecep\": \"" + item[0] + "\"");
                     recepcionesJSON.Append(", \"numeroPedido\": " + item[1]);
                     recepcionesJSON.Append(", \"numeroProveedor\": " + item[2]);
-                    recepcionesJSON.Append(", \"numeroRemito\": " + item[3] + " }, ");
+                    recepcionesJSON.Append(", \"numeroRemito\": \"" + item[5] + "\"");
+                    recepcionesJSON.Append(", \"fechaRem\": \"" + item[6] + "\"");
+                    recepcionesJSON.Append(", \"descripcionProveedor\": \"" + item[10] + "\" }");
 
-                    recepcionesJSON.Append(", \"fechaRem\": \"" + item[4] + "\"");
-                    recepcionesJSON.Append(", \"EAN\": " + item[5]);
-                    recepcionesJSON.Append(", \"unidadesRecibidas\": " + item[6] + " }");
-                }
-                else
-                {
-                    if (i >= tamanioArray)
-                    {
-                        recepcionesJSON.Append("]");
-                    }
-                    logger.Info("VA - parseRecepcionesDAT2Json linea skipeada: " + recepciones);
+                    recepcionesJSON.Append(", \"EAN\": " + item[7]);
+                    recepcionesJSON.Append(", \"unidadesRecibidas\": " + item[8] + " }");
                 }
             }
+            recepcionesJSON.Append("]");
             return recepcionesJSON.ToString();
         }
 

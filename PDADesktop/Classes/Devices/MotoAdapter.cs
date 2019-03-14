@@ -316,7 +316,7 @@ namespace PDADesktop.Classes.Devices
         }
         public string ReadReceptionDataFile()
         {
-            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_RECEPCIONES);
             string receptions = CopyAndGetContentFromFile(filenameAndExtension);
             if (receptions != null)
             {
@@ -329,7 +329,11 @@ namespace PDADesktop.Classes.Devices
         }
         public bool OverWriteReceptionMade(string newContent)
         {
-            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
+            return false;
+        }
+        public string ReadLabelDataFile()
+        {
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_ETIQUETAS);
             string labels = CopyAndGetContentFromFile(filenameAndExtension);
             if (labels != null)
             {
@@ -339,10 +343,6 @@ namespace PDADesktop.Classes.Devices
             {
                 return null;
             }
-        }
-        public string ReadLabelDataFile()
-        {
-            return null;
         }
         public bool OverWriteLabelMade(string newContent)
         {

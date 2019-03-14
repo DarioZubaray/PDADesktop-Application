@@ -152,12 +152,12 @@ namespace PDADesktop.ViewModel
             string receptionFilecontent = deviceHandler.ReadReceptionDataFile();
             if(receptionFilecontent != null)
             {
-                RecepcionesConfirmadas = JsonUtils.GetObservableCollectionRecepciones(adjustmentFilecontent);
+                RecepcionesConfirmadas = JsonUtils.GetObservableCollectionRecepciones(receptionFilecontent);
             }
             string labelFileContent = deviceHandler.ReadLabelDataFile();
             if(labelFileContent != null)
             {
-                EtiquetasConfirmadas = JsonUtils.GetObservableCollectionEtiquetas(adjustmentFilecontent);
+                EtiquetasConfirmadas = JsonUtils.GetObservableCollectionEtiquetas(labelFileContent);
             }
         }
 
