@@ -5,6 +5,17 @@ namespace PDADesktop.Model
     public class ControlPrecio
     {
         public string EAN { get; set; }
+        public string fecha {
+            get
+            {
+                return FechaControl.ToString();
+            }
+            set
+            {
+                FechaControl = DateTime.ParseExact(value, "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
+
+            }
+        }
         public DateTime FechaControl { get; set; }
         public int TipoLectura { get; set; }
         public string Pasillo { get; set; }
