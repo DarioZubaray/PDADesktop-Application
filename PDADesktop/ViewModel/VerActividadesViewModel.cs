@@ -141,6 +141,23 @@ namespace PDADesktop.ViewModel
             if(priceControlfileContent != null)
             {
                 controlPreciosConfirmados = JsonUtils.GetObservableCollectionControlPrecios(priceControlfileContent);
+                
+            }
+            string adjustmentFilecontent = deviceHandler.ReadAdjustmentsDataFile();
+            if(adjustmentFilecontent != null)
+            {
+                AjustesConfirmados = JsonUtils.GetObservableCollectionAjustes(adjustmentFilecontent);
+            }
+
+            string receptionFilecontent = deviceHandler.ReadReceptionDataFile();
+            if(receptionFilecontent != null)
+            {
+                RecepcionesConfirmadas = JsonUtils.GetObservableCollectionRecepciones(adjustmentFilecontent);
+            }
+            string labelFileContent = deviceHandler.ReadLabelDataFile();
+            if(labelFileContent != null)
+            {
+                EtiquetasConfirmadas = JsonUtils.GetObservableCollectionEtiquetas(adjustmentFilecontent);
             }
         }
 
@@ -157,7 +174,6 @@ namespace PDADesktop.ViewModel
             ResultFileOperation result = deviceHandler.CopyFromDeviceToPublicFolder(sqlceDataBase, deviceFolder, publicFolderExtended);
             if (ResultFileOperation.OK.Equals(result))
             {
-                //leer actividades
                 ControlPreciosPendientes = SqlCEReaderUtils.leerControlPrecios(@"Data Source=" + publicFolderExtended + sqlceDataBase);
                 AjustesPendientes = SqlCEReaderUtils.leerAjustes(@"Data Source=" + publicFolderExtended + sqlceDataBase);
                 RecepcionesPendientes = SqlCEReaderUtils.leerRecepciones(@"Data Source=" + publicFolderExtended + sqlceDataBase);

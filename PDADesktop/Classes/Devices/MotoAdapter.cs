@@ -242,16 +242,26 @@ namespace PDADesktop.Classes.Devices
             CopyPublicLookUpFileToDevice(Constants.DEVICE_RELPATH_LOOKUP, slashFilenameAndextension);
         }
 
-        public string ReadPriceControlDataFile()
+        private string CopyAndGetContentFromFile(string filenameAndExtension)
         {
-            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_CONTROL_PRECIO);
-            //string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
             ResultFileOperation copyfileResult = CopyDeviceFileToPublicData(filenameAndExtension);
             if (copyfileResult.Equals(ResultFileOperation.OK))
             {
                 string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
                 string destinationDirectoryExpanded = TextUtils.ExpandEnviromentVariable(destinationDirectory);
-                string priceControl = FileUtils.ReadFile(destinationDirectoryExpanded + filenameAndExtension);
+                return FileUtils.ReadFile(destinationDirectoryExpanded + filenameAndExtension);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public string ReadPriceControlDataFile()
+        {
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_CONTROL_PRECIO);
+            string priceControl = CopyAndGetContentFromFile(filenameAndExtension);
+            if(priceControl != null)
+            {
                 return TextUtils.ParsePriceControlDAT2JsonStr(priceControl);
             }
             else
@@ -268,18 +278,13 @@ namespace PDADesktop.Classes.Devices
         public string ReadAdjustmentsDataFile()
         {
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
-            string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
-            ResultFileOperation copyfileResult = CopyDeviceFileToPublicData(filenameAndExtension);
-            if (copyfileResult.Equals(ResultFileOperation.OK))
+            string adjustments = CopyAndGetContentFromFile(filenameAndExtension);
+            if (adjustments != null)
             {
-                string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
-                string destinationDirectoryExpanded = TextUtils.ExpandEnviromentVariable(destinationDirectory);
-                string adjustments = FileUtils.ReadFile(destinationDirectoryExpanded + filenameAndExtension);
                 return TextUtils.ParseAdjustmentDAT2JsonStr(adjustments);
             }
             else
             {
-                logger.Debug("No existe archivo: " + filenameAndExtension + ", en: " + deviceRelativePathData);
                 return null;
             }
         }
@@ -308,6 +313,40 @@ namespace PDADesktop.Classes.Devices
             {
                 return false;
             }
+        }
+        public string ReadReceptionDataFile()
+        {
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
+            string receptions = CopyAndGetContentFromFile(filenameAndExtension);
+            if (receptions != null)
+            {
+                return TextUtils.ParseReceptionsDAT2JsonStr(receptions);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public bool OverWriteReceptionMade(string newContent)
+        {
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
+            string labels = CopyAndGetContentFromFile(filenameAndExtension);
+            if (labels != null)
+            {
+                return TextUtils.ParseLabelsDAT2JsonStr(labels);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public string ReadLabelDataFile()
+        {
+            return null;
+        }
+        public bool OverWriteLabelMade(string newContent)
+        {
+            return false;
         }
 
         public static ResultFileOperation getResult(int intResult)

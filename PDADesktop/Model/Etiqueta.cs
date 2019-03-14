@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace PDADesktop.Model
 {
-    class Etiqueta
+    public class Etiqueta
     {
         private string _fecha;
         private DateTime _fechaDate;

@@ -49,7 +49,7 @@ namespace PDADesktop.Classes.Utils
                     {
                         controlPrecioJSON.Append("]");
                     }
-                    logger.Info("VA - parseAjusteDAT2Json linea skipeada: " + controlPrecio);
+                    logger.Info("VA - parseControlPreciosDAT2Json linea skipeada: " + controlPrecio);
                 }
             }
             return controlPrecioJSON.ToString();
@@ -93,6 +93,78 @@ namespace PDADesktop.Classes.Utils
                 }
             }
             return ajusteJSON.ToString();
+        }
+
+        public static string ParseReceptionsDAT2JsonStr(string source)
+        {
+            StringBuilder recepcionesJSON = new StringBuilder();
+            recepcionesJSON.Append("[");
+            String[] lineas = source.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            int enBasecero = -1;
+            int tamanioArray = lineas.Length + enBasecero;
+            for (int i = 0; i <= tamanioArray; i++)
+            {
+                String recepciones = lineas[i];
+                if (!recepciones.Equals("") && recepciones.Contains("|"))
+                {
+                    if (i > 0 && i < tamanioArray)
+                    {
+                        recepcionesJSON.Append(",");
+                    }
+                    String[] item = recepciones.Split('|');
+                    recepcionesJSON.Append("{\"recepcion\": {");
+                    recepcionesJSON.Append("{\"fechaRecep\": \"" + item[0] + "\"");
+                    recepcionesJSON.Append(", \"numeroPedido\": " + item[1]);
+                    recepcionesJSON.Append(", \"numeroProveedor\": " + item[2]);
+                    recepcionesJSON.Append(", \"numeroRemito\": " + item[3] + " }, ");
+
+                    recepcionesJSON.Append(", \"fechaRem\": \"" + item[4] + "\"");
+                    recepcionesJSON.Append(", \"EAN\": " + item[5]);
+                    recepcionesJSON.Append(", \"unidadesRecibidas\": " + item[6] + " }");
+                }
+                else
+                {
+                    if (i >= tamanioArray)
+                    {
+                        recepcionesJSON.Append("]");
+                    }
+                    logger.Info("VA - parseRecepcionesDAT2Json linea skipeada: " + recepciones);
+                }
+            }
+            return recepcionesJSON.ToString();
+        }
+
+        public static string ParseLabelsDAT2JsonStr(string source)
+        {
+            StringBuilder etiquetaJSON = new StringBuilder();
+            etiquetaJSON.Append("[");
+            String[] lineas = source.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            int enBasecero = -1;
+            int tamanioArray = lineas.Length + enBasecero;
+            for (int i = 0; i <= tamanioArray; i++)
+            {
+                String etiquetas = lineas[i];
+                if (!etiquetas.Equals("") && etiquetas.Contains("|"))
+                {
+                    if (i > 0 && i < tamanioArray)
+                    {
+                        etiquetaJSON.Append(",");
+                    }
+                    String[] item = etiquetas.Split('|');
+                    etiquetaJSON.Append("{\"EAN\": \"" + item[0] + "\"");
+                    etiquetaJSON.Append(", \"Fecha\": \"" + item[1] + "\"");
+                    etiquetaJSON.Append(", \"CodigoEtiqueta\": \"" + item[2] + "\" }");
+                }
+                else
+                {
+                    if (i >= tamanioArray)
+                    {
+                        etiquetaJSON.Append("]");
+                    }
+                    logger.Info("VA - parseEtiquetasDAT2Json linea skipeada: " + etiquetas);
+                }
+            }
+            return etiquetaJSON.ToString();
         }
 
         public static string ParseCollectionToAdjustmentDAT(ObservableCollection<Ajustes> ajustes)

@@ -6,9 +6,31 @@ namespace PDADesktop.Model
     {
         public long idRecepcion { get; set; }
         public Lote lote { get; set; }
+        public string fechaRecep
+        {
+            get
+            {
+                return fechaRecepcion.ToString();
+            }
+            set
+            {
+                fechaRecepcion = DateTime.ParseExact(value, "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
         public DateTime fechaRecepcion { get; set; }
         public long numeroRemito { get; set; }
         public string remitoCompleto { get; set; }
+        public string fechaRem
+        {
+            get
+            {
+                return FechaRemito.ToString();
+            }
+            set
+            {
+                FechaRemito = DateTime.ParseExact(value, "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
         public DateTime FechaRemito { get; set; }
         public string letra { get; set; }
         public long sucursalRemito { get; set; }

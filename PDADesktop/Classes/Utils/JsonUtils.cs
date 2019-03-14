@@ -54,6 +54,16 @@ namespace PDADesktop.Classes.Utils
             return JsonConvert.DeserializeObject<ObservableCollection<Ajustes>>(serializedJson);
         }
 
+        public static ObservableCollection<ArticuloRecepcion> GetObservableCollectionRecepciones(string serializedJson)
+        {
+            return JsonConvert.DeserializeObject< ObservableCollection<ArticuloRecepcion>>(serializedJson);
+        }
+
+        public static ObservableCollection<Etiqueta> GetObservableCollectionEtiquetas(string serializedJson)
+        {
+            return JsonConvert.DeserializeObject< ObservableCollection<Etiqueta>>(serializedJson);
+        }
+
         public static List<Ajustes> GetListAjustes(string serializedJson)
         {
             return JsonConvert.DeserializeObject<List<Ajustes>>(serializedJson);

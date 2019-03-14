@@ -328,5 +328,22 @@ namespace PDADesktop.Classes.Devices
             }
         }
 
+        public string ReadReceptionDataFile()
+        {
+            return null;
+        }
+        public bool OverWriteReceptionMade(string newContent)
+        {
+            return false;
+        }
+        public string ReadLabelDataFile()
+        {
+            return null;
+        }
+        public bool OverWriteLabelMade(string newContent)
+        {
+            return false;
+        }
+
     }
 }

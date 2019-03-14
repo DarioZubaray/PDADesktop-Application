@@ -34,5 +34,9 @@ namespace PDADesktop.Classes.Devices
         bool OverWritePriceControlMade(string newContent);
         string ReadAdjustmentsDataFile();
         bool OverWriteAdjustmentMade(string newContent);
+        string ReadReceptionDataFile();
+        bool OverWriteReceptionMade(string newContent);
+        string ReadLabelDataFile();
+        bool OverWriteLabelMade(string newContent);
     }
 }
