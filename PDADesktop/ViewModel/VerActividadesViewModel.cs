@@ -21,7 +21,7 @@ namespace PDADesktop.ViewModel
         #endregion
         #region selectedRow
         public ControlPrecio PriceControlConfirmedSelected { get; set; }
-        public ControlPrecio PendingPriceControlSelect { get; set; }
+        public ControlPrecio PendingPriceControlSelected { get; set; }
         public Ajustes AdjustmentConfirmedSelected { get; set; }
         public Ajustes PendingAdjustmentSelected { get; set; }
         public Recepcion ReceptionConfirmedSelected { get; set; }
@@ -445,25 +445,45 @@ namespace PDADesktop.ViewModel
         }
         public void AcceptAction(object sender)
         {
-            logger.Debug("ReturnAction");
+            logger.Debug("AcceptAction");
         }
 
         #region PriceControl Action
         public void RemoveAllPricecontrolAction(object sender)
         {
             logger.Debug("Remove All => Price control");
+            foreach(ControlPrecio ctrubic in ControlPreciosConfirmados)
+            {
+                ControlPreciosPendientes.Add(ctrubic);
+            }
+            ControlPreciosConfirmados.Clear();
         }
         public void RemoveOnePricecontrolAction(object sender)
         {
             logger.Debug("Remove one => Price control");
+            if(PriceControlConfirmedSelected != null)
+            {
+                ControlPreciosPendientes.Add(PriceControlConfirmedSelected);
+                ControlPreciosConfirmados.Remove(PriceControlConfirmedSelected);
+            }
         }
         public void AddOnePricecontrolAction(object sender)
         {
             logger.Debug("Add one => Price control");
+            if (PendingPriceControlSelected != null)
+            {
+                ControlPreciosConfirmados.Add(PendingPriceControlSelected);
+                ControlPreciosPendientes.Remove(PendingPriceControlSelected);
+            }
         }
         public void AddAllPricecontrolAction(object sender)
         {
             logger.Debug("Add All => Price control");
+            foreach(ControlPrecio ctrubic in ControlPreciosPendientes)
+            {
+                ControlPreciosConfirmados.Add(ctrubic);
+            }
+            ControlPreciosPendientes.Clear();
         }
         #endregion
 
