@@ -397,6 +397,8 @@ namespace PDADesktop.ViewModel
         #region Commons Methods
         public void LoginPortalApiAction(object obj)
         {
+            DisplayWaitingPanel("Espere por favor ...");
+            FlipLoginAction(null);
             logger.Info("login portal api");
             logger.Debug("Usuario: " + usernameText);
             logger.Debug("Constraseña: " + FloatingPasswordBox + ", para fines de desarrollo");
@@ -455,6 +457,7 @@ namespace PDADesktop.ViewModel
             Flipper.FlipCommand.Execute(null, null);
             LoginView loginview = (LoginView)window.frame.Content;
             loginview.FloatingPasswordBox.Focus();
+            Keyboard.Focus(loginview.FloatingPasswordBox);
         }
         #endregion
     }

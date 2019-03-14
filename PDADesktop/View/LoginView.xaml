@@ -154,7 +154,12 @@
                                                  Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"
                                                  VerticalAlignment="Top" HorizontalAlignment="Left" Width="180"
                                                  ff:PasswordBoxAssistant.BindPassword="true"
-                                                 ff:PasswordBoxAssistant.BoundPassword="{Binding Path=FloatingPasswordBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></PasswordBox>
+                                                 ff:PasswordBoxAssistant.BoundPassword="{Binding Path=FloatingPasswordBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <PasswordBox.InputBindings>
+                                            <KeyBinding Command="{Binding LoginButtonCommand}" Key="Tab" />
+                                            <KeyBinding Command="{Binding LoginButtonCommand}" Key="Enter" />
+                                        </PasswordBox.InputBindings>
+                                    </PasswordBox>
                                 </Grid>
 
                                 <!--<StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
