@@ -18,7 +18,16 @@ namespace PDADesktop.ViewModel
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDeviceHandler deviceHandler { get; set; }
         #endregion
-
+        #region selectedRow
+        private ControlPrecio PriceControlConfirmedSelected { get; set; }
+        private ControlPrecio PendingPriceControlSelect { get; set; }
+        private Ajustes AdjustmentConfirmedSelected { get; set; }
+        private Ajustes PendingAdjustmentSelected { get; set; }
+        private Recepcion ReceptionConfirmedSelected { get; set; }
+        private Recepcion PendingReceptionSelected { get; set; }
+        private Etiqueta LabelConfirmedSelected { get; set; }
+        private Etiqueta PendingLabelSelected { get; set; }
+        #endregion
         #region List
         private ObservableCollection<ControlPrecio> controlPreciosConfirmados;
         public ObservableCollection<ControlPrecio> ControlPreciosConfirmados

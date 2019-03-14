@@ -63,6 +63,7 @@
                               Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
                               AutoGenerateColumns="False" IsReadOnly="True"
                               ItemsSource="{Binding Path=ControlPreciosConfirmados}"
+                              SelectedItem="{Binding Path=ControlPriceConfirmedSelected, Mode=TwoWay}"
                               AlternatingRowBackground="Gainsboro" AlternationCount="2">
                             <DataGrid.CellStyle>
                                 <Style TargetType="DataGridCell">
@@ -166,6 +167,7 @@
                               Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
                               AutoGenerateColumns="False" IsReadOnly="True"
                               ItemsSource="{Binding Path=ControlPreciosPendientes}"
+                                  SelectedItem="{Binding Path=PendingControlPriceSelected, Mode=TwoWay}"
                               AlternatingRowBackground="Gainsboro" AlternationCount="2">
                             <DataGrid.CellStyle>
                                 <Style TargetType="DataGridCell">
@@ -234,6 +236,7 @@
                               Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
                               AutoGenerateColumns="False" IsReadOnly="True"
                               ItemsSource="{Binding Path=AjustesConfirmados}"
+                                  SelectedItem="{Binding Path=AdjustmentConfirmedSelected, Mode=TwoWay}"
                               AlternatingRowBackground="Gainsboro" AlternationCount="2">
                             <DataGrid.CellStyle>
                                 <Style TargetType="DataGridCell">
@@ -317,6 +320,7 @@
                               Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
                               AutoGenerateColumns="False" IsReadOnly="True"
                               ItemsSource="{Binding Path=AjustesPendientes}"
+                                      SelectedItem="{Binding Path=PendingAdjustmentSelected, Mode=TwoWay}"
                               AlternatingRowBackground="Gainsboro" AlternationCount="2">
                             <DataGrid.CellStyle>
                                 <Style TargetType="DataGridCell">
@@ -364,6 +368,7 @@
                               Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
                               AutoGenerateColumns="False" IsReadOnly="True"
                               ItemsSource="{Binding Path=RecepcionesConfirmadas}"
+                                      SelectedItem="{Binding Path=ReceptionConfirmedSelected, Mode=TwoWay}"
                               AlternatingRowBackground="Gainsboro" AlternationCount="2">
                                 <DataGrid.CellStyle>
                                     <Style TargetType="DataGridCell">
@@ -467,6 +472,7 @@
                               Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
                               AutoGenerateColumns="False" IsReadOnly="True"
                               ItemsSource="{Binding Path=RecepcionesPendientes}"
+                                      SelectedItem="{Binding Path=PendingReceptionSelected, Mode=TwoWay}"
                               AlternatingRowBackground="Gainsboro" AlternationCount="2">
                                 <DataGrid.CellStyle>
                                     <Style TargetType="DataGridCell">
@@ -535,6 +541,7 @@
                               Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
                               AutoGenerateColumns="False" IsReadOnly="True"
                               ItemsSource="{Binding Path=EtiquetasConfirmadas}"
+                                      SelectedItem="{Binding Path=LabelConfirmedSelected, Mode=TwoWay}"
                               AlternatingRowBackground="Gainsboro" AlternationCount="2">
                                 <DataGrid.CellStyle>
                                     <Style TargetType="DataGridCell">
@@ -614,6 +621,7 @@
                               Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
                               AutoGenerateColumns="False" IsReadOnly="True"
                               ItemsSource="{Binding Path=EtiquetasPendientes}"
+                                      SelectedItem="{Binding Path=PendingLabelSelected, Mode=TwoWay}"
                               AlternatingRowBackground="Gainsboro" AlternationCount="2">
                                 <DataGrid.CellStyle>
                                     <Style TargetType="DataGridCell">
