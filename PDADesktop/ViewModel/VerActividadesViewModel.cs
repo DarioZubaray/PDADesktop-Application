@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data.SqlServerCe;
+using System.Windows.Input;
 
 namespace PDADesktop.ViewModel
 {
@@ -129,6 +130,229 @@ namespace PDADesktop.ViewModel
             }
         }
         #endregion
+        #region Commands
+        private ICommand volverCommand;
+        public ICommand ReturnCommand
+        {
+            get
+            {
+                return volverCommand;
+            }
+            set
+            {
+                volverCommand = value;
+            }
+        }
+        private ICommand acceptCommand;
+        public ICommand AcceptCommand
+        {
+            get
+            {
+                return acceptCommand;
+            }
+            set
+            {
+                acceptCommand = value;
+            }
+        }
+
+        private ICommand removeAllPriceControlCommand;
+        public ICommand RemoveAllPriceControlCommand
+        {
+            get
+            {
+                return removeAllPriceControlCommand;
+            }
+            set
+            {
+                removeAllPriceControlCommand = value;
+            }
+        }
+        private ICommand removeOnePriceControlCommand;
+        public ICommand RemoveOnePriceControlCommand
+        {
+            get
+            {
+                return removeOnePriceControlCommand;
+            }
+            set
+            {
+                removeOnePriceControlCommand = value;
+            }
+        }
+        private ICommand addOnePriceControlCommand;
+        public ICommand AddOnePriceControlCommand
+        {
+            get
+            {
+                return addOnePriceControlCommand;
+            }
+            set
+            {
+                addOnePriceControlCommand = value;
+            }
+        }
+        private ICommand addAllPriceControlCommand;
+        public ICommand AddAllPriceControlCommand
+        {
+            get
+            {
+                return addAllPriceControlCommand;
+            }
+            set
+            {
+                addAllPriceControlCommand = value;
+            }
+        }
+
+        private ICommand removeAllAdjustmentCommand;
+        public ICommand RemoveAllAdjustmentCommand
+        {
+            get
+            {
+                return removeAllAdjustmentCommand;
+            }
+            set
+            {
+                removeAllAdjustmentCommand = value;
+            }
+        }
+        private ICommand removeOneAdjustmentCommand;
+        public ICommand RemoveOneAdjustmentCommand
+        {
+            get
+            {
+                return removeOneAdjustmentCommand;
+            }
+            set
+            {
+                removeOneAdjustmentCommand = value;
+            }
+        }
+        private ICommand addOneAdjustmentCommand;
+        public ICommand AddOneAdjustmentCommand
+        {
+            get
+            {
+                return addOneAdjustmentCommand;
+            }
+            set
+            {
+                addOneAdjustmentCommand = value;
+            }
+        }
+        private ICommand addAllAdjustmentCommand;
+        public ICommand AddAllAdjustmentCommand
+        {
+            get
+            {
+                return addAllAdjustmentCommand;
+            }
+            set
+            {
+                addAllAdjustmentCommand = value;
+            }
+        }
+
+        private ICommand removeAllReceptionCommand;
+        public ICommand RemoveAllReceptionCommand
+        {
+            get
+            {
+                return removeAllReceptionCommand;
+            }
+            set
+            {
+                removeAllReceptionCommand = value;
+            }
+        }
+        private ICommand removeOneReceptionCommand;
+        public ICommand RemoveOneReceptionCommand
+        {
+            get
+            {
+                return removeOneReceptionCommand;
+            }
+            set
+            {
+                removeOneReceptionCommand = value;
+            }
+        }
+        private ICommand addOneReceptionCommand;
+        public ICommand AddOneReceptionCommand
+        {
+            get
+            {
+                return addOneReceptionCommand;
+            }
+            set
+            {
+                addOneReceptionCommand = value;
+            }
+        }
+        private ICommand addAllReceptionCommand;
+        public ICommand AddAllReceptionCommand
+        {
+            get
+            {
+                return addAllReceptionCommand;
+            }
+            set
+            {
+                addAllReceptionCommand = value;
+            }
+        }
+
+        private ICommand removeAllLabelCommand;
+        public ICommand RemoveAllLabelCommand
+        {
+            get
+            {
+                return removeAllLabelCommand;
+            }
+            set
+            {
+                removeAllLabelCommand = value;
+            }
+        }
+        private ICommand removeOneLabelCommand;
+        public ICommand RemoveOneLabelCommand
+        {
+            get
+            {
+                return removeOneLabelCommand;
+            }
+            set
+            {
+                removeOneLabelCommand = value;
+            }
+        }
+        private ICommand addOneLabelCommand;
+        public ICommand AddOneLabelCommand
+        {
+            get
+            {
+                return addOneLabelCommand;
+            }
+            set
+            {
+                addOneLabelCommand = value;
+            }
+        }
+        private ICommand addAllLabelCommand;
+        public ICommand AddAllLabelCommand
+        {
+            get
+            {
+                return addAllLabelCommand;
+            }
+            set
+            {
+                addAllLabelCommand = value;
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Constructor
@@ -136,6 +360,26 @@ namespace PDADesktop.ViewModel
         {
             BannerApp.PrintSeeActivities();
             deviceHandler = App.Instance.deviceHandler;
+
+            RemoveAllPriceControlCommand = new RelayCommand(RemoveAllPricecontrolAction);
+            RemoveOnePriceControlCommand = new RelayCommand(RemoveOnePricecontrolAction);
+            AddOnePriceControlCommand = new RelayCommand(AddOnePricecontrolAction);
+            AddAllPriceControlCommand = new RelayCommand(AddAllPricecontrolAction);
+
+            RemoveAllAdjustmentCommand = new RelayCommand(RemoveAllAdjustmentAction);
+            RemoveOneAdjustmentCommand = new RelayCommand(RemoveOneAdjustmentAction);
+            AddOneAdjustmentCommand = new RelayCommand(AddOneAdjustmentAction);
+            AddAllAdjustmentCommand = new RelayCommand(AddAllAdjustmentAction);
+
+            RemoveAllReceptionCommand = new RelayCommand(RemoveAllReceptionAction);
+            RemoveOneReceptionCommand = new RelayCommand(RemoveOneReceptionAction);
+            AddOneReceptionCommand = new RelayCommand(AddOneReceptionAction);
+            AddAllReceptionCommand = new RelayCommand(AddAllReceptionAction);
+
+            RemoveAllLabelCommand = new RelayCommand(RemoveAllLabelAction);
+            RemoveOneLabelCommand = new RelayCommand(RemoveOneLabelAction);
+            AddOneLabelCommand = new RelayCommand(AddOneLabelAction);
+            AddAllLabelCommand = new RelayCommand(AddAllLabelAction);
 
             getDataFromPlainFiles();
             getDataFromDBCompact();
@@ -189,6 +433,85 @@ namespace PDADesktop.ViewModel
                 EtiquetasPendientes = SqlCEReaderUtils.leerEtiquetas(@"Data Source=" + publicFolderExtended + sqlceDataBase);
             }
         }
+        #endregion
+
+        #region Command Methods
+        #region PriceControl Action
+        public void RemoveAllPricecontrolAction(object sender)
+        {
+            logger.Debug("Remove All => Price control");
+        }
+        public void RemoveOnePricecontrolAction(object sender)
+        {
+            logger.Debug("Remove one => Price control");
+        }
+        public void AddOnePricecontrolAction(object sender)
+        {
+            logger.Debug("Add one => Price control");
+        }
+        public void AddAllPricecontrolAction(object sender)
+        {
+            logger.Debug("Add All => Price control");
+        }
+        #endregion
+
+        #region Adjustment Action
+        public void RemoveAllAdjustmentAction(object sender)
+        {
+            logger.Debug("Remove All => Adjustment");
+        }
+        public void RemoveOneAdjustmentAction(object sender)
+        {
+            logger.Debug("Remove one => Adjustment");
+        }
+        public void AddOneAdjustmentAction(object sender)
+        {
+            logger.Debug("Add one => Adjustment");
+        }
+        public void AddAllAdjustmentAction(object sender)
+        {
+            logger.Debug("Add All => Adjustment");
+        }
+        #endregion
+
+        #region Reception Action
+        public void RemoveAllReceptionAction(object sender)
+        {
+            logger.Debug("Remove All => Reception");
+        }
+        public void RemoveOneReceptionAction(object sender)
+        {
+            logger.Debug("Remove one => Reception");
+        }
+        public void AddOneReceptionAction(object sender)
+        {
+            logger.Debug("Add one => Reception");
+        }
+        public void AddAllReceptionAction(object sender)
+        {
+            logger.Debug("Add All => Reception");
+        }
+        #endregion
+
+        #region Label Action
+        public void RemoveAllLabelAction(object sender)
+        {
+            logger.Debug("Remove All => Label");
+        }
+        public void RemoveOneLabelAction(object sender)
+        {
+            logger.Debug("Remove one => Label");
+        }
+        public void AddOneLabelAction(object sender)
+        {
+            logger.Debug("Add one => Label");
+        }
+        public void AddAllLabelAction(object sender)
+        {
+            logger.Debug("Add All => Label");
+        }
+        #endregion
+
         #endregion
         #endregion
     }

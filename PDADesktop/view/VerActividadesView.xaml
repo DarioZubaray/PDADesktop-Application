@@ -57,7 +57,7 @@
                             </StatusBarItem>
                         </StatusBar>
                         <Grid DockPanel.Dock="Bottom">
-                            <DataGrid x:Name="datagrid_controlPreciosConfirmados" Grid.Row="1" RowHeight="20" FontSize="11"
+                            <DataGrid x:Name="datagrid_controlPreciosConfirmados" Grid.Row="1" RowHeight="20" FontSize="11" 
                               BorderThickness="1" BorderBrush="#ededed"
                               HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
                               Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
@@ -117,8 +117,8 @@
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Label VerticalAlignment="Bottom">Quitar todos</Label>
-                        <Button ToolTip="Quitar Todos" x:Name="button_ctrubic_quitar_todos" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="Quitar Todos" x:Name="button_ctrubic_quitar_todos" Command="{Binding RemoveAllPriceControlCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_down}"/>
@@ -126,8 +126,8 @@
                             </Rectangle>
                         </Button>
                         <Label VerticalAlignment="Center">Quitar seleccionado</Label>
-                        <Button ToolTip="Quitar seleccionado" x:Name="button_ctrubic_quitar" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="Quitar seleccionado" x:Name="button_ctrubic_quitar" Command="{Binding RemoveOnePriceControlCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_delete}"/>
@@ -135,8 +135,8 @@
                             </Rectangle>
                         </Button>
                         <Label VerticalAlignment="Center">Agregar seleccionado</Label>
-                        <Button ToolTip="agregar seleccionados" x:Name="button_ctrubic_agregar" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="agregar seleccionados" x:Name="button_ctrubic_agregar" Command="{Binding AddOnePriceControlCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_add_below}"/>
@@ -144,8 +144,8 @@
                             </Rectangle>
                         </Button>
                         <Label VerticalAlignment="top">Agregar todos</Label>
-                        <Button ToolTip="Agregar Todos" x:Name="button_ctrubic_agregar_todos" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="Agregar Todos" x:Name="button_ctrubic_agregar_todos"  Command="{Binding AddAllPriceControlCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_up}"/>
@@ -270,8 +270,8 @@
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Label VerticalAlignment="Bottom">Quitar todos</Label>
-                        <Button ToolTip="Quitar Todos" x:Name="button_ajustes_quitar_todos" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="Quitar Todos" x:Name="button_ajustes_quitar_todos" Command="{Binding RemoveAllAdjustmentCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_down}"/>
@@ -279,8 +279,8 @@
                             </Rectangle>
                         </Button>
                         <Label VerticalAlignment="Center">Quitar seleccionado</Label>
-                        <Button ToolTip="Quitar seleccionado" x:Name="button_ajustes_quitar" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="Quitar seleccionado" x:Name="button_ajustes_quitar" Command="{Binding RemoveOneAdjustmentCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_delete}"/>
@@ -288,8 +288,8 @@
                             </Rectangle>
                         </Button>
                         <Label VerticalAlignment="Center">Agregar seleccionado</Label>
-                        <Button ToolTip="agregar seleccionados" x:Name="button_ajustes_agregar" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="agregar seleccionados" x:Name="button_ajustes_agregar" Command="{Binding AddOneAdjustmentCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_add_below}"/>
@@ -297,8 +297,8 @@
                             </Rectangle>
                         </Button>
                         <Label VerticalAlignment="top">Agregar todos</Label>
-                        <Button ToolTip="Agregar Todos" x:Name="button_ajustes_agregar_todos" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="Agregar Todos" x:Name="button_ajustes_agregar_todos" Command="{Binding AddAllAdjustmentCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_up}"/>
@@ -422,8 +422,8 @@
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Label VerticalAlignment="Bottom">Quitar todos</Label>
-                        <Button ToolTip="Quitar Todos" x:Name="button_recep_quitar_todos" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="Quitar Todos" x:Name="button_recep_quitar_todos" Command="{Binding RemoveAllReceptionCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_down}"/>
@@ -431,8 +431,8 @@
                             </Rectangle>
                         </Button>
                         <Label VerticalAlignment="Center">Quitar seleccionado</Label>
-                        <Button ToolTip="Quitar seleccionado" x:Name="button_recep_quitar" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="Quitar seleccionado" x:Name="button_recep_quitar" Command="{Binding RemoveOneReceptionCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_delete}"/>
@@ -440,8 +440,8 @@
                             </Rectangle>
                         </Button>
                         <Label VerticalAlignment="Center">Agregar seleccionado</Label>
-                        <Button ToolTip="agregar seleccionados" x:Name="button_recep_agregar" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="agregar seleccionados" x:Name="button_recep_agregar" Command="{Binding AddOneReceptionCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_add_below}"/>
@@ -449,8 +449,8 @@
                             </Rectangle>
                         </Button>
                         <Label VerticalAlignment="top">Agregar todos</Label>
-                        <Button ToolTip="Agregar Todos" x:Name="button_recep_agregar_todos" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="Agregar Todos" x:Name="button_recep_agregar_todos" Command="{Binding AddAllReceptionCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_up}"/>
@@ -571,8 +571,8 @@
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Label VerticalAlignment="Bottom">Quitar todos</Label>
-                        <Button ToolTip="Quitar Todos" x:Name="button_etiquetas_quitar_todos" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="Quitar Todos" x:Name="button_etiquetas_quitar_todos" Command="{Binding RemoveAllLabelCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_down}"/>
@@ -580,8 +580,8 @@
                             </Rectangle>
                         </Button>
                         <Label VerticalAlignment="Center">Quitar seleccionado</Label>
-                        <Button ToolTip="Quitar seleccionado" x:Name="button_etiquetas_quitar" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="Quitar seleccionado" x:Name="button_etiquetas_quitar" Command="{Binding RemoveOneLabelCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_delete}"/>
@@ -589,8 +589,8 @@
                             </Rectangle>
                         </Button>
                         <Label VerticalAlignment="Center">Agregar seleccionado</Label>
-                        <Button ToolTip="agregar seleccionados" x:Name="button_etiquetas_agregar" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="agregar seleccionados" x:Name="button_etiquetas_agregar" Command="{Binding AddOneLabelCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_add_below}"/>
@@ -598,8 +598,8 @@
                             </Rectangle>
                         </Button>
                         <Label VerticalAlignment="top">Agregar todos</Label>
-                        <Button ToolTip="Agregar Todos" x:Name="button_recep_etiquetas_todos" Height="55" Width="55"
-                                Style="{DynamicResource MetroCircleButtonStyle}">
+                        <Button ToolTip="Agregar Todos" x:Name="button_recep_etiquetas_todos" Command="{Binding AddAllLabelCommand}"
+                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
                             <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_up}"/>
