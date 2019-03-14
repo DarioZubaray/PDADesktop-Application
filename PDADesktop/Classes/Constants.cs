@@ -58,17 +58,21 @@
         public const string PUBLIC_PATH_BIN = "PUBLIC_PATH_BIN";
         public const string PUBLIC_PATH_TEMP = "PUBLIC_PATH_TEMP";
         public const string PUBLIC_PATH_PROGRAM = "PUBLIC_PATH_PROGRAM";
+        public const string PUBLIC_PATH_DATABASE = "PUBLIC_PATH_DATABASE";
+
         public const string DEVICE_RELPATH_DATABASE = "DEVICE_RELPATH_DATABASE";
         public const string DEVICE_RELPATH_ROOT = "DEVICE_RELPATH_ROOT";
         public const string DEVICE_RELPATH_LOOKUP = "DEVICE_RELPATH_LOOKUP";
         public const string DEVICE_RELPATH_DATA = "DEVICE_RELPATH_DATA";
         public const string DEVICE_RELPATH_FILENAME = "DEVICE_RELPATH_FILENAME";
-        public const string PUBLIC_PATH_DATABASE = "PUBLIC_PATH_DATABASE";
         
         public const string DEVICE_HANDLER = "DEVICE_HANDLER";
         public const string DESKTOP_FOLDER = "DESKTOP_FOLDER";
 
+        public const string DAT_FILE_CONTROL_PRECIO = "DAT_FILE_CONTROL_DE_PRECIOS_CON_UBICACIONES";
         public const string DAT_FILE_AJUSTES = "DAT_FILE_AJUSTES";
+        public const string DAT_FILE_RECEPCIONES = "DAT_FILE_RECEPCIONES";
+        public const string DAT_FILE_ETIQUETAS = "DAT_FILE_IMPRESION_ETIQUETAS";
         public const string DAT_FILE_DEFAULT = "DAT_FILE_DEFAULT";
         public const string DAT_FILE_LPEDIDOS = "DAT_FILE_LPEDIDOS";
         public const string DAT_FILE_APEDIDOS = "DAT_FILE_APEDIDOS";
