@@ -3,11 +3,11 @@ using PDADesktop.Classes;
 using PDADesktop.Classes.Devices;
 using PDADesktop.Classes.Utils;
 using PDADesktop.Model;
+using PDADesktop.View;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
-using System.Data.SqlServerCe;
+using System.Windows;
 using System.Windows.Input;
 
 namespace PDADesktop.ViewModel
@@ -442,10 +442,15 @@ namespace PDADesktop.ViewModel
         public void ReturnAction(object sender)
         {
             logger.Debug("ReturnAction");
+            MainWindow window = (MainWindow)Application.Current.MainWindow;
+            Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
+            window.frame.NavigationService.Navigate(uri);
         }
         public void AcceptAction(object sender)
         {
             logger.Debug("AcceptAction");
+            //TODO logica de inserts y escritura en los archivos
+            ReturnAction(null);
         }
 
         #region PriceControl Action
