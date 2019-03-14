@@ -242,6 +242,29 @@ namespace PDADesktop.Classes.Devices
             CopyPublicLookUpFileToDevice(Constants.DEVICE_RELPATH_LOOKUP, slashFilenameAndextension);
         }
 
+        public string ReadPriceControlDataFile()
+        {
+            string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_CONTROL_PRECIO);
+            //string deviceRelativePathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+            ResultFileOperation copyfileResult = CopyDeviceFileToPublicData(filenameAndExtension);
+            if (copyfileResult.Equals(ResultFileOperation.OK))
+            {
+                string destinationDirectory = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+                string destinationDirectoryExpanded = TextUtils.ExpandEnviromentVariable(destinationDirectory);
+                string priceControl = FileUtils.ReadFile(destinationDirectoryExpanded + filenameAndExtension);
+                return TextUtils.ParsePriceControlDAT2JsonStr(priceControl);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public bool OverWritePriceControlMade(string newContent)
+        {
+            return false;
+        }
+
         public string ReadAdjustmentsDataFile()
         {
             string filenameAndExtension = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
@@ -271,8 +294,15 @@ namespace PDADesktop.Classes.Devices
             {
                 FileUtils.WriteFile(clientPathDataExtended + filenameAndExtension, newContent);
                 string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
-                CopyPublicDataFileToDevice(deviceRelPathData, filenameAndExtension);
-                return true;
+                ResultFileOperation result = CopyPublicDataFileToDevice(deviceRelPathData, filenameAndExtension);
+                if(ResultFileOperation.OK.Equals(result))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {

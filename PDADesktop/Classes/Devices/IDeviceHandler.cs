@@ -30,6 +30,8 @@ namespace PDADesktop.Classes.Devices
         ActionResultDto ControlDeviceLock(long syncId, string storeId);
         void ChangeSynchronizationState(string syncState);
 
+        string ReadPriceControlDataFile();
+        bool OverWritePriceControlMade(string newContent);
         string ReadAdjustmentsDataFile();
         bool OverWriteAdjustmentMade(string newContent);
     }

@@ -284,6 +284,16 @@ namespace PDADesktop.Classes.Devices
             CopyPublicLookUpFileToDevice(Constants.DEVICE_RELPATH_LOOKUP, slashFilenameAndextension);
         }
 
+        public string ReadPriceControlDataFile()
+        {
+            return null;
+        }
+
+        public bool OverWritePriceControlMade(string newContent)
+        {
+            return false;
+        }
+
         public string ReadAdjustmentsDataFile()
         {
             string deviceRelPathData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
