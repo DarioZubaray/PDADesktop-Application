@@ -24,8 +24,8 @@ namespace PDADesktop.ViewModel
         public ControlPrecio PendingPriceControlSelected { get; set; }
         public Ajustes AdjustmentConfirmedSelected { get; set; }
         public Ajustes PendingAdjustmentSelected { get; set; }
-        public Recepcion ReceptionConfirmedSelected { get; set; }
-        public Recepcion PendingReceptionSelected { get; set; }
+        public ArticuloRecepcion ReceptionConfirmedSelected { get; set; }
+        public ArticuloRecepcion PendingReceptionSelected { get; set; }
         public Etiqueta LabelConfirmedSelected { get; set; }
         public Etiqueta PendingLabelSelected { get; set; }
         #endregion
@@ -491,18 +491,38 @@ namespace PDADesktop.ViewModel
         public void RemoveAllAdjustmentAction(object sender)
         {
             logger.Debug("Remove All => Adjustment");
+            foreach (Ajustes ajuste in AjustesConfirmados)
+            {
+                AjustesPendientes.Add(ajuste);
+            }
+            AjustesConfirmados.Clear();
         }
         public void RemoveOneAdjustmentAction(object sender)
         {
             logger.Debug("Remove one => Adjustment");
+            if(AdjustmentConfirmedSelected != null)
+            {
+                AjustesPendientes.Add(AdjustmentConfirmedSelected);
+                AjustesConfirmados.Remove(AdjustmentConfirmedSelected);
+            }
         }
         public void AddOneAdjustmentAction(object sender)
         {
             logger.Debug("Add one => Adjustment");
+            if(PendingAdjustmentSelected != null)
+            {
+                AjustesConfirmados.Add(PendingAdjustmentSelected);
+                AjustesPendientes.Remove(PendingAdjustmentSelected);
+            }
         }
         public void AddAllAdjustmentAction(object sender)
         {
             logger.Debug("Add All => Adjustment");
+            foreach (Ajustes ajustes in AjustesPendientes)
+            {
+                AjustesConfirmados.Add(ajustes);
+            }
+            AjustesPendientes.Clear();
         }
         #endregion
 
@@ -510,18 +530,38 @@ namespace PDADesktop.ViewModel
         public void RemoveAllReceptionAction(object sender)
         {
             logger.Debug("Remove All => Reception");
+            foreach (ArticuloRecepcion artRecep in RecepcionesConfirmadas)
+            {
+                RecepcionesPendientes.Add(artRecep);
+            }
+            RecepcionesConfirmadas.Clear();
         }
         public void RemoveOneReceptionAction(object sender)
         {
             logger.Debug("Remove one => Reception");
+            if (ReceptionConfirmedSelected != null)
+            {
+                RecepcionesPendientes.Add(ReceptionConfirmedSelected);
+                RecepcionesConfirmadas.Remove(ReceptionConfirmedSelected);
+            }
         }
         public void AddOneReceptionAction(object sender)
         {
             logger.Debug("Add one => Reception");
+            if (PendingReceptionSelected != null)
+            {
+                RecepcionesConfirmadas.Add(PendingReceptionSelected);
+                RecepcionesPendientes.Remove(PendingReceptionSelected);
+            }
         }
         public void AddAllReceptionAction(object sender)
         {
             logger.Debug("Add All => Reception");
+            foreach (ArticuloRecepcion artRecep in RecepcionesPendientes)
+            {
+                RecepcionesConfirmadas.Add(artRecep);
+            }
+            RecepcionesPendientes.Clear();
         }
         #endregion
 
@@ -529,18 +569,38 @@ namespace PDADesktop.ViewModel
         public void RemoveAllLabelAction(object sender)
         {
             logger.Debug("Remove All => Label");
+            foreach (Etiqueta etiqueta in EtiquetasConfirmadas)
+            {
+                EtiquetasPendientes.Add(etiqueta);
+            }
+            EtiquetasConfirmadas.Clear();
         }
         public void RemoveOneLabelAction(object sender)
         {
             logger.Debug("Remove one => Label");
+            if(LabelConfirmedSelected != null)
+            {
+                EtiquetasPendientes.Add(LabelConfirmedSelected);
+                EtiquetasConfirmadas.Remove(LabelConfirmedSelected);
+            }
         }
         public void AddOneLabelAction(object sender)
         {
             logger.Debug("Add one => Label");
+            if(PendingLabelSelected != null)
+            {
+                EtiquetasConfirmadas.Add(PendingLabelSelected);
+                EtiquetasPendientes.Remove(PendingLabelSelected);
+            }
         }
         public void AddAllLabelAction(object sender)
         {
             logger.Debug("Add All => Label");
+            foreach (Etiqueta etiqueta in EtiquetasPendientes)
+            {
+                EtiquetasConfirmadas.Add(etiqueta);
+            }
+            EtiquetasPendientes.Clear();
         }
         #endregion
 
