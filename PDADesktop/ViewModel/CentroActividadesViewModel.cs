@@ -60,20 +60,6 @@ namespace PDADesktop.ViewModel
             }
         }
 
-        private Badged badge_verAjustesRealizados;
-        public Badged Badge_verAjustesRealizados
-        {
-            get
-            {
-                return badge_verAjustesRealizados;
-            }
-            set
-            {
-                badge_verAjustesRealizados = value;
-                OnPropertyChanged();
-            }
-        }
-
         private string textBox_sincronizacion;
         public string TextBox_sincronizacion
         {

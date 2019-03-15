@@ -10,6 +10,7 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:local="clr-namespace:PDADesktop.View"
              xmlns:VM="clr-namespace:PDADesktop.ViewModel"
+             xmlns:ctr="clr-namespace:PDADesktop.View.Controls"
              Dialog:DialogParticipation.Register="{Binding}"
              mc:Ignorable="d" 
              d:DesignHeight="730" d:DesignWidth="920"
@@ -21,6 +22,12 @@
              TextOptions.TextRenderingMode="Auto"
              Background="WhiteSmoke"
              FontFamily="{DynamicResource MaterialDesignFont}">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding VerActividadesLoadedEvent}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <UserControl.Resources>
         <Style x:Key="DataGridContentCellCentering" TargetType="{x:Type DataGridCell}">
@@ -48,502 +55,25 @@
     </UserControl.Resources>
 
     <Grid>
-        <TabControl x:Name="actividades" Controls:TabControlHelper.IsUnderlined="True" HorizontalAlignment="Center" Margin="0,30,0,60" Background="WhiteSmoke">
-            <TabItem Header="Control de Precios">
-                <StackPanel>
-                    <DockPanel>
-                        <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
-                            <StatusBarItem HorizontalContentAlignment="Center">
-                                <Label Content="Control de precios listos para ser informados a Genesix" FontSize="14" FontFamily="Segoe UI"/>
-                            </StatusBarItem>
-                        </StatusBar>
-                        <Grid DockPanel.Dock="Bottom">
-                            <DataGrid x:Name="datagrid_controlPreciosConfirmados" Grid.Row="1" RowHeight="20" FontSize="11" 
-                              BorderThickness="1" BorderBrush="#ededed"
-                              HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
-                              Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                              AutoGenerateColumns="False" IsReadOnly="True"
-                              ItemsSource="{Binding Path=ControlPreciosConfirmados}"
-                              SelectedItem="{Binding Path=PriceControlConfirmedSelected, Mode=TwoWay}"
-                              AlternatingRowBackground="Gainsboro" AlternationCount="2">
-                            <DataGrid.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="BorderThickness" Value="1"/>
-                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                </Style>
-                            </DataGrid.CellStyle>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding EAN}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Ean" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding FechaControl}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding TipoLectura}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Codigo Ajuste" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding Pasillo}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Pasillo" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding ControlUbicacion}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Control ubicación" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding IDEtiqueta}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Id Etiqueta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding CantidadEtiquetas}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Cantidad Etiqueta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding AlertaStock}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Alerta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding NumeroSecuencia}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Secuencia" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-                            </DataGrid.Columns>
-                        </DataGrid>
-                        <TextBlock Text="No hay control de precios confirmados que mostrar." HorizontalAlignment="Center"
-                                   VerticalAlignment="Stretch" Margin="200,100,200,0" Grid.Column="0" Grid.Row="1"
-                                   Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=datagrid_controlPreciosConfirmados}" Width="350" />
-                        </Grid>
-                    </DockPanel>
-
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Label VerticalAlignment="Bottom">Quitar todos</Label>
-                        <Button ToolTip="Quitar Todos" x:Name="button_ctrubic_quitar_todos" Command="{Binding RemoveAllPriceControlCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_down}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                        <Label VerticalAlignment="Center">Quitar seleccionado</Label>
-                        <Button ToolTip="Quitar seleccionado" x:Name="button_ctrubic_quitar" Command="{Binding RemoveOnePriceControlCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_delete}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                        <Label VerticalAlignment="Center">Agregar seleccionado</Label>
-                        <Button ToolTip="agregar seleccionados" x:Name="button_ctrubic_agregar" Command="{Binding AddOnePriceControlCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_add_below}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                        <Label VerticalAlignment="top">Agregar todos</Label>
-                        <Button ToolTip="Agregar Todos" x:Name="button_ctrubic_agregar_todos"  Command="{Binding AddAllPriceControlCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_up}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                    </StackPanel>
-
-                    <DockPanel>
-                        <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
-                            <StatusBarItem HorizontalContentAlignment="Center">
-                                <Label Content="Control de precios pendientes de confirmar" FontSize="14" FontFamily="Segoe UI"/>
-                            </StatusBarItem>
-                        </StatusBar>
-                        <Grid DockPanel.Dock="Bottom">
-                        <DataGrid x:Name="datagrid_controlPreciosPendientes" Grid.Row="0" RowHeight="20" FontSize="11"
-                              BorderThickness="1" BorderBrush="#ededed"
-                              HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
-                              Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                              AutoGenerateColumns="False" IsReadOnly="True"
-                              ItemsSource="{Binding Path=ControlPreciosPendientes}"
-                                  SelectedItem="{Binding Path=PendingPriceControlSelected, Mode=TwoWay}"
-                              AlternatingRowBackground="Gainsboro" AlternationCount="2">
-                            <DataGrid.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="BorderThickness" Value="1"/>
-                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                </Style>
-                            </DataGrid.CellStyle>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding EAN}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Ean" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding FechaControl}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding TipoLectura}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Codigo Ajuste" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding Pasillo}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Pasillo" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding ControlUbicacion}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Control ubicación" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding IDEtiqueta}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Id Etiqueta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding CantidadEtiquetas}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Cantidad Etiqueta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding AlertaStock}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Alerta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding NumeroSecuencia}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Secuencia" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-                            </DataGrid.Columns>
-                        </DataGrid>
-                        <TextBlock Text="No hay control de precios pendientes que mostrar." HorizontalAlignment="Center"
-                                   VerticalAlignment="Stretch" Margin="200,100,200,0" Grid.Column="0" Grid.Row="1"
-                                   Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=datagrid_controlPreciosPendientes}" Width="auto" />
-                        </Grid>
-                    </DockPanel>
-                </StackPanel>
-            </TabItem>
-
-            <TabItem Header="Ajustes">
-                <StackPanel>
-                    <DockPanel>
-                        <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
-                            <StatusBarItem HorizontalContentAlignment="Center">
-                                <Label Content="Ajustes listos para ser informados a Genesix" FontSize="14" FontFamily="Segoe UI"/>
-                            </StatusBarItem>
-                        </StatusBar>
-                        <Grid>
-                        <DataGrid x:Name="dataGrid_AjustesConfirmados" Grid.Row="0" DockPanel.Dock="Bottom" RowHeight="20" FontSize="11"
-                              BorderThickness="1" BorderBrush="#ededed"
-                              HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
-                              Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                              AutoGenerateColumns="False" IsReadOnly="True"
-                              ItemsSource="{Binding Path=AjustesConfirmados}"
-                                  SelectedItem="{Binding Path=AdjustmentConfirmedSelected, Mode=TwoWay}"
-                              AlternatingRowBackground="Gainsboro" AlternationCount="2">
-                            <DataGrid.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="BorderThickness" Value="1"/>
-                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                </Style>
-                            </DataGrid.CellStyle>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding ean}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Ean" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding fechaAjuste}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding motivo}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Motivo" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding cantidad}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Cantidad" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-                            </DataGrid.Columns>
-                        </DataGrid>
-                        <TextBlock Text="No hay ajustes confirmados que mostrar." HorizontalAlignment="Center"
-                                   VerticalAlignment="Stretch" Margin="300,100,300,0" Grid.Column="0" Grid.Row="1"
-                                   Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=dataGrid_AjustesConfirmados}" Width="300" />
-                        </Grid>
-                    </DockPanel>
-
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Label VerticalAlignment="Bottom">Quitar todos</Label>
-                        <Button ToolTip="Quitar Todos" x:Name="button_ajustes_quitar_todos" Command="{Binding RemoveAllAdjustmentCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_down}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                        <Label VerticalAlignment="Center">Quitar seleccionado</Label>
-                        <Button ToolTip="Quitar seleccionado" x:Name="button_ajustes_quitar" Command="{Binding RemoveOneAdjustmentCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_delete}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                        <Label VerticalAlignment="Center">Agregar seleccionado</Label>
-                        <Button ToolTip="agregar seleccionados" x:Name="button_ajustes_agregar" Command="{Binding AddOneAdjustmentCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_add_below}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                        <Label VerticalAlignment="top">Agregar todos</Label>
-                        <Button ToolTip="Agregar Todos" x:Name="button_ajustes_agregar_todos" Command="{Binding AddAllAdjustmentCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_up}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                    </StackPanel>
-
-                    <DockPanel>
-                        <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
-                            <StatusBarItem HorizontalContentAlignment="Center">
-                                <Label Content="Ajustes pendientes de confirmar" FontSize="14" FontFamily="Segoe UI"/>
-                            </StatusBarItem>
-                        </StatusBar>
-                        <Grid DockPanel.Dock="Bottom">
-                            <DataGrid x:Name="dataGrid_AjustesPendientes" Grid.Row="0" RowHeight="20" FontSize="11"
-                              BorderThickness="1" BorderBrush="#ededed"
-                              HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
-                              Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                              AutoGenerateColumns="False" IsReadOnly="True"
-                              ItemsSource="{Binding Path=AjustesPendientes}"
-                                      SelectedItem="{Binding Path=PendingAdjustmentSelected, Mode=TwoWay}"
-                              AlternatingRowBackground="Gainsboro" AlternationCount="2">
-                            <DataGrid.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="BorderThickness" Value="1"/>
-                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                </Style>
-                            </DataGrid.CellStyle>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding ean}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Ean" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding fechaAjuste}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding motivo}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Motivo" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                <DataGridTextColumn Binding="{Binding cantidad}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Cantidad" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-                            </DataGrid.Columns>
-                        </DataGrid>
-                            <TextBlock Text="No hay ajustes pendientes que mostrar." Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="300,100,300,0"
-                                   Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=dataGrid_AjustesPendientes}" Width="285" />
-                        </Grid>
-                    </DockPanel>
-                </StackPanel>
-            </TabItem>
-
-            <TabItem Header="Recepciones">
-                <StackPanel>
-                    <DockPanel>
-                        <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
-                            <StatusBarItem HorizontalContentAlignment="Center">
-                                <Label Content="Recepciones listas para ser informadas a Genesix" FontSize="14" FontFamily="Segoe UI"/>
-                            </StatusBarItem>
-                        </StatusBar>
-                        <Grid DockPanel.Dock="Bottom">
-                            <DataGrid x:Name="datagrid_recepcionesConfirmados" Grid.Row="1" RowHeight="20" FontSize="11"
-                              BorderThickness="1" BorderBrush="#ededed"
-                              HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
-                              Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                              AutoGenerateColumns="False" IsReadOnly="True"
-                              ItemsSource="{Binding Path=RecepcionesConfirmadas}"
-                                      SelectedItem="{Binding Path=ReceptionConfirmedSelected, Mode=TwoWay}"
-                              AlternatingRowBackground="Gainsboro" AlternationCount="2">
-                                <DataGrid.CellStyle>
-                                    <Style TargetType="DataGridCell">
-                                        <Setter Property="BorderThickness" Value="1"/>
-                                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                    </Style>
-                                </DataGrid.CellStyle>
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding recepcion.fechaRecepcion}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding recepcion.numeroPedido}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="N° Pedido" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding recepcion.numeroProveedor}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="N° Proveedor" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding recepcion.centroEmisor}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Centro Emisor" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding recepcion.numeroRemito}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="N° Remito" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding recepcion.FechaRemito}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Fecha Remito" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding EAN}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="EAN" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding unidadesRecibidas}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="U.Ingresadas" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding recepcion.descripcionProveedor }" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Desc Prov" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-                                </DataGrid.Columns>
-                            </DataGrid>
-                            <TextBlock Text="No hay recepciones confirmadas que mostrar." HorizontalAlignment="Center"
-                                   VerticalAlignment="Stretch" Margin="200,100,200,0" Grid.Column="0" Grid.Row="1"
-                                   Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=datagrid_recepcionesConfirmados}" Width="350" />
-                        </Grid>
-                    </DockPanel>
-
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Label VerticalAlignment="Bottom">Quitar todos</Label>
-                        <Button ToolTip="Quitar Todos" x:Name="button_recep_quitar_todos" Command="{Binding RemoveAllReceptionCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_down}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                        <Label VerticalAlignment="Center">Quitar seleccionado</Label>
-                        <Button ToolTip="Quitar seleccionado" x:Name="button_recep_quitar" Command="{Binding RemoveOneReceptionCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_delete}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                        <Label VerticalAlignment="Center">Agregar seleccionado</Label>
-                        <Button ToolTip="agregar seleccionados" x:Name="button_recep_agregar" Command="{Binding AddOneReceptionCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_add_below}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                        <Label VerticalAlignment="top">Agregar todos</Label>
-                        <Button ToolTip="Agregar Todos" x:Name="button_recep_agregar_todos" Command="{Binding AddAllReceptionCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_up}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                    </StackPanel>
-
-                    <DockPanel>
-                        <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
-                            <StatusBarItem HorizontalContentAlignment="Center">
-                                <Label Content="Recepciones pendientes de confirmar" FontSize="14" FontFamily="Segoe UI"/>
-                            </StatusBarItem>
-                        </StatusBar>
-                        <Grid DockPanel.Dock="Bottom">
-                            <DataGrid x:Name="datagrid_recepcionesPendientes" Grid.Row="0" RowHeight="20" FontSize="11"
-                              BorderThickness="1" BorderBrush="#ededed"
-                              HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
-                              Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                              AutoGenerateColumns="False" IsReadOnly="True"
-                              ItemsSource="{Binding Path=RecepcionesPendientes}"
-                                      SelectedItem="{Binding Path=PendingReceptionSelected, Mode=TwoWay}"
-                              AlternatingRowBackground="Gainsboro" AlternationCount="2">
-                                <DataGrid.CellStyle>
-                                    <Style TargetType="DataGridCell">
-                                        <Setter Property="BorderThickness" Value="1"/>
-                                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                    </Style>
-                                </DataGrid.CellStyle>
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding recepcion.fechaRecepcion}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding Recepcion.numeroPedido}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="N° Pedido" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding recepcion.numeroProveedor}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="N° Proveedor" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding recepcion.centroEmisor}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Centro Emisor" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding recepcion.numeroRemito}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="N° Remito" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding recepcion.FechaRemito}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Fecha Remito" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding EAN}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="EAN" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding unidadesRecibidas}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="U.Ingresadas" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-
-                                    <DataGridTextColumn Binding="{Binding recepcion.descripcionProveedor }" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Desc Prov" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
-                                </DataGrid.Columns>
-                            </DataGrid>
-                            <TextBlock Text="No hay recepciones pendientes que mostrar." HorizontalAlignment="Center"
-                                   VerticalAlignment="Stretch" Margin="200,100,200,0" Grid.Column="0" Grid.Row="1"
-                                   Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=datagrid_recepcionesPendientes}" Width="auto" />
-                        </Grid>
-                    </DockPanel>
-                </StackPanel>
-            </TabItem>
-
-            <TabItem Header="Impresion de Etiquetas">
-                <StackPanel>
-                    <DockPanel>
-                        <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
-                            <StatusBarItem HorizontalContentAlignment="Center">
-                                <Label Content="Etiquetas listas para ser informadas a Genesix" FontSize="14" FontFamily="Segoe UI"/>
-                            </StatusBarItem>
-                        </StatusBar>
-                        <Grid DockPanel.Dock="Bottom">
-                            <DataGrid x:Name="datagrid_etiquetasConfirmados" Grid.Row="1" RowHeight="20" FontSize="11"
-                              BorderThickness="1" BorderBrush="#ededed"
-                              HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
-                              Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                              AutoGenerateColumns="False" IsReadOnly="True"
-                              ItemsSource="{Binding Path=EtiquetasConfirmadas}"
-                                      SelectedItem="{Binding Path=LabelConfirmedSelected, Mode=TwoWay}"
-                              AlternatingRowBackground="Gainsboro" AlternationCount="2">
+        <Grid>
+            <TabControl x:Name="actividades" Controls:TabControlHelper.IsUnderlined="True" HorizontalAlignment="Center" Margin="0,30,0,60" Background="WhiteSmoke">
+                <TabItem Header="Control de Precios">
+                    <StackPanel>
+                        <DockPanel>
+                            <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
+                                <StatusBarItem HorizontalContentAlignment="Center">
+                                    <Label Content="Control de precios listos para ser informados a Genesix" FontSize="14" FontFamily="Segoe UI"/>
+                                </StatusBarItem>
+                            </StatusBar>
+                            <Grid DockPanel.Dock="Bottom">
+                                <DataGrid x:Name="datagrid_controlPreciosConfirmados" Grid.Row="1" RowHeight="20" FontSize="11" 
+                                  BorderThickness="1" BorderBrush="#ededed"
+                                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
+                                  Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                  ItemsSource="{Binding Path=ControlPreciosConfirmados}"
+                                  SelectedItem="{Binding Path=PriceControlConfirmedSelected, Mode=TwoWay}"
+                                  AlternatingRowBackground="Gainsboro" AlternationCount="2">
                                 <DataGrid.CellStyle>
                                     <Style TargetType="DataGridCell">
                                         <Setter Property="BorderThickness" Value="1"/>
@@ -552,78 +82,102 @@
                                 </DataGrid.CellStyle>
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding EAN}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="EAN" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+                                                        Header="Ean" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-                                    <DataGridTextColumn Binding="{Binding Fecha}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+                                    <DataGridTextColumn Binding="{Binding FechaControl}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-                                    <DataGridTextColumn Binding="{Binding CodigoEtiqueta}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Codigo de Etiqueta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+                                    <DataGridTextColumn Binding="{Binding TipoLectura}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Codigo Ajuste" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding Pasillo}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Pasillo" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding ControlUbicacion}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Control ubicación" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding IDEtiqueta}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Id Etiqueta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding CantidadEtiquetas}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Cantidad Etiqueta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding AlertaStock}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Alerta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding NumeroSecuencia}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Secuencia" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
                                 </DataGrid.Columns>
                             </DataGrid>
-                            <TextBlock Text="No hay impresion de etiquetas confirmadas que mostrar." HorizontalAlignment="Center"
-                                   VerticalAlignment="Stretch" Margin="100,100,100,0" Grid.Column="0" Grid.Row="1"
-                                   Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=datagrid_etiquetasConfirmados}" Width="450" />
-                        </Grid>
-                    </DockPanel>
+                            <TextBlock Text="No hay control de precios confirmados que mostrar." HorizontalAlignment="Center"
+                                       VerticalAlignment="Stretch" Margin="200,100,200,0" Grid.Column="0" Grid.Row="1"
+                                       Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=datagrid_controlPreciosConfirmados}" Width="350" />
+                            </Grid>
+                        </DockPanel>
 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Label VerticalAlignment="Bottom">Quitar todos</Label>
-                        <Button ToolTip="Quitar Todos" x:Name="button_etiquetas_quitar_todos" Command="{Binding RemoveAllLabelCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_down}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                        <Label VerticalAlignment="Center">Quitar seleccionado</Label>
-                        <Button ToolTip="Quitar seleccionado" x:Name="button_etiquetas_quitar" Command="{Binding RemoveOneLabelCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_delete}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                        <Label VerticalAlignment="Center">Agregar seleccionado</Label>
-                        <Button ToolTip="agregar seleccionados" x:Name="button_etiquetas_agregar" Command="{Binding AddOneLabelCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_add_below}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                        <Label VerticalAlignment="top">Agregar todos</Label>
-                        <Button ToolTip="Agregar Todos" x:Name="button_recep_etiquetas_todos" Command="{Binding AddAllLabelCommand}"
-                                Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
-                            <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_up}"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                    </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Label VerticalAlignment="Bottom">Quitar todos</Label>
+                            <Button ToolTip="Quitar Todos" x:Name="button_ctrubic_quitar_todos" Command="{Binding RemoveAllPriceControlCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_down}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                            <Label VerticalAlignment="Center">Quitar seleccionado</Label>
+                            <Button ToolTip="Quitar seleccionado" x:Name="button_ctrubic_quitar" Command="{Binding RemoveOnePriceControlCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_delete}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                            <Label VerticalAlignment="Center">Agregar seleccionado</Label>
+                            <Button ToolTip="agregar seleccionados" x:Name="button_ctrubic_agregar" Command="{Binding AddOnePriceControlCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_add_below}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                            <Label VerticalAlignment="top">Agregar todos</Label>
+                            <Button ToolTip="Agregar Todos" x:Name="button_ctrubic_agregar_todos"  Command="{Binding AddAllPriceControlCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_up}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                        </StackPanel>
 
-                    <DockPanel>
-                        <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
-                            <StatusBarItem HorizontalContentAlignment="Center">
-                                <Label Content="Etiquetas pendientes de confirmar" FontSize="14" FontFamily="Segoe UI"/>
-                            </StatusBarItem>
-                        </StatusBar>
-                        <Grid DockPanel.Dock="Bottom">
-                            <DataGrid x:Name="datagrid_etiquetasPendientes" Grid.Row="0" RowHeight="20" FontSize="11"
-                              BorderThickness="1" BorderBrush="#ededed"
-                              HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
-                              Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                              AutoGenerateColumns="False" IsReadOnly="True"
-                              ItemsSource="{Binding Path=EtiquetasPendientes}"
-                                      SelectedItem="{Binding Path=PendingLabelSelected, Mode=TwoWay}"
-                              AlternatingRowBackground="Gainsboro" AlternationCount="2">
+                        <DockPanel>
+                            <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
+                                <StatusBarItem HorizontalContentAlignment="Center">
+                                    <Label Content="Control de precios pendientes de confirmar" FontSize="14" FontFamily="Segoe UI"/>
+                                </StatusBarItem>
+                            </StatusBar>
+                            <Grid DockPanel.Dock="Bottom">
+                            <DataGrid x:Name="datagrid_controlPreciosPendientes" Grid.Row="0" RowHeight="20" FontSize="11"
+                                  BorderThickness="1" BorderBrush="#ededed"
+                                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
+                                  Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                  ItemsSource="{Binding Path=ControlPreciosPendientes}"
+                                      SelectedItem="{Binding Path=PendingPriceControlSelected, Mode=TwoWay}"
+                                  AlternatingRowBackground="Gainsboro" AlternationCount="2">
                                 <DataGrid.CellStyle>
                                     <Style TargetType="DataGridCell">
                                         <Setter Property="BorderThickness" Value="1"/>
@@ -632,45 +186,514 @@
                                 </DataGrid.CellStyle>
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding EAN}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="EAN" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+                                                        Header="Ean" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-                                    <DataGridTextColumn Binding="{Binding Fecha}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+                                    <DataGridTextColumn Binding="{Binding FechaControl}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-                                    <DataGridTextColumn Binding="{Binding CodigoEtiqueta}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
-                                                    Header="Codigo de Etiqueta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
-                                                    CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+                                    <DataGridTextColumn Binding="{Binding TipoLectura}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Codigo Ajuste" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding Pasillo}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Pasillo" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding ControlUbicacion}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Control ubicación" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding IDEtiqueta}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Id Etiqueta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding CantidadEtiquetas}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Cantidad Etiqueta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding AlertaStock}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Alerta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding NumeroSecuencia}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Secuencia" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
                                 </DataGrid.Columns>
                             </DataGrid>
-                            <TextBlock Text="No hay impresón de etiquetas pendientes que mostrar." HorizontalAlignment="Center"
-                                   VerticalAlignment="Stretch" Margin="100,100,100,0" Grid.Column="0" Grid.Row="1"
-                                   Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=datagrid_etiquetasPendientes}" Width="auto" />
-                        </Grid>
-                    </DockPanel>
-                </StackPanel>
+                            <TextBlock Text="No hay control de precios pendientes que mostrar." HorizontalAlignment="Center"
+                                       VerticalAlignment="Stretch" Margin="200,100,200,0" Grid.Column="0" Grid.Row="1"
+                                       Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=datagrid_controlPreciosPendientes}" Width="auto" />
+                            </Grid>
+                        </DockPanel>
+                    </StackPanel>
+                </TabItem>
 
-            </TabItem>
-        </TabControl>
+                <TabItem Header="Ajustes">
+                    <StackPanel>
+                        <DockPanel>
+                            <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
+                                <StatusBarItem HorizontalContentAlignment="Center">
+                                    <Label Content="Ajustes listos para ser informados a Genesix" FontSize="14" FontFamily="Segoe UI"/>
+                                </StatusBarItem>
+                            </StatusBar>
+                            <Grid>
+                            <DataGrid x:Name="dataGrid_AjustesConfirmados" Grid.Row="0" DockPanel.Dock="Bottom" RowHeight="20" FontSize="11"
+                                  BorderThickness="1" BorderBrush="#ededed"
+                                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
+                                  Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                  ItemsSource="{Binding Path=AjustesConfirmados}"
+                                      SelectedItem="{Binding Path=AdjustmentConfirmedSelected, Mode=TwoWay}"
+                                  AlternatingRowBackground="Gainsboro" AlternationCount="2">
+                                <DataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                    </Style>
+                                </DataGrid.CellStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding ean}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Ean" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-        <StackPanel Margin="0,650,0, 0" Orientation="Horizontal" Width="auto" 
-                    HorizontalAlignment="Stretch" Background="{StaticResource TransparentPanel}">
-            <Border HorizontalAlignment="Center" Margin="374,0,0,0">
-                <Button Style="{StaticResource MaterialDesignFlatButton}" 
-                    ToolTip="Volver al centro de actividades"
-                    Command="{Binding ReturnCommand}">
-                    Volver
-                </Button>
-            </Border>
-            <Border HorizontalAlignment="Center">
-                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}"
-                    Command="{Binding AcceptCommand}"
-                    Width="100"
-                    ToolTip="Resource name: MaterialDesignRaisedAccentButton">
-                    Acceptar
-                </Button>
-            </Border>
-        </StackPanel>
+                                    <DataGridTextColumn Binding="{Binding fechaAjuste}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding motivo}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Motivo" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding cantidad}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Cantidad" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <TextBlock Text="No hay ajustes confirmados que mostrar." HorizontalAlignment="Center"
+                                       VerticalAlignment="Stretch" Margin="300,100,300,0" Grid.Column="0" Grid.Row="1"
+                                       Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=dataGrid_AjustesConfirmados}" Width="300" />
+                            </Grid>
+                        </DockPanel>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Label VerticalAlignment="Bottom">Quitar todos</Label>
+                            <Button ToolTip="Quitar Todos" x:Name="button_ajustes_quitar_todos" Command="{Binding RemoveAllAdjustmentCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_down}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                            <Label VerticalAlignment="Center">Quitar seleccionado</Label>
+                            <Button ToolTip="Quitar seleccionado" x:Name="button_ajustes_quitar" Command="{Binding RemoveOneAdjustmentCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_delete}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                            <Label VerticalAlignment="Center">Agregar seleccionado</Label>
+                            <Button ToolTip="agregar seleccionados" x:Name="button_ajustes_agregar" Command="{Binding AddOneAdjustmentCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_add_below}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                            <Label VerticalAlignment="top">Agregar todos</Label>
+                            <Button ToolTip="Agregar Todos" x:Name="button_ajustes_agregar_todos" Command="{Binding AddAllAdjustmentCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_up}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                        </StackPanel>
+
+                        <DockPanel>
+                            <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
+                                <StatusBarItem HorizontalContentAlignment="Center">
+                                    <Label Content="Ajustes pendientes de confirmar" FontSize="14" FontFamily="Segoe UI"/>
+                                </StatusBarItem>
+                            </StatusBar>
+                            <Grid DockPanel.Dock="Bottom">
+                                <DataGrid x:Name="dataGrid_AjustesPendientes" Grid.Row="0" RowHeight="20" FontSize="11"
+                                  BorderThickness="1" BorderBrush="#ededed"
+                                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
+                                  Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                  ItemsSource="{Binding Path=AjustesPendientes}"
+                                          SelectedItem="{Binding Path=PendingAdjustmentSelected, Mode=TwoWay}"
+                                  AlternatingRowBackground="Gainsboro" AlternationCount="2">
+                                <DataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                    </Style>
+                                </DataGrid.CellStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding ean}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Ean" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding fechaAjuste}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding motivo}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Motivo" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                    <DataGridTextColumn Binding="{Binding cantidad}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Cantidad" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                                <TextBlock Text="No hay ajustes pendientes que mostrar." Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="300,100,300,0"
+                                       Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=dataGrid_AjustesPendientes}" Width="285" />
+                            </Grid>
+                        </DockPanel>
+                    </StackPanel>
+                </TabItem>
+
+                <TabItem Header="Recepciones">
+                    <StackPanel>
+                        <DockPanel>
+                            <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
+                                <StatusBarItem HorizontalContentAlignment="Center">
+                                    <Label Content="Recepciones listas para ser informadas a Genesix" FontSize="14" FontFamily="Segoe UI"/>
+                                </StatusBarItem>
+                            </StatusBar>
+                            <Grid DockPanel.Dock="Bottom">
+                                <DataGrid x:Name="datagrid_recepcionesConfirmados" Grid.Row="1" RowHeight="20" FontSize="11"
+                                  BorderThickness="1" BorderBrush="#ededed"
+                                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
+                                  Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                  ItemsSource="{Binding Path=RecepcionesConfirmadas}"
+                                          SelectedItem="{Binding Path=ReceptionConfirmedSelected, Mode=TwoWay}"
+                                  AlternatingRowBackground="Gainsboro" AlternationCount="2">
+                                    <DataGrid.CellStyle>
+                                        <Style TargetType="DataGridCell">
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                        </Style>
+                                    </DataGrid.CellStyle>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Binding="{Binding recepcion.fechaRecepcion}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding recepcion.numeroPedido}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="N° Pedido" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding recepcion.numeroProveedor}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="N° Proveedor" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding recepcion.centroEmisor}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Centro Emisor" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding recepcion.numeroRemito}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="N° Remito" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding recepcion.FechaRemito}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Fecha Remito" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding EAN}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="EAN" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding unidadesRecibidas}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="U.Ingresadas" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding recepcion.descripcionProveedor }" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Desc Prov" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <TextBlock Text="No hay recepciones confirmadas que mostrar." HorizontalAlignment="Center"
+                                       VerticalAlignment="Stretch" Margin="200,100,200,0" Grid.Column="0" Grid.Row="1"
+                                       Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=datagrid_recepcionesConfirmados}" Width="350" />
+                            </Grid>
+                        </DockPanel>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Label VerticalAlignment="Bottom">Quitar todos</Label>
+                            <Button ToolTip="Quitar Todos" x:Name="button_recep_quitar_todos" Command="{Binding RemoveAllReceptionCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_down}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                            <Label VerticalAlignment="Center">Quitar seleccionado</Label>
+                            <Button ToolTip="Quitar seleccionado" x:Name="button_recep_quitar" Command="{Binding RemoveOneReceptionCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_delete}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                            <Label VerticalAlignment="Center">Agregar seleccionado</Label>
+                            <Button ToolTip="agregar seleccionados" x:Name="button_recep_agregar" Command="{Binding AddOneReceptionCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_add_below}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                            <Label VerticalAlignment="top">Agregar todos</Label>
+                            <Button ToolTip="Agregar Todos" x:Name="button_recep_agregar_todos" Command="{Binding AddAllReceptionCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_up}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                        </StackPanel>
+
+                        <DockPanel>
+                            <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
+                                <StatusBarItem HorizontalContentAlignment="Center">
+                                    <Label Content="Recepciones pendientes de confirmar" FontSize="14" FontFamily="Segoe UI"/>
+                                </StatusBarItem>
+                            </StatusBar>
+                            <Grid DockPanel.Dock="Bottom">
+                                <DataGrid x:Name="datagrid_recepcionesPendientes" Grid.Row="0" RowHeight="20" FontSize="11"
+                                  BorderThickness="1" BorderBrush="#ededed"
+                                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
+                                  Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                  ItemsSource="{Binding Path=RecepcionesPendientes}"
+                                          SelectedItem="{Binding Path=PendingReceptionSelected, Mode=TwoWay}"
+                                  AlternatingRowBackground="Gainsboro" AlternationCount="2">
+                                    <DataGrid.CellStyle>
+                                        <Style TargetType="DataGridCell">
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                        </Style>
+                                    </DataGrid.CellStyle>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Binding="{Binding recepcion.fechaRecepcion}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding Recepcion.numeroPedido}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="N° Pedido" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding recepcion.numeroProveedor}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="N° Proveedor" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding recepcion.centroEmisor}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Centro Emisor" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding recepcion.numeroRemito}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="N° Remito" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding recepcion.FechaRemito}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Fecha Remito" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding EAN}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="EAN" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding unidadesRecibidas}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="U.Ingresadas" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding recepcion.descripcionProveedor }" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Desc Prov" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <TextBlock Text="No hay recepciones pendientes que mostrar." HorizontalAlignment="Center"
+                                       VerticalAlignment="Stretch" Margin="200,100,200,0" Grid.Column="0" Grid.Row="1"
+                                       Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=datagrid_recepcionesPendientes}" Width="auto" />
+                            </Grid>
+                        </DockPanel>
+                    </StackPanel>
+                </TabItem>
+
+                <TabItem Header="Impresion de Etiquetas">
+                    <StackPanel>
+                        <DockPanel>
+                            <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
+                                <StatusBarItem HorizontalContentAlignment="Center">
+                                    <Label Content="Etiquetas listas para ser informadas a Genesix" FontSize="14" FontFamily="Segoe UI"/>
+                                </StatusBarItem>
+                            </StatusBar>
+                            <Grid DockPanel.Dock="Bottom">
+                                <DataGrid x:Name="datagrid_etiquetasConfirmados" Grid.Row="1" RowHeight="20" FontSize="11"
+                                  BorderThickness="1" BorderBrush="#ededed"
+                                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
+                                  Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                  ItemsSource="{Binding Path=EtiquetasConfirmadas}"
+                                          SelectedItem="{Binding Path=LabelConfirmedSelected, Mode=TwoWay}"
+                                  AlternatingRowBackground="Gainsboro" AlternationCount="2">
+                                    <DataGrid.CellStyle>
+                                        <Style TargetType="DataGridCell">
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                        </Style>
+                                    </DataGrid.CellStyle>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Binding="{Binding EAN}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="EAN" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding Fecha}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding CodigoEtiqueta}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Codigo de Etiqueta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <TextBlock Text="No hay impresion de etiquetas confirmadas que mostrar." HorizontalAlignment="Center"
+                                       VerticalAlignment="Stretch" Margin="100,100,100,0" Grid.Column="0" Grid.Row="1"
+                                       Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=datagrid_etiquetasConfirmados}" Width="450" />
+                            </Grid>
+                        </DockPanel>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Label VerticalAlignment="Bottom">Quitar todos</Label>
+                            <Button ToolTip="Quitar Todos" x:Name="button_etiquetas_quitar_todos" Command="{Binding RemoveAllLabelCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_down}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                            <Label VerticalAlignment="Center">Quitar seleccionado</Label>
+                            <Button ToolTip="Quitar seleccionado" x:Name="button_etiquetas_quitar" Command="{Binding RemoveOneLabelCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_delete}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                            <Label VerticalAlignment="Center">Agregar seleccionado</Label>
+                            <Button ToolTip="agregar seleccionados" x:Name="button_etiquetas_agregar" Command="{Binding AddOneLabelCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_list_add_below}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                            <Label VerticalAlignment="top">Agregar todos</Label>
+                            <Button ToolTip="Agregar Todos" x:Name="button_recep_etiquetas_todos" Command="{Binding AddAllLabelCommand}"
+                                    Height="55" Width="55" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="25" Height="25" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_arrow_up}"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                        </StackPanel>
+
+                        <DockPanel>
+                            <StatusBar DockPanel.Dock="Top" Background="{StaticResource TransparentStatusBar}">
+                                <StatusBarItem HorizontalContentAlignment="Center">
+                                    <Label Content="Etiquetas pendientes de confirmar" FontSize="14" FontFamily="Segoe UI"/>
+                                </StatusBarItem>
+                            </StatusBar>
+                            <Grid DockPanel.Dock="Bottom">
+                                <DataGrid x:Name="datagrid_etiquetasPendientes" Grid.Row="0" RowHeight="20" FontSize="11"
+                                  BorderThickness="1" BorderBrush="#ededed"
+                                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
+                                  Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                  ItemsSource="{Binding Path=EtiquetasPendientes}"
+                                          SelectedItem="{Binding Path=PendingLabelSelected, Mode=TwoWay}"
+                                  AlternatingRowBackground="Gainsboro" AlternationCount="2">
+                                    <DataGrid.CellStyle>
+                                        <Style TargetType="DataGridCell">
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                        </Style>
+                                    </DataGrid.CellStyle>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Binding="{Binding EAN}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="EAN" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding Fecha}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+
+                                        <DataGridTextColumn Binding="{Binding CodigoEtiqueta}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                                        Header="Codigo de Etiqueta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
+                                                        CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <TextBlock Text="No hay impresón de etiquetas pendientes que mostrar." HorizontalAlignment="Center"
+                                       VerticalAlignment="Stretch" Margin="100,100,100,0" Grid.Column="0" Grid.Row="1"
+                                       Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=datagrid_etiquetasPendientes}" Width="auto" />
+                            </Grid>
+                        </DockPanel>
+                    </StackPanel>
+
+                </TabItem>
+            </TabControl>
+
+            <StackPanel Margin="0,650,0, 0" Orientation="Horizontal" Width="auto" 
+                        HorizontalAlignment="Stretch" Background="{StaticResource TransparentPanel}">
+                <Border HorizontalAlignment="Center" Margin="374,0,0,0">
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" 
+                        ToolTip="Volver al centro de actividades"
+                        Command="{Binding ReturnCommand}">
+                        Volver
+                    </Button>
+                </Border>
+                <Border HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                        Command="{Binding AcceptCommand}"
+                        Width="100"
+                        ToolTip="Resource name: MaterialDesignRaisedAccentButton">
+                        Acceptar
+                    </Button>
+                </Border>
+            </StackPanel>
+        </Grid>
+        <Grid VerticalAlignment="Center">
+            <ctr:LoadingPanel x:Name="loadingPanel"
+                              IsLoading="{Binding PanelLoading}"
+                              Message="{Binding PanelMainMessage}"
+                              SubMessage="{Binding PanelSubMessage}" 
+                              ClosePanelCommand="{Binding PanelCloseCommand}" />
+        </Grid>
+        <Grid VerticalAlignment="Center">
+            <ctr:PanelNoConnection x:Name="panelNoConnection" 
+                                   IsLoading_NC="{Binding PanelLoading_NC}"
+                                   Message_NC="{Binding PanelMainMessage_NC}"
+                                   SubMessage_NC="{Binding PanelSubMessage_NC}" 
+                                   ClosePanelCommand_NC ="{Binding PanelCloseCommand_NC}"/>
+        </Grid>
     </Grid>
 </UserControl>

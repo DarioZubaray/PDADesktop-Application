@@ -6,11 +6,16 @@ using PDADesktop.Classes.Utils;
 using PDADesktop.Model;
 using PDADesktop.View;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Configuration;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace PDADesktop.ViewModel
 {
@@ -20,8 +25,11 @@ namespace PDADesktop.ViewModel
         #region Commons Attributes
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDeviceHandler deviceHandler { get; set; }
+        private Dispatcher dispatcher { get; set; }
         private IDialogCoordinator dialogCoordinator;
+        private readonly object _lock = new object();
         #endregion
+
         #region selectedRow
         public ControlPrecio PriceControlConfirmedSelected { get; set; }
         public ControlPrecio PendingPriceControlSelected { get; set; }
@@ -32,6 +40,7 @@ namespace PDADesktop.ViewModel
         public Etiqueta LabelConfirmedSelected { get; set; }
         public Etiqueta PendingLabelSelected { get; set; }
         #endregion
+
         #region List
         private ObservableCollection<ControlPrecio> controlPreciosConfirmados;
         public ObservableCollection<ControlPrecio> ControlPreciosConfirmados
@@ -43,6 +52,7 @@ namespace PDADesktop.ViewModel
             set
             {
                 controlPreciosConfirmados = value;
+                OnPropertyChanged();
             }
         }
         private ObservableCollection<ControlPrecio> controlPreciosPendientes;
@@ -55,6 +65,7 @@ namespace PDADesktop.ViewModel
             set
             {
                 controlPreciosPendientes = value;
+                OnPropertyChanged();
             }
         }
 
@@ -68,6 +79,7 @@ namespace PDADesktop.ViewModel
             set
             {
                 ajustesConfirmados = value;
+                OnPropertyChanged();
             }
         }
         private ObservableCollection<Ajustes> ajustesPendientes;
@@ -80,6 +92,7 @@ namespace PDADesktop.ViewModel
             set
             {
                 ajustesPendientes = value;
+                OnPropertyChanged();
             }
         }
 
@@ -93,6 +106,7 @@ namespace PDADesktop.ViewModel
             set
             {
                 recepcionesConfirmadas = value;
+                OnPropertyChanged();
             }
         }
         private ObservableCollection<ArticuloRecepcion> recepcionesPendientes;
@@ -105,6 +119,7 @@ namespace PDADesktop.ViewModel
             set
             {
                 recepcionesPendientes = value;
+                OnPropertyChanged();
             }
         }
 
@@ -118,6 +133,7 @@ namespace PDADesktop.ViewModel
             set
             {
                 etiquetasConfirmadas = value;
+                OnPropertyChanged();
             }
         }
         private ObservableCollection<Etiqueta> etiquetasPendientes;
@@ -130,10 +146,28 @@ namespace PDADesktop.ViewModel
             set
             {
                 etiquetasPendientes = value;
+                OnPropertyChanged();
             }
         }
         #endregion
+
+        #region Workers Attributes
+        private readonly BackgroundWorker loadSeeActivitiesWorker = new BackgroundWorker();
+        #endregion
+
         #region Commands
+        private ICommand verActividadesLoadedEvent;
+        public ICommand VerActividadesLoadedEvent
+        {
+            get
+            {
+                return verActividadesLoadedEvent;
+            }
+            set
+            {
+                verActividadesLoadedEvent = value;
+            }
+        }
         private ICommand returnCommand;
         public ICommand ReturnCommand
         {
@@ -354,16 +388,140 @@ namespace PDADesktop.ViewModel
                 addAllLabelCommand = value;
             }
         }
+
+        private ICommand showPanelCommand;
+        public ICommand ShowPanelCommand
+        {
+            get
+            {
+                return showPanelCommand;
+            }
+            set
+            {
+                showPanelCommand = value;
+            }
+        }
+        private ICommand panelCloseCommand;
+        public ICommand PanelCloseCommand
+        {
+            get
+            {
+                return panelCloseCommand;
+            }
+            set
+            {
+                panelCloseCommand = value;
+            }
+        }
+        private ICommand panelCloseCommand_NC;
+        public ICommand PanelCloseCommand_NC
+        {
+            get
+            {
+                return panelCloseCommand_NC;
+            }
+            set
+            {
+                panelCloseCommand_NC = value;
+            }
+        }
         #endregion
 
+        #region Loading Panel Attributes
+        private bool panelLoading;
+        public bool PanelLoading
+        {
+            get
+            {
+                return panelLoading;
+            }
+            set
+            {
+                panelLoading = value;
+                OnPropertyChanged();
+            }
+        }
+        private string panelMainMessage;
+        public string PanelMainMessage
+        {
+            get
+            {
+                return panelMainMessage;
+            }
+            set
+            {
+                panelMainMessage = value;
+                OnPropertyChanged();
+            }
+        }
+        private string panelSubMessage;
+        public string PanelSubMessage
+        {
+            get
+            {
+                return panelSubMessage;
+            }
+            set
+            {
+                panelSubMessage = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region Panel No Connection Attributes
+        private bool panelLoading_NC;
+        public bool PanelLoading_NC
+        {
+            get
+            {
+                return panelLoading_NC;
+            }
+            set
+            {
+                panelLoading_NC = value;
+                OnPropertyChanged();
+            }
+        }
+        private string panelMainMessage_NC;
+        public string PanelMainMessage_NC
+        {
+            get
+            {
+                return panelMainMessage_NC;
+            }
+            set
+            {
+                panelMainMessage_NC = value;
+                OnPropertyChanged();
+            }
+        }
+        private string panelSubMessage_NC;
+        public string PanelSubMessage_NC
+        {
+            get
+            {
+                return panelSubMessage_NC;
+            }
+            set
+            {
+                panelSubMessage_NC = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
         #endregion
 
         #region Constructor
         public VerActividadesViewModel(IDialogCoordinator instance)
         {
             BannerApp.PrintSeeActivities();
+            DisplayWaitingPanel("Cargando...");
             deviceHandler = App.Instance.deviceHandler;
+            dispatcher = App.Instance.Dispatcher;
             dialogCoordinator = instance;
+
+            VerActividadesLoadedEvent = new RelayCommand(SeeActivitiesLoadedEventAction);
 
             ReturnCommand = new RelayCommand(ReturnAction);
             AcceptCommand = new RelayCommand(AcceptAction);
@@ -388,41 +546,93 @@ namespace PDADesktop.ViewModel
             AddOneLabelCommand = new RelayCommand(AddOneLabelAction);
             AddAllLabelCommand = new RelayCommand(AddAllLabelAction);
 
-            getDataFromPlainFiles();
-            getDataFromDBCompact();
+            ShowPanelCommand = new RelayCommand(ShowPanelAction);
+            PanelCloseCommand = new RelayCommand(ClosePanelAction);
+            PanelCloseCommand_NC = new RelayCommand(ClosePanelNoConnectionAction);
         }
         #endregion
 
         #region Methods
-        #region Commons Methods
-        private void getDataFromPlainFiles()
+        #region LoadEvent
+        public async void SeeActivitiesLoadedEventAction(object obj)
         {
+            await Task.Run(async () =>
+            {
+                await loadSeeActivitiesWorker_DoWork();
+            });
+            loadSeeActivitiesWorker_RunWorkerCompleted();
+        }
+        #endregion
+
+        #region Workers Method
+        private async Task loadSeeActivitiesWorker_DoWork()
+        {
+            logger.Debug("load see activities worker => Do Work");
+            await getDataFromPlainFiles();
+            getDataFromDBCompact();
+        }
+        private void loadSeeActivitiesWorker_RunWorkerCompleted()
+        {
+            logger.Debug("load see activities worker => Run Worker Completed");
+            logger.Debug(ControlPreciosConfirmados);
+
+            HidingWaitingPanel();
+        }
+        #endregion
+
+        #region Commons Methods
+        public void NotifyCurrentMessage(string currentMessage)
+        {
+            logger.Debug(currentMessage);
+            PanelSubMessage = currentMessage;
+            Thread.Sleep(300);
+        }
+
+        private async Task getDataFromPlainFiles()
+        {
+            String currentMessage = "Obteniendo Control de precios confirmados... ";
+            NotifyCurrentMessage(currentMessage);
             string priceControlfileContent = deviceHandler.ReadPriceControlDataFile();
             if(priceControlfileContent != null)
             {
-                controlPreciosConfirmados = JsonUtils.GetObservableCollectionControlPrecios(priceControlfileContent);
-                
+                this.ControlPreciosConfirmados = JsonUtils.GetObservableCollectionControlPrecios(priceControlfileContent);
             }
+            currentMessage = "Obteniendo Ajustes confirmados... ";
+            NotifyCurrentMessage(currentMessage);
             string adjustmentFilecontent = deviceHandler.ReadAdjustmentsDataFile();
             if(adjustmentFilecontent != null)
             {
-                AjustesConfirmados = JsonUtils.GetObservableCollectionAjustes(adjustmentFilecontent);
+                await dispatcher.BeginInvoke(new Action(() => {
+                    AjustesConfirmados = JsonUtils.GetObservableCollectionAjustes(adjustmentFilecontent);
+                }));
             }
 
+            currentMessage = "Obteniendo Recepciones confirmados... ";
+            NotifyCurrentMessage(currentMessage);
             string receptionFilecontent = deviceHandler.ReadReceptionDataFile();
             if(receptionFilecontent != null)
             {
-                RecepcionesConfirmadas = JsonUtils.GetObservableCollectionRecepciones(receptionFilecontent);
+                await dispatcher.BeginInvoke(new Action(() => {
+                    RecepcionesConfirmadas = JsonUtils.GetObservableCollectionRecepciones(receptionFilecontent);
+                }));
             }
+
+            currentMessage = "Obteniendo Impresión de Etiquetas confirmados... ";
+            NotifyCurrentMessage(currentMessage);
             string labelFileContent = deviceHandler.ReadLabelDataFile();
             if(labelFileContent != null)
             {
-                EtiquetasConfirmadas = JsonUtils.GetObservableCollectionEtiquetas(labelFileContent);
+                await dispatcher.BeginInvoke(new Action(() => {
+                    EtiquetasConfirmadas = JsonUtils.GetObservableCollectionEtiquetas(labelFileContent);
+                }));
             }
         }
 
         private void getDataFromDBCompact()
         {
+            string currentMessage = "Obteniendo otros datos pendientes... ";
+            NotifyCurrentMessage(currentMessage);
+
             string sqlceDataBase = "/" + ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATABASE);
             string deviceFolder = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_ROOT);
             logger.Info("copiando desde " + deviceFolder + sqlceDataBase);
@@ -434,10 +644,29 @@ namespace PDADesktop.ViewModel
             ResultFileOperation result = deviceHandler.CopyFromDeviceToPublicFolder(sqlceDataBase, deviceFolder, publicFolderExtended);
             if (ResultFileOperation.OK.Equals(result))
             {
-                ControlPreciosPendientes = SqlCEReaderUtils.leerControlPrecios(@"Data Source=" + publicFolderExtended + sqlceDataBase);
-                AjustesPendientes = SqlCEReaderUtils.leerAjustes(@"Data Source=" + publicFolderExtended + sqlceDataBase);
-                RecepcionesPendientes = SqlCEReaderUtils.leerRecepciones(@"Data Source=" + publicFolderExtended + sqlceDataBase);
-                EtiquetasPendientes = SqlCEReaderUtils.leerEtiquetas(@"Data Source=" + publicFolderExtended + sqlceDataBase);
+                currentMessage = "Leyendo control de precios sin confirmar ... ";
+                NotifyCurrentMessage(currentMessage);
+                dispatcher.BeginInvoke(new Action(() => {
+                    ControlPreciosPendientes = SqlCEReaderUtils.leerControlPrecios(@"Data Source=" + publicFolderExtended + sqlceDataBase);
+                }));
+
+                currentMessage = "Leyendo ajustes sin confirmar... ";
+                NotifyCurrentMessage(currentMessage);
+                dispatcher.BeginInvoke(new Action(() => {
+                    AjustesPendientes = SqlCEReaderUtils.leerAjustes(@"Data Source=" + publicFolderExtended + sqlceDataBase);
+                }));
+
+                currentMessage = "Leyendo recepcione sin confirmar... ";
+                NotifyCurrentMessage(currentMessage);
+                dispatcher.BeginInvoke(new Action(() => {
+                    RecepcionesPendientes = SqlCEReaderUtils.leerRecepciones(@"Data Source=" + publicFolderExtended + sqlceDataBase);
+                }));
+
+                currentMessage = "Leyendo etiquetas sin confirmar ... ";
+                NotifyCurrentMessage(currentMessage);
+                dispatcher.BeginInvoke(new Action(() => {
+                    EtiquetasPendientes = SqlCEReaderUtils.leerEtiquetas(@"Data Source=" + publicFolderExtended + sqlceDataBase);
+                }));
             }
         }
         #endregion
@@ -618,6 +847,57 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
+        #endregion
+
+        #region Panel Methods
+        public void DisplayWaitingPanel(string mainMessage, string subMessage = "")
+        {
+            PanelLoading = true;
+            PanelMainMessage = mainMessage;
+            PanelSubMessage = subMessage;
+        }
+        public void HidingWaitingPanel()
+        {
+            PanelLoading = false;
+            PanelMainMessage = String.Empty;
+            PanelSubMessage = String.Empty;
+        }
+
+        public void ShowPanelAction(object obj)
+        {
+            DisplayWaitingPanel(String.Empty);
+        }
+
+        public void ClosePanelAction(object obj)
+        {
+            HidingWaitingPanel();
+        }
+
+        public void DisplayDefaultNoConnectionPanel()
+        {
+            logger.Debug("Displat Default NoConnection Panel <- llamado");
+            string deviceName = deviceHandler.GetNameToDisplay();
+            string mainMessage = "Se ha perdido la conexión con " + deviceName;
+            string subMessage = "Reintentando..";
+            DisplayNoConnectionPanel(mainMessage, subMessage);
+        }
+        public void DisplayNoConnectionPanel(string mainMessage, string subMessage = "")
+        {
+            PanelLoading_NC = true;
+            PanelMainMessage_NC = mainMessage;
+            PanelSubMessage_NC = subMessage;
+        }
+        public void HidingNoConnectionPanel()
+        {
+            PanelLoading_NC = false;
+            PanelMainMessage_NC = String.Empty;
+            PanelSubMessage_NC = String.Empty;
+        }
+
+        public void ClosePanelNoConnectionAction(object obj)
+        {
+            PanelLoading_NC = false;
+        }
         #endregion
 
         #region Metro Dialog Methods

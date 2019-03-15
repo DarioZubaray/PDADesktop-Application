@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace PDADesktop.Model
 {
@@ -13,7 +14,6 @@ namespace PDADesktop.Model
             set
             {
                 FechaControl = DateTime.ParseExact(value, "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
-
             }
         }
         public DateTime FechaControl { get; set; }
@@ -31,5 +31,6 @@ namespace PDADesktop.Model
             UbicIncorrecta = 1,
             UbicNueva = 2
         }
+
     }
 }
