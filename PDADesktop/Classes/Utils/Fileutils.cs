@@ -25,11 +25,11 @@ namespace PDADesktop.Classes.Utils
             return fileReaded;
         }
 
-        public static void WriteFile(string source, string content)
+        public static void WriteFile(string path, string contents)
         {
             try
             {
-                File.WriteAllText(source, content);
+                File.WriteAllText(path, contents);
             }
             catch (Exception e)
             {

@@ -688,24 +688,62 @@ namespace PDADesktop.ViewModel
         {
             logger.Debug("AcceptAction");
             //TODO logica de inserts y escritura en los archivos
-            ReturnAction(null);
+
+            //ControlPreciosConfirmados
+            if (ControlPreciosConfirmados != null && ControlPreciosConfirmados.Count != 0)
+            {
+                string controlPrecioContent = ExporterActivityUtils.ExportCTRUBIC(ControlPreciosConfirmados);
+                ArchivosDATUtils.OverrideCTRUBIDATinPublic(controlPrecioContent);
+                string destinationDirectoryData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+                string filenameCTRUBIC = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_CONTROL_PRECIO);
+                deviceHandler.CopyPublicDataFileToDevice(destinationDirectoryData, filenameCTRUBIC);
+            }
+
+            //ControlPreciosPendientes
+            string publicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_PROGRAM);
+            string publicFolderExtended = TextUtils.ExpandEnviromentVariable(publicFolder);
+            string filename = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATABASE);
+
+            string strConn = @"Data Source=" + publicFolderExtended + filename;
+            SqlCEUpdaterUtils.EmptyControlPrecios(strConn);
+            if(ControlPreciosPendientes != null && ControlPreciosPendientes.Count != 0)
+            {
+                SqlCEUpdaterUtils.GuardarControlPrecios(ControlPreciosPendientes, strConn);
+            }
+            string destinationDirectoryRoot = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_ROOT);
+            deviceHandler.CopyPublicRootFileToDevice(destinationDirectoryRoot, filename);
+
+            MainWindow window = (MainWindow)Application.Current.MainWindow;
+            Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
+            window.frame.NavigationService.Navigate(uri);
         }
 
         #region PriceControl Action
         public void RemoveAllPricecontrolAction(object sender)
         {
             logger.Debug("Remove All => Price control");
-            foreach(ControlPrecio ctrubic in ControlPreciosConfirmados)
+            if(ControlPreciosConfirmados != null && ControlPreciosConfirmados.Count != 0)
             {
-                ControlPreciosPendientes.Add(ctrubic);
+                if(ControlPreciosPendientes == null)
+                {
+                    ControlPreciosPendientes = new ObservableCollection<ControlPrecio>();
+                }
+                foreach(ControlPrecio ctrubic in ControlPreciosConfirmados)
+                {
+                    ControlPreciosPendientes.Add(ctrubic);
+                }
+                ControlPreciosConfirmados.Clear();
             }
-            ControlPreciosConfirmados.Clear();
         }
         public void RemoveOnePricecontrolAction(object sender)
         {
             logger.Debug("Remove one => Price control");
             if(PriceControlConfirmedSelected != null)
             {
+                if (ControlPreciosPendientes == null)
+                {
+                    ControlPreciosPendientes = new ObservableCollection<ControlPrecio>();
+                }
                 ControlPreciosPendientes.Add(PriceControlConfirmedSelected);
                 ControlPreciosConfirmados.Remove(PriceControlConfirmedSelected);
             }
@@ -715,6 +753,10 @@ namespace PDADesktop.ViewModel
             logger.Debug("Add one => Price control");
             if (PendingPriceControlSelected != null)
             {
+                if (ControlPreciosConfirmados == null)
+                {
+                    ControlPreciosConfirmados = new ObservableCollection<ControlPrecio>();
+                }
                 ControlPreciosConfirmados.Add(PendingPriceControlSelected);
                 ControlPreciosPendientes.Remove(PendingPriceControlSelected);
             }
@@ -722,11 +764,18 @@ namespace PDADesktop.ViewModel
         public void AddAllPricecontrolAction(object sender)
         {
             logger.Debug("Add All => Price control");
-            foreach(ControlPrecio ctrubic in ControlPreciosPendientes)
+            if(ControlPreciosPendientes != null && ControlPreciosPendientes.Count != 0)
             {
-                ControlPreciosConfirmados.Add(ctrubic);
+                if(ControlPreciosConfirmados == null)
+                {
+                    ControlPreciosConfirmados = new ObservableCollection<ControlPrecio>();
+                }
+                foreach(ControlPrecio ctrubic in ControlPreciosPendientes)
+                {
+                    ControlPreciosConfirmados.Add(ctrubic);
+                }
+                ControlPreciosPendientes.Clear();
             }
-            ControlPreciosPendientes.Clear();
         }
         #endregion
 
@@ -734,17 +783,29 @@ namespace PDADesktop.ViewModel
         public void RemoveAllAdjustmentAction(object sender)
         {
             logger.Debug("Remove All => Adjustment");
-            foreach (Ajustes ajuste in AjustesConfirmados)
+            if(AjustesConfirmados != null && AjustesConfirmados.Count != 0)
             {
-                AjustesPendientes.Add(ajuste);
+                if(AjustesPendientes == null)
+                {
+                    AjustesPendientes = new ObservableCollection<Ajustes>();
+                }
+                foreach (Ajustes ajuste in AjustesConfirmados)
+                {
+                    AjustesPendientes.Add(ajuste);
+                }
+                AjustesConfirmados.Clear();
             }
-            AjustesConfirmados.Clear();
         }
         public void RemoveOneAdjustmentAction(object sender)
         {
             logger.Debug("Remove one => Adjustment");
             if(AdjustmentConfirmedSelected != null)
             {
+                if(AjustesPendientes == null)
+                {
+                    AjustesPendientes = new ObservableCollection<Ajustes>();
+                }
+
                 AjustesPendientes.Add(AdjustmentConfirmedSelected);
                 AjustesConfirmados.Remove(AdjustmentConfirmedSelected);
             }
@@ -754,6 +815,10 @@ namespace PDADesktop.ViewModel
             logger.Debug("Add one => Adjustment");
             if(PendingAdjustmentSelected != null)
             {
+                if(AjustesConfirmados == null)
+                {
+                    AjustesConfirmados = new ObservableCollection<Ajustes>();
+                }
                 AjustesConfirmados.Add(PendingAdjustmentSelected);
                 AjustesPendientes.Remove(PendingAdjustmentSelected);
             }
@@ -761,11 +826,18 @@ namespace PDADesktop.ViewModel
         public void AddAllAdjustmentAction(object sender)
         {
             logger.Debug("Add All => Adjustment");
-            foreach (Ajustes ajustes in AjustesPendientes)
+            if(AjustesPendientes != null && AjustesPendientes.Count != 0)
             {
-                AjustesConfirmados.Add(ajustes);
+                if(AjustesConfirmados == null)
+                {
+                    AjustesConfirmados = new ObservableCollection<Ajustes>();
+                }
+                foreach (Ajustes ajustes in AjustesPendientes)
+                {
+                    AjustesConfirmados.Add(ajustes);
+                }
+                AjustesPendientes.Clear();
             }
-            AjustesPendientes.Clear();
         }
         #endregion
 
@@ -773,17 +845,28 @@ namespace PDADesktop.ViewModel
         public void RemoveAllReceptionAction(object sender)
         {
             logger.Debug("Remove All => Reception");
-            foreach (ArticuloRecepcion artRecep in RecepcionesConfirmadas)
+            if(RecepcionesConfirmadas != null && RecepcionesConfirmadas.Count != 0)
             {
-                RecepcionesPendientes.Add(artRecep);
+                if(RecepcionesPendientes == null)
+                {
+                    RecepcionesPendientes = new ObservableCollection<ArticuloRecepcion>();
+                }
+                foreach (ArticuloRecepcion artRecep in RecepcionesConfirmadas)
+                {
+                    RecepcionesPendientes.Add(artRecep);
+                }
+                RecepcionesConfirmadas.Clear();
             }
-            RecepcionesConfirmadas.Clear();
         }
         public void RemoveOneReceptionAction(object sender)
         {
             logger.Debug("Remove one => Reception");
             if (ReceptionConfirmedSelected != null)
             {
+                if(RecepcionesPendientes == null)
+                {
+                    RecepcionesPendientes = new ObservableCollection<ArticuloRecepcion>();
+                }
                 RecepcionesPendientes.Add(ReceptionConfirmedSelected);
                 RecepcionesConfirmadas.Remove(ReceptionConfirmedSelected);
             }
@@ -793,6 +876,10 @@ namespace PDADesktop.ViewModel
             logger.Debug("Add one => Reception");
             if (PendingReceptionSelected != null)
             {
+                if(RecepcionesConfirmadas == null)
+                {
+                    RecepcionesConfirmadas = new ObservableCollection<ArticuloRecepcion>();
+                }
                 RecepcionesConfirmadas.Add(PendingReceptionSelected);
                 RecepcionesPendientes.Remove(PendingReceptionSelected);
             }
@@ -800,11 +887,18 @@ namespace PDADesktop.ViewModel
         public void AddAllReceptionAction(object sender)
         {
             logger.Debug("Add All => Reception");
-            foreach (ArticuloRecepcion artRecep in RecepcionesPendientes)
+            if(RecepcionesPendientes != null && RecepcionesPendientes.Count != 0)
             {
-                RecepcionesConfirmadas.Add(artRecep);
+                if(RecepcionesConfirmadas == null)
+                {
+                    RecepcionesConfirmadas = new ObservableCollection<ArticuloRecepcion>();
+                }
+                foreach (ArticuloRecepcion artRecep in RecepcionesPendientes)
+                {
+                    RecepcionesConfirmadas.Add(artRecep);
+                }
+                RecepcionesPendientes.Clear();
             }
-            RecepcionesPendientes.Clear();
         }
         #endregion
 
@@ -812,17 +906,28 @@ namespace PDADesktop.ViewModel
         public void RemoveAllLabelAction(object sender)
         {
             logger.Debug("Remove All => Label");
-            foreach (Etiqueta etiqueta in EtiquetasConfirmadas)
+            if(EtiquetasConfirmadas != null && EtiquetasConfirmadas.Count != 0)
             {
-                EtiquetasPendientes.Add(etiqueta);
+                if(EtiquetasPendientes == null)
+                {
+                    EtiquetasPendientes = new ObservableCollection<Etiqueta>();
+                }
+                foreach (Etiqueta etiqueta in EtiquetasConfirmadas)
+                {
+                    EtiquetasPendientes.Add(etiqueta);
+                }
+                EtiquetasConfirmadas.Clear();
             }
-            EtiquetasConfirmadas.Clear();
         }
         public void RemoveOneLabelAction(object sender)
         {
             logger.Debug("Remove one => Label");
             if(LabelConfirmedSelected != null)
             {
+                if(EtiquetasPendientes == null)
+                {
+                    EtiquetasPendientes = new ObservableCollection<Etiqueta>();
+                }
                 EtiquetasPendientes.Add(LabelConfirmedSelected);
                 EtiquetasConfirmadas.Remove(LabelConfirmedSelected);
             }
@@ -832,6 +937,10 @@ namespace PDADesktop.ViewModel
             logger.Debug("Add one => Label");
             if(PendingLabelSelected != null)
             {
+                if(EtiquetasConfirmadas == null)
+                {
+                    EtiquetasConfirmadas = new ObservableCollection<Etiqueta>();
+                }
                 EtiquetasConfirmadas.Add(PendingLabelSelected);
                 EtiquetasPendientes.Remove(PendingLabelSelected);
             }
@@ -839,11 +948,18 @@ namespace PDADesktop.ViewModel
         public void AddAllLabelAction(object sender)
         {
             logger.Debug("Add All => Label");
-            foreach (Etiqueta etiqueta in EtiquetasPendientes)
+            if(EtiquetasPendientes != null && EtiquetasPendientes.Count != 0)
             {
-                EtiquetasConfirmadas.Add(etiqueta);
+                if(EtiquetasConfirmadas == null)
+                {
+                    EtiquetasConfirmadas = new ObservableCollection<Etiqueta>();
+                }
+                foreach (Etiqueta etiqueta in EtiquetasPendientes)
+                {
+                    EtiquetasConfirmadas.Add(etiqueta);
+                }
+                EtiquetasPendientes.Clear();
             }
-            EtiquetasPendientes.Clear();
         }
         #endregion
 

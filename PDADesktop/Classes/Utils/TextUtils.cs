@@ -41,7 +41,8 @@ namespace PDADesktop.Classes.Utils
                     controlPrecioJSON.Append(", \"ControlUbicacion\": " + item[4]);
                     controlPrecioJSON.Append(", \"IDEtiqueta\": \"" + item[5] + "\"");
                     controlPrecioJSON.Append(", \"CantidadEtiquetas\": " + item[6]);
-                    controlPrecioJSON.Append(", \"AlertaStock\": " + item[7] + " }");
+                    controlPrecioJSON.Append(", \"AlertaStock\": " + item[7]);
+                    controlPrecioJSON.Append(", \"NumeroSecuencia\": \"" + item[8] + "\" }");
                 }
                 else
                 {

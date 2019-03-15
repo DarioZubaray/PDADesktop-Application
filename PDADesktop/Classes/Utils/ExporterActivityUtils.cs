@@ -1,10 +1,8 @@
 ﻿using PDADesktop.Model;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Globalization;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PDADesktop.Classes.Utils
 {
@@ -19,12 +17,15 @@ namespace PDADesktop.Classes.Utils
             foreach(ControlPrecio ctrubic in priceControlContent)
             {
                 sb.Append(ctrubic.EAN + PIPE_DELIMITER);
-                sb.Append(ctrubic.fecha + PIPE_DELIMITER);
+                string customDate = DateTime.ParseExact(ctrubic.fecha, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture).ToString("yyyyMMddHHmmss");
+                sb.Append(customDate + PIPE_DELIMITER);
                 sb.Append(ctrubic.TipoLectura + PIPE_DELIMITER);
                 sb.Append(ctrubic.Pasillo + PIPE_DELIMITER);
+                sb.Append((int)ctrubic.ControlUbicacion + PIPE_DELIMITER);
                 sb.Append(ctrubic.IDEtiqueta + PIPE_DELIMITER);
                 sb.Append(ctrubic.CantidadEtiquetas + PIPE_DELIMITER);
-                sb.Append(ctrubic.AlertaStock + NEW_LINE);
+                sb.Append(ctrubic.AlertaStock ? "1" : "0" + PIPE_DELIMITER);
+                sb.Append(ctrubic.NumeroSecuencia + NEW_LINE);
             }
             return sb.ToString();
         }

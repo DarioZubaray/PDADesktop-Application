@@ -53,6 +53,7 @@
         public const string API_INFORMES_REMITO_PDF = "API_INFORMES_REMITO_PDF";
         public const string API_GET_ADJUSTMENTS_BY_BATCH_ID = "API_GET_ADJUSTMENTS_BY_BATCH_ID";
 
+        public const string PUBLIC_PATH_ROOT = "PUBLIC_PATH_ROOT";
         public const string PUBLIC_PATH_DATA = "PUBLIC_PATH_DATA";
         public const string PUBLIC_PATH_LOOKUP = "PUBLIC_PATH_LOOKUP";
         public const string PUBLIC_PATH_BIN = "PUBLIC_PATH_BIN";

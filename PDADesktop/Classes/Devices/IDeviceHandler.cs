@@ -12,6 +12,7 @@ namespace PDADesktop.Classes.Devices
         ResultFileOperation CopyDeviceFileToPublicLookUp(string filenameAndExtension);
         ResultFileOperation CopyDeviceFileToPublicData(string filenameAndExtension);
 
+        ResultFileOperation CopyPublicRootFileToDevice(string destinationDirectory, string filenameAndextension);
         ResultFileOperation CopyPublicDataFileToDevice(string destinationDirectory, string filenameAndExtension);
         ResultFileOperation CopyPublicBinFileToDevice(string destinationDirectory, string filenameAndExtension);
         ResultFileOperation CopyPublicLookUpFileToDevice(string destinationDirectory, string filenameAndExtension);

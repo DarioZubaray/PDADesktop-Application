@@ -206,6 +206,7 @@
     <Compile Include="Classes\Exceptions\DeviceMainDataException.cs" />
     <Compile Include="Classes\Utils\ButtonStateUtils.cs" />
     <Compile Include="Classes\Utils\DateTimeUtils.cs" />
+    <Compile Include="Classes\Utils\ExporterActivityUtils.cs" />
     <Compile Include="Classes\Utils\HttpWebClientUtil.cs" />
     <Compile Include="Classes\Devices\MotoApi.cs" />
     <Compile Include="Classes\MyAppProperties.cs" />
@@ -218,6 +219,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\Utils\SqlCEReaderUtils.cs" />
+    <Compile Include="Classes\Utils\SqlCEUpdaterUtils.cs" />
     <Compile Include="Classes\Utils\SynchronizationStateUtil.cs" />
     <Compile Include="Model\ArticuloRecepcion.cs" />
     <Compile Include="Model\ControlPrecio.cs" />

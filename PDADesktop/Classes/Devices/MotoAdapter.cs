@@ -62,6 +62,13 @@ namespace PDADesktop.Classes.Devices
             return resultFile;
         }
 
+        public ResultFileOperation CopyPublicRootFileToDevice(string relativeDestinationDirectory, string filenameAndExtension)
+        {
+            string publicPDARootFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_ROOT);
+            string publicPDARootFolderExtended = TextUtils.ExpandEnviromentVariable(publicPDARootFolder);
+            return CopyPublicFileToDevice(publicPDARootFolderExtended, relativeDestinationDirectory, filenameAndExtension);
+        }
+
         public ResultFileOperation CopyPublicBinFileToDevice(string relativeDestinationDirectory, string filenameAndExtension)
         {
             string publicPDABinFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_BIN);

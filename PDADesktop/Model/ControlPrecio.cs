@@ -32,5 +32,13 @@ namespace PDADesktop.Model
             UbicNueva = 2
         }
 
+        public enum TipoDeLectura
+        {
+            Sinlectura = 0,
+            EAN_SOLO = 1,
+            EAN_FECHA_OK = 2,
+            EAN_FECHA_Vencida = 3
+        }
+
     }
 }

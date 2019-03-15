@@ -90,6 +90,11 @@ namespace PDADesktop.Classes.Devices
             return ResultFileOperation.NONEXISTENT_FILE;
         }
 
+        public ResultFileOperation CopyPublicRootFileToDevice(string destinationDirectory, string filenameAndExtension)
+        {
+            return ResultFileOperation.UNKNOWN;
+        }
+
         public ResultFileOperation CopyPublicBinFileToDevice(string destinationDirectory, string filenameAndExtension)
         {
             string publicPathBin = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_BIN);
