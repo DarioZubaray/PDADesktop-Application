@@ -153,6 +153,7 @@ namespace PDADesktop.ViewModel
 
         #region Workers Attributes
         private readonly BackgroundWorker loadSeeActivitiesWorker = new BackgroundWorker();
+        private readonly BackgroundWorker acceptWorker = new BackgroundWorker();
         #endregion
 
         #region Commands
@@ -525,6 +526,8 @@ namespace PDADesktop.ViewModel
 
             ReturnCommand = new RelayCommand(ReturnAction);
             AcceptCommand = new RelayCommand(AcceptAction);
+            acceptWorker.DoWork += acceptWorker_DoWork;
+            acceptWorker.RunWorkerCompleted += acceptWorker_RunWorkerCompleted;
 
             RemoveAllPriceControlCommand = new RelayCommand(RemoveAllPricecontrolAction);
             RemoveOnePriceControlCommand = new RelayCommand(RemoveOnePricecontrolAction);
@@ -565,6 +568,7 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Workers Method
+        #region Load See Activities
         private async Task loadSeeActivitiesWorker_DoWork()
         {
             logger.Debug("load see activities worker => Do Work");
@@ -580,11 +584,62 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
+        #region Accept
+        private void acceptWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            logger.Debug("accept worker => Do Work");
+
+            //ControlPreciosConfirmados
+            string currentMessage = "Guardando Control de Precios confirmados...";
+            NotifyCurrentMessage(currentMessage);
+            if (ControlPreciosConfirmados != null && ControlPreciosConfirmados.Count != 0)
+            {
+                string controlPrecioContent = ExporterActivityUtils.ExportCTRUBIC(ControlPreciosConfirmados);
+                ArchivosDATUtils.OverrideCTRUBIDATinPublic(controlPrecioContent);
+                string destinationDirectoryData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+                string filenameCTRUBIC = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_CONTROL_PRECIO);
+                deviceHandler.CopyPublicDataFileToDevice(destinationDirectoryData, filenameCTRUBIC);
+            }
+
+            //ControlPreciosPendientes
+            string publicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_PROGRAM);
+            string publicFolderExtended = TextUtils.ExpandEnviromentVariable(publicFolder);
+            string filename = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATABASE);
+
+            string strConn = @"Data Source=" + publicFolderExtended + filename;
+            SqlCEUpdaterUtils.EmptyControlPrecios(strConn);
+            if (ControlPreciosPendientes != null && ControlPreciosPendientes.Count != 0)
+            {
+                currentMessage = "Guardando Control de Precios pendientes...";
+                NotifyCurrentMessage(currentMessage);
+                SqlCEUpdaterUtils.GuardarControlPrecios(ControlPreciosPendientes, strConn);
+            }
+            string destinationDirectoryRoot = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_ROOT);
+            deviceHandler.CopyPublicRootFileToDevice(destinationDirectoryRoot, filename);
+        }
+
+        private void acceptWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            logger.Debug("accept worker => Run Worker Completed");
+
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                MainWindow window = (MainWindow)Application.Current.MainWindow;
+                Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
+                window.frame.NavigationService.Navigate(uri);
+            }));
+        }
+        #endregion
+        #endregion
+
         #region Commons Methods
         public void NotifyCurrentMessage(string currentMessage)
         {
-            logger.Debug(currentMessage);
-            PanelSubMessage = currentMessage;
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                logger.Debug(currentMessage);
+                PanelSubMessage = currentMessage;
+            }));
             Thread.Sleep(300);
         }
 
@@ -687,35 +742,9 @@ namespace PDADesktop.ViewModel
         public void AcceptAction(object sender)
         {
             logger.Debug("AcceptAction");
-            //TODO logica de inserts y escritura en los archivos
+            DisplayWaitingPanel("Espere por favor...");
+            acceptWorker.RunWorkerAsync();
 
-            //ControlPreciosConfirmados
-            if (ControlPreciosConfirmados != null && ControlPreciosConfirmados.Count != 0)
-            {
-                string controlPrecioContent = ExporterActivityUtils.ExportCTRUBIC(ControlPreciosConfirmados);
-                ArchivosDATUtils.OverrideCTRUBIDATinPublic(controlPrecioContent);
-                string destinationDirectoryData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
-                string filenameCTRUBIC = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_CONTROL_PRECIO);
-                deviceHandler.CopyPublicDataFileToDevice(destinationDirectoryData, filenameCTRUBIC);
-            }
-
-            //ControlPreciosPendientes
-            string publicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_PROGRAM);
-            string publicFolderExtended = TextUtils.ExpandEnviromentVariable(publicFolder);
-            string filename = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATABASE);
-
-            string strConn = @"Data Source=" + publicFolderExtended + filename;
-            SqlCEUpdaterUtils.EmptyControlPrecios(strConn);
-            if(ControlPreciosPendientes != null && ControlPreciosPendientes.Count != 0)
-            {
-                SqlCEUpdaterUtils.GuardarControlPrecios(ControlPreciosPendientes, strConn);
-            }
-            string destinationDirectoryRoot = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_ROOT);
-            deviceHandler.CopyPublicRootFileToDevice(destinationDirectoryRoot, filename);
-
-            MainWindow window = (MainWindow)Application.Current.MainWindow;
-            Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
-            window.frame.NavigationService.Navigate(uri);
         }
 
         #region PriceControl Action
