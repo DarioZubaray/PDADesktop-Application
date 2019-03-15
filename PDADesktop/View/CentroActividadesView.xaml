@@ -89,6 +89,11 @@
                                 HorizontalAlignment="Left" VerticalAlignment="Top"
                                 ToolTip="Ver todas las actividades a informar y las pendientes."
                                 Command="{Binding VerActividadesCommand}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <i:InvokeCommandAction Command="{Binding ShowPanelCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
                         </Button>
 
                         <!--

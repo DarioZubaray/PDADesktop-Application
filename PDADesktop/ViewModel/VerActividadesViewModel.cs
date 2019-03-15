@@ -1,4 +1,5 @@
 ﻿using log4net;
+using MahApps.Metro.Controls.Dialogs;
 using PDADesktop.Classes;
 using PDADesktop.Classes.Devices;
 using PDADesktop.Classes.Utils;
@@ -7,6 +8,7 @@ using PDADesktop.View;
 using System;
 using System.Collections.ObjectModel;
 using System.Configuration;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -18,6 +20,7 @@ namespace PDADesktop.ViewModel
         #region Commons Attributes
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IDeviceHandler deviceHandler { get; set; }
+        private IDialogCoordinator dialogCoordinator;
         #endregion
         #region selectedRow
         public ControlPrecio PriceControlConfirmedSelected { get; set; }
@@ -356,10 +359,11 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Constructor
-        public VerActividadesViewModel()
+        public VerActividadesViewModel(IDialogCoordinator instance)
         {
             BannerApp.PrintSeeActivities();
             deviceHandler = App.Instance.deviceHandler;
+            dialogCoordinator = instance;
 
             ReturnCommand = new RelayCommand(ReturnAction);
             AcceptCommand = new RelayCommand(AcceptAction);
@@ -439,12 +443,17 @@ namespace PDADesktop.ViewModel
         #endregion
 
         #region Command Methods
-        public void ReturnAction(object sender)
+        public async void ReturnAction(object sender)
         {
             logger.Debug("ReturnAction");
-            MainWindow window = (MainWindow)Application.Current.MainWindow;
-            Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
-            window.frame.NavigationService.Navigate(uri);
+            string returnMsg = "¿Desea regresar sin efectuar cambios?";
+            bool continueOrCancel = await AskUserMetroDialog(returnMsg);
+            if (continueOrCancel)
+            {
+                MainWindow window = (MainWindow)Application.Current.MainWindow;
+                Uri uri = new Uri(Constants.CENTRO_ACTIVIDADES_VIEW, UriKind.Relative);
+                window.frame.NavigationService.Navigate(uri);
+            }
         }
         public void AcceptAction(object sender)
         {
@@ -609,6 +618,24 @@ namespace PDADesktop.ViewModel
         }
         #endregion
 
+        #endregion
+
+        #region Metro Dialog Methods
+        private async Task<bool> AskUserMetroDialog(string message, string title = "Aviso")
+        {
+            MessageDialogStyle messageDialogStyle = MessageDialogStyle.AffirmativeAndNegative;
+            bool userResponse = await ShowMetroDialog(messageDialogStyle, message, title);
+            return userResponse;
+        }
+
+        private async Task<bool> ShowMetroDialog(MessageDialogStyle messageDialogStyle, string message, string title = "Aviso")
+        {
+            MetroDialogSettings metroDialogSettings = new MetroDialogSettings();
+            metroDialogSettings.AffirmativeButtonText = "Aceptar";
+            metroDialogSettings.NegativeButtonText = "Cancelar";
+            MessageDialogResult userResponse = await dialogCoordinator.ShowMessageAsync(this, title, message, messageDialogStyle, metroDialogSettings);
+            return userResponse == MessageDialogResult.Affirmative;
+        }
         #endregion
         #endregion
     }
