@@ -214,5 +214,36 @@ namespace PDADesktop.Classes.Utils
             FileUtils.WriteFile(rutaArchivo + slashFilenameAndExtension, contenido + "\r\n");
             App.Instance.deviceHandler.CopyPublicDataFileToDevice(deviceRelativePathData, slashFilenameAndExtension);
         }
+
+        private static void OverrideDATFileinPublic(string newContents, string filename)
+        {
+            string pathFile = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATA);
+            string pathFileExtended = TextUtils.ExpandEnviromentVariable(pathFile);
+            FileUtils.WriteFile(pathFileExtended + filename, newContents);
+        }
+
+        public static void OverrideCTRUBIDATinPublic(string newContents)
+        {
+            string filename = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_CONTROL_PRECIO);
+            OverrideDATFileinPublic(newContents, filename);
+        }
+
+        public static void OverrideAJUSTESDATinPublic(string newContents)
+        {
+            string filename = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
+            OverrideDATFileinPublic(newContents, filename);
+        }
+
+        public static void OverrideRECEPDATinPublic(string newContents)
+        {
+            string filename = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_RECEPCIONES);
+            OverrideDATFileinPublic(newContents, filename);
+        }
+
+        public static void OverrideETIQDATinPublic(string newContents)
+        {
+            string filename = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_ETIQUETAS);
+            OverrideDATFileinPublic(newContents, filename);
+        }
     }
 }
