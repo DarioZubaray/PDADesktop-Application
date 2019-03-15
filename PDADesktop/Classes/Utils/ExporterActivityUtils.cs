@@ -17,8 +17,7 @@ namespace PDADesktop.Classes.Utils
             foreach(ControlPrecio ctrubic in priceControlContent)
             {
                 sb.Append(ctrubic.EAN + PIPE_DELIMITER);
-                string customDate = DateTime.ParseExact(ctrubic.fecha, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture).ToString("yyyyMMddHHmmss");
-                sb.Append(customDate + PIPE_DELIMITER);
+                sb.Append(getCustomDateformat(ctrubic.fecha) + PIPE_DELIMITER);
                 sb.Append(ctrubic.TipoLectura + PIPE_DELIMITER);
                 sb.Append(ctrubic.Pasillo + PIPE_DELIMITER);
                 sb.Append((int)ctrubic.ControlUbicacion + PIPE_DELIMITER);
@@ -39,7 +38,8 @@ namespace PDADesktop.Classes.Utils
                 sb.Append(ajuste.fechaAjuste + PIPE_DELIMITER);
                 sb.Append(ajuste.motivo + PIPE_DELIMITER);
                 sb.Append(ajuste.perfilGenesix + PIPE_DELIMITER);
-                sb.Append(ajuste.cantidad + NEW_LINE);
+                sb.Append(ajuste.cantidad + PIPE_DELIMITER);
+                sb.Append(ajuste.claveAjuste + NEW_LINE);
             }
             return sb.ToString();
         }
@@ -50,12 +50,13 @@ namespace PDADesktop.Classes.Utils
             foreach (ArticuloRecepcion articuloRecepcion in receptionContent)
             {
                 Recepcion recepcion = articuloRecepcion.recepcion;
-                sb.Append(recepcion.fechaRecep + PIPE_DELIMITER);
+                sb.Append(getCustomDateformat(recepcion.fechaRecep) + PIPE_DELIMITER);
                 sb.Append(recepcion.numeroPedido + PIPE_DELIMITER);
                 sb.Append(recepcion.numeroProveedor + PIPE_DELIMITER);
                 sb.Append(recepcion.centroEmisor + PIPE_DELIMITER);
                 sb.Append(recepcion.numeroRemito + PIPE_DELIMITER);
-                sb.Append(recepcion.fechaRem + PIPE_DELIMITER);
+                //TODO crear un patron de formato para parsear HH:mm:ss y H:mm:ss
+                sb.Append(getCustomDateformat(recepcion.fechaRem) + PIPE_DELIMITER);
                 sb.Append(articuloRecepcion.EAN + PIPE_DELIMITER);
                 sb.Append(articuloRecepcion.unidadesRecibidas + PIPE_DELIMITER);
                 sb.Append(recepcion.descripcionProveedor + NEW_LINE);
@@ -69,10 +70,17 @@ namespace PDADesktop.Classes.Utils
             foreach (Etiqueta etiqueta in labelContent)
             {
                 sb.Append(etiqueta.EAN + PIPE_DELIMITER);
-                sb.Append(etiqueta.Fecha + PIPE_DELIMITER);
+                sb.Append(getCustomDateformat(etiqueta.Fecha) + PIPE_DELIMITER);
                 sb.Append(etiqueta.CodigoEtiqueta + NEW_LINE);
             }
             return sb.ToString();
+        }
+
+        private static string getCustomDateformat(string fecha, string inputformat = "dd/MM/yyyy HH:mm:ss")
+        {
+            string outputFormat = "yyyyMMddHHmmss";
+            DateTime customDate = DateTime.ParseExact(fecha, inputformat, CultureInfo.InvariantCulture);
+            return customDate.ToString(outputFormat);
         }
     }
 }

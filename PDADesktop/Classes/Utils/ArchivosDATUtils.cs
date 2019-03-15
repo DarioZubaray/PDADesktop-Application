@@ -222,7 +222,7 @@ namespace PDADesktop.Classes.Utils
             FileUtils.WriteFile(pathFileExtended + filename, newContents);
         }
 
-        public static void OverrideCTRUBIDATinPublic(string newContents)
+        public static void OverrideCTRUBICDATinPublic(string newContents)
         {
             string filename = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_CONTROL_PRECIO);
             OverrideDATFileinPublic(newContents, filename);

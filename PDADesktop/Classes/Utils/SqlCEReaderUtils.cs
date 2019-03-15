@@ -31,9 +31,10 @@ namespace PDADesktop.Classes.Utils
                         Ajustes ajuste = new Ajustes();
                         ajuste.ean = Int64.Parse(dr.GetString(0));
                         ajuste.fechaAjuste = dr.GetString(1);
-                        ajuste.claveAjuste = dr.GetString(2);
+                        ajuste.motivo = dr.GetString(2);
                         ajuste.perfilGenesix = dr.GetString(3);
                         ajuste.cantidad = (long)dr.GetDouble(4);
+                        ajuste.claveAjuste = ajuste.motivo + ajuste.ean;
                         listaAjustes.Add(ajuste);
                     }
                     if (emptyTable)

@@ -588,34 +588,130 @@ namespace PDADesktop.ViewModel
         private void acceptWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             logger.Debug("accept worker => Do Work");
+            //TODO checkear conexion con el dispositivo
 
-            //ControlPreciosConfirmados
-            string currentMessage = "Guardando Control de Precios confirmados...";
+            guardarControlPrecios();
+            guardarAjustes();
+            guardarRecepciones();
+            guardarEtiquetas();
+
+            //Pendientes
+            string publicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_PROGRAM);
+            string publicFolderExtended = TextUtils.ExpandEnviromentVariable(publicFolder);
+            string filename = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATABASE);
+            string strConn = @"Data Source=" + publicFolderExtended + filename;
+
+            actualizarDBControlPrecios(strConn);
+            actualizarDBAjustes(strConn);
+            actualizarDBRecepciones(strConn);
+            actualizarDBEtiquetas(strConn);
+
+            string destinationDirectoryRoot = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_ROOT);
+            deviceHandler.CopyPublicRootFileToDevice(destinationDirectoryRoot, filename);
+        }
+
+        private void guardarControlPrecios()
+        {
+            string currentMessage = "Verificando Control de Precios confirmados...";
             NotifyCurrentMessage(currentMessage);
             if (ControlPreciosConfirmados != null && ControlPreciosConfirmados.Count != 0)
             {
+                currentMessage = "Guardando "+ ControlPreciosConfirmados.Count + " registros confirmados en control de precios...";
+                NotifyCurrentMessage(currentMessage);
                 string controlPrecioContent = ExporterActivityUtils.ExportCTRUBIC(ControlPreciosConfirmados);
-                ArchivosDATUtils.OverrideCTRUBIDATinPublic(controlPrecioContent);
+                ArchivosDATUtils.OverrideCTRUBICDATinPublic(controlPrecioContent);
                 string destinationDirectoryData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
                 string filenameCTRUBIC = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_CONTROL_PRECIO);
                 deviceHandler.CopyPublicDataFileToDevice(destinationDirectoryData, filenameCTRUBIC);
             }
+        }
 
-            //ControlPreciosPendientes
-            string publicFolder = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_PROGRAM);
-            string publicFolderExtended = TextUtils.ExpandEnviromentVariable(publicFolder);
-            string filename = ConfigurationManager.AppSettings.Get(Constants.PUBLIC_PATH_DATABASE);
+        private void guardarAjustes()
+        {
+            string currentMessage = "Verificando Ajustes confirmados...";
+            NotifyCurrentMessage(currentMessage);
+            if (AjustesConfirmados != null && AjustesConfirmados.Count != 0)
+            {
+                currentMessage = "Guardando " + AjustesConfirmados.Count + " registros confirmados en ajustes...";
+                NotifyCurrentMessage(currentMessage);
+                string ajustesContent = ExporterActivityUtils.ExportAJUSTES(AjustesConfirmados);
+                ArchivosDATUtils.OverrideAJUSTESDATinPublic(ajustesContent);
+                string destinationDirectoryData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+                string filenameAJUSTES = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
+                deviceHandler.CopyPublicDataFileToDevice(destinationDirectoryData, filenameAJUSTES);
+            }
+        }
 
-            string strConn = @"Data Source=" + publicFolderExtended + filename;
+        private void guardarRecepciones()
+        {
+            string currentMessage = "Verificando Recepciones confirmadas...";
+            NotifyCurrentMessage(currentMessage);
+            if (RecepcionesConfirmadas != null && RecepcionesConfirmadas.Count != 0)
+            {
+                currentMessage = "Guardando " + RecepcionesConfirmadas.Count + " registros confirmados en recepciones...";
+                NotifyCurrentMessage(currentMessage);
+                string recepcionesContent = ExporterActivityUtils.ExportRECEP(RecepcionesConfirmadas);
+                ArchivosDATUtils.OverrideRECEPDATinPublic(recepcionesContent);
+                string destinationDirectoryData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+                string filenameRECEP = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_RECEPCIONES);
+                deviceHandler.CopyPublicDataFileToDevice(destinationDirectoryData, filenameRECEP);
+            }
+        }
+
+        private void guardarEtiquetas()
+        {
+            string currentMessage = "Verificando Impresión de Etiquetas confirmadas...";
+            NotifyCurrentMessage(currentMessage);
+            if (EtiquetasConfirmadas != null && EtiquetasConfirmadas.Count != 0)
+            {
+                currentMessage = "Guardando " + EtiquetasConfirmadas.Count + " registros confirmados en etiquetas...";
+                NotifyCurrentMessage(currentMessage);
+                string etiquetasContent = ExporterActivityUtils.ExportETIQ(EtiquetasConfirmadas);
+                ArchivosDATUtils.OverrideETIQDATinPublic(etiquetasContent);
+                string destinationDirectoryData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
+                string filenameETIQ = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_ETIQUETAS);
+                deviceHandler.CopyPublicDataFileToDevice(destinationDirectoryData, filenameETIQ);
+            }
+        }
+
+        private void actualizarDBControlPrecios(string strConn)
+        {
+            SqlCEUpdaterUtils.EmptyAjustes(strConn);
+            if (AjustesPendientes != null && AjustesPendientes.Count != 0)
+            {
+                NotifyCurrentMessage("Actualizando "+ AjustesPendientes.Count + " pendientes en Control de Precios...");
+                SqlCEUpdaterUtils.GuardarAjustes(AjustesPendientes, strConn);
+            }
+        }
+
+        private void actualizarDBAjustes(string strConn)
+        {
             SqlCEUpdaterUtils.EmptyControlPrecios(strConn);
             if (ControlPreciosPendientes != null && ControlPreciosPendientes.Count != 0)
             {
-                currentMessage = "Guardando Control de Precios pendientes...";
-                NotifyCurrentMessage(currentMessage);
+                NotifyCurrentMessage("Actualizando " + ControlPreciosPendientes.Count + " pendientes en Ajustes...");
                 SqlCEUpdaterUtils.GuardarControlPrecios(ControlPreciosPendientes, strConn);
             }
-            string destinationDirectoryRoot = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_ROOT);
-            deviceHandler.CopyPublicRootFileToDevice(destinationDirectoryRoot, filename);
+        }
+
+        private void actualizarDBRecepciones(string strConn)
+        {
+            SqlCEUpdaterUtils.EmptyRecepciones(strConn);
+            if (RecepcionesPendientes != null && RecepcionesPendientes.Count != 0)
+            {
+                NotifyCurrentMessage("Actualizando " + RecepcionesPendientes.Count + " pendientes en Recepciones...");
+                SqlCEUpdaterUtils.GuardarRecepciones(RecepcionesPendientes, strConn);
+            }
+        }
+
+        private void actualizarDBEtiquetas(string strConn)
+        {
+            SqlCEUpdaterUtils.EmptyEtiquetas(strConn);
+            if (EtiquetasPendientes != null && EtiquetasPendientes.Count != 0)
+            {
+                NotifyCurrentMessage("Actualizando " + EtiquetasPendientes.Count + " pendientes en Etiquetas...");
+                SqlCEUpdaterUtils.GuardarEtiquetas(EtiquetasPendientes, strConn);
+            }
         }
 
         private void acceptWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
