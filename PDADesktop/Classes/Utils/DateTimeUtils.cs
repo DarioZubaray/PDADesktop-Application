@@ -1,10 +1,13 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Globalization;
 
 namespace PDADesktop.Classes.Utils
 {
     public class DateTimeUtils
     {
+        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public static bool IsGreatherThanToday(string synchronizationDefault)
         {
             bool isGreather = false;
@@ -37,6 +40,28 @@ namespace PDADesktop.Classes.Utils
             DateTime datetimeNow = DateTime.UtcNow;
             Int32 unixTimestamp = (Int32)(datetimeNow.Subtract(unixTime)).TotalSeconds;
             return unixTimestamp;
+        }
+
+        public static DateTime GetActivityDatetime(string fecha)
+        {
+            string activityFormat = "yyyyMMddHHmmss";
+            CultureInfo invariantCulture = CultureInfo.InvariantCulture;
+            try
+            {
+                return DateTime.ParseExact(fecha, activityFormat, invariantCulture);
+            }
+            catch (Exception e)
+            {
+                logger.Warn("Error al parsear fecha de actividad: " + fecha);
+                logger.Error(e.Message);
+                return new DateTime();
+            }
+        }
+
+        public static string GetActivityStringDate(DateTime fechaDate)
+        {
+            string activityFormat = "yyyyMMddHHmmss";
+            return fechaDate.ToString(activityFormat);
         }
     }
 }
