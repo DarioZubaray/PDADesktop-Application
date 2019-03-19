@@ -34,7 +34,7 @@ namespace PDADesktop.Classes.Utils
                     {
                         cmd.Parameters.AddWithValue("@Val1", ajuste.ean);
                         cmd.Parameters.AddWithValue("@Val2", ajuste.fechaAjuste);
-                        cmd.Parameters.AddWithValue("@Val3", ajuste.claveAjuste);
+                        cmd.Parameters.AddWithValue("@Val3", ajuste.motivo);
                         cmd.Parameters.AddWithValue("@Val4", ajuste.perfilGenesix);
                         cmd.Parameters.AddWithValue("@Val5", ajuste.cantidad);
                         cmd.CommandType = System.Data.CommandType.Text;
@@ -73,7 +73,7 @@ namespace PDADesktop.Classes.Utils
                     using (SqlCeCommand cmd = new SqlCeCommand(command, con))
                     {
                         cmd.Parameters.AddWithValue("@Val1", control.EAN);
-                        cmd.Parameters.AddWithValue("@Val2", control.fecha);
+                        cmd.Parameters.AddWithValue("@Val2", control.FechaControl);
                         cmd.Parameters.AddWithValue("@Val3", control.TipoLectura);
                         cmd.Parameters.AddWithValue("@Val4", control.Pasillo);
                         cmd.Parameters.AddWithValue("@Val5", control.ControlUbicacion);

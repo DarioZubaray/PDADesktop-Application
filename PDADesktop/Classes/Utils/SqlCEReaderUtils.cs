@@ -135,19 +135,17 @@ namespace PDADesktop.Classes.Utils
                         {
                             emptyTable = false;
                             Recepcion recepcion = new Recepcion();
-                            string recepcionString = dr.GetString(0);
-                            recepcion.fechaRecepcion = DateTime.ParseExact(recepcionString, "yyyyMMddHHmmss", null);
+                            recepcion.fechaRecep = dr.GetString(0);
                             recepcion.numeroPedido = dr.GetInt64(1);
                             recepcion.numeroProveedor = dr.GetInt64(2);
                             //R - campo 3 sin uso
-                            recepcion.sucursalRemito = Int64.Parse(dr.GetString(4));
-                            recepcion.numeroRemito = Int64.Parse(dr.GetString(5));
-                            string remitoString = dr.GetString(6);
-                            recepcion.FechaRemito = DateTime.ParseExact(remitoString, "yyyyMMddHHmmss", null);
-                            recepcion.descripcionProveedor = dr.GetString(10);
+                            recepcion.sucursalRemito = Int64.Parse(dr.GetString(3));
+                            recepcion.numeroRemito = Int64.Parse(dr.GetString(4));
+                            recepcion.fechaRem = dr.GetString(5);
                             ArticuloRecepcion articuloRecepcion = new ArticuloRecepcion();
-                            articuloRecepcion.EAN = Int64.Parse(dr.GetString(7));
-                            articuloRecepcion.unidadesRecibidas = dr.GetDouble(8);
+                            articuloRecepcion.EAN = Int64.Parse(dr.GetString(6));
+                            articuloRecepcion.unidadesRecibidas = dr.GetDouble(7);
+                            recepcion.descripcionProveedor = dr.GetString(8);
                             // Clave - campo 9 sin uso
                             articuloRecepcion.recepcion = recepcion;
                             listaArticulosRecepcion.Add(articuloRecepcion);

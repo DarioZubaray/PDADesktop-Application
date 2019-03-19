@@ -117,10 +117,12 @@ namespace PDADesktop.Classes.Utils
                     recepcionesJSON.Append("\"fechaRecep\": \"" + item[0] + "\"");
                     recepcionesJSON.Append(", \"numeroPedido\": " + item[1]);
                     recepcionesJSON.Append(", \"numeroProveedor\": " + item[2]);
+                    //R - campo 3 sin uso
+                    recepcionesJSON.Append(", \"sucursalRemito\": " + item[4]);
                     recepcionesJSON.Append(", \"numeroRemito\": \"" + item[5] + "\"");
                     recepcionesJSON.Append(", \"fechaRem\": \"" + item[6] + "\"");
                     recepcionesJSON.Append(", \"descripcionProveedor\": \"" + item[10] + "\" }");
-
+                    // Clave - campo 9 sin uso
                     recepcionesJSON.Append(", \"EAN\": " + item[7]);
                     recepcionesJSON.Append(", \"unidadesRecibidas\": " + item[8] + " }");
                 }
