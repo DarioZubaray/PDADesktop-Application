@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PDADesktop.Classes.Utils;
+using System;
 using System.ComponentModel;
 
 namespace PDADesktop.Model
@@ -9,11 +10,11 @@ namespace PDADesktop.Model
         public string fecha {
             get
             {
-                return FechaControl.ToString();
+                return DateTimeUtils.GetActivityStringDate(FechaControl);
             }
             set
             {
-                FechaControl = DateTime.ParseExact(value, "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
+                FechaControl = DateTimeUtils.GetActivityDatetime(value);
             }
         }
         public DateTime FechaControl { get; set; }
@@ -23,6 +24,13 @@ namespace PDADesktop.Model
         public string IDEtiqueta { get; set; }
         public int CantidadEtiquetas { get; set; }
         public bool AlertaStock { get; set; }
+        public string alerta
+        {
+            get
+            {
+                return AlertaStock ? "SI" : "NO";
+            }
+        }
         public string NumeroSecuencia { get; set; }
 
         public enum TipoControlUbicacion

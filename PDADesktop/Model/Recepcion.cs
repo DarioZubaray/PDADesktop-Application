@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PDADesktop.Classes.Utils;
+using System;
 
 namespace PDADesktop.Model
 {
@@ -10,11 +11,11 @@ namespace PDADesktop.Model
         {
             get
             {
-                return fechaRecepcion.ToString();
+                return DateTimeUtils.GetActivityStringDate(fechaRecepcion);
             }
             set
             {
-                fechaRecepcion = DateTime.ParseExact(value, "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
+                fechaRecepcion = DateTimeUtils.GetActivityDatetime(value);
             }
         }
         public DateTime fechaRecepcion { get; set; }
@@ -24,15 +25,15 @@ namespace PDADesktop.Model
         {
             get
             {
-                return FechaRemito.ToString();
+                return DateTimeUtils.GetActivityStringDate(FechaRemito);
             }
             set
             {
-                FechaRemito = DateTime.ParseExact(value, "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
+                FechaRemito = DateTimeUtils.GetActivityDatetime(value);
             }
         }
         public DateTime FechaRemito { get; set; }
-        public string letra { get; set; }
+        public string letra { get { return "R"; } }
         public long sucursalRemito { get; set; }
         public long centroEmisor { get; set; }
         public long numeroPedido { get; set; }
