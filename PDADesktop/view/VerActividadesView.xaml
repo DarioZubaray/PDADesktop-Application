@@ -85,7 +85,7 @@
                                                         Header="Ean" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-                                    <DataGridTextColumn Binding="{Binding FechaControl}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                        <DataGridTextColumn Binding="{Binding FechaControl, StringFormat='dd/MM/yyyy HH:mm'}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
                                                         Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
@@ -109,7 +109,7 @@
                                                         Header="Cantidad Etiqueta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-                                    <DataGridTextColumn Binding="{Binding AlertaStock}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                    <DataGridTextColumn Binding="{Binding alerta}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
                                                         Header="Alerta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
@@ -189,7 +189,7 @@
                                                         Header="Ean" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-                                    <DataGridTextColumn Binding="{Binding FechaControl}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                        <DataGridTextColumn Binding="{Binding FechaControl, StringFormat='dd/MM/yyyy HH:mm'}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
                                                         Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
@@ -213,7 +213,7 @@
                                                         Header="Cantidad Etiqueta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-                                    <DataGridTextColumn Binding="{Binding AlertaStock}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                    <DataGridTextColumn Binding="{Binding alerta}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
                                                         Header="Alerta" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
@@ -239,14 +239,14 @@
                                 </StatusBarItem>
                             </StatusBar>
                             <Grid>
-                            <DataGrid x:Name="dataGrid_AjustesConfirmados" Grid.Row="0" DockPanel.Dock="Bottom" RowHeight="20" FontSize="11"
-                                  BorderThickness="1" BorderBrush="#ededed"
-                                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
-                                  Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                                  AutoGenerateColumns="False" IsReadOnly="True"
-                                  ItemsSource="{Binding Path=AjustesConfirmados}"
+                                <DataGrid x:Name="dataGrid_AjustesConfirmados" Grid.Row="0" DockPanel.Dock="Bottom" RowHeight="20" FontSize="11"
+                                      BorderThickness="1" BorderBrush="#ededed"
+                                      HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
+                                      Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                      AutoGenerateColumns="False" IsReadOnly="True"
+                                      ItemsSource="{Binding Path=AjustesConfirmados}"
                                       SelectedItem="{Binding Path=AdjustmentConfirmedSelected, Mode=TwoWay}"
-                                  AlternatingRowBackground="Gainsboro" AlternationCount="2">
+                                      AlternatingRowBackground="Gainsboro" AlternationCount="2">
                                 <DataGrid.CellStyle>
                                     <Style TargetType="DataGridCell">
                                         <Setter Property="BorderThickness" Value="1"/>
@@ -258,7 +258,7 @@
                                                         Header="Ean" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-                                    <DataGridTextColumn Binding="{Binding fechaAjuste}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                    <DataGridTextColumn Binding="{Binding fechaAjusteDate, StringFormat='dd/MM/yyyy HH:mm'}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
                                                         Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
@@ -266,7 +266,7 @@
                                                         Header="Motivo" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-                                    <DataGridTextColumn Binding="{Binding cantidad}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                    <DataGridTextColumn Binding="{Binding Cantidad}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
                                                         Header="Cantidad" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
                                 </DataGrid.Columns>
@@ -324,13 +324,13 @@
                             </StatusBar>
                             <Grid DockPanel.Dock="Bottom">
                                 <DataGrid x:Name="dataGrid_AjustesPendientes" Grid.Row="0" RowHeight="20" FontSize="11"
-                                  BorderThickness="1" BorderBrush="#ededed"
-                                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
-                                  Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                                  AutoGenerateColumns="False" IsReadOnly="True"
-                                  ItemsSource="{Binding Path=AjustesPendientes}"
-                                          SelectedItem="{Binding Path=PendingAdjustmentSelected, Mode=TwoWay}"
-                                  AlternatingRowBackground="Gainsboro" AlternationCount="2">
+                                      BorderThickness="1" BorderBrush="#ededed"
+                                      HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Top"
+                                      Height="230" Width="900" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                      AutoGenerateColumns="False" IsReadOnly="True"
+                                      ItemsSource="{Binding Path=AjustesPendientes}"
+                                      SelectedItem="{Binding Path=PendingAdjustmentSelected, Mode=TwoWay}"
+                                      AlternatingRowBackground="Gainsboro" AlternationCount="2">
                                 <DataGrid.CellStyle>
                                     <Style TargetType="DataGridCell">
                                         <Setter Property="BorderThickness" Value="1"/>
@@ -342,7 +342,7 @@
                                                         Header="Ean" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-                                    <DataGridTextColumn Binding="{Binding fechaAjuste}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                        <DataGridTextColumn Binding="{Binding fechaAjusteDate, StringFormat='dd/MM/yyyy HH:mm'}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
                                                         Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
@@ -350,7 +350,7 @@
                                                         Header="Motivo" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-                                    <DataGridTextColumn Binding="{Binding cantidad}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                    <DataGridTextColumn Binding="{Binding Cantidad}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
                                                         Header="Cantidad" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
                                 </DataGrid.Columns>
@@ -386,7 +386,7 @@
                                         </Style>
                                     </DataGrid.CellStyle>
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Binding="{Binding recepcion.fechaRecepcion}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                        <DataGridTextColumn Binding="{Binding recepcion.fechaRecepcion, StringFormat='dd/MM/yyyy HH:mm'}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
                                                         Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
@@ -406,7 +406,7 @@
                                                         Header="N° Remito" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-                                        <DataGridTextColumn Binding="{Binding recepcion.FechaRemito}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                        <DataGridTextColumn Binding="{Binding recepcion.FechaRemito, StringFormat='dd/MM/yyyy HH:mm'}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
                                                         Header="Fecha Remito" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
@@ -490,7 +490,7 @@
                                         </Style>
                                     </DataGrid.CellStyle>
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Binding="{Binding recepcion.fechaRecepcion}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                        <DataGridTextColumn Binding="{Binding recepcion.fechaRecepcion, StringFormat='dd/MM/yyyy HH:mm'}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
                                                         Header="Fecha" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
@@ -510,7 +510,7 @@
                                                         Header="N° Remito" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
-                                        <DataGridTextColumn Binding="{Binding recepcion.FechaRemito}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
+                                        <DataGridTextColumn Binding="{Binding recepcion.FechaRemito, StringFormat='dd/MM/yyyy HH:mm'}" ClipboardContentBinding="{x:Null}" CanUserResize="False"
                                                         Header="Fecha Remito" HeaderStyle="{StaticResource DataGridColumnHeaderCentering}"
                                                         CellStyle="{StaticResource DataGridContentCellCentering}" Width="1*" />
 
