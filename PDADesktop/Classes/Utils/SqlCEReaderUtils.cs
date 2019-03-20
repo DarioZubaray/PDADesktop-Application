@@ -104,7 +104,7 @@ namespace PDADesktop.Classes.Utils
                         emptyTable = false;
                         Etiqueta etiqueta = new Etiqueta();
                         etiqueta.EAN = dr.GetString(1);
-                        etiqueta.Fecha = dr.GetDateTime(2).ToString();
+                        etiqueta.FechaDate = dr.GetDateTime(2);
                         etiqueta.CodigoEtiqueta = dr.GetString(3);
                         listaEtiquetas.Add(etiqueta);
                     }

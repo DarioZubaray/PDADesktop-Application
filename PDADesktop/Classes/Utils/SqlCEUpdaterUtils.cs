@@ -162,7 +162,7 @@ namespace PDADesktop.Classes.Utils
                     using (SqlCeCommand cmd = new SqlCeCommand(command, con))
                     {
                         cmd.Parameters.AddWithValue("@Val1", etiq.EAN);
-                        cmd.Parameters.AddWithValue("@Val2", etiq.Fecha);
+                        cmd.Parameters.AddWithValue("@Val2", etiq.FechaDate);
                         cmd.Parameters.AddWithValue("@Val3", etiq.CodigoEtiqueta);
                         cmd.CommandType = System.Data.CommandType.Text;
                         cmd.ExecuteNonQuery();
