@@ -614,6 +614,8 @@ namespace PDADesktop.ViewModel
         {
             string currentMessage = "Verificando Control de Precios confirmados...";
             NotifyCurrentMessage(currentMessage);
+
+            string filenameCTRUBIC = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_CONTROL_PRECIO);
             if (ControlPreciosConfirmados != null && ControlPreciosConfirmados.Count != 0)
             {
                 currentMessage = "Guardando "+ ControlPreciosConfirmados.Count + " registros confirmados en control de precios...";
@@ -621,8 +623,11 @@ namespace PDADesktop.ViewModel
                 string controlPrecioContent = ExporterActivityUtils.ExportCTRUBIC(ControlPreciosConfirmados);
                 ArchivosDATUtils.OverrideCTRUBICDATinPublic(controlPrecioContent);
                 string destinationDirectoryData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
-                string filenameCTRUBIC = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_CONTROL_PRECIO);
                 deviceHandler.CopyPublicDataFileToDevice(destinationDirectoryData, filenameCTRUBIC);
+            }
+            else
+            {
+                deviceHandler.DeleteDeviceAndPublicDataFiles(filenameCTRUBIC);
             }
         }
 
@@ -630,6 +635,8 @@ namespace PDADesktop.ViewModel
         {
             string currentMessage = "Verificando Ajustes confirmados...";
             NotifyCurrentMessage(currentMessage);
+
+            string filenameAJUSTES = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
             if (AjustesConfirmados != null && AjustesConfirmados.Count != 0)
             {
                 currentMessage = "Guardando " + AjustesConfirmados.Count + " registros confirmados en ajustes...";
@@ -637,8 +644,11 @@ namespace PDADesktop.ViewModel
                 string ajustesContent = ExporterActivityUtils.ExportAJUSTES(AjustesConfirmados);
                 ArchivosDATUtils.OverrideAJUSTESDATinPublic(ajustesContent);
                 string destinationDirectoryData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
-                string filenameAJUSTES = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_AJUSTES);
                 deviceHandler.CopyPublicDataFileToDevice(destinationDirectoryData, filenameAJUSTES);
+            }
+            else
+            {
+                deviceHandler.DeleteDeviceAndPublicDataFiles(filenameAJUSTES);
             }
         }
 
@@ -646,6 +656,8 @@ namespace PDADesktop.ViewModel
         {
             string currentMessage = "Verificando Recepciones confirmadas...";
             NotifyCurrentMessage(currentMessage);
+
+            string filenameRECEP = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_RECEPCIONES);
             if (RecepcionesConfirmadas != null && RecepcionesConfirmadas.Count != 0)
             {
                 currentMessage = "Guardando " + RecepcionesConfirmadas.Count + " registros confirmados en recepciones...";
@@ -653,8 +665,11 @@ namespace PDADesktop.ViewModel
                 string recepcionesContent = ExporterActivityUtils.ExportRECEP(RecepcionesConfirmadas);
                 ArchivosDATUtils.OverrideRECEPDATinPublic(recepcionesContent);
                 string destinationDirectoryData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
-                string filenameRECEP = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_RECEPCIONES);
                 deviceHandler.CopyPublicDataFileToDevice(destinationDirectoryData, filenameRECEP);
+            }
+            else
+            {
+                deviceHandler.DeleteDeviceAndPublicDataFiles(filenameRECEP);
             }
         }
 
@@ -662,6 +677,8 @@ namespace PDADesktop.ViewModel
         {
             string currentMessage = "Verificando Impresión de Etiquetas confirmadas...";
             NotifyCurrentMessage(currentMessage);
+
+            string filenameETIQ = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_ETIQUETAS);
             if (EtiquetasConfirmadas != null && EtiquetasConfirmadas.Count != 0)
             {
                 currentMessage = "Guardando " + EtiquetasConfirmadas.Count + " registros confirmados en etiquetas...";
@@ -669,8 +686,11 @@ namespace PDADesktop.ViewModel
                 string etiquetasContent = ExporterActivityUtils.ExportETIQ(EtiquetasConfirmadas);
                 ArchivosDATUtils.OverrideETIQDATinPublic(etiquetasContent);
                 string destinationDirectoryData = ConfigurationManager.AppSettings.Get(Constants.DEVICE_RELPATH_DATA);
-                string filenameETIQ = ConfigurationManager.AppSettings.Get(Constants.DAT_FILE_ETIQUETAS);
                 deviceHandler.CopyPublicDataFileToDevice(destinationDirectoryData, filenameETIQ);
+            }
+            else
+            {
+                deviceHandler.DeleteDeviceAndPublicDataFiles(filenameETIQ);
             }
         }
 
